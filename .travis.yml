@@ -1,0 +1,83 @@
+sudo: false
+language: cpp
+
+env:
+  global:
+    - LLVM_VERSION=3.8.0
+    # Maintenance note: to move to a new version
+    # of boost, update both BOOST_ROOT and BOOST_URL.
+    # Note that for simplicity, BOOST_ROOT's final
+    # namepart must match the folder name internal
+    # to boost's .tar.gz.
+    - LCOV_ROOT=$HOME/lcov
+    - GDB_ROOT=$HOME/gdb
+    - BOOST_ROOT=$HOME/boost_1_60_0
+    - BOOST_URL='http://sourceforge.net/projects/boost/files/boost/1.60.0/boost_1_60_0.tar.gz'
+
+# Travis is timing out on Trusty.  So, for now, use Precise.  July 2017
+dist: precise
+
+addons:
+  apt:
+    sources: ['ubuntu-toolchain-r-test']
+    packages:
+      - gcc-5
+      - g++-5
+      - python-software-properties
+      - protobuf-compiler
+      - libprotobuf-dev
+      - libssl-dev
+      - libstdc++6
+      - binutils-gold
+      # Provides a backtrace if the unittests crash
+      - gdb
+      # needed to build gdb
+      - texinfo
+
+matrix:
+  include:
+    # Default BUILD is "scons".
+
+    - compiler: gcc
+      env: GCC_VER=5 BUILD=cmake TARGET=debug.nounity PATH=$PWD/cmake/bin:$PATH
+
+    - compiler: gcc
+      env: GCC_VER=5 TARGET=coverage
+
+    - compiler: clang
+      env: GCC_VER=5 TARGET=debug CLANG_VER=3.8 PATH=$PWD/llvm-$LLVM_VERSION/bin:$PATH
+      cache:
+        directories:
+          - $GDB_ROOT
+
+    - compiler: clang
+      env: GCC_VER=5 TARGET=debug.nounity CLANG_VER=3.8 PATH=$PWD/llvm-$LLVM_VERSION/bin:$PATH
+
+    # The clang cmake builds do not link.
+    # - compiler: clang
+    #   env: GCC_VER=5 BUILD=cmake TARGET=debug CLANG_VER=3.8 PATH=$PWD/llvm-$LLVM_VERSION/bin:$PWD/cmake/bin:$PATH
+
+    # - compiler: clang
+    #   env: GCC_VER=5 BUILD=cmake TARGET=debug.nounity CLANG_VER=3.8 PATH=$PWD/llvm-$LLVM_VERSION/bin:$PWD/cmake/bin:$PATH
+
+cache:
+  directories:
+  - $BOOST_ROOT
+  - llvm-$LLVM_VERSION
+  - cmake
+  - $GDB_ROOT
+
+before_install:
+  - bin/ci/ubuntu/install-dependencies.sh
+
+script:
+  - travis_retry bin/ci/ubuntu/build-and-test.sh
+
+notifications:
+  email:
+    false
+  irc:
+    channels:
+      - "chat.freenode.net#ripple-dev"
+
+dist: precise
