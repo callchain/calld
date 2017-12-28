@@ -37,9 +37,9 @@ Release/*.*
 tmp
 
 # Ignore database directory.
-db/
-db/*.db
-db/*.db-*
+#db/
+#db/*.db
+#db/*.db-*
 
 # Ignore debug logs
 debug_log.txt
