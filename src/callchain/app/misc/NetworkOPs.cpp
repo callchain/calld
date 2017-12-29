@@ -2322,13 +2322,13 @@ Json::Value NetworkOPsImp::getServerInfo (bool human, bool admin)
         }
         else
         {
-            l[jss::base_fee_xrp] = static_cast<double> (baseFee) /
+            l[jss::base_fee_CALL] = static_cast<double> (baseFee) /
                     SYSTEM_CURRENCY_PARTS;
-            l[jss::reserve_base_xrp]   =
+            l[jss::reserve_base_CALL]   =
                 static_cast<double> (Json::UInt (
                     lpClosed->fees().accountReserve(0).drops() * baseFee / baseRef))
                     / SYSTEM_CURRENCY_PARTS;
-            l[jss::reserve_inc_xrp]    =
+            l[jss::reserve_inc_CALL]    =
                 static_cast<double> (Json::UInt (
                     lpClosed->fees().increment * baseFee / baseRef))
                     / SYSTEM_CURRENCY_PARTS;

@@ -251,7 +251,7 @@ bool Pathfinder::findPaths (int searchLevel)
         if (!bDstXrp)
         {
             JLOG (j_.debug())
-                    << "New account not being funded in XRP ";
+                    << "New account not being funded in CALL ";
             return false;
         }
 
@@ -271,31 +271,31 @@ bool Pathfinder::findPaths (int searchLevel)
     if (bSrcXrp && bDstXrp)
     {
         // XRP -> XRP
-        JLOG (j_.debug()) << "XRP to XRP payment";
+        JLOG (j_.debug()) << "CALL to CALL payment";
         paymentType = pt_XRP_to_XRP;
     }
     else if (bSrcXrp)
     {
         // XRP -> non-XRP
-        JLOG (j_.debug()) << "XRP to non-XRP payment";
+        JLOG (j_.debug()) << "CALL to non-CALL payment";
         paymentType = pt_XRP_to_nonXRP;
     }
     else if (bDstXrp)
     {
         // non-XRP -> XRP
-        JLOG (j_.debug()) << "non-XRP to XRP payment";
+        JLOG (j_.debug()) << "non-CALL to CALL payment";
         paymentType = pt_nonXRP_to_XRP;
     }
     else if (mSrcCurrency == mDstAmount.getCurrency ())
     {
         // non-XRP -> non-XRP - Same currency
-        JLOG (j_.debug()) << "non-XRP to non-XRP - same currency";
+        JLOG (j_.debug()) << "non-CALL to non-CALL - same currency";
         paymentType = pt_nonXRP_to_same;
     }
     else
     {
         // non-XRP to non-XRP - Different currency
-        JLOG (j_.debug()) << "non-XRP to non-XRP - cross currency";
+       JLOG (j_.debug()) << "non-CALL to non-CALL - cross currency";
         paymentType = pt_nonXRP_to_nonXRP;
     }
 
@@ -906,7 +906,7 @@ void Pathfinder::addLink (
     bool const hasEffectiveDestination = mEffectiveDst != mDstAccount;
 
     JLOG (j_.trace()) << "addLink< flags="
-                                   << addFlags << " onXRP=" << bOnXRP;
+                                   << addFlags << " onCALL=" << bOnXRP;
     JLOG (j_.trace()) << currentPath.getJson (0);
 
     if (addFlags & afADD_ACCOUNTS)

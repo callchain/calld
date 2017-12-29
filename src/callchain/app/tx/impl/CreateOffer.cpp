@@ -95,7 +95,7 @@ CreateOffer::preflight (PreflightContext const& ctx)
     if (saTakerPays.native () && saTakerGets.native ())
     {
         JLOG(j.debug()) <<
-            "Malformed offer: redundant (XRP for XRP)";
+            "Malformed offer: redundant (CALL for CALL)";
         return temBAD_OFFER;
     }
     if (saTakerPays <= zero || saTakerGets <= zero)
@@ -339,7 +339,7 @@ CreateOffer::bridged_cross (
     assert (!isXRP (takerAmount.in) && !isXRP (takerAmount.out));
 
     if (isXRP (takerAmount.in) || isXRP (takerAmount.out))
-        Throw<std::logic_error> ("Bridging with XRP and an endpoint.");
+        Throw<std::logic_error> ("Bridging with CALL and an endpoint.");
 
     OfferStream offers_direct (view, view_cancel,
         Book (taker.issue_in (), taker.issue_out ()),

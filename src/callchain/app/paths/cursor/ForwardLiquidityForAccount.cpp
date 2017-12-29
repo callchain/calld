@@ -377,7 +377,7 @@ TER PathCursor::forwardLiquidityForAccount () const
 
                 JLOG (j_.trace())
                     << "forwardLiquidityForAccount: ^ --> "
-                    << "ACCOUNT -- !XRP --> offer";
+                    << "ACCOUNT -- !CALL --> offer";
 
                 // As the issuer, would only issue.
                 // Don't need to actually deliver. As from delivering leave in
@@ -387,7 +387,7 @@ TER PathCursor::forwardLiquidityForAccount () const
             {
                 JLOG (j_.trace())
                     << "forwardLiquidityForAccount: ^ --> "
-                    << "ACCOUNT -- XRP --> offer";
+                    << "ACCOUNT -- CALL --> offer";
 
                 // Deliver XRP to limbo.
                 resultCode = accountSend(view(),

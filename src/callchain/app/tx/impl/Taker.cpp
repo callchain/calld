@@ -577,7 +577,7 @@ TER Taker::transferXRP (
     STAmount const& amount)
 {
     if (!isXRP (amount))
-        Throw<std::logic_error> ("Using transferXRP with IOU");
+        Throw<std::logic_error> ("Using transferCALL with IOU");
 
     if (from == to)
         return tesSUCCESS;
@@ -595,7 +595,7 @@ TER Taker::redeemIOU (
     Issue const& issue)
 {
     if (isXRP (amount))
-        Throw<std::logic_error> ("Using redeemIOU with XRP");
+        Throw<std::logic_error> ("Using redeemIOU with CALL");
 
     if (account == issue.account)
         return tesSUCCESS;
@@ -623,7 +623,7 @@ TER Taker::issueIOU (
     Issue const& issue)
 {
     if (isXRP (amount))
-        Throw<std::logic_error> ("Using issueIOU with XRP");
+        Throw<std::logic_error> ("Using issueIOU with CALL");
 
     if (account == issue.account)
         return tesSUCCESS;

@@ -123,4 +123,26 @@ std::string trim_whitespace (std::string str)
     return str;
 }
 
+Blob strCopy (std::string const& strSrc)
+{
+    Blob vucDst;
+
+    vucDst.resize (strSrc.size ());
+
+    std::copy (strSrc.begin (), strSrc.end (), vucDst.begin ());
+
+    return vucDst;
+}
+
+std::string strCopy (Blob const& vucSrc)
+{
+    std::string strDst;
+
+    strDst.resize (vucSrc.size ());
+
+    std::copy (vucSrc.begin (), vucSrc.end (), strDst.begin ());
+
+    return strDst;
+
+}
 } // callchain

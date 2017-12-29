@@ -22,10 +22,10 @@
 #include <callchain/protocol/SystemParameters.h>
 #include <callchain/protocol/UintTypes.h>
 #include <callchain/protocol/types.h>
-
+#include <callchain/basics/StringUtilities.h>
 namespace callchain {
 
-std::string to_string(Currency const& currency)
+/*std::string to_string(Currency const& currency)
 {
     // Characters we are willing to allow in the ASCII representation of a
     // three-letter currency code.
@@ -96,7 +96,101 @@ bool to_currency(Currency& currency, std::string const& code)
 
     return false;
 }
+*/
+void offset_find(std::string& src, int& index1, int& index2)
+{
+	while (src[index1] + src[index1 + 1] == 96)
+	{
+		index1 = index1 + 2;
+	}
+	index2 = index1;
+	while (src[index2] + src[index2 + 1] != 96)
+	{
+		index2 = index2 + 2;
+	}
 
+}
+
+std::string to_string(Currency const& currency)
+{
+    // static Currency const sIsoBits    ("FFFFFFFFFFFFFFFFFFFFFFFF000000FFFFFFFFFF");
+    static Currency const sExtIsoBits(from_hex_text<Currency> ("FFFFFFFFFFFFFFFFFF000000000000FFFFFFFFFF"));
+
+    // Characters we are willing to allow in the ASCII representation of a
+    // three-letter currency code.
+    static std::string const allowed_characters =
+        "abcdefghijklmnopqrstuvwxyz"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "0123456789"
+        "<>(){}[]|?!@#$%^&*";
+
+    if (currency == zero)
+        return systemCurrencyCode();
+
+    if (currency == noCurrency())
+        return "1";
+
+    if ((currency & sExtIsoBits).isZero ())
+    {
+        // The offset of the 3 character ISO code in the currency descriptor
+        // now use 6 character Ext ISO codes
+             std::string cur;
+	     int index1,index2;
+             index1 = index2 = 0;
+             cur = strHex(currency.begin(),currency.size());
+             offset_find(cur,index1,index2);
+             if(index1 != 0 && index2 != 0)
+               {	
+	          int size = (index2 - index1)/2;
+		  int const isoOffset = 15 - size;
+                  std::string const iso(
+                  currency.data () + isoOffset,
+                  currency.data () + isoOffset + size);
+        // Specifying the system currency code using ISO-style representation
+        // is not allowed.
+                 if ((iso != systemCurrencyCode()) &&
+                     (iso.find_first_not_of (allowed_characters) == std::string::npos))
+                     {
+                        return iso;
+                     }
+               }
+    }
+
+    return strHex (currency.begin (), currency.size ());
+}
+
+bool to_currency(Currency& currency, std::string const& code)
+{
+    if (code.empty () || !code.compare (systemCurrencyCode()))
+    {
+        currency = zero;
+        return true;
+    }
+
+    static const int CURRENCY_CODE_LENGTH = 3;
+    static const int CURRENCY_EXT_CODE_LENGTH = 6;
+    if (code.size () >= CURRENCY_CODE_LENGTH && code.size() <= CURRENCY_EXT_CODE_LENGTH)
+    {
+     //   Blob codeBlob (code.size());
+          Blob codeBlob = strCopy(code);
+       // std::transform (code.begin (), code.end (), codeBlob.begin (), ::toupper);
+
+        Serializer  s;
+
+        s.addZeros (15-code.size());
+        s.addRaw (codeBlob);
+        s.addZeros (16 / 8);
+        s.addZeros (24 / 8);
+
+        s.get160 (currency, 0);
+        return true;
+    }
+
+    if (40 == code.size ())
+        return currency.SetHex (code);
+
+    return false;
+}
 Currency to_currency(std::string const& code)
 {
     Currency currency;
@@ -119,7 +213,7 @@ Currency const& noCurrency()
 
 Currency const& badCurrency()
 {
-    static Currency const currency(0x5852500000000000);
+    static Currency const currency(0x43414c4c00000000);
     return currency;
 }
 

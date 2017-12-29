@@ -30,7 +30,7 @@ namespace detail {
 class CurrencyTag {};
 class DirectoryTag {};
 class NodeIDTag {};
-
+void offset_find(std::string& src,int& index1,int& index2);
 } // detail
 
 /** Directory is an index into the directory of offer books.

@@ -94,7 +94,8 @@ struct parsedURL
 bool parseUrl (parsedURL& pUrl, std::string const& strUrl);
 
 std::string trim_whitespace (std::string str);
-
+Blob strCopy (std::string const& strSrc);
+std::string strCopy (Blob const& vucSrc);
 } // callchain
 
 #endif

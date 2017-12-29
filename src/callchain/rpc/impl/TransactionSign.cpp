@@ -196,7 +196,7 @@ static Json::Value checkPayment(
 
         if (sendMax.native () && amount.native ())
             return RPC::make_error (rpcINVALID_PARAMS,
-                "Cannot build XRP to XRP paths.");
+                "Cannot build CALL to CALL paths.");
 
         {
             LegacyPathFind lpf (isUnlimited (role), app);
@@ -1145,7 +1145,7 @@ Json::Value transactionSubmitMultiSigned (
         {
             std::ostringstream err;
             err << "Invalid " << sfFee.fieldName
-                << " field.  Fees must be specified in XRP.";
+                << " field.  Fees must be specified in CALL.";
             return RPC::make_error (rpcINVALID_PARAMS, err.str ());
         }
         if (fee <= 0)
