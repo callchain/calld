@@ -17,12 +17,12 @@
 */
 //==============================================================================
 
-#include <ripple/beast/unit_test.h>
-#include <ripple/nodestore/impl/varint.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/nodestore/impl/varint.h>
 #include <array>
 #include <vector>
 
-namespace ripple {
+namespace callchain {
 namespace NodeStore {
 namespace tests {
 
@@ -67,8 +67,8 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(varint,NodeStore,ripple);
+BEAST_DEFINE_TESTSUITE(varint,NodeStore,callchain);
 
 } // test
 } // NodeStore
-} // ripple
+} // callchain

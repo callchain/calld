@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-  This file is part of rippled: https://github.com/ripple/rippled
+  This file is part of callchaind: https://github.com/callchain/callchaind
   Copyright (c) 2012-2015 Ripple Labs Inc.
 
   Permission to use, copy, modify, and/or distribute this software for any
@@ -24,7 +24,7 @@
 #include <cmath>
 #include <iomanip>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 namespace jtx {
 
@@ -138,4 +138,4 @@ any_t const any { };
 
 } // jtx
 } // test
-} // ripple
+} // callchain

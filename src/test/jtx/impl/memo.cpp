@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,10 +19,10 @@
 
 #include <BeastConfig.h>
 #include <test/jtx/memo.h>
-#include <ripple/basics/StringUtilities.h>
-#include <ripple/protocol/JsonFields.h>
+#include <callchain/basics/StringUtilities.h>
+#include <callchain/protocol/JsonFields.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 namespace jtx {
 
@@ -104,4 +104,4 @@ memontype::operator()(Env&, JTx& jt) const
 
 } // jtx
 } // test
-} // ripple
+} // callchain

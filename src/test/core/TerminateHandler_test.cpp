@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,16 +18,16 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/core/TerminateHandler.h>
-#include <ripple/beast/core/CurrentThreadName.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/core/TerminateHandler.h>
+#include <callchain/beast/core/CurrentThreadName.h>
+#include <callchain/beast/unit_test.h>
 
 #include <boost/coroutine/exceptions.hpp>
 #include <exception>
 #include <sstream>
 #include <streambuf>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class TerminateHandler_test : public beast::unit_test::suite
@@ -147,7 +147,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(TerminateHandler,core,ripple);
+BEAST_DEFINE_TESTSUITE(TerminateHandler,core,callchain);
 
 } // test
-} // ripple
+} // callchain

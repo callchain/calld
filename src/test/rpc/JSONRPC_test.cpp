@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2014 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,18 +18,18 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/app/misc/LoadFeeTrack.h>
-#include <ripple/app/misc/TxQ.h>
-#include <ripple/basics/contract.h>
-#include <ripple/json/json_reader.h>
-#include <ripple/protocol/ErrorCodes.h>
-#include <ripple/protocol/Feature.h>
-#include <ripple/rpc/impl/TransactionSign.h>
+#include <callchain/app/misc/LoadFeeTrack.h>
+#include <callchain/app/misc/TxQ.h>
+#include <callchain/basics/contract.h>
+#include <callchain/json/json_reader.h>
+#include <callchain/protocol/ErrorCodes.h>
+#include <callchain/protocol/Feature.h>
+#include <callchain/rpc/impl/TransactionSign.h>
 #include <test/jtx.h>
 #include <test/jtx/envconfig.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple {
+namespace callchain {
 
 namespace RPC {
 
@@ -2352,8 +2352,8 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(JSONRPC,ripple_app,ripple);
+BEAST_DEFINE_TESTSUITE(JSONRPC,callchain_app,callchain);
 
 } // RPC
-} // ripple
+} // callchain
 

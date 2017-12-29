@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,16 +18,16 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/StringUtilities.h>
+#include <callchain/basics/StringUtilities.h>
 #include <test/jtx/TestSuite.h>
-#include <ripple/json/json_value.h>
-#include <ripple/json/json_writer.h>
-#include <ripple/protocol/ErrorCodes.h>
-#include <ripple/protocol/JsonFields.h>
-#include <ripple/rpc/handlers/WalletPropose.h>
-#include <ripple/rpc/impl/RPCHelpers.h>
+#include <callchain/json/json_value.h>
+#include <callchain/json/json_writer.h>
+#include <callchain/protocol/ErrorCodes.h>
+#include <callchain/protocol/JsonFields.h>
+#include <callchain/rpc/handlers/WalletPropose.h>
+#include <callchain/rpc/impl/RPCHelpers.h>
 
-namespace ripple {
+namespace callchain {
 
 namespace RPC {
 
@@ -96,7 +96,7 @@ static key_strings const strong_brain_strings =
         "attacks.",
 };
 
-class WalletPropose_test : public ripple::TestSuite
+class WalletPropose_test : public callchain::TestSuite
 {
 public:
     void testRandomWallet(boost::optional<std::string> const& keyType)
@@ -726,7 +726,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(WalletPropose,ripple_basics,ripple);
+BEAST_DEFINE_TESTSUITE(WalletPropose,callchain_basics,callchain);
 
 } // RPC
-} // ripple
+} // callchain

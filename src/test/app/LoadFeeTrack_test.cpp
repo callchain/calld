@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/app/misc/LoadFeeTrack.h>
-#include <ripple/core/Config.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/ledger/ReadView.h>
+#include <callchain/app/misc/LoadFeeTrack.h>
+#include <callchain/core/Config.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/ledger/ReadView.h>
 
-namespace ripple {
+namespace callchain {
 
 class LoadFeeTrack_test : public beast::unit_test::suite
 {
@@ -47,6 +47,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(LoadFeeTrack,ripple_core,ripple);
+BEAST_DEFINE_TESTSUITE(LoadFeeTrack,callchain_core,callchain);
 
-} // ripple
+} // callchain

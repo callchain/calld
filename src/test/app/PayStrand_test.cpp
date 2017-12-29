@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -16,20 +16,20 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/app/paths/Flow.h>
-#include <ripple/app/paths/RippleCalc.h>
-#include <ripple/app/paths/impl/Steps.h>
-#include <ripple/basics/contract.h>
-#include <ripple/core/Config.h>
-#include <ripple/ledger/ApplyViewImpl.h>
-#include <ripple/ledger/PaymentSandbox.h>
-#include <ripple/ledger/Sandbox.h>
-#include <ripple/protocol/Feature.h>
-#include <ripple/protocol/JsonFields.h>
+#include <callchain/app/paths/Flow.h>
+#include <callchain/app/paths/RippleCalc.h>
+#include <callchain/app/paths/impl/Steps.h>
+#include <callchain/basics/contract.h>
+#include <callchain/core/Config.h>
+#include <callchain/ledger/ApplyViewImpl.h>
+#include <callchain/ledger/PaymentSandbox.h>
+#include <callchain/ledger/Sandbox.h>
+#include <callchain/protocol/Feature.h>
+#include <callchain/protocol/JsonFields.h>
 #include <test/jtx.h>
 #include <test/jtx/PathSet.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 struct DirectStepInfo
@@ -44,7 +44,7 @@ struct XRPEndpointStepInfo
     AccountID acc;
 };
 
-enum class TrustFlag {freeze, auth, noripple};
+enum class TrustFlag {freeze, auth, nocallchain};
 
 /*constexpr*/ std::uint32_t trustFlag (TrustFlag f, bool useHigh)
 {
@@ -58,7 +58,7 @@ enum class TrustFlag {freeze, auth, noripple};
             if (useHigh)
                 return lsfHighAuth;
             return lsfLowAuth;
-        case TrustFlag::noripple:
+        case TrustFlag::nocallchain:
             if (useHigh)
                 return lsfHighNoRipple;
             return lsfLowNoRipple;
@@ -100,7 +100,7 @@ equal(std::unique_ptr<Step> const& s1, XRPEndpointStepInfo const& xrpsi)
 }
 
 bool
-equal(std::unique_ptr<Step> const& s1, ripple::Book const& bsi)
+equal(std::unique_ptr<Step> const& s1, callchain::Book const& bsi)
 {
     if (!s1)
         return false;
@@ -324,7 +324,7 @@ public:
 struct ExistingElementPool
 {
     std::vector<jtx::Account> accounts;
-    std::vector<ripple::Currency> currencies;
+    std::vector<callchain::Currency> currencies;
     std::vector<std::string> currencyNames;
 
     jtx::Account
@@ -334,7 +334,7 @@ struct ExistingElementPool
         return accounts[id];
     }
 
-    ripple::Currency
+    callchain::Currency
     getCurrency(size_t id)
     {
         assert(id < currencies.size());
@@ -507,13 +507,13 @@ struct ExistingElementPool
     {
         std::vector<std::tuple<STAmount, STAmount, AccountID, AccountID>> diffs;
 
-        auto xrpBalance = [](ReadView const& v, ripple::Keylet const& k) {
+        auto xrpBalance = [](ReadView const& v, callchain::Keylet const& k) {
             auto const sle = v.read(k);
             if (!sle)
                 return STAmount{};
             return (*sle)[sfBalance];
         };
-        auto lineBalance = [](ReadView const& v, ripple::Keylet const& k) {
+        auto lineBalance = [](ReadView const& v, callchain::Keylet const& k) {
             auto const sle = v.read(k);
             if (!sle)
                 return STAmount{};
@@ -557,7 +557,7 @@ struct ExistingElementPool
         return getAccount(nextAvailAccount++);
     }
 
-    ripple::Currency
+    callchain::Currency
     getAvailCurrency()
     {
         return getCurrency(nextAvailCurrency++);
@@ -629,7 +629,7 @@ struct PayStrandAllPairs_test : public beast::unit_test::suite
     {
         testcase("All pairs");
         using namespace jtx;
-        using RippleCalc = ::ripple::path::RippleCalc;
+        using RippleCalc = ::callchain::path::RippleCalc;
 
         ExistingElementPool eep;
         Env env(*this, with_features(fs));
@@ -668,7 +668,7 @@ struct PayStrandAllPairs_test : public beast::unit_test::suite
 
                 try
                 {
-                    rcOutputs[i] = RippleCalc::rippleCalculate(
+                    rcOutputs[i] = RippleCalc::callchainCalculate(
                         sbs[i],
                         sendMax,
                         deliver,
@@ -852,7 +852,7 @@ struct PayStrandAllPairs_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE_MANUAL(PayStrandAllPairs, app, ripple);
+BEAST_DEFINE_TESTSUITE_MANUAL(PayStrandAllPairs, app, callchain);
 
 struct PayStrand_test : public beast::unit_test::suite
 {
@@ -882,7 +882,7 @@ struct PayStrand_test : public beast::unit_test::suite
         auto const usdC = USD.currency;
 
         using D = DirectStepInfo;
-        using B = ripple::Book;
+        using B = callchain::Book;
         using XRPS = XRPEndpointStepInfo;
 
         auto test = [&, this](
@@ -1157,10 +1157,10 @@ struct PayStrand_test : public beast::unit_test::suite
 
         {
             Env env(*this, with_features(fs));
-            env.fund(XRP(10000), alice, bob, noripple(gw));
+            env.fund(XRP(10000), alice, bob, nocallchain(gw));
             env.trust(USD(1000), alice, bob);
             env(pay(gw, alice, USD(100)));
-            test(env, USD, boost::none, STPath(), terNO_RIPPLE);
+            test(env, USD, boost::none, STPath(), terNO_CALLCHAIN);
         }
 
         {
@@ -1440,31 +1440,31 @@ struct PayStrand_test : public beast::unit_test::suite
         AccountID const srcAcc = alice.id();
         AccountID dstAcc = bob.id();
         STPathSet pathSet;
-        ::ripple::path::RippleCalc::Input inputs;
+        ::callchain::path::RippleCalc::Input inputs;
         inputs.defaultPathsAllowed = true;
         try
         {
             PaymentSandbox sb{env.current().get(), tapNONE};
             {
-                auto const r = ::ripple::path::RippleCalc::rippleCalculate(
+                auto const r = ::callchain::path::RippleCalc::callchainCalculate(
                     sb, sendMax, deliver, dstAcc, noAccount(), pathSet,
                     env.app().logs(), &inputs);
                 BEAST_EXPECT(r.result() == temBAD_PATH);
             }
             {
-                auto const r = ::ripple::path::RippleCalc::rippleCalculate(
+                auto const r = ::callchain::path::RippleCalc::callchainCalculate(
                     sb, sendMax, deliver, noAccount(), srcAcc, pathSet,
                     env.app().logs(), &inputs);
                 BEAST_EXPECT(r.result() == temBAD_PATH);
             }
             {
-                auto const r = ::ripple::path::RippleCalc::rippleCalculate(
+                auto const r = ::callchain::path::RippleCalc::callchainCalculate(
                     sb, noAccountAmount, deliver, dstAcc, srcAcc, pathSet,
                     env.app().logs(), &inputs);
                 BEAST_EXPECT(r.result() == temBAD_PATH);
             }
             {
-                auto const r = ::ripple::path::RippleCalc::rippleCalculate(
+                auto const r = ::callchain::path::RippleCalc::callchainCalculate(
                     sb, sendMax, noAccountAmount, dstAcc, srcAcc, pathSet,
                     env.app().logs(), &inputs);
                 BEAST_EXPECT(r.result() == temBAD_PATH);
@@ -1493,7 +1493,7 @@ struct PayStrand_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(PayStrand, app, ripple);
+BEAST_DEFINE_TESTSUITE(PayStrand, app, callchain);
 
 }  // test
-}  // ripple
+}  // callchain

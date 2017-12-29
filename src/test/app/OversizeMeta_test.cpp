@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,10 +19,10 @@
 
 #include <BeastConfig.h>
 #include <test/jtx.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/beast/unit_test.h>
 #include <algorithm>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 // Make sure "plump" order books don't have problems
@@ -60,7 +60,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE_MANUAL(PlumpBook,tx,ripple);
+BEAST_DEFINE_TESTSUITE_MANUAL(PlumpBook,tx,callchain);
 
 //------------------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(ThinBook, tx, ripple);
+BEAST_DEFINE_TESTSUITE(ThinBook, tx, callchain);
 
 //------------------------------------------------------------------------------
 
@@ -116,7 +116,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE_MANUAL(OversizeMeta,tx,ripple);
+BEAST_DEFINE_TESTSUITE_MANUAL(OversizeMeta,tx,callchain);
 
 //------------------------------------------------------------------------------
 
@@ -181,8 +181,8 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE_MANUAL(FindOversizeCross,tx,ripple);
+BEAST_DEFINE_TESTSUITE_MANUAL(FindOversizeCross,tx,callchain);
 
 } // test
-} // ripple
+} // callchain
 

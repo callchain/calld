@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,10 +18,10 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/protocol/STAccount.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/protocol/STAccount.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple {
+namespace callchain {
 
 struct STAccount_test : public beast::unit_test::suite
 {
@@ -129,6 +129,6 @@ struct STAccount_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(STAccount,protocol,ripple);
+BEAST_DEFINE_TESTSUITE(STAccount,protocol,callchain);
 
 }

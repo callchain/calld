@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-  This file is part of rippled: https://github.com/ripple/rippled
+  This file is part of callchaind: https://github.com/callchain/callchaind
   Copyright (c) 2012-2015 Ripple Labs Inc.
 
   Permission to use, copy, modify, and/or distribute this software for any
@@ -17,14 +17,14 @@
 */
 //==============================================================================
 
-#ifndef RIPPLE_LEDGER_TESTS_PATHSET_H_INCLUDED
-#define RIPPLE_LEDGER_TESTS_PATHSET_H_INCLUDED
+#ifndef CALLCHAIN_LEDGER_TESTS_PATHSET_H_INCLUDED
+#define CALLCHAIN_LEDGER_TESTS_PATHSET_H_INCLUDED
 
-#include <ripple/basics/Log.h>
-#include <ripple/protocol/TxFlags.h>
+#include <callchain/basics/Log.h>
+#include <callchain/protocol/TxFlags.h>
 #include <test/jtx.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 /** An offer exists
@@ -143,6 +143,6 @@ private:
 };
 
 } // test
-} // ripple
+} // callchain
 
 #endif

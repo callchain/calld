@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2017 Ripple Labs Inc
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -16,14 +16,14 @@
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 //==============================================================================
-#ifndef RIPPLE_TEST_CSF_LEDGER_H_INCLUDED
-#define RIPPLE_TEST_CSF_LEDGER_H_INCLUDED
+#ifndef CALLCHAIN_TEST_CSF_LEDGER_H_INCLUDED
+#define CALLCHAIN_TEST_CSF_LEDGER_H_INCLUDED
 
-#include <ripple/basics/chrono.h>
-#include <ripple/consensus/LedgerTiming.h>
+#include <callchain/basics/chrono.h>
+#include <callchain/consensus/LedgerTiming.h>
 #include <test/csf/Tx.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 namespace csf {
 
@@ -178,6 +178,6 @@ to_string(Ledger::ID const& id)
 
 }  // csf
 }  // test
-}  // ripple
+}  // callchain
 
 #endif

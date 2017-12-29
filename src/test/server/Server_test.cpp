@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/make_SSLContext.h>
-#include <ripple/beast/rfc2616.h>
-#include <ripple/server/Server.h>
-#include <ripple/server/Session.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/core/ConfigSections.h>
+#include <callchain/basics/make_SSLContext.h>
+#include <callchain/beast/rfc2616.h>
+#include <callchain/server/Server.h>
+#include <callchain/server/Session.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/core/ConfigSections.h>
 #include <test/jtx.h>
 #include <test/jtx/envconfig.h>
 #include <boost/asio.hpp>
@@ -33,7 +33,7 @@
 #include <stdexcept>
 #include <thread>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class Server_test : public beast::unit_test::suite
@@ -553,8 +553,8 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Server,http,ripple);
+BEAST_DEFINE_TESTSUITE(Server,http,callchain);
 
 } // test
-} // ripple
+} // callchain
 

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,14 +18,14 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/shamap/SHAMap.h>
+#include <callchain/shamap/SHAMap.h>
 #include <test/shamap/common.h>
-#include <ripple/basics/Blob.h>
-#include <ripple/basics/StringUtilities.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/beast/utility/Journal.h>
+#include <callchain/basics/Blob.h>
+#include <callchain/basics/StringUtilities.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/beast/utility/Journal.h>
 
-namespace ripple {
+namespace callchain {
 namespace tests {
 
 #ifndef __INTELLISENSE__
@@ -322,7 +322,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(SHAMap,ripple_app,ripple);
+BEAST_DEFINE_TESTSUITE(SHAMap,callchain_app,callchain);
 
 } // tests
-} // ripple
+} // callchain

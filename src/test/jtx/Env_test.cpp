@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,19 +18,19 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/Log.h>
+#include <callchain/basics/Log.h>
 #include <test/jtx.h>
-#include <ripple/json/to_string.h>
-#include <ripple/protocol/Feature.h>
-#include <ripple/protocol/JsonFields.h>
-#include <ripple/protocol/TxFlags.h>
-#include <ripple/beast/hash/uhash.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/json/to_string.h>
+#include <callchain/protocol/Feature.h>
+#include <callchain/protocol/JsonFields.h>
+#include <callchain/protocol/TxFlags.h>
+#include <callchain/beast/hash/uhash.h>
+#include <callchain/beast/unit_test.h>
 #include <boost/lexical_cast.hpp>
 #include <boost/optional.hpp>
 #include <utility>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class Env_test : public beast::unit_test::suite
@@ -164,14 +164,14 @@ public:
             // variadics
             env.fund(n, "alice");
             env.fund(n, "bob", "carol");
-            env.fund(n, "dave", noripple("eric"));
-            env.fund(n, "fred", noripple("gary", "hank"));
-            env.fund(n, noripple("irene"));
-            env.fund(n, noripple("jim"), "karen");
-            env.fund(n, noripple("lisa", "mary"));
+            env.fund(n, "dave", nocallchain("eric"));
+            env.fund(n, "fred", nocallchain("gary", "hank"));
+            env.fund(n, nocallchain("irene"));
+            env.fund(n, nocallchain("jim"), "karen");
+            env.fund(n, nocallchain("lisa", "mary"));
 
             // flags
-            env.fund(n, noripple("xavier"));
+            env.fund(n, nocallchain("xavier"));
             env.require(nflags("xavier", asfDefaultRipple));
             env.fund(n, "yana");
             env.require(flags("yana", asfDefaultRipple));
@@ -202,7 +202,7 @@ public:
         // seq
         {
             Env env(*this);
-            env.fund(n, noripple("alice", gw));
+            env.fund(n, nocallchain("alice", gw));
             BEAST_EXPECT(env.seq("alice") == 1);
             BEAST_EXPECT(env.seq(gw) == 1);
         }
@@ -776,7 +776,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Env,app,ripple);
+BEAST_DEFINE_TESTSUITE(Env,app,callchain);
 
 } // test
-} // ripple
+} // callchain

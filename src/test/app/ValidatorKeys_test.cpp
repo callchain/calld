@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright 2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,13 +17,13 @@
 */
 //==============================================================================
 
-#include <ripple/app/misc/ValidatorKeys.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/core/Config.h>
-#include <ripple/core/ConfigSections.h>
+#include <callchain/app/misc/ValidatorKeys.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/core/Config.h>
+#include <callchain/core/ConfigSections.h>
 #include <string>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class ValidatorKeys_test : public beast::unit_test::suite
@@ -166,7 +166,7 @@ public:
     }
 };  // namespace test
 
-BEAST_DEFINE_TESTSUITE(ValidatorKeys, app, ripple);
+BEAST_DEFINE_TESTSUITE(ValidatorKeys, app, callchain);
 
 }  // namespace test
-}  // namespace ripple
+}  // namespace callchain

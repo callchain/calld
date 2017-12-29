@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 #include <test/jtx.h>
 
-#include <ripple/beast/unit_test.h>
-#include <ripple/protocol/AccountID.h>
-#include <ripple/protocol/JsonFields.h>
-#include <ripple/protocol/STAmount.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/protocol/AccountID.h>
+#include <callchain/protocol/JsonFields.h>
+#include <callchain/protocol/STAmount.h>
 
-namespace ripple {
+namespace callchain {
 
 class OwnerInfo_test : public beast::unit_test::suite
 {
@@ -112,9 +112,9 @@ class OwnerInfo_test : public beast::unit_test::suite
         }
 
         // accepted ledger entry
-        if (! BEAST_EXPECT (result[jss::accepted].isMember(jss::ripple_lines)))
+        if (! BEAST_EXPECT (result[jss::accepted].isMember(jss::callchain_lines)))
             return;
-        auto lines = result[jss::accepted][jss::ripple_lines];
+        auto lines = result[jss::accepted][jss::callchain_lines];
         if (! BEAST_EXPECT (lines.isArray() && lines.size() == 2))
             return;
 
@@ -155,9 +155,9 @@ class OwnerInfo_test : public beast::unit_test::suite
 
 
         // current ledger entry
-        if (! BEAST_EXPECT (result[jss::current].isMember(jss::ripple_lines)))
+        if (! BEAST_EXPECT (result[jss::current].isMember(jss::callchain_lines)))
             return;
-        lines = result[jss::current][jss::ripple_lines];
+        lines = result[jss::current][jss::callchain_lines];
         if (! BEAST_EXPECT (lines.isArray() && lines.size() == 2))
             return;
 
@@ -208,7 +208,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(OwnerInfo,app,ripple);
+BEAST_DEFINE_TESTSUITE(OwnerInfo,app,callchain);
 
-} // ripple
+} // callchain
 

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,11 +18,11 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/app/paths/Pathfinder.h>
+#include <callchain/app/paths/Pathfinder.h>
 #include <test/jtx/paths.h>
-#include <ripple/protocol/JsonFields.h>
+#include <callchain/protocol/JsonFields.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 namespace jtx {
 
@@ -93,4 +93,4 @@ path::operator()(Env& env, JTx& jt) const
 
 } // jtx
 } // test
-} // ripple
+} // callchain

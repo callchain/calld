@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,11 +19,11 @@
 
 #include <BeastConfig.h>
 #include <test/nodestore/TestBase.h>
-#include <ripple/nodestore/DummyScheduler.h>
-#include <ripple/nodestore/Manager.h>
-#include <ripple/beast/utility/temp_dir.h>
+#include <callchain/nodestore/DummyScheduler.h>
+#include <callchain/nodestore/Manager.h>
+#include <callchain/beast/utility/temp_dir.h>
 
-namespace ripple {
+namespace callchain {
 namespace NodeStore {
 
 class Database_test : public TestBase
@@ -164,7 +164,7 @@ public:
     {
         testNodeStore ("nudb", true, seedValue);
 
-    #if RIPPLE_ROCKSDB_AVAILABLE
+    #if CALLCHAIN_ROCKSDB_AVAILABLE
         testNodeStore ("rocksdb", true, seedValue);
     #endif
     }
@@ -175,11 +175,11 @@ public:
     {
         testImport ("nudb", "nudb", seedValue);
 
-    #if RIPPLE_ROCKSDB_AVAILABLE
+    #if CALLCHAIN_ROCKSDB_AVAILABLE
         testImport ("rocksdb", "rocksdb", seedValue);
     #endif
 
-    #if RIPPLE_ENABLE_SQLITE_BACKEND_TESTS
+    #if CALLCHAIN_ENABLE_SQLITE_BACKEND_TESTS
         testImport ("sqlite", "sqlite", seedValue);
     #endif
     }
@@ -198,7 +198,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Database,NodeStore,ripple);
+BEAST_DEFINE_TESTSUITE(Database,NodeStore,callchain);
 
 }
 }

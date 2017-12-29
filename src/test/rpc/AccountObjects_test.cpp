@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,15 +17,15 @@
 */
 //==============================================================================
 
-#include <ripple/protocol/JsonFields.h>
-#include <ripple/json/json_value.h>
-#include <ripple/json/to_string.h>
-#include <ripple/json/json_reader.h>
+#include <callchain/protocol/JsonFields.h>
+#include <callchain/json/json_value.h>
+#include <callchain/json/to_string.h>
+#include <callchain/json/json_reader.h>
 #include <test/jtx.h>
 
 #include <boost/utility/string_ref.hpp>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 static char const* bobs_account_objects[] = {
@@ -323,7 +323,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(AccountObjects,app,ripple);
+BEAST_DEFINE_TESTSUITE(AccountObjects,app,callchain);
 
 }
 }

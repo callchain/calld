@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/Slice.h>
-#include <ripple/basics/StringUtilities.h>
-#include <ripple/basics/ToString.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/basics/Slice.h>
+#include <callchain/basics/StringUtilities.h>
+#include <callchain/basics/ToString.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple {
+namespace callchain {
 
 class StringUtilities_test : public beast::unit_test::suite
 {
@@ -95,6 +95,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(StringUtilities, ripple_basics, ripple);
+BEAST_DEFINE_TESTSUITE(StringUtilities, callchain_basics, callchain);
 
-} // ripple
+} // callchain

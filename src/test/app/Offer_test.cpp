@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-  This file is part of rippled: https://github.com/ripple/rippled
+  This file is part of callchaind: https://github.com/callchain/callchaind
   Copyright (c) 2012-2017 Ripple Labs Inc.
 
   Permission to use, copy, modify, and/or distribute this software for any
@@ -21,11 +21,11 @@
 #include <test/jtx.h>
 #include <test/jtx/WSClient.h>
 #include <test/jtx/PathSet.h>
-#include <ripple/protocol/Feature.h>
-#include <ripple/protocol/JsonFields.h>
-#include <ripple/protocol/Quality.h>
+#include <callchain/protocol/Feature.h>
+#include <callchain/protocol/JsonFields.h>
+#include <callchain/protocol/Quality.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class Offer_test : public beast::unit_test::suite
@@ -63,10 +63,10 @@ class Offer_test : public beast::unit_test::suite
     {
         Json::Value jvParams;
         jvParams[jss::ledger_index] = "current";
-        jvParams[jss::ripple_state][jss::currency] = currency;
-        jvParams[jss::ripple_state][jss::accounts] = Json::arrayValue;
-        jvParams[jss::ripple_state][jss::accounts].append(acct_a.human());
-        jvParams[jss::ripple_state][jss::accounts].append(acct_b.human());
+        jvParams[jss::callchain_state][jss::currency] = currency;
+        jvParams[jss::callchain_state][jss::accounts] = Json::arrayValue;
+        jvParams[jss::callchain_state][jss::accounts].append(acct_a.human());
+        jvParams[jss::callchain_state][jss::accounts].append(acct_b.human());
         return env.rpc ("json", "ledger_entry",
             to_string(jvParams))[jss::result];
     };
@@ -382,7 +382,7 @@ public:
         Account const dan {"dan"};
 
         {
-            // No ripple with an implied account step after an offer
+            // No callchain with an implied account step after an offer
             Env env {*this, with_features (fs)};
             auto const closeTime =
                 fix1449Time () +
@@ -394,7 +394,7 @@ public:
             auto const gw2 = Account {"gw2"};
             auto const USD2 = gw2["USD"];
 
-            env.fund (XRP (10000), alice, noripple (bob), carol, dan, gw1, gw2);
+            env.fund (XRP (10000), alice, nocallchain (bob), carol, dan, gw1, gw2);
             env.trust (USD1 (1000), alice, carol, dan);
             env(trust (bob, USD1 (1000), tfSetNoRipple));
             env.trust (USD2 (1000), alice, carol, dan);
@@ -2023,7 +2023,7 @@ public:
         if (wsc->version() == 2)
         {
             BEAST_EXPECT(jrr.isMember(jss::jsonrpc) && jrr[jss::jsonrpc] == "2.0");
-            BEAST_EXPECT(jrr.isMember(jss::ripplerpc) && jrr[jss::ripplerpc] == "2.0");
+            BEAST_EXPECT(jrr.isMember(jss::callchainrpc) && jrr[jss::callchainrpc] == "2.0");
             BEAST_EXPECT(jrr.isMember(jss::id) && jrr[jss::id] == 5);
         }
 
@@ -4260,7 +4260,7 @@ public:
         env.fund (XRP(100000), hotUS, coldUS, hotEU, coldEU, mm);
         env.close();
 
-        // Cold wallets require trust but will ripple by default
+        // Cold wallets require trust but will callchain by default
         for (auto const& cold : {coldUS, coldEU})
         {
             env(fset (cold, asfRequireAuth));
@@ -4310,7 +4310,7 @@ public:
             jvParams[jss::source_account] = hotUS.human();
 
             Json::Value const jrr {env.rpc(
-                "json", "ripple_path_find", to_string(jvParams))[jss::result]};
+                "json", "callchain_path_find", to_string(jvParams))[jss::result]};
 
             BEAST_EXPECT(jrr[jss::status] == "success");
             BEAST_EXPECT(
@@ -4586,7 +4586,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE (Offer, tx, ripple);
+BEAST_DEFINE_TESTSUITE (Offer, tx, callchain);
 
 }  // test
-}  // ripple
+}  // callchain

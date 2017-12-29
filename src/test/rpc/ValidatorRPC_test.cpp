@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,20 +18,20 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/app/main/BasicApp.h>
-#include <ripple/app/misc/ValidatorSite.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/core/ConfigSections.h>
-#include <ripple/json/json_value.h>
-#include <ripple/protocol/JsonFields.h>
-#include <ripple/protocol/Sign.h>
+#include <callchain/app/main/BasicApp.h>
+#include <callchain/app/misc/ValidatorSite.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/core/ConfigSections.h>
+#include <callchain/json/json_value.h>
+#include <callchain/protocol/JsonFields.h>
+#include <callchain/protocol/Sign.h>
 #include <beast/core/detail/base64.hpp>
 #include <test/jtx.h>
 #include <test/jtx/TrustedPublisherServer.h>
 
 #include <set>
 
-namespace ripple {
+namespace callchain {
 
 namespace test {
 
@@ -394,7 +394,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(ValidatorRPC, app, ripple);
+BEAST_DEFINE_TESTSUITE(ValidatorRPC, app, callchain);
 
 }  // namespace test
-}  // namespace ripple
+}  // namespace callchain

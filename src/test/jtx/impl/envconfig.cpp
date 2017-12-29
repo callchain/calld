@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,9 +19,9 @@
 
 #include <test/jtx/envconfig.h>
 #include <test/jtx/Env.h>
-#include <ripple/core/ConfigSections.h>
+#include <callchain/core/ConfigSections.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 void
@@ -86,4 +86,4 @@ port_increment(std::unique_ptr<Config> cfg, int increment)
 
 } // jtx
 } // test
-} // ripple
+} // callchain

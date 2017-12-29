@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-This file is part of rippled: https://github.com/ripple/rippled
+This file is part of callchaind: https://github.com/callchain/callchaind
 Copyright (c) 2012, 2013 Ripple Labs Inc.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -16,8 +16,8 @@ ACTION  OF  CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 //==============================================================================
-#include <ripple/beast/unit_test.h>
-#include <ripple/beast/utility/Debug.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/beast/utility/Debug.h>
 namespace beast {
 
 // A simple unit test to determine the diagnostic settings in a build.

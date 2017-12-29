@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,11 +18,11 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/app/misc/HashRouter.h>
-#include <ripple/basics/chrono.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/app/misc/HashRouter.h>
+#include <callchain/basics/chrono.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class HashRouter_test : public beast::unit_test::suite
@@ -278,7 +278,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(HashRouter, app, ripple);
+BEAST_DEFINE_TESTSUITE(HashRouter, app, callchain);
 
 }
 }

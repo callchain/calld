@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,13 +18,13 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/protocol/JsonFields.h>
+#include <callchain/protocol/JsonFields.h>
 #include <test/jtx.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/beast/unit_test.h>
 
 #include <boost/format.hpp>
 
-namespace ripple {
+namespace callchain {
 
 namespace test {
 
@@ -51,13 +51,13 @@ public:
     makeValidatorConfig()
     {
         auto p = std::make_unique<Config>();
-        boost::format toLoad(R"rippleConfig(
+        boost::format toLoad(R"callchainConfig(
 [validator_token]
 %1%
 
 [validators]
 %2%
-)rippleConfig");
+)callchainConfig");
 
         p->loadFromString (boost::str (
             toLoad % validator_data::token % validator_data::public_key));
@@ -95,8 +95,8 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(ServerInfo,app,ripple);
+BEAST_DEFINE_TESTSUITE(ServerInfo,app,callchain);
 
 } // test
-} // ripple
+} // callchain
 

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,10 +18,10 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/UnorderedContainers.h>
-#include <ripple/protocol/Book.h>
-#include <ripple/protocol/Issue.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/basics/UnorderedContainers.h>
+#include <callchain/protocol/Book.h>
+#include <callchain/protocol/Issue.h>
+#include <callchain/beast/unit_test.h>
 #include <map>
 #include <set>
 #include <typeinfo>
@@ -33,15 +33,15 @@
 # define STL_SET_HAS_EMPLACE 0
 #endif
 
-#ifndef RIPPLE_ASSETS_ENABLE_STD_HASH
+#ifndef CALLCHAIN_ASSETS_ENABLE_STD_HASH
 # if BEAST_MAC || BEAST_IOS
-#  define RIPPLE_ASSETS_ENABLE_STD_HASH 0
+#  define CALLCHAIN_ASSETS_ENABLE_STD_HASH 0
 # else
-#  define RIPPLE_ASSETS_ENABLE_STD_HASH 1
+#  define CALLCHAIN_ASSETS_ENABLE_STD_HASH 1
 # endif
 #endif
 
-namespace ripple {
+namespace callchain {
 
 class Issue_test : public beast::unit_test::suite
 {
@@ -214,7 +214,7 @@ public:
         testcase ("std::set <Issue>");
         testIssueSet <std::set <Issue>> ();
 
-#if RIPPLE_ASSETS_ENABLE_STD_HASH
+#if CALLCHAIN_ASSETS_ENABLE_STD_HASH
         testcase ("std::unordered_set <Issue>");
         testIssueSet <std::unordered_set <Issue>> ();
 
@@ -237,7 +237,7 @@ public:
         testcase ("std::map <Issue, int>");
         testIssueMap <std::map <Issue, int>> ();
 
-#if RIPPLE_ASSETS_ENABLE_STD_HASH
+#if CALLCHAIN_ASSETS_ENABLE_STD_HASH
         testcase ("std::unordered_map <Issue, int>");
         testIssueMap <std::unordered_map <Issue, int>> ();
 
@@ -417,7 +417,7 @@ public:
         testcase ("std::set <Book>");
         testBookSet <std::set <Book>> ();
 
-#if RIPPLE_ASSETS_ENABLE_STD_HASH
+#if CALLCHAIN_ASSETS_ENABLE_STD_HASH
         testcase ("std::unordered_set <Book>");
         testBookSet <std::unordered_set <Book>> ();
 
@@ -440,7 +440,7 @@ public:
         testcase ("std::map <Book, int>");
         testBookMap <std::map <Book, int>> ();
 
-#if RIPPLE_ASSETS_ENABLE_STD_HASH
+#if CALLCHAIN_ASSETS_ENABLE_STD_HASH
         testcase ("std::unordered_map <Book, int>");
         testBookMap <std::unordered_map <Book, int>> ();
 
@@ -489,6 +489,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Issue,protocol,ripple);
+BEAST_DEFINE_TESTSUITE(Issue,protocol,callchain);
 
 }

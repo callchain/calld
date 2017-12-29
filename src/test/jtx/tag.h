@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,12 +17,12 @@
 */
 //==============================================================================
 
-#ifndef RIPPLE_TEST_JTX_TAG_H_INCLUDED
-#define RIPPLE_TEST_JTX_TAG_H_INCLUDED
+#ifndef CALLCHAIN_TEST_JTX_TAG_H_INCLUDED
+#define CALLCHAIN_TEST_JTX_TAG_H_INCLUDED
 
 #include <test/jtx/Env.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 namespace jtx {
@@ -64,6 +64,6 @@ public:
 } // jtx
 
 } // test
-} // ripple
+} // callchain
 
 #endif

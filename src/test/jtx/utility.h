@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,16 +17,16 @@
 */
 //==============================================================================
 
-#ifndef RIPPLE_TEST_JTX_UTILITY_H_INCLUDED
-#define RIPPLE_TEST_JTX_UTILITY_H_INCLUDED
+#ifndef CALLCHAIN_TEST_JTX_UTILITY_H_INCLUDED
+#define CALLCHAIN_TEST_JTX_UTILITY_H_INCLUDED
 
 #include <test/jtx/Account.h>
-#include <ripple/json/json_value.h>
-#include <ripple/app/ledger/Ledger.h>
-#include <ripple/protocol/STObject.h>
+#include <callchain/json/json_value.h>
+#include <callchain/app/ledger/Ledger.h>
+#include <callchain/protocol/STObject.h>
 #include <stdexcept>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 namespace jtx {
 
@@ -68,6 +68,6 @@ fill_seq (Json::Value& jv,
 
 } // jtx
 } // test
-} // ripple
+} // callchain
 
 #endif

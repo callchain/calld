@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,16 +18,16 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/app/main/Application.h>
-#include <ripple/app/misc/SHAMapStore.h>
-#include <ripple/core/ConfigSections.h>
-#include <ripple/core/DatabaseCon.h>
-#include <ripple/core/SociDB.h>
-#include <ripple/protocol/JsonFields.h>
+#include <callchain/app/main/Application.h>
+#include <callchain/app/misc/SHAMapStore.h>
+#include <callchain/core/ConfigSections.h>
+#include <callchain/core/DatabaseCon.h>
+#include <callchain/core/SociDB.h>
+#include <callchain/protocol/JsonFields.h>
 #include <test/jtx.h>
 #include <test/jtx/envconfig.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class SHAMapStore_test : public beast::unit_test::suite
@@ -213,7 +213,7 @@ public:
         Env env(*this, envconfig(onlineDelete));
 
         auto& store = env.app().getSHAMapStore();
-        env.fund(XRP(10000), noripple("alice"));
+        env.fund(XRP(10000), nocallchain("alice"));
 
         validationCheck(env, 0);
         ledgerCheck(env, 1, 2);
@@ -245,7 +245,7 @@ public:
 
         for (auto i = firstSeq + 1; i < deleteInterval + firstSeq; ++i)
         {
-            env.fund(XRP(10000), noripple("test" + to_string(i)));
+            env.fund(XRP(10000), nocallchain("test" + to_string(i)));
             env.close();
 
             ledgerTmp = env.rpc("ledger", "current");
@@ -633,7 +633,7 @@ public:
 };
 
 // VFALCO This test fails because of thread asynchronous issues
-BEAST_DEFINE_TESTSUITE(SHAMapStore,app,ripple);
+BEAST_DEFINE_TESTSUITE(SHAMapStore,app,callchain);
 
 }
 }

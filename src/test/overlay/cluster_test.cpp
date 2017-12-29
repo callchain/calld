@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright 2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,16 +18,16 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/BasicConfig.h>
+#include <callchain/basics/BasicConfig.h>
 #include <test/jtx/TestSuite.h>
-#include <ripple/overlay/Cluster.h>
-#include <ripple/overlay/ClusterNode.h>
-#include <ripple/protocol/SecretKey.h>
+#include <callchain/overlay/Cluster.h>
+#include <callchain/overlay/ClusterNode.h>
+#include <callchain/protocol/SecretKey.h>
 
-namespace ripple {
+namespace callchain {
 namespace tests {
 
-class cluster_test : public ripple::TestSuite
+class cluster_test : public callchain::TestSuite
 {
 public:
     std::unique_ptr<Cluster>
@@ -267,7 +267,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(cluster,overlay,ripple);
+BEAST_DEFINE_TESTSUITE(cluster,overlay,callchain);
 
 } // tests
-} // ripple
+} // callchain

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -16,10 +16,10 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/app/ledger/PendingSaves.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/app/ledger/PendingSaves.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 struct PendingSaves_test : public beast::unit_test::suite
@@ -55,7 +55,7 @@ struct PendingSaves_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(PendingSaves,ledger,ripple);
+BEAST_DEFINE_TESTSUITE(PendingSaves,ledger,callchain);
 
 } // test
-} // ripple
+} // callchain

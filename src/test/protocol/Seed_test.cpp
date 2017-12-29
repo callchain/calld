@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,17 +18,17 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/random.h>
-#include <ripple/protocol/PublicKey.h>
-#include <ripple/protocol/SecretKey.h>
-#include <ripple/protocol/Seed.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/beast/utility/rngfill.h>
-#include <ripple/beast/xor_shift_engine.h>
+#include <callchain/basics/random.h>
+#include <callchain/protocol/PublicKey.h>
+#include <callchain/protocol/SecretKey.h>
+#include <callchain/protocol/Seed.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/beast/utility/rngfill.h>
+#include <callchain/beast/xor_shift_engine.h>
 #include <algorithm>
 
 
-namespace ripple {
+namespace callchain {
 
 class Seed_test : public beast::unit_test::suite
 {
@@ -125,8 +125,8 @@ public:
 
     void testKeypairGenerationAndSigning ()
     {
-        std::string const message1 = "http://www.ripple.com";
-        std::string const message2 = "https://www.ripple.com";
+        std::string const message1 = "http://www.callchain.com";
+        std::string const message2 = "https://www.callchain.com";
 
         {
             testcase ("Node keypair generation & signing (secp256k1)");
@@ -348,6 +348,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Seed,protocol,ripple);
+BEAST_DEFINE_TESTSUITE(Seed,protocol,callchain);
 
-} // ripple
+} // callchain

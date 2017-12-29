@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,10 +18,10 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/mulDiv.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/basics/mulDiv.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 struct mulDiv_test : beast::unit_test::suite
@@ -56,7 +56,7 @@ struct mulDiv_test : beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(mulDiv, ripple_basics, ripple);
+BEAST_DEFINE_TESTSUITE(mulDiv, callchain_basics, callchain);
 
 }  // namespace test
-}  // namespace ripple
+}  // namespace callchain

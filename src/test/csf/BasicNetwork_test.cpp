@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/beast/unit_test.h>
 #include <set>
 #include <test/csf/BasicNetwork.h>
 #include <vector>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class BasicNetwork_test : public beast::unit_test::suite
@@ -118,7 +118,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(BasicNetwork, test, ripple);
+BEAST_DEFINE_TESTSUITE(BasicNetwork, test, callchain);
 
 }  // test
-}  // ripple
+}  // callchain

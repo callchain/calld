@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github0.com/ripple/rippled
+    This file is part of callchaind: https://github0.com/callchain/callchaind
     Copyright (c) 2012-2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/Slice.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/basics/Slice.h>
+#include <callchain/beast/unit_test.h>
 #include <array>
 #include <cstdint>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 struct Slice_test : beast::unit_test::suite
@@ -112,7 +112,7 @@ struct Slice_test : beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Slice, ripple_basics, ripple);
+BEAST_DEFINE_TESTSUITE(Slice, callchain_basics, callchain);
 
 }  // namespace test
-}  // namespace ripple
+}  // namespace callchain

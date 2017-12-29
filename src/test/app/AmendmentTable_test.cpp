@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,19 +19,19 @@
 
 #include <BeastConfig.h>
 
-#include <ripple/app/misc/AmendmentTable.h>
-#include <ripple/basics/BasicConfig.h>
-#include <ripple/basics/chrono.h>
-#include <ripple/basics/Log.h>
-#include <ripple/core/ConfigSections.h>
-#include <ripple/protocol/Feature.h>
-#include <ripple/protocol/PublicKey.h>
-#include <ripple/protocol/SecretKey.h>
-#include <ripple/protocol/digest.h>
-#include <ripple/protocol/TxFlags.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/app/misc/AmendmentTable.h>
+#include <callchain/basics/BasicConfig.h>
+#include <callchain/basics/chrono.h>
+#include <callchain/basics/Log.h>
+#include <callchain/core/ConfigSections.h>
+#include <callchain/protocol/Feature.h>
+#include <callchain/protocol/PublicKey.h>
+#include <callchain/protocol/SecretKey.h>
+#include <callchain/protocol/digest.h>
+#include <callchain/protocol/TxFlags.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple
+namespace callchain
 {
 
 namespace detail {
@@ -775,6 +775,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE (AmendmentTable, app, ripple);
+BEAST_DEFINE_TESTSUITE (AmendmentTable, app, callchain);
 
-}  // ripple
+}  // callchain

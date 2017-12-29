@@ -1,6 +1,6 @@
  //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,16 +19,16 @@
 
 #include <BeastConfig.h>
 #include <test/jtx.h>
-#include <ripple/app/tx/applySteps.h>
-#include <ripple/ledger/Directory.h>
-#include <ripple/protocol/Feature.h>
-#include <ripple/protocol/Indexes.h>
-#include <ripple/protocol/JsonFields.h>
-#include <ripple/protocol/TxFlags.h>
+#include <callchain/app/tx/applySteps.h>
+#include <callchain/ledger/Directory.h>
+#include <callchain/protocol/Feature.h>
+#include <callchain/protocol/Indexes.h>
+#include <callchain/protocol/JsonFields.h>
+#include <callchain/protocol/TxFlags.h>
 #include <algorithm>
 #include <iterator>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 struct Escrow_test : public beast::unit_test::suite
@@ -707,11 +707,11 @@ struct Escrow_test : public beast::unit_test::suite
             auto const escrow = env.le(keylet::escrow(alice.id(), seq));
             BEAST_EXPECT(escrow);
 
-            ripple::Dir aod (*env.current(), keylet::ownerDir(alice.id()));
+            callchain::Dir aod (*env.current(), keylet::ownerDir(alice.id()));
             BEAST_EXPECT(std::distance(aod.begin(), aod.end()) == 1);
             BEAST_EXPECT(std::find(aod.begin(), aod.end(), escrow) != aod.end());
 
-            ripple::Dir cod (*env.current(), keylet::ownerDir(carol.id()));
+            callchain::Dir cod (*env.current(), keylet::ownerDir(carol.id()));
             BEAST_EXPECT(cod.begin() == cod.end());
         }
 
@@ -730,7 +730,7 @@ struct Escrow_test : public beast::unit_test::suite
             BEAST_EXPECT(aa);
 
             {
-                ripple::Dir aod(*env.current(), keylet::ownerDir(alice.id()));
+                callchain::Dir aod(*env.current(), keylet::ownerDir(alice.id()));
                 BEAST_EXPECT(std::distance(aod.begin(), aod.end()) == 1);
                 BEAST_EXPECT(std::find(aod.begin(), aod.end(), aa) != aod.end());
             }
@@ -742,7 +742,7 @@ struct Escrow_test : public beast::unit_test::suite
             BEAST_EXPECT(bb);
 
             {
-                ripple::Dir bod(*env.current(), keylet::ownerDir(bruce.id()));
+                callchain::Dir bod(*env.current(), keylet::ownerDir(bruce.id()));
                 BEAST_EXPECT(std::distance(bod.begin(), bod.end()) == 1);
                 BEAST_EXPECT(std::find(bod.begin(), bod.end(), bb) != bod.end());
             }
@@ -753,11 +753,11 @@ struct Escrow_test : public beast::unit_test::suite
                 BEAST_EXPECT(!env.le(keylet::escrow(alice.id(), aseq)));
                 BEAST_EXPECT((*env.meta())[sfTransactionResult] == tesSUCCESS);
 
-                ripple::Dir aod(*env.current(), keylet::ownerDir(alice.id()));
+                callchain::Dir aod(*env.current(), keylet::ownerDir(alice.id()));
                 BEAST_EXPECT(std::distance(aod.begin(), aod.end()) == 0);
                 BEAST_EXPECT(std::find(aod.begin(), aod.end(), aa) == aod.end());
 
-                ripple::Dir bod(*env.current(), keylet::ownerDir(bruce.id()));
+                callchain::Dir bod(*env.current(), keylet::ownerDir(bruce.id()));
                 BEAST_EXPECT(std::distance(bod.begin(), bod.end()) == 1);
                 BEAST_EXPECT(std::find(bod.begin(), bod.end(), bb) != bod.end());
             }
@@ -768,7 +768,7 @@ struct Escrow_test : public beast::unit_test::suite
                 BEAST_EXPECT(!env.le(keylet::escrow(bruce.id(), bseq)));
                 BEAST_EXPECT((*env.meta())[sfTransactionResult] == tesSUCCESS);
 
-                ripple::Dir bod(*env.current(), keylet::ownerDir(bruce.id()));
+                callchain::Dir bod(*env.current(), keylet::ownerDir(bruce.id()));
                 BEAST_EXPECT(std::distance(bod.begin(), bod.end()) == 0);
                 BEAST_EXPECT(std::find(bod.begin(), bod.end(), bb) == bod.end());
             }
@@ -796,16 +796,16 @@ struct Escrow_test : public beast::unit_test::suite
             BEAST_EXPECT(bc);
 
             {
-                ripple::Dir aod(*env.current(), keylet::ownerDir(alice.id()));
+                callchain::Dir aod(*env.current(), keylet::ownerDir(alice.id()));
                 BEAST_EXPECT(std::distance(aod.begin(), aod.end()) == 1);
                 BEAST_EXPECT(std::find(aod.begin(), aod.end(), ab) != aod.end());
 
-                ripple::Dir bod(*env.current(), keylet::ownerDir(bruce.id()));
+                callchain::Dir bod(*env.current(), keylet::ownerDir(bruce.id()));
                 BEAST_EXPECT(std::distance(bod.begin(), bod.end()) == 2);
                 BEAST_EXPECT(std::find(bod.begin(), bod.end(), ab) != bod.end());
                 BEAST_EXPECT(std::find(bod.begin(), bod.end(), bc) != bod.end());
 
-                ripple::Dir cod(*env.current(), keylet::ownerDir(carol.id()));
+                callchain::Dir cod(*env.current(), keylet::ownerDir(carol.id()));
                 BEAST_EXPECT(std::distance(cod.begin(), cod.end()) == 1);
                 BEAST_EXPECT(std::find(cod.begin(), cod.end(), bc) != cod.end());
             }
@@ -816,16 +816,16 @@ struct Escrow_test : public beast::unit_test::suite
                 BEAST_EXPECT(!env.le(keylet::escrow(alice.id(), aseq)));
                 BEAST_EXPECT(env.le(keylet::escrow(bruce.id(), bseq)));
 
-                ripple::Dir aod(*env.current(), keylet::ownerDir(alice.id()));
+                callchain::Dir aod(*env.current(), keylet::ownerDir(alice.id()));
                 BEAST_EXPECT(std::distance(aod.begin(), aod.end()) == 0);
                 BEAST_EXPECT(std::find(aod.begin(), aod.end(), ab) == aod.end());
 
-                ripple::Dir bod(*env.current(), keylet::ownerDir(bruce.id()));
+                callchain::Dir bod(*env.current(), keylet::ownerDir(bruce.id()));
                 BEAST_EXPECT(std::distance(bod.begin(), bod.end()) == 1);
                 BEAST_EXPECT(std::find(bod.begin(), bod.end(), ab) == bod.end());
                 BEAST_EXPECT(std::find(bod.begin(), bod.end(), bc) != bod.end());
 
-                ripple::Dir cod(*env.current(), keylet::ownerDir(carol.id()));
+                callchain::Dir cod(*env.current(), keylet::ownerDir(carol.id()));
                 BEAST_EXPECT(std::distance(cod.begin(), cod.end()) == 1);
             }
 
@@ -835,16 +835,16 @@ struct Escrow_test : public beast::unit_test::suite
                 BEAST_EXPECT(!env.le(keylet::escrow(alice.id(), aseq)));
                 BEAST_EXPECT(!env.le(keylet::escrow(bruce.id(), bseq)));
 
-                ripple::Dir aod(*env.current(), keylet::ownerDir(alice.id()));
+                callchain::Dir aod(*env.current(), keylet::ownerDir(alice.id()));
                 BEAST_EXPECT(std::distance(aod.begin(), aod.end()) == 0);
                 BEAST_EXPECT(std::find(aod.begin(), aod.end(), ab) == aod.end());
 
-                ripple::Dir bod(*env.current(), keylet::ownerDir(bruce.id()));
+                callchain::Dir bod(*env.current(), keylet::ownerDir(bruce.id()));
                 BEAST_EXPECT(std::distance(bod.begin(), bod.end()) == 0);
                 BEAST_EXPECT(std::find(bod.begin(), bod.end(), ab) == bod.end());
                 BEAST_EXPECT(std::find(bod.begin(), bod.end(), bc) == bod.end());
 
-                ripple::Dir cod(*env.current(), keylet::ownerDir(carol.id()));
+                callchain::Dir cod(*env.current(), keylet::ownerDir(carol.id()));
                 BEAST_EXPECT(std::distance(cod.begin(), cod.end()) == 0);
             }
         }
@@ -915,7 +915,7 @@ struct Escrow_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Escrow,app,ripple);
+BEAST_DEFINE_TESTSUITE(Escrow,app,callchain);
 
 } // test
-} // ripple
+} // callchain

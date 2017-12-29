@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,19 +18,19 @@
 //==============================================================================
 
 #include <beast/core/detail/base64.hpp>
-#include <ripple/app/misc/ValidatorSite.h>
-#include <ripple/basics/Slice.h>
-#include <ripple/basics/strHex.h>
-#include <ripple/protocol/digest.h>
-#include <ripple/protocol/HashPrefix.h>
-#include <ripple/protocol/PublicKey.h>
-#include <ripple/protocol/SecretKey.h>
-#include <ripple/protocol/Sign.h>
+#include <callchain/app/misc/ValidatorSite.h>
+#include <callchain/basics/Slice.h>
+#include <callchain/basics/strHex.h>
+#include <callchain/protocol/digest.h>
+#include <callchain/protocol/HashPrefix.h>
+#include <callchain/protocol/PublicKey.h>
+#include <callchain/protocol/SecretKey.h>
+#include <callchain/protocol/Sign.h>
 #include <test/jtx.h>
 #include <test/jtx/TrustedPublisherServer.h>
 #include <boost/asio.hpp>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class ValidatorSite_test : public beast::unit_test::suite
@@ -100,24 +100,24 @@ private:
 
         // load should accept valid validator site uris
         std::vector<std::string> cfgSites({
-            "http://ripple.com/",
-            "http://ripple.com/validators",
-            "http://ripple.com:8080/validators",
+            "http://callchain.com/",
+            "http://callchain.com/validators",
+            "http://callchain.com:8080/validators",
             "http://207.261.33.37/validators",
             "http://207.261.33.37:8080/validators",
-            "https://ripple.com/validators",
-            "https://ripple.com:443/validators"});
+            "https://callchain.com/validators",
+            "https://callchain.com:443/validators"});
         BEAST_EXPECT(trustedSites->load (cfgSites));
 
         // load should reject validator site uris with invalid schemes
         std::vector<std::string> badSites(
-            {"ftp://ripple.com/validators"});
+            {"ftp://callchain.com/validators"});
         BEAST_EXPECT(!trustedSites->load (badSites));
 
-        badSites[0] = "wss://ripple.com/validators";
+        badSites[0] = "wss://callchain.com/validators";
         BEAST_EXPECT(!trustedSites->load (badSites));
 
-        badSites[0] = "ripple.com/validators";
+        badSites[0] = "callchain.com/validators";
         BEAST_EXPECT(!trustedSites->load (badSites));
     }
 
@@ -263,7 +263,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(ValidatorSite, app, ripple);
+BEAST_DEFINE_TESTSUITE(ValidatorSite, app, callchain);
 
 } // test
-} // ripple
+} // callchain

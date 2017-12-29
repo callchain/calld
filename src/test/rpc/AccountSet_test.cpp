@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,15 +17,15 @@
 */
 //==============================================================================
 
-#include <ripple/basics/StringUtilities.h>
-#include <ripple/protocol/AmountConversions.h>
-#include <ripple/protocol/Feature.h>
-#include <ripple/protocol/JsonFields.h>
-#include <ripple/protocol/Quality.h>
-#include <ripple/protocol/Rate.h>
+#include <callchain/basics/StringUtilities.h>
+#include <callchain/protocol/AmountConversions.h>
+#include <callchain/protocol/Feature.h>
+#include <callchain/protocol/JsonFields.h>
+#include <callchain/protocol/Quality.h>
+#include <callchain/protocol/Rate.h>
 #include <test/jtx.h>
 
-namespace ripple {
+namespace callchain {
 
 class AccountSet_test : public beast::unit_test::suite
 {
@@ -36,7 +36,7 @@ public:
         using namespace test::jtx;
         Env env(*this);
         Account const alice ("alice");
-        env.fund(XRP(10000), noripple(alice));
+        env.fund(XRP(10000), nocallchain(alice));
         //ask for the ledger entry - account root, to check its flags
         auto const jrr = env.le(alice);
         BEAST_EXPECT((*env.le(alice))[ sfFlags ] == 0u);
@@ -47,7 +47,7 @@ public:
         using namespace test::jtx;
         Env env(*this);
         Account const alice ("alice");
-        env.fund(XRP(10000), noripple(alice));
+        env.fund(XRP(10000), nocallchain(alice));
         env.memoize("eric");
         env(regkey(alice, "eric"));
 
@@ -67,7 +67,7 @@ public:
         using namespace test::jtx;
         Env env(*this);
         Account const alice ("alice");
-        env.fund(XRP(10000), noripple(alice));
+        env.fund(XRP(10000), nocallchain(alice));
 
         unsigned int orig_flags = (*env.le(alice))[ sfFlags ];
 
@@ -87,7 +87,7 @@ public:
         using namespace test::jtx;
         Env env(*this);
         Account const alice ("alice");
-        env.fund(XRP(10000), noripple(alice));
+        env.fund(XRP(10000), nocallchain(alice));
         env.memoize("eric");
         env(regkey(alice, "eric"));
 
@@ -419,7 +419,7 @@ public:
 
 };
 
-BEAST_DEFINE_TESTSUITE(AccountSet,app,ripple);
+BEAST_DEFINE_TESTSUITE(AccountSet,app,callchain);
 
 }
 

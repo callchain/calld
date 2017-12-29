@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,10 +17,10 @@
 */
 //==============================================================================
 #include <BeastConfig.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/consensus/LedgerTiming.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/consensus/LedgerTiming.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class LedgerTiming_test : public beast::unit_test::suite
@@ -104,6 +104,6 @@ class LedgerTiming_test : public beast::unit_test::suite
 
 };
 
-BEAST_DEFINE_TESTSUITE(LedgerTiming, consensus, ripple);
+BEAST_DEFINE_TESTSUITE(LedgerTiming, consensus, callchain);
 } // test
-} // ripple
+} // callchain

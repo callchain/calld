@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -20,7 +20,7 @@
 #include <BeastConfig.h>
 #include <test/jtx/ManualTimeKeeper.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 using namespace std::chrono_literals;
@@ -101,4 +101,4 @@ ManualTimeKeeper::adjust(
                 days(10957)));
 }
 } // test
-} // ripple
+} // callchain

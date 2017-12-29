@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/chrono.h>
-#include <ripple/basics/KeyCache.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/beast/clock/manual_clock.h>
+#include <callchain/basics/chrono.h>
+#include <callchain/basics/KeyCache.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/beast/clock/manual_clock.h>
 
-namespace ripple {
+namespace callchain {
 
 class KeyCache_test : public beast::unit_test::suite
 {
@@ -92,6 +92,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(KeyCache,common,ripple);
+BEAST_DEFINE_TESTSUITE(KeyCache,common,callchain);
 
 }

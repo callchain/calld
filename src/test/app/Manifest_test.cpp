@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright 2014 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,22 +17,22 @@
 */
 //==============================================================================
 
-#include <ripple/app/misc/Manifest.h>
-#include <ripple/app/misc/ValidatorList.h>
-#include <ripple/basics/contract.h>
-#include <ripple/basics/StringUtilities.h>
+#include <callchain/app/misc/Manifest.h>
+#include <callchain/app/misc/ValidatorList.h>
+#include <callchain/basics/contract.h>
+#include <callchain/basics/StringUtilities.h>
 #include <test/jtx.h>
-#include <ripple/core/DatabaseCon.h>
-#include <ripple/app/main/DBInit.h>
-#include <ripple/protocol/SecretKey.h>
-#include <ripple/protocol/Sign.h>
-#include <ripple/protocol/STExchange.h>
+#include <callchain/core/DatabaseCon.h>
+#include <callchain/app/main/DBInit.h>
+#include <callchain/protocol/SecretKey.h>
+#include <callchain/protocol/Sign.h>
+#include <callchain/protocol/STExchange.h>
 #include <beast/core/detail/base64.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/utility/in_place_factory.hpp>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class Manifest_test : public beast::unit_test::suite
@@ -716,7 +716,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Manifest,app,ripple);
+BEAST_DEFINE_TESTSUITE(Manifest,app,callchain);
 
 } // test
-} // ripple
+} // callchain

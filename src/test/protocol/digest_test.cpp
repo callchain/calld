@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,17 +18,17 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/protocol/digest.h>
-#include <ripple/beast/utility/rngfill.h>
-#include <ripple/beast/xor_shift_engine.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/protocol/digest.h>
+#include <callchain/beast/utility/rngfill.h>
+#include <callchain/beast/xor_shift_engine.h>
+#include <callchain/beast/unit_test.h>
 #include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <numeric>
 #include <vector>
 
-namespace ripple {
+namespace callchain {
 
 class digest_test : public beast::unit_test::suite
 {
@@ -157,6 +157,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE_MANUAL(digest,ripple_data,ripple);
+BEAST_DEFINE_TESTSUITE_MANUAL(digest,callchain_data,callchain);
 
-} // ripple
+} // callchain

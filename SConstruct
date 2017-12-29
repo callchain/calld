@@ -1,4 +1,4 @@
-# rippled SConstruct
+# callchaind SConstruct
 #
 '''
 
@@ -6,7 +6,7 @@
     ----------------------------------------------------------------------------
 
     <none>          Same as 'install'
-    install         Default target and copies it to build/rippled (default)
+    install         Default target and copies it to build/callchaind (default)
 
     all             All available variants
     debug           All available debug variants
@@ -84,9 +84,9 @@ The following extra options may be used:
     --assert Enable asserts, even in release builds.
 
 GCC 5: If the gcc toolchain is used, gcc version 5 or better is required. On
-    linux distros that ship with gcc 4 (ubuntu < 15.10), rippled will force gcc
+    linux distros that ship with gcc 4 (ubuntu < 15.10), callchaind will force gcc
     to use gcc4's ABI (there was an ABI change between versions). This allows us
-    to use the package manager to install rippled dependencies. It also means if
+    to use the package manager to install callchaind dependencies. It also means if
     the user builds C++ dependencies themselves - such as boost - they must
     either be built with gcc 4 or with the preprocessor flag
     `_GLIBCXX_USE_CXX11_ABI` set to zero.
@@ -95,7 +95,7 @@ Clang on linux: Clang cannot use the new gcc 5 ABI (clang does not know about
     the `abi_tag` attribute). On linux distros that ship with the gcc 5 ABI
     (ubuntu >= 15.10), building with clang requires building boost and protobuf
     with the old ABI (best to build them with clang). It is best to statically
-    link rippled in this scenario (use the `--static` with scons), as dynamic
+    link callchaind in this scenario (use the `--static` with scons), as dynamic
     linking may use a library with the incorrect ABI.
 
 
@@ -127,8 +127,8 @@ if (not platform.machine().endswith('64')):
     print('Warning: Detected {} architecture. Rippled requires a 64-bit OS.'.format(
           platform.machine()));
 
-sys.path.append(os.path.join('src', 'ripple', 'beast', 'site_scons'))
-sys.path.append(os.path.join('src', 'ripple', 'site_scons'))
+sys.path.append(os.path.join('src', 'callchain', 'beast', 'site_scons'))
+sys.path.append(os.path.join('src', 'callchain', 'site_scons'))
 
 import Beast
 import scons_to_ninja
@@ -156,7 +156,7 @@ def parse_time(t):
     else:
         return time.strptime(t, '%a %b %d %H:%M:%S %Z %Y')
 
-UNITY_BUILD_DIRECTORY = 'src/ripple/unity/'
+UNITY_BUILD_DIRECTORY = 'src/callchain/unity/'
 
 def memoize(function):
   memo = {}
@@ -186,7 +186,7 @@ def check_openssl():
     build_time = 'Mon Apr  7 20:33:19 UTC 2014'
     if parse_time(d) < parse_time(build_time):
         raise Exception('Your openSSL was built on %s; '
-                        'rippled needs a version built on or after %s.'
+                        'callchaind needs a version built on or after %s.'
                         % (line, build_time))
 
 
@@ -796,7 +796,7 @@ root_dir = Dir('#').srcnode().get_abspath() # Path to this SConstruct file
 build_dir = os.path.join('build')
 
 base = Environment(
-    toolpath=[os.path.join ('src', 'ripple', 'beast', 'site_scons', 'site_tools')],
+    toolpath=[os.path.join ('src', 'callchain', 'beast', 'site_scons', 'site_tools')],
     tools=['default', 'Protoc', 'VSProject'],
     ENV=os.environ,
     TARGET_ARCH='x86_64')
@@ -844,7 +844,7 @@ default_variant = 'release'
 default_target = None
 
 for source in [
-    'src/ripple/proto/ripple.proto',
+    'src/callchain/proto/callchain.proto',
     ]:
     base.Protoc([],
         source,
@@ -895,11 +895,11 @@ def get_soci_sources(style):
         'src/soci/include/private',
         'src/sqlite', ]
     append_sources(result,
-                   'src/ripple/unity/soci.cpp',
+                   'src/callchain/unity/soci.cpp',
                    CPPPATH=cpp_path)
     if style == 'unity':
         append_sources(result,
-                       'src/ripple/unity/soci_ripple.cpp',
+                       'src/callchain/unity/soci_callchain.cpp',
                        CPPPATH=cpp_path)
     return result
 
@@ -927,7 +927,7 @@ def get_common_sources(toolchain):
         warning_flags = {'CCFLAGS': ['-Wno-unused-function']}
     append_sources(
         result,
-        'src/ripple/unity/secp256k1.cpp',
+        'src/callchain/unity/secp256k1.cpp',
         CPPPATH=['src/secp256k1'],
         **warning_flags)
     return result
@@ -936,31 +936,31 @@ def get_classic_sources(toolchain):
     result = []
     append_sources(
         result,
-        *list_sources('src/ripple/core', '.cpp'),
+        *list_sources('src/callchain/core', '.cpp'),
         CPPPATH=[
             'src/soci/src/core',
             'src/sqlite']
     )
-    append_sources(result, *list_sources('src/ripple/beast/clock', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/beast/container', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/beast/insight', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/beast/net', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/beast/utility', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/app', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/basics', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/conditions', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/crypto', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/consensus', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/json', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/ledger', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/legacy', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/net', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/overlay', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/peerfinder', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/protocol', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/rpc', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/shamap', '.cpp'))
-    append_sources(result, *list_sources('src/ripple/server', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/beast/clock', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/beast/container', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/beast/insight', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/beast/net', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/beast/utility', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/app', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/basics', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/conditions', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/crypto', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/consensus', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/json', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/ledger', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/legacy', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/net', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/overlay', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/peerfinder', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/protocol', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/rpc', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/shamap', '.cpp'))
+    append_sources(result, *list_sources('src/callchain/server', '.cpp'))
     append_sources(result, *list_sources('src/test/app', '.cpp'))
     append_sources(result, *list_sources('src/test/basics', '.cpp'))
     append_sources(result, *list_sources('src/test/beast', '.cpp'))
@@ -987,7 +987,7 @@ def get_classic_sources(toolchain):
 
     append_sources(
         result,
-        *(list_sources('src/ripple/nodestore', '.cpp') + list_sources('src/test/nodestore', '.cpp')),
+        *(list_sources('src/callchain/nodestore', '.cpp') + list_sources('src/test/nodestore', '.cpp')),
         CPPPATH=[
             'src/rocksdb2/include',
             'src/snappy/snappy',
@@ -1004,34 +1004,34 @@ def get_unity_sources(toolchain):
     result = []
     append_sources(
         result,
-        'src/ripple/beast/unity/beast_insight_unity.cpp',
-        'src/ripple/beast/unity/beast_net_unity.cpp',
-        'src/ripple/beast/unity/beast_utility_unity.cpp',
-        'src/ripple/unity/app_consensus.cpp',
-        'src/ripple/unity/app_ledger.cpp',
-        'src/ripple/unity/app_ledger_impl.cpp',
-        'src/ripple/unity/app_main1.cpp',
-        'src/ripple/unity/app_main2.cpp',
-        'src/ripple/unity/app_misc.cpp',
-        'src/ripple/unity/app_misc_impl.cpp',
-        'src/ripple/unity/app_paths.cpp',
-        'src/ripple/unity/app_tx.cpp',
-        'src/ripple/unity/conditions.cpp',
-        'src/ripple/unity/consensus.cpp',
-        'src/ripple/unity/core.cpp',
-        'src/ripple/unity/basics.cpp',
-        'src/ripple/unity/crypto.cpp',
-        'src/ripple/unity/ledger.cpp',
-        'src/ripple/unity/net.cpp',
-        'src/ripple/unity/overlay1.cpp',
-        'src/ripple/unity/overlay2.cpp',
-        'src/ripple/unity/peerfinder.cpp',
-        'src/ripple/unity/json.cpp',
-        'src/ripple/unity/protocol.cpp',
-        'src/ripple/unity/rpcx1.cpp',
-        'src/ripple/unity/rpcx2.cpp',
-        'src/ripple/unity/shamap.cpp',
-        'src/ripple/unity/server.cpp',
+        'src/callchain/beast/unity/beast_insight_unity.cpp',
+        'src/callchain/beast/unity/beast_net_unity.cpp',
+        'src/callchain/beast/unity/beast_utility_unity.cpp',
+        'src/callchain/unity/app_consensus.cpp',
+        'src/callchain/unity/app_ledger.cpp',
+        'src/callchain/unity/app_ledger_impl.cpp',
+        'src/callchain/unity/app_main1.cpp',
+        'src/callchain/unity/app_main2.cpp',
+        'src/callchain/unity/app_misc.cpp',
+        'src/callchain/unity/app_misc_impl.cpp',
+        'src/callchain/unity/app_paths.cpp',
+        'src/callchain/unity/app_tx.cpp',
+        'src/callchain/unity/conditions.cpp',
+        'src/callchain/unity/consensus.cpp',
+        'src/callchain/unity/core.cpp',
+        'src/callchain/unity/basics.cpp',
+        'src/callchain/unity/crypto.cpp',
+        'src/callchain/unity/ledger.cpp',
+        'src/callchain/unity/net.cpp',
+        'src/callchain/unity/overlay1.cpp',
+        'src/callchain/unity/overlay2.cpp',
+        'src/callchain/unity/peerfinder.cpp',
+        'src/callchain/unity/json.cpp',
+        'src/callchain/unity/protocol.cpp',
+        'src/callchain/unity/rpcx1.cpp',
+        'src/callchain/unity/rpcx2.cpp',
+        'src/callchain/unity/shamap.cpp',
+        'src/callchain/unity/server.cpp',
         'src/test/unity/app_test_unity1.cpp',
         'src/test/unity/app_test_unity2.cpp',
         'src/test/unity/basics_test_unity.cpp',
@@ -1062,7 +1062,7 @@ def get_unity_sources(toolchain):
 
     append_sources(
         result,
-        'src/ripple/unity/nodestore.cpp',
+        'src/callchain/unity/nodestore.cpp',
         'src/test/unity/nodestore_test_unity.cpp',
         CPPPATH=[
             'src/rocksdb2/include',
@@ -1180,12 +1180,12 @@ for tu_style in ['classic', 'unity']:
                 cc_flags = {}
 
             object_builder.add_source_files(
-                'src/ripple/beast/unity/beast_hash_unity.cpp',
-                'src/ripple/unity/beast.cpp',
-                'src/ripple/unity/lz4.c',
-                'src/ripple/unity/protobuf.cpp',
-                'src/ripple/unity/ripple.proto.cpp',
-                'src/ripple/unity/resource.cpp',
+                'src/callchain/beast/unity/beast_hash_unity.cpp',
+                'src/callchain/unity/beast.cpp',
+                'src/callchain/unity/lz4.c',
+                'src/callchain/unity/protobuf.cpp',
+                'src/callchain/unity/callchain.proto.cpp',
+                'src/callchain/unity/resource.cpp',
                 **cc_flags
             )
 
@@ -1201,14 +1201,14 @@ for tu_style in ['classic', 'unity']:
                 cc_flags = {}
 
             object_builder.add_source_files(
-                'src/ripple/unity/ed25519_donna.c',
+                'src/callchain/unity/ed25519_donna.c',
                 CPPPATH=[
                     'src/ed25519-donna',
                 ]
             )
 
             object_builder.add_source_files(
-                'src/ripple/unity/rocksdb.cpp',
+                'src/callchain/unity/rocksdb.cpp',
                 CPPPATH=[
                     'src/rocksdb2',
                     'src/rocksdb2/include',
@@ -1219,7 +1219,7 @@ for tu_style in ['classic', 'unity']:
             )
 
             object_builder.add_source_files(
-                'src/ripple/unity/snappy.cpp',
+                'src/callchain/unity/snappy.cpp',
                 CCFLAGS=([] if toolchain == 'msvc' else ['-Wno-unused-function']),
                 CPPPATH=[
                     'src/snappy/snappy',
@@ -1228,7 +1228,7 @@ for tu_style in ['classic', 'unity']:
             )
 
             if toolchain == "clang" and Beast.system.osx:
-                object_builder.add_source_files('src/ripple/unity/beastobjc.mm')
+                object_builder.add_source_files('src/callchain/unity/beastobjc.mm')
 
             target = env.Program(
                 target=os.path.join(variant_dir, 'callchain'),
@@ -1290,7 +1290,7 @@ def PhonyTargets(env = None, **kw):
     for target, action in kw.items():
         env.AlwaysBuild(env.Alias(target, [], action))
 
-# Build the list of rippled source files that hold unit tests
+# Build the list of callchaind source files that hold unit tests
 def do_count(target, source, env):
     def list_testfiles(base, suffixes):
         def _iter(base):

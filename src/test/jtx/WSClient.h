@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,16 +17,16 @@
 */
 //==============================================================================
 
-#ifndef RIPPLE_TEST_WSCLIENT_H_INCLUDED
-#define RIPPLE_TEST_WSCLIENT_H_INCLUDED
+#ifndef CALLCHAIN_TEST_WSCLIENT_H_INCLUDED
+#define CALLCHAIN_TEST_WSCLIENT_H_INCLUDED
 
 #include <test/jtx/AbstractClient.h>
-#include <ripple/core/Config.h>
+#include <callchain/core/Config.h>
 #include <boost/optional.hpp>
 #include <chrono>
 #include <memory>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class WSClient : public AbstractClient
@@ -50,6 +50,6 @@ std::unique_ptr<WSClient>
 makeWSClient(Config const& cfg, bool v2 = true, unsigned rpc_version = 2);
 
 } // test
-} // ripple
+} // callchain
 
 #endif

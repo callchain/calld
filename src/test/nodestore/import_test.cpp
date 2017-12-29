@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/contract.h>
-#include <ripple/nodestore/impl/codec.h>
-#include <ripple/beast/clock/basic_seconds_clock.h>
-#include <ripple/beast/rfc2616.h>
-#include <ripple/beast/core/LexicalCast.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/basics/contract.h>
+#include <callchain/nodestore/impl/codec.h>
+#include <callchain/beast/clock/basic_seconds_clock.h>
+#include <callchain/beast/rfc2616.h>
+#include <callchain/beast/core/LexicalCast.h>
+#include <callchain/beast/unit_test.h>
 #include <nudb/create.hpp>
 #include <nudb/detail/format.hpp>
 #include <nudb/xxhasher.hpp>
@@ -35,7 +35,7 @@
 #include <map>
 #include <sstream>
 
-#include <ripple/unity/rocksdb.h>
+#include <callchain/unity/rocksdb.h>
 
 /*
 
@@ -58,7 +58,7 @@ multi(32gb):
 
 */
 
-namespace ripple {
+namespace callchain {
 namespace NodeStore {
 
 namespace detail {
@@ -294,7 +294,7 @@ parse_args(std::string const& s)
 
 //------------------------------------------------------------------------------
 
-#if RIPPLE_ROCKSDB_AVAILABLE
+#if CALLCHAIN_ROCKSDB_AVAILABLE
 
 class import_test : public beast::unit_test::suite
 {
@@ -586,12 +586,12 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(import,NodeStore,ripple);
+BEAST_DEFINE_TESTSUITE(import,NodeStore,callchain);
 
 #endif
 
 //------------------------------------------------------------------------------
 
 } // NodeStore
-} // ripple
+} // callchain
 

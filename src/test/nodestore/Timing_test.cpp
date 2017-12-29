@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,13 +19,13 @@
 
 #include <BeastConfig.h>
 #include <test/nodestore/TestBase.h>
-#include <ripple/nodestore/DummyScheduler.h>
-#include <ripple/nodestore/Manager.h>
-#include <ripple/basics/BasicConfig.h>
-#include <ripple/unity/rocksdb.h>
-#include <ripple/beast/utility/temp_dir.h>
-#include <ripple/beast/xor_shift_engine.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/nodestore/DummyScheduler.h>
+#include <callchain/nodestore/Manager.h>
+#include <callchain/basics/BasicConfig.h>
+#include <callchain/unity/rocksdb.h>
+#include <callchain/beast/utility/temp_dir.h>
+#include <callchain/beast/xor_shift_engine.h>
+#include <callchain/beast/unit_test.h>
 #include <beast/unit_test/thread.hpp>
 #include <boost/algorithm/string.hpp>
 #include <atomic>
@@ -44,7 +44,7 @@
 #define NODESTORE_TIMING_DO_VERIFY 0
 #endif
 
-namespace ripple {
+namespace callchain {
 namespace NodeStore {
 
 // Fill memory with random bits
@@ -524,7 +524,7 @@ public:
         backend->close();
     }
 
-    // Simulate a rippled workload:
+    // Simulate a callchaind workload:
     // Each thread randomly:
     //      inserts a new key
     //      fetches an old key
@@ -704,7 +704,7 @@ public:
         */
         std::string default_args =
             "type=nudb"
-        #if RIPPLE_ROCKSDB_AVAILABLE
+        #if CALLCHAIN_ROCKSDB_AVAILABLE
             ";type=rocksdb,open_files=2000,filter_bits=12,cache_mb=256,"
                 "file_size_mb=8,file_size_mult=2"
         #endif
@@ -740,7 +740,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE_MANUAL(Timing,NodeStore,ripple);
+BEAST_DEFINE_TESTSUITE_MANUAL(Timing,NodeStore,callchain);
 
 }
 }

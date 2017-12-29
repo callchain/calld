@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,14 +17,14 @@
 */
 //==============================================================================
 
-#ifndef RIPPLE_RPC_TESTOUTPUTSUITE_H_INCLUDED
-#define RIPPLE_RPC_TESTOUTPUTSUITE_H_INCLUDED
+#ifndef CALLCHAIN_RPC_TESTOUTPUTSUITE_H_INCLUDED
+#define CALLCHAIN_RPC_TESTOUTPUTSUITE_H_INCLUDED
 
-#include <ripple/json/Output.h>
-#include <ripple/json/Writer.h>
+#include <callchain/json/Output.h>
+#include <callchain/json/Writer.h>
 #include <test/jtx/TestSuite.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class TestOutputSuite : public TestSuite
@@ -52,6 +52,6 @@ protected:
 };
 
 } // test
-} // ripple
+} // callchain
 
 #endif

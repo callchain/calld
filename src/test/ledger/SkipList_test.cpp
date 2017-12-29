@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,13 +18,13 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/app/ledger/Ledger.h>
-#include <ripple/basics/Log.h>
-#include <ripple/ledger/View.h>
+#include <callchain/app/ledger/Ledger.h>
+#include <callchain/basics/Log.h>
+#include <callchain/ledger/View.h>
 #include <test/jtx.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class SkipList_test : public beast::unit_test::suite
@@ -108,7 +108,7 @@ class SkipList_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(SkipList,ledger,ripple);
+BEAST_DEFINE_TESTSUITE(SkipList,ledger,callchain);
 
 }  // test
-}  // ripple
+}  // callchain

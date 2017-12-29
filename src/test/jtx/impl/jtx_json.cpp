@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -20,10 +20,10 @@
 #include <BeastConfig.h>
 #include <test/jtx/jtx_json.h>
 #include <test/jtx/utility.h>
-#include <ripple/json/json_reader.h>
-#include <ripple/basics/contract.h>
+#include <callchain/json/json_reader.h>
+#include <callchain/basics/contract.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 namespace jtx {
 
@@ -53,4 +53,4 @@ json::operator()(Env&, JTx& jt) const
 
 } // jtx
 } // test
-} // ripple
+} // callchain

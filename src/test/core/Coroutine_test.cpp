@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,13 +18,13 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/core/JobQueue.h>
+#include <callchain/core/JobQueue.h>
 #include <test/jtx.h>
 #include <chrono>
 #include <condition_variable>
 #include <mutex>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class Coroutine_test : public beast::unit_test::suite
@@ -179,7 +179,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Coroutine,core,ripple);
+BEAST_DEFINE_TESTSUITE(Coroutine,core,callchain);
 
 } // test
-} // ripple
+} // callchain

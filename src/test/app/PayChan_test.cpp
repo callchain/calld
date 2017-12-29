@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,17 +18,17 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/chrono.h>
-#include <ripple/protocol/Feature.h>
-#include <ripple/protocol/Indexes.h>
-#include <ripple/protocol/JsonFields.h>
-#include <ripple/protocol/PayChan.h>
-#include <ripple/protocol/TxFlags.h>
+#include <callchain/basics/chrono.h>
+#include <callchain/protocol/Feature.h>
+#include <callchain/protocol/Indexes.h>
+#include <callchain/protocol/JsonFields.h>
+#include <callchain/protocol/PayChan.h>
+#include <callchain/protocol/TxFlags.h>
 #include <test/jtx.h>
 
 #include <chrono>
 
-namespace ripple
+namespace callchain
 {
 namespace test
 {
@@ -893,6 +893,6 @@ struct PayChan_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE (PayChan, app, ripple);
+BEAST_DEFINE_TESTSUITE (PayChan, app, callchain);
 }  // test
-}  // ripple
+}  // callchain

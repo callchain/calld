@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,11 +17,11 @@
 */
 //==============================================================================
 
-#include <ripple/protocol/Feature.h>
-#include <ripple/protocol/JsonFields.h>
+#include <callchain/protocol/Feature.h>
+#include <callchain/protocol/JsonFields.h>
 #include <test/jtx.h>
 
-namespace ripple {
+namespace callchain {
 
 namespace test {
 
@@ -31,7 +31,7 @@ public:
     void
     testSetAndClear()
     {
-        testcase("Set and clear noripple");
+        testcase("Set and clear nocallchain");
 
         using namespace jtx;
         Env env(*this);
@@ -50,26 +50,26 @@ public:
 
         for (auto SetOrClear : {true,false})
         {
-            // Create a trust line with no-ripple flag setting
+            // Create a trust line with no-callchain flag setting
             env( trust(gw, USD(100), alice, SetOrClear ? tfSetNoRipple
                                                        : tfClearNoRipple));
             env.close();
 
-            // Check no-ripple flag on sender 'gateway'
+            // Check no-callchain flag on sender 'gateway'
             auto lines = env.rpc("json", "account_lines", to_string(account_gw));
             auto const& gline0 = lines[jss::result][jss::lines][0u];
-            BEAST_EXPECT(gline0[jss::no_ripple].asBool() == SetOrClear);
+            BEAST_EXPECT(gline0[jss::no_callchain].asBool() == SetOrClear);
 
-            // Check no-ripple peer flag on destination 'alice'
+            // Check no-callchain peer flag on destination 'alice'
             lines = env.rpc("json", "account_lines", to_string(account_alice));
             auto const& aline0 = lines[jss::result][jss::lines][0u];
-            BEAST_EXPECT(aline0[jss::no_ripple_peer].asBool() == SetOrClear);
+            BEAST_EXPECT(aline0[jss::no_callchain_peer].asBool() == SetOrClear);
         }
     }
 
     void testNegativeBalance(std::initializer_list<uint256> fs)
     {
-        testcase("Set noripple on a line with negative balance");
+        testcase("Set nocallchain on a line with negative balance");
 
         using namespace jtx;
         Env env(*this, with_features(fs));
@@ -102,7 +102,7 @@ public:
             return dest_amt;
         }();
 
-        auto const resp = env.rpc("json", "ripple_path_find", to_string(params));
+        auto const resp = env.rpc("json", "callchain_path_find", to_string(params));
         BEAST_EXPECT(resp[jss::result][jss::alternatives].size()==1);
 
         Json::Value account_alice;
@@ -110,7 +110,7 @@ public:
         auto const res = env.rpc("json", "account_lines", to_string(account_alice));
         auto const& lines = res[jss::result][jss::lines];
         BEAST_EXPECT(lines.size() == 1);
-        BEAST_EXPECT(!lines[0u].isMember(jss::no_ripple));
+        BEAST_EXPECT(!lines[0u].isMember(jss::no_callchain));
     }
 
     void testPairwise(std::initializer_list<uint256> fs)
@@ -144,7 +144,7 @@ public:
             return dest_amt;
         }();
 
-        auto const resp = env.rpc("json", "ripple_path_find", to_string(params));
+        auto const resp = env.rpc("json", "callchain_path_find", to_string(params));
         BEAST_EXPECT(resp[jss::result][jss::alternatives].size() == 0);
 
         env(pay(alice, carol, bob["USD"](50)), ter(tecPATH_DRY));
@@ -152,7 +152,7 @@ public:
 
     void testDefaultRipple(std::initializer_list<uint256> fs)
     {
-        testcase("Set default ripple on an account and check new trustlines");
+        testcase("Set default callchain on an account and check new trustlines");
 
         using namespace jtx;
         Env env(*this, with_features(fs));
@@ -161,7 +161,7 @@ public:
         auto const alice = Account("alice");
         auto const bob =   Account("bob");
 
-        env.fund(XRP(10000), gw, noripple(alice, bob));
+        env.fund(XRP(10000), gw, nocallchain(alice, bob));
 
         env(fset(bob, asfDefaultRipple));
 
@@ -177,7 +177,7 @@ public:
 
             auto lines = env.rpc("json", "account_lines", to_string(params));
             auto const& line0 = lines[jss::result][jss::lines][0u];
-            BEAST_EXPECT(line0[jss::no_ripple_peer].asBool() == true);
+            BEAST_EXPECT(line0[jss::no_callchain_peer].asBool() == true);
         }
         {
             Json::Value params;
@@ -186,7 +186,7 @@ public:
 
             auto lines = env.rpc("json", "account_lines", to_string(params));
             auto const& line0 = lines[jss::result][jss::lines][0u];
-            BEAST_EXPECT(line0[jss::no_ripple].asBool() == true);
+            BEAST_EXPECT(line0[jss::no_callchain].asBool() == true);
         }
         {
             Json::Value params;
@@ -195,7 +195,7 @@ public:
 
             auto lines = env.rpc("json", "account_lines", to_string(params));
             auto const& line0 = lines[jss::result][jss::lines][0u];
-            BEAST_EXPECT(line0[jss::no_ripple].asBool() == false);
+            BEAST_EXPECT(line0[jss::no_callchain].asBool() == false);
         }
         {
             Json::Value params;
@@ -204,7 +204,7 @@ public:
 
             auto lines = env.rpc("json", "account_lines", to_string(params));
             auto const& line0 = lines[jss::result][jss::lines][0u];
-            BEAST_EXPECT(line0[jss::no_ripple_peer].asBool() == false);
+            BEAST_EXPECT(line0[jss::no_callchain_peer].asBool() == false);
         }
     }
 
@@ -224,8 +224,8 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(NoRipple,app,ripple);
+BEAST_DEFINE_TESTSUITE(NoRipple,app,callchain);
 
 } // RPC
-} // ripple
+} // callchain
 

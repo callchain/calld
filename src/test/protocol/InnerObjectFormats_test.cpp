@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,15 +18,15 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/contract.h>
-#include <ripple/protocol/InnerObjectFormats.h>
-#include <ripple/protocol/ErrorCodes.h>          // RPC::containsError
-#include <ripple/json/json_reader.h>             // Json::Reader
-#include <ripple/protocol/STParsedJSON.h>        // STParsedJSONObject
-#include <ripple/beast/unit_test.h>
+#include <callchain/basics/contract.h>
+#include <callchain/protocol/InnerObjectFormats.h>
+#include <callchain/protocol/ErrorCodes.h>          // RPC::containsError
+#include <callchain/json/json_reader.h>             // Json::Reader
+#include <callchain/protocol/STParsedJSON.h>        // STParsedJSONObject
+#include <callchain/beast/unit_test.h>
 #include <test/jtx.h>
 
-namespace ripple {
+namespace callchain {
 
 namespace InnerObjectFormatsUnitTestDetail
 {
@@ -204,6 +204,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(InnerObjectFormatsParsedJSON,ripple_app,ripple);
+BEAST_DEFINE_TESTSUITE(InnerObjectFormatsParsedJSON,callchain_app,callchain);
 
-} // ripple
+} // callchain

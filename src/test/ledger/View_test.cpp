@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,17 +19,17 @@
 
 #include <BeastConfig.h>
 #include <test/jtx.h>
-#include <ripple/app/ledger/Ledger.h>
-#include <ripple/ledger/ApplyViewImpl.h>
-#include <ripple/ledger/OpenView.h>
-#include <ripple/ledger/PaymentSandbox.h>
-#include <ripple/ledger/Sandbox.h>
-#include <ripple/core/ConfigSections.h>
-#include <ripple/protocol/Feature.h>
-#include <ripple/protocol/Protocol.h>
+#include <callchain/app/ledger/Ledger.h>
+#include <callchain/ledger/ApplyViewImpl.h>
+#include <callchain/ledger/OpenView.h>
+#include <callchain/ledger/PaymentSandbox.h>
+#include <callchain/ledger/Sandbox.h>
+#include <callchain/core/ConfigSections.h>
+#include <callchain/protocol/Feature.h>
+#include <callchain/protocol/Protocol.h>
 #include <type_traits>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class View_test
@@ -835,8 +835,8 @@ class GetAmendments_test
     }
 };
 
-BEAST_DEFINE_TESTSUITE(View,ledger,ripple);
-BEAST_DEFINE_TESTSUITE(GetAmendments,ledger,ripple);
+BEAST_DEFINE_TESTSUITE(View,ledger,callchain);
+BEAST_DEFINE_TESTSUITE(GetAmendments,ledger,callchain);
 
 }  // test
-}  // ripple
+}  // callchain

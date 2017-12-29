@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,11 +18,11 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/protocol/BuildInfo.h>
-#include <ripple/beast/core/SemanticVersion.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/protocol/BuildInfo.h>
+#include <callchain/beast/core/SemanticVersion.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple {
+namespace callchain {
 
 class BuildInfo_test : public beast::unit_test::suite
 {
@@ -102,6 +102,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(BuildInfo,ripple_data,ripple);
+BEAST_DEFINE_TESTSUITE(BuildInfo,callchain_data,callchain);
 
-} // ripple
+} // callchain

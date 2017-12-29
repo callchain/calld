@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/Log.h>
-#include <ripple/basics/random.h>
-#include <ripple/protocol/STAmount.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/basics/Log.h>
+#include <callchain/basics/random.h>
+#include <callchain/protocol/STAmount.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple {
+namespace callchain {
 
 class STAmount_test : public beast::unit_test::suite
 {
@@ -620,6 +620,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(STAmount,ripple_data,ripple);
+BEAST_DEFINE_TESTSUITE(STAmount,callchain_data,callchain);
 
-} // ripple
+} // callchain

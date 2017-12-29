@@ -18,8 +18,8 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/hardened_hash.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/basics/hardened_hash.h>
+#include <callchain/beast/unit_test.h>
 #include <boost/functional/hash.hpp>
 #include <array>
 #include <cstdint>
@@ -28,7 +28,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-namespace ripple {
+namespace callchain {
 namespace detail {
 
 template <class T>
@@ -72,11 +72,11 @@ public:
 };
 
 } // detail
-} // ripple
+} // callchain
 
 //------------------------------------------------------------------------------
 
-namespace ripple {
+namespace callchain {
 
 namespace detail {
 
@@ -175,11 +175,11 @@ static_assert (sha256_t::bits == 256,
     "sha256_t must have 256 bits");
 #endif
 
-} // ripple
+} // callchain
 
 //------------------------------------------------------------------------------
 
-namespace ripple {
+namespace callchain {
 
 class hardened_hash_test
     : public beast::unit_test::suite
@@ -262,6 +262,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(hardened_hash,basics,ripple);
+BEAST_DEFINE_TESTSUITE(hardened_hash,basics,callchain);
 
-} // ripple
+} // callchain

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,14 +17,14 @@
 */
 //==============================================================================
 
-#ifndef RIPPLE_TEST_JTX_PATHS_H_INCLUDED
-#define RIPPLE_TEST_JTX_PATHS_H_INCLUDED
+#ifndef CALLCHAIN_TEST_JTX_PATHS_H_INCLUDED
+#define CALLCHAIN_TEST_JTX_PATHS_H_INCLUDED
 
 #include <test/jtx/Env.h>
-#include <ripple/protocol/Issue.h>
+#include <callchain/protocol/Issue.h>
 #include <type_traits>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 namespace jtx {
 
@@ -119,6 +119,6 @@ path::append (T const& t, Args const&... args)
 
 } // jtx
 } // test
-} // ripple
+} // callchain
 
 #endif

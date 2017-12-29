@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,16 +17,16 @@
 */
 //==============================================================================
 
-#ifndef RIPPLE_SHAMAP_TESTS_COMMON_H_INCLUDED
-#define RIPPLE_SHAMAP_TESTS_COMMON_H_INCLUDED
+#ifndef CALLCHAIN_SHAMAP_TESTS_COMMON_H_INCLUDED
+#define CALLCHAIN_SHAMAP_TESTS_COMMON_H_INCLUDED
 
 #include <BeastConfig.h>
-#include <ripple/basics/chrono.h>
-#include <ripple/nodestore/DummyScheduler.h>
-#include <ripple/nodestore/Manager.h>
-#include <ripple/shamap/Family.h>
+#include <callchain/basics/chrono.h>
+#include <callchain/nodestore/DummyScheduler.h>
+#include <callchain/nodestore/Manager.h>
+#include <callchain/shamap/Family.h>
 
-namespace ripple {
+namespace callchain {
 namespace tests {
 
 class TestFamily : public Family
@@ -116,6 +116,6 @@ public:
 };
 
 } // tests
-} // ripple
+} // callchain
 
 #endif

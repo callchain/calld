@@ -17,9 +17,9 @@
 */
 //==============================================================================
 
-#include <ripple/beast/utility/Zero.h>
+#include <callchain/beast/utility/Zero.h>
 
-#include <ripple/beast/unit_test.h>
+#include <callchain/beast/unit_test.h>
 
 namespace beast {
 

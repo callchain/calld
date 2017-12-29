@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2016 Ripple Labs Inc->
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,15 +17,15 @@
 */
 //==============================================================================
 #include <BeastConfig.h>
-#include <ripple/beast/clock/manual_clock.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/consensus/Consensus.h>
-#include <ripple/consensus/ConsensusProposal.h>
+#include <callchain/beast/clock/manual_clock.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/consensus/Consensus.h>
+#include <callchain/consensus/ConsensusProposal.h>
 #include <boost/function_output_iterator.hpp>
 #include <test/csf.h>
 #include <utility>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class Consensus_test : public beast::unit_test::suite
@@ -845,6 +845,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Consensus, consensus, ripple);
+BEAST_DEFINE_TESTSUITE(Consensus, consensus, callchain);
 }  // test
-}  // ripple
+}  // callchain

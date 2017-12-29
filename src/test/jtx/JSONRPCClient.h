@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,14 +17,14 @@
 */
 //==============================================================================
 
-#ifndef RIPPLE_TEST_HTTPCLIENT_H_INCLUDED
-#define RIPPLE_TEST_HTTPCLIENT_H_INCLUDED
+#ifndef CALLCHAIN_TEST_HTTPCLIENT_H_INCLUDED
+#define CALLCHAIN_TEST_HTTPCLIENT_H_INCLUDED
 
 #include <test/jtx/AbstractClient.h>
-#include <ripple/core/Config.h>
+#include <callchain/core/Config.h>
 #include <memory>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 /** Returns a client using JSON-RPC over HTTP/S. */
@@ -32,6 +32,6 @@ std::unique_ptr<AbstractClient>
 makeJSONRPCClient(Config const& cfg, unsigned rpc_version = 2);
 
 } // test
-} // ripple
+} // callchain
 
 #endif

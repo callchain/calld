@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -20,18 +20,18 @@
 #include <BeastConfig.h>
 #include <test/jtx/WSClient.h>
 #include <test/jtx.h>
-#include <ripple/json/json_reader.h>
-#include <ripple/json/to_string.h>
-#include <ripple/protocol/JsonFields.h>
-#include <ripple/server/Port.h>
+#include <callchain/json/json_reader.h>
+#include <callchain/json/to_string.h>
+#include <callchain/protocol/JsonFields.h>
+#include <callchain/server/Port.h>
 #include <beast/core/multi_buffer.hpp>
 #include <beast/websocket.hpp>
 
 #include <condition_variable>
 
-#include <ripple/beast/unit_test.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class WSClientImpl : public WSClient
@@ -168,7 +168,7 @@ public:
             {
                 jp[jss::method] = cmd;
                 jp[jss::jsonrpc] = "2.0";
-                jp[jss::ripplerpc] = "2.0";
+                jp[jss::callchainrpc] = "2.0";
                 jp[jss::id] = 5;
             }
             else
@@ -298,4 +298,4 @@ makeWSClient(Config const& cfg, bool v2, unsigned rpc_version)
 }
 
 } // test
-} // ripple
+} // callchain

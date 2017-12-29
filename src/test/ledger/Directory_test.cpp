@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -15,17 +15,17 @@
 */
 //==============================================================================
 
-#include <ripple/beast/xor_shift_engine.h>
-#include <ripple/ledger/BookDirs.h>
-#include <ripple/ledger/Directory.h>
-#include <ripple/ledger/Sandbox.h>
-#include <ripple/protocol/Feature.h>
-#include <ripple/protocol/JsonFields.h>
-#include <ripple/protocol/Protocol.h>
+#include <callchain/beast/xor_shift_engine.h>
+#include <callchain/ledger/BookDirs.h>
+#include <callchain/ledger/Directory.h>
+#include <callchain/ledger/Sandbox.h>
+#include <callchain/protocol/Feature.h>
+#include <callchain/protocol/JsonFields.h>
+#include <callchain/protocol/Protocol.h>
 #include <test/jtx.h>
 #include <algorithm>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 struct Directory_test : public beast::unit_test::suite
@@ -439,7 +439,7 @@ struct Directory_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Directory,ledger,ripple);
+BEAST_DEFINE_TESTSUITE(Directory,ledger,callchain);
 
 }
 }

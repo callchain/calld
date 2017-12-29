@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -17,18 +17,18 @@
 
 #include <BeastConfig.h>
 #include <test/jtx.h>
-#include <ripple/app/paths/Flow.h>
-#include <ripple/app/paths/impl/Steps.h>
-#include <ripple/basics/contract.h>
-#include <ripple/core/Config.h>
-#include <ripple/ledger/ApplyViewImpl.h>
-#include <ripple/ledger/PaymentSandbox.h>
-#include <ripple/ledger/Sandbox.h>
+#include <callchain/app/paths/Flow.h>
+#include <callchain/app/paths/impl/Steps.h>
+#include <callchain/basics/contract.h>
+#include <callchain/core/Config.h>
+#include <callchain/ledger/ApplyViewImpl.h>
+#include <callchain/ledger/PaymentSandbox.h>
+#include <callchain/ledger/Sandbox.h>
 #include <test/jtx/PathSet.h>
-#include <ripple/protocol/Feature.h>
-#include <ripple/protocol/JsonFields.h>
+#include <callchain/protocol/Feature.h>
+#include <callchain/protocol/JsonFields.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 bool getNoRippleFlag (jtx::Env const& env,
@@ -1122,13 +1122,13 @@ struct Flow_test : public beast::unit_test::suite
         auto const carol = Account("carol");
         auto const gw = Account("gw");
 
-        env.fund(XRP(100000000), alice, noripple(bob), carol, gw);
+        env.fund(XRP(100000000), alice, nocallchain(bob), carol, gw);
         env.trust(gw["USD"](10000), alice, carol);
         env(trust(bob, gw["USD"](10000), tfSetNoRipple));
         env.trust(gw["USD"](10000), bob);
         env.close();
 
-        // set no ripple between bob and the gateway
+        // set no callchain between bob and the gateway
 
         env(pay(gw, alice, gw["USD"](1000)));
         env.close();
@@ -1171,7 +1171,7 @@ struct Flow_test : public beast::unit_test::suite
         env.close(closeTime);
 
         // pay alice -> xrp -> USD/bob -> bob -> gw -> alice
-        // set no ripple on bob's side of the bob/gw trust line
+        // set no callchain on bob's side of the bob/gw trust line
         // carol has the bob/USD and makes an offer, bob has USD/gw
 
         auto const alice = Account("alice");
@@ -1290,7 +1290,7 @@ struct Flow_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Flow,app,ripple);
+BEAST_DEFINE_TESTSUITE(Flow,app,callchain);
 
 } // test
-} // ripple
+} // callchain

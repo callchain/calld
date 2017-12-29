@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,19 +17,19 @@
 */
 //==============================================================================
 
-#ifndef RIPPLE_NODESTORE_BASE_H_INCLUDED
-#define RIPPLE_NODESTORE_BASE_H_INCLUDED
+#ifndef CALLCHAIN_NODESTORE_BASE_H_INCLUDED
+#define CALLCHAIN_NODESTORE_BASE_H_INCLUDED
 
-#include <ripple/nodestore/Database.h>
-#include <ripple/basics/random.h>
-#include <ripple/basics/StringUtilities.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/beast/utility/rngfill.h>
-#include <ripple/beast/xor_shift_engine.h>
+#include <callchain/nodestore/Database.h>
+#include <callchain/basics/random.h>
+#include <callchain/basics/StringUtilities.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/beast/utility/rngfill.h>
+#include <callchain/beast/xor_shift_engine.h>
 #include <boost/algorithm/string.hpp>
 #include <iomanip>
 
-namespace ripple {
+namespace callchain {
 namespace NodeStore {
 
 /** Binary function that satisfies the strict-weak-ordering requirement.

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,19 +18,19 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/crypto/csprng.h>
-#include <ripple/protocol/PublicKey.h>
-#include <ripple/protocol/SecretKey.h>
-#include <ripple/protocol/Seed.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/beast/utility/rngfill.h>
+#include <callchain/crypto/csprng.h>
+#include <callchain/protocol/PublicKey.h>
+#include <callchain/protocol/SecretKey.h>
+#include <callchain/protocol/Seed.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/beast/utility/rngfill.h>
 #include <algorithm>
 #include <string>
 #include <vector>
 
-#include <ripple/protocol/impl/secp256k1.h>
+#include <callchain/protocol/impl/secp256k1.h>
 
-namespace ripple {
+namespace callchain {
 
 class SecretKey_test : public beast::unit_test::suite
 {
@@ -461,6 +461,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(SecretKey,protocol,ripple);
+BEAST_DEFINE_TESTSUITE(SecretKey,protocol,callchain);
 
-} // ripple
+} // callchain

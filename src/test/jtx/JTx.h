@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,19 +17,19 @@
 */
 //==============================================================================
 
-#ifndef RIPPLE_TEST_JTX_JTX_H_INCLUDED
-#define RIPPLE_TEST_JTX_JTX_H_INCLUDED
+#ifndef CALLCHAIN_TEST_JTX_JTX_H_INCLUDED
+#define CALLCHAIN_TEST_JTX_JTX_H_INCLUDED
 
 #include <test/jtx/requires.h>
 #include <test/jtx/basic_prop.h>
-#include <ripple/json/json_value.h>
-#include <ripple/protocol/STTx.h>
-#include <ripple/protocol/TER.h>
+#include <callchain/json/json_value.h>
+#include <callchain/protocol/STTx.h>
+#include <callchain/protocol/TER.h>
 #include <functional>
 #include <memory>
 #include <vector>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 namespace jtx {
 
@@ -170,6 +170,6 @@ private:
 
 } // jtx
 } // test
-} // ripple
+} // callchain
 
 #endif

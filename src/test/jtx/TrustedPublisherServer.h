@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright 2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -16,19 +16,19 @@
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 //==============================================================================
-#ifndef RIPPLE_TEST_TRUSTED_PUBLISHER_SERVER_H_INCLUDED
-#define RIPPLE_TEST_TRUSTED_PUBLISHER_SERVER_H_INCLUDED
+#ifndef CALLCHAIN_TEST_TRUSTED_PUBLISHER_SERVER_H_INCLUDED
+#define CALLCHAIN_TEST_TRUSTED_PUBLISHER_SERVER_H_INCLUDED
 
 #include <beast/core/detail/base64.hpp>
-#include <ripple/protocol/PublicKey.h>
-#include <ripple/protocol/SecretKey.h>
-#include <ripple/protocol/Sign.h>
-#include <ripple/basics/strHex.h>
+#include <callchain/protocol/PublicKey.h>
+#include <callchain/protocol/SecretKey.h>
+#include <callchain/protocol/Sign.h>
+#include <callchain/basics/strHex.h>
 #include <boost/asio.hpp>
 #include <beast/core/detail/base64.hpp>
 #include <beast/http.hpp>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class TrustedPublisherServer
@@ -206,5 +206,5 @@ private:
 };
 
 }  // namespace test
-}  // namespace ripple
+}  // namespace callchain
 #endif

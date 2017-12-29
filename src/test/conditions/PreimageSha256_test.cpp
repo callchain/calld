@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,19 +17,19 @@
 */
 //==============================================================================
 
-#include <ripple/basics/Buffer.h>
-#include <ripple/basics/strHex.h>
-#include <ripple/basics/Slice.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/conditions/Condition.h>
-#include <ripple/conditions/Fulfillment.h>
-#include <ripple/conditions/impl/PreimageSha256.h>
+#include <callchain/basics/Buffer.h>
+#include <callchain/basics/strHex.h>
+#include <callchain/basics/Slice.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/conditions/Condition.h>
+#include <callchain/conditions/Fulfillment.h>
+#include <callchain/conditions/impl/PreimageSha256.h>
 #include <algorithm>
 #include <string>
 #include <utility>
 #include <vector>
 
-namespace ripple {
+namespace callchain {
 namespace cryptoconditions {
 
 class PreimageSha256_test : public beast::unit_test::suite
@@ -186,7 +186,7 @@ class PreimageSha256_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE (PreimageSha256, conditions, ripple);
+BEAST_DEFINE_TESTSUITE (PreimageSha256, conditions, callchain);
 
 }
 

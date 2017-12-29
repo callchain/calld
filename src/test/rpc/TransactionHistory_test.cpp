@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -20,11 +20,11 @@
 #include <test/jtx.h>
 #include <test/jtx/Env.h>
 #include <test/jtx/envconfig.h>
-#include <ripple/protocol/JsonFields.h>
+#include <callchain/protocol/JsonFields.h>
 #include <boost/container/static_vector.hpp>
 #include <algorithm>
 
-namespace ripple {
+namespace callchain {
 
 class TransactionHistory_test : public beast::unit_test::suite
 {
@@ -149,6 +149,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE (TransactionHistory, rpc, ripple);
+BEAST_DEFINE_TESTSUITE (TransactionHistory, rpc, callchain);
 
-}  // ripple
+}  // callchain

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,14 +18,14 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/protocol/Sign.h>
-#include <ripple/protocol/STTx.h>
-#include <ripple/protocol/STParsedJSON.h>
-#include <ripple/protocol/types.h>
-#include <ripple/json/to_string.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/protocol/Sign.h>
+#include <callchain/protocol/STTx.h>
+#include <callchain/protocol/STParsedJSON.h>
+#include <callchain/protocol/types.h>
+#include <callchain/json/to_string.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple {
+namespace callchain {
 
 class STTx_test : public beast::unit_test::suite
 {
@@ -190,7 +190,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(STTx,ripple_app,ripple);
-BEAST_DEFINE_TESTSUITE(InnerObjectFormatsSerializer,ripple_app,ripple);
+BEAST_DEFINE_TESTSUITE(STTx,callchain_app,callchain);
+BEAST_DEFINE_TESTSUITE(InnerObjectFormatsSerializer,callchain_app,callchain);
 
-} // ripple
+} // callchain

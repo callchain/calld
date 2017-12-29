@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,12 +19,12 @@
 
 #include <BeastConfig.h>
 #include <test/nodestore/TestBase.h>
-#include <ripple/nodestore/DummyScheduler.h>
-#include <ripple/nodestore/Manager.h>
-#include <ripple/nodestore/impl/DecodedBlob.h>
-#include <ripple/nodestore/impl/EncodedBlob.h>
+#include <callchain/nodestore/DummyScheduler.h>
+#include <callchain/nodestore/Manager.h>
+#include <callchain/nodestore/impl/DecodedBlob.h>
+#include <callchain/nodestore/impl/EncodedBlob.h>
 
-namespace ripple {
+namespace callchain {
 namespace NodeStore {
 
 // Tests predictable batches, and NodeObject blob encoding
@@ -87,7 +87,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(NodeStoreBasic,ripple_core,ripple);
+BEAST_DEFINE_TESTSUITE(NodeStoreBasic,callchain_core,callchain);
 
 }
 }

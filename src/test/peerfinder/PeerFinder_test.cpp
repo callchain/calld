@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,14 +18,14 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/basics/chrono.h>
-#include <ripple/basics/Slice.h>
-#include <ripple/protocol/PublicKey.h>
-#include <ripple/protocol/SecretKey.h>
-#include <ripple/peerfinder/impl/Logic.h>
-#include <ripple/beast/unit_test.h>
+#include <callchain/basics/chrono.h>
+#include <callchain/basics/Slice.h>
+#include <callchain/protocol/PublicKey.h>
+#include <callchain/protocol/SecretKey.h>
+#include <callchain/peerfinder/impl/Logic.h>
+#include <callchain/beast/unit_test.h>
 
-namespace ripple {
+namespace callchain {
 namespace PeerFinder {
 
 class Logic_test : public beast::unit_test::suite
@@ -157,7 +157,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Logic,PeerFinder,ripple);
+BEAST_DEFINE_TESTSUITE(Logic,PeerFinder,callchain);
 
 }
 }

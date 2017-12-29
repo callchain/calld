@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012-2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,13 +18,13 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/protocol/ErrorCodes.h>
-#include <ripple/protocol/JsonFields.h>
+#include <callchain/protocol/ErrorCodes.h>
+#include <callchain/protocol/JsonFields.h>
 #include <test/jtx.h>
-#include <ripple/beast/unit_test.h>
-#include <ripple/app/ledger/LedgerMaster.h>
+#include <callchain/beast/unit_test.h>
+#include <callchain/app/ledger/LedgerMaster.h>
 
-namespace ripple {
+namespace callchain {
 
 namespace RPC {
 
@@ -302,8 +302,8 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(LedgerRequestRPC,app,ripple);
+BEAST_DEFINE_TESTSUITE(LedgerRequestRPC,app,callchain);
 
 } // RPC
-} // ripple
+} // callchain
 

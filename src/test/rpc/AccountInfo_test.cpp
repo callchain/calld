@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,11 +17,11 @@
 */
 //==============================================================================
 
-#include <ripple/protocol/JsonFields.h>     // jss:: definitions
-#include <ripple/protocol/Feature.h>
+#include <callchain/protocol/JsonFields.h>     // jss:: definitions
+#include <callchain/protocol/Feature.h>
 #include <test/jtx.h>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 
 class AccountInfo_test : public beast::unit_test::suite
@@ -171,7 +171,7 @@ public:
 
         auto const withoutSigners = std::string ("{ ") +
             "\"jsonrpc\": \"2.0\", "
-            "\"ripplerpc\": \"2.0\", "
+            "\"callchainrpc\": \"2.0\", "
             "\"id\": 5, "
             "\"method\": \"account_info\", "
             "\"params\": [{ "
@@ -179,7 +179,7 @@ public:
 
         auto const withSigners = std::string ("{ ") +
             "\"jsonrpc\": \"2.0\", "
-            "\"ripplerpc\": \"2.0\", "
+            "\"callchainrpc\": \"2.0\", "
             "\"id\": 5, "
             "\"method\": \"account_info\", "
             "\"params\": [{ "
@@ -194,7 +194,7 @@ public:
             BEAST_EXPECT(! info[jss::result][jss::account_data].
                 isMember (jss::signer_lists));
             BEAST_EXPECT(info.isMember(jss::jsonrpc) && info[jss::jsonrpc] == "2.0");
-            BEAST_EXPECT(info.isMember(jss::ripplerpc) && info[jss::ripplerpc] == "2.0");
+            BEAST_EXPECT(info.isMember(jss::callchainrpc) && info[jss::callchainrpc] == "2.0");
             BEAST_EXPECT(info.isMember(jss::id) && info[jss::id] == 5);
         }
         {
@@ -208,7 +208,7 @@ public:
             BEAST_EXPECT(signerLists.isArray());
             BEAST_EXPECT(signerLists.size() == 0);
             BEAST_EXPECT(info.isMember(jss::jsonrpc) && info[jss::jsonrpc] == "2.0");
-            BEAST_EXPECT(info.isMember(jss::ripplerpc) && info[jss::ripplerpc] == "2.0");
+            BEAST_EXPECT(info.isMember(jss::callchainrpc) && info[jss::callchainrpc] == "2.0");
             BEAST_EXPECT(info.isMember(jss::id) && info[jss::id] == 5);
         }
 
@@ -225,7 +225,7 @@ public:
             BEAST_EXPECT(! info[jss::result][jss::account_data].
                 isMember (jss::signer_lists));
             BEAST_EXPECT(info.isMember(jss::jsonrpc) && info[jss::jsonrpc] == "2.0");
-            BEAST_EXPECT(info.isMember(jss::ripplerpc) && info[jss::ripplerpc] == "2.0");
+            BEAST_EXPECT(info.isMember(jss::callchainrpc) && info[jss::callchainrpc] == "2.0");
             BEAST_EXPECT(info.isMember(jss::id) && info[jss::id] == 5);
         }
         {
@@ -246,7 +246,7 @@ public:
             auto const& entry0 = signerEntries[0u][sfSignerEntry.jsonName];
             BEAST_EXPECT(entry0[sfSignerWeight.jsonName] == 3);
             BEAST_EXPECT(info.isMember(jss::jsonrpc) && info[jss::jsonrpc] == "2.0");
-            BEAST_EXPECT(info.isMember(jss::ripplerpc) && info[jss::ripplerpc] == "2.0");
+            BEAST_EXPECT(info.isMember(jss::callchainrpc) && info[jss::callchainrpc] == "2.0");
             BEAST_EXPECT(info.isMember(jss::id) && info[jss::id] == 5);
         }
 
@@ -286,7 +286,7 @@ public:
                 BEAST_EXPECT(entry[sfSignerWeight.jsonName] == 1);
             }
             BEAST_EXPECT(info.isMember(jss::jsonrpc) && info[jss::jsonrpc] == "2.0");
-            BEAST_EXPECT(info.isMember(jss::ripplerpc) && info[jss::ripplerpc] == "2.0");
+            BEAST_EXPECT(info.isMember(jss::callchainrpc) && info[jss::callchainrpc] == "2.0");
             BEAST_EXPECT(info.isMember(jss::id) && info[jss::id] == 5);
         }
     }
@@ -299,7 +299,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(AccountInfo,app,ripple);
+BEAST_DEFINE_TESTSUITE(AccountInfo,app,callchain);
 
 }
 }

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,13 +18,13 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <ripple/json/json_reader.h>
-#include <ripple/json/json_writer.h>
+#include <callchain/json/json_reader.h>
+#include <callchain/json/json_writer.h>
 #include <test/json/TestOutputSuite.h>
 
 namespace Json {
 
-struct Output_test : ripple::test::TestOutputSuite
+struct Output_test : callchain::test::TestOutputSuite
 {
     void runTest (std::string const& name, std::string const& valueDesc)
     {
@@ -59,6 +59,6 @@ struct Output_test : ripple::test::TestOutputSuite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Output, ripple_basics, ripple);
+BEAST_DEFINE_TESTSUITE(Output, callchain_basics, callchain);
 
 } // Json

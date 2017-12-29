@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
+    This file is part of callchaind: https://github.com/callchain/callchaind
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -29,29 +29,29 @@
 #include <test/jtx/sig.h>
 #include <test/jtx/utility.h>
 #include <test/jtx/JSONRPCClient.h>
-#include <ripple/app/ledger/LedgerMaster.h>
-#include <ripple/consensus/LedgerTiming.h>
-#include <ripple/app/misc/NetworkOPs.h>
-#include <ripple/app/misc/TxQ.h>
-#include <ripple/basics/contract.h>
-#include <ripple/basics/Slice.h>
-#include <ripple/json/to_string.h>
-#include <ripple/net/HTTPClient.h>
-#include <ripple/net/RPCCall.h>
-#include <ripple/protocol/ErrorCodes.h>
-#include <ripple/protocol/HashPrefix.h>
-#include <ripple/protocol/Indexes.h>
-#include <ripple/protocol/JsonFields.h>
-#include <ripple/protocol/LedgerFormats.h>
-#include <ripple/protocol/Serializer.h>
-#include <ripple/protocol/SystemParameters.h>
-#include <ripple/protocol/TER.h>
-#include <ripple/protocol/TxFlags.h>
-#include <ripple/protocol/types.h>
-#include <ripple/protocol/Feature.h>
+#include <callchain/app/ledger/LedgerMaster.h>
+#include <callchain/consensus/LedgerTiming.h>
+#include <callchain/app/misc/NetworkOPs.h>
+#include <callchain/app/misc/TxQ.h>
+#include <callchain/basics/contract.h>
+#include <callchain/basics/Slice.h>
+#include <callchain/json/to_string.h>
+#include <callchain/net/HTTPClient.h>
+#include <callchain/net/RPCCall.h>
+#include <callchain/protocol/ErrorCodes.h>
+#include <callchain/protocol/HashPrefix.h>
+#include <callchain/protocol/Indexes.h>
+#include <callchain/protocol/JsonFields.h>
+#include <callchain/protocol/LedgerFormats.h>
+#include <callchain/protocol/Serializer.h>
+#include <callchain/protocol/SystemParameters.h>
+#include <callchain/protocol/TER.h>
+#include <callchain/protocol/TxFlags.h>
+#include <callchain/protocol/types.h>
+#include <callchain/protocol/Feature.h>
 #include <memory>
 
-namespace ripple {
+namespace callchain {
 namespace test {
 namespace jtx {
 
@@ -469,7 +469,7 @@ Env::do_rpc(std::vector<std::string> const& args)
     if (!jv.isMember(jss::jsonrpc))
     {
         jv[jss::jsonrpc] = "2.0";
-        jv[jss::ripplerpc] = "2.0";
+        jv[jss::callchainrpc] = "2.0";
         jv[jss::id] = 5;
     }
     auto response = client().invoke(
@@ -479,7 +479,7 @@ Env::do_rpc(std::vector<std::string> const& args)
     if (jv.isMember(jss::jsonrpc))
     {
         response[jss::jsonrpc] = jv[jss::jsonrpc];
-        response[jss::ripplerpc] = jv[jss::ripplerpc];
+        response[jss::callchainrpc] = jv[jss::callchainrpc];
         response[jss::id] = jv[jss::id];
     }
 
@@ -503,4 +503,4 @@ Env::enableFeature(uint256 const feature)
 } // jtx
 
 } // test
-} // ripple
+} // callchain
