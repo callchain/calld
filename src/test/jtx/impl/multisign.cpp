@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -20,13 +20,13 @@
 #include <BeastConfig.h>
 #include <test/jtx/multisign.h>
 #include <test/jtx/utility.h>
-#include <callchain/protocol/HashPrefix.h>
-#include <callchain/protocol/JsonFields.h>
-#include <callchain/protocol/Sign.h>
-#include <callchain/protocol/types.h>
-#include <callchain/basics/contract.h>
+#include <call/protocol/HashPrefix.h>
+#include <call/protocol/JsonFields.h>
+#include <call/protocol/Sign.h>
+#include <call/protocol/types.h>
+#include <call/basics/contract.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace jtx {
 
@@ -101,7 +101,7 @@ msig::operator()(Env& env, JTx& jt) const
             jo[jss::SigningPubKey] = strHex(e.sig.pk().slice());
 
             Serializer ss {buildMultiSigningData (*st, e.acct.id())};
-            auto const sig = callchain::sign (
+            auto const sig = call::sign (
                 *publicKeyType(e.sig.pk().slice()), e.sig.sk(), ss.slice());
             jo[sfTxnSignature.getJsonName()] =
                 strHex(Slice{ sig.data(), sig.size() });
@@ -111,4 +111,4 @@ msig::operator()(Env& env, JTx& jt) const
 
 } // jtx
 } // test
-} // callchain
+} // call

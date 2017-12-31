@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,17 +18,17 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/random.h>
-#include <callchain/protocol/PublicKey.h>
-#include <callchain/protocol/SecretKey.h>
-#include <callchain/protocol/Seed.h>
-#include <callchain/beast/unit_test.h>
-#include <callchain/beast/utility/rngfill.h>
-#include <callchain/beast/xor_shift_engine.h>
+#include <call/basics/random.h>
+#include <call/protocol/PublicKey.h>
+#include <call/protocol/SecretKey.h>
+#include <call/protocol/Seed.h>
+#include <call/beast/unit_test.h>
+#include <call/beast/utility/rngfill.h>
+#include <call/beast/xor_shift_engine.h>
 #include <algorithm>
 
 
-namespace callchain {
+namespace call {
 
 class Seed_test : public beast::unit_test::suite
 {
@@ -125,8 +125,8 @@ public:
 
     void testKeypairGenerationAndSigning ()
     {
-        std::string const message1 = "http://www.callchain.com";
-        std::string const message2 = "https://www.callchain.com";
+        std::string const message1 = "http://www.call.com";
+        std::string const message2 = "https://www.call.com";
 
         {
             testcase ("Node keypair generation & signing (secp256k1)");
@@ -348,6 +348,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Seed,protocol,callchain);
+BEAST_DEFINE_TESTSUITE(Seed,protocol,call);
 
-} // callchain
+} // call

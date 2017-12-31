@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,10 +18,10 @@
 //==============================================================================
 #include <BeastConfig.h>
 #include <test/jtx/JSONRPCClient.h>
-#include <callchain/json/json_reader.h>
-#include <callchain/json/to_string.h>
-#include <callchain/protocol/JsonFields.h>
-#include <callchain/server/Port.h>
+#include <call/json/json_reader.h>
+#include <call/json/to_string.h>
+#include <call/protocol/JsonFields.h>
+#include <call/server/Port.h>
 #include <beast/http/message.hpp>
 #include <beast/http/dynamic_body.hpp>
 #include <beast/http/string_body.hpp>
@@ -30,7 +30,7 @@
 #include <boost/asio.hpp>
 #include <string>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class JSONRPCClient : public AbstractClient
@@ -120,7 +120,7 @@ public:
             if (rpc_version_ == 2)
             {
                 jr[jss::jsonrpc] = "2.0";
-                jr[jss::callchainrpc] = "2.0";
+                jr[jss::callrpc] = "2.0";
                 jr[jss::id] = 5;
             }
             if(params)
@@ -159,4 +159,4 @@ makeJSONRPCClient(Config const& cfg, unsigned rpc_version)
 }
 
 } // test
-} // callchain
+} // call

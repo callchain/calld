@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,11 +18,11 @@
 //==============================================================================
 
 #include <test/jtx.h>
-#include <callchain/protocol/JsonFields.h>
-#include <callchain/app/misc/NetworkOPs.h>
+#include <call/protocol/JsonFields.h>
+#include <call/app/misc/NetworkOPs.h>
 #include <test/jtx/WSClient.h>
 
-namespace callchain {
+namespace call {
 
 class AmendmentBlocked_test : public beast::unit_test::suite
 {
@@ -163,7 +163,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(AmendmentBlocked,app,callchain);
+BEAST_DEFINE_TESTSUITE(AmendmentBlocked,app,call);
 
 }
 

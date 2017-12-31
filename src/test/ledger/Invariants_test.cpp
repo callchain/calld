@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -20,14 +20,14 @@
 #include <BeastConfig.h>
 #include <test/jtx.h>
 #include <test/jtx/Env.h>
-#include <callchain/beast/utility/Journal.h>
-#include <callchain/app/tx/apply.h>
-#include <callchain/app/tx/impl/Transactor.h>
-#include <callchain/app/tx/impl/ApplyContext.h>
-#include <callchain/protocol/STLedgerEntry.h>
+#include <call/beast/utility/Journal.h>
+#include <call/app/tx/apply.h>
+#include <call/app/tx/impl/Transactor.h>
+#include <call/app/tx/impl/ApplyContext.h>
+#include <call/protocol/STLedgerEntry.h>
 #include <boost/algorithm/string/predicate.hpp>
 
-namespace callchain {
+namespace call {
 
 class Invariants_test : public beast::unit_test::suite
 {
@@ -229,7 +229,7 @@ class Invariants_test : public beast::unit_test::suite
                 // create simple trust SLE with xrp currency
                 auto index = getRippleStateIndex (A1, A2, xrpIssue().currency);
                 auto const sleNew = std::make_shared<SLE>(
-                    ltCALLCHAIN_STATE, index);
+                    ltCALL_STATE, index);
                 ac.view().insert (sleNew);
                 return true;
             });
@@ -425,7 +425,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE (Invariants, ledger, callchain);
+BEAST_DEFINE_TESTSUITE (Invariants, ledger, call);
 
-}  // callchain
+}  // call
 

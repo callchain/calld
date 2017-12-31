@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,13 +18,13 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/protocol/JsonFields.h>
+#include <call/protocol/JsonFields.h>
 #include <test/jtx.h>
-#include <callchain/beast/unit_test.h>
+#include <call/beast/unit_test.h>
 
 #include <boost/format.hpp>
 
-namespace callchain {
+namespace call {
 
 namespace test {
 
@@ -51,13 +51,13 @@ public:
     makeValidatorConfig()
     {
         auto p = std::make_unique<Config>();
-        boost::format toLoad(R"callchainConfig(
+        boost::format toLoad(R"callConfig(
 [validator_token]
 %1%
 
 [validators]
 %2%
-)callchainConfig");
+)callConfig");
 
         p->loadFromString (boost::str (
             toLoad % validator_data::token % validator_data::public_key));
@@ -95,8 +95,8 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(ServerInfo,app,callchain);
+BEAST_DEFINE_TESTSUITE(ServerInfo,app,call);
 
 } // test
-} // callchain
+} // call
 

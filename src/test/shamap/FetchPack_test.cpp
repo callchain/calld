@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,19 +18,19 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/shamap/SHAMap.h>
+#include <call/shamap/SHAMap.h>
 #include <test/shamap/common.h>
-#include <callchain/protocol/digest.h>
-#include <callchain/basics/contract.h>
-#include <callchain/basics/random.h>
-#include <callchain/basics/StringUtilities.h>
-#include <callchain/basics/UnorderedContainers.h>
-#include <callchain/beast/xor_shift_engine.h>
-#include <callchain/beast/unit_test.h>
+#include <call/protocol/digest.h>
+#include <call/basics/contract.h>
+#include <call/basics/random.h>
+#include <call/basics/StringUtilities.h>
+#include <call/basics/UnorderedContainers.h>
+#include <call/beast/xor_shift_engine.h>
+#include <call/beast/unit_test.h>
 #include <functional>
 #include <stdexcept>
 
-namespace callchain {
+namespace call {
 namespace tests {
 
 class FetchPack_test : public beast::unit_test::suite
@@ -87,7 +87,7 @@ public:
     {
         Serializer s;
         for (int d = 0; d < 3; ++d)
-            s.add32 (callchain::rand_int<std::uint32_t>(r));
+            s.add32 (call::rand_int<std::uint32_t>(r));
         return std::make_shared <Item> (
             s.getSHA512Half(), s.peekData ());
     }
@@ -162,8 +162,8 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(FetchPack,shamap,callchain);
+BEAST_DEFINE_TESTSUITE(FetchPack,shamap,call);
 
 } // tests
-} // callchain
+} // call
 

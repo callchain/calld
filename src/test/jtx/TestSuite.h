@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,13 +17,13 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_BASICS_TESTSUITE_H_INCLUDED
-#define CALLCHAIN_BASICS_TESTSUITE_H_INCLUDED
+#ifndef CALL_BASICS_TESTSUITE_H_INCLUDED
+#define CALL_BASICS_TESTSUITE_H_INCLUDED
 
-#include <callchain/beast/unit_test.h>
+#include <call/beast/unit_test.h>
 #include <string>
 
-namespace callchain {
+namespace call {
 
 class TestSuite : public beast::unit_test::suite
 {
@@ -128,6 +128,6 @@ private:
     }
 };
 
-} // callchain
+} // call
 
 #endif

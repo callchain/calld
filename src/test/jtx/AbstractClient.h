@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,18 +17,18 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_ABSTRACTCLIENT_H_INCLUDED
-#define CALLCHAIN_TEST_ABSTRACTCLIENT_H_INCLUDED
+#ifndef CALL_TEST_ABSTRACTCLIENT_H_INCLUDED
+#define CALL_TEST_ABSTRACTCLIENT_H_INCLUDED
 
-#include <callchain/json/json_value.h>
+#include <call/json/json_value.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 /* Abstract Ripple Client interface.
 
    This abstracts the transport layer, allowing
-   commands to be submitted to a callchaind server.
+   commands to be submitted to a calld server.
 */
 class AbstractClient
 {
@@ -59,6 +59,6 @@ public:
 };
 
 } // test
-} // callchain
+} // call
 
 #endif

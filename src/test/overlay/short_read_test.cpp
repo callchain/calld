@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright 2014 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,9 +18,9 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/make_SSLContext.h>
-#include <callchain/beast/core/CurrentThreadName.h>
-#include <callchain/beast/unit_test.h>
+#include <call/basics/make_SSLContext.h>
+#include <call/beast/core/CurrentThreadName.h>
+#include <call/beast/unit_test.h>
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/optional.hpp>
@@ -32,7 +32,7 @@
 #include <thread>
 #include <utility>
 
-namespace callchain {
+namespace call {
 /*
 
 Findings from the test:
@@ -573,6 +573,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(short_read,overlay,callchain);
+BEAST_DEFINE_TESTSUITE(short_read,overlay,call);
 
 }

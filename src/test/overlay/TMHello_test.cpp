@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright 2014 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,10 +18,10 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/overlay/impl/TMHello.h>
-#include <callchain/beast/unit_test.h>
+#include <call/overlay/impl/TMHello.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain {
+namespace call {
 
 class TMHello_test : public beast::unit_test::suite
 {
@@ -66,6 +66,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(TMHello,overlay,callchain);
+BEAST_DEFINE_TESTSUITE(TMHello,overlay,call);
 
 }

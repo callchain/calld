@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright 2014, Nikolaos D. Bougalis <nikb@bougalis.net>
 
 
@@ -19,11 +19,11 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/tagged_integer.h>
-#include <callchain/beast/unit_test.h>
+#include <call/basics/tagged_integer.h>
+#include <call/beast/unit_test.h>
 #include <type_traits>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class tagged_integer_test
@@ -233,7 +233,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(tagged_integer,callchain_basics,callchain);
+BEAST_DEFINE_TESTSUITE(tagged_integer,call_basics,call);
 
 } // test
-} // callchain
+} // call

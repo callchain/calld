@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,10 +17,10 @@
 */
 //==============================================================================
 #include <test/jtx.h>
-#include <callchain/protocol/TxFlags.h>
-#include <callchain/protocol/JsonFields.h>
+#include <call/protocol/TxFlags.h>
+#include <call/protocol/JsonFields.h>
 
-namespace callchain {
+namespace call {
 
 namespace test {
 
@@ -219,6 +219,6 @@ public:
         testModifyQualityOfTrustline(true, true);
     }
 };
-BEAST_DEFINE_TESTSUITE(SetTrust, app, callchain);
+BEAST_DEFINE_TESTSUITE(SetTrust, app, call);
 } // test
-} // callchain
+} // call

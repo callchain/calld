@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/json/json_value.h>
-#include <callchain/json/json_reader.h>
-#include <callchain/beast/unit_test.h>
-#include <callchain/beast/type_name.h>
+#include <call/json/json_value.h>
+#include <call/json/json_reader.h>
+#include <call/beast/unit_test.h>
+#include <call/beast/type_name.h>
 
-namespace callchain {
+namespace call {
 
 struct json_value_test : beast::unit_test::suite
 {
@@ -233,6 +233,6 @@ struct json_value_test : beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(json_value, json, callchain);
+BEAST_DEFINE_TESTSUITE(json_value, json, call);
 
-} // callchain
+} // call

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,16 +19,16 @@
 
 #include <BeastConfig.h>
 #include <test/jtx/utility.h>
-#include <callchain/protocol/ErrorCodes.h>
-#include <callchain/protocol/HashPrefix.h>
-#include <callchain/protocol/Indexes.h>
-#include <callchain/protocol/JsonFields.h>
-#include <callchain/protocol/STParsedJSON.h>
-#include <callchain/protocol/types.h>
-#include <callchain/basics/contract.h>
+#include <call/protocol/ErrorCodes.h>
+#include <call/protocol/HashPrefix.h>
+#include <call/protocol/Indexes.h>
+#include <call/protocol/JsonFields.h>
+#include <call/protocol/STParsedJSON.h>
+#include <call/protocol/types.h>
+#include <call/basics/contract.h>
 #include <cstring>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace jtx {
 
@@ -51,7 +51,7 @@ sign (Json::Value& jv,
     Serializer ss;
     ss.add32 (HashPrefix::txSign);
     parse(jv).addWithoutSigningFields(ss);
-    auto const sig = callchain::sign(
+    auto const sig = call::sign(
         account.pk(), account.sk(), ss.slice());
     jv[jss::TxnSignature] =
         strHex(Slice{ sig.data(), sig.size() });
@@ -90,4 +90,4 @@ fill_seq (Json::Value& jv,
 
 } // jtx
 } // test
-} // callchain
+} // call

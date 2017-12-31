@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,10 +18,10 @@
 //==============================================================================
 
 #include <test/jtx.h>
-#include <callchain/beast/unit_test.h>
-#include <callchain/protocol/JsonFields.h>
+#include <call/beast/unit_test.h>
+#include <call/protocol/JsonFields.h>
 
-namespace callchain {
+namespace call {
 
 class AccountCurrencies_test : public beast::unit_test::suite
 {
@@ -191,7 +191,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(AccountCurrencies,app,callchain);
+BEAST_DEFINE_TESTSUITE(AccountCurrencies,app,call);
 
-} // callchain
+} // call
 

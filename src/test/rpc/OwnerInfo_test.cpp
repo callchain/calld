@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 #include <test/jtx.h>
 
-#include <callchain/beast/unit_test.h>
-#include <callchain/protocol/AccountID.h>
-#include <callchain/protocol/JsonFields.h>
-#include <callchain/protocol/STAmount.h>
+#include <call/beast/unit_test.h>
+#include <call/protocol/AccountID.h>
+#include <call/protocol/JsonFields.h>
+#include <call/protocol/STAmount.h>
 
-namespace callchain {
+namespace call {
 
 class OwnerInfo_test : public beast::unit_test::suite
 {
@@ -112,9 +112,9 @@ class OwnerInfo_test : public beast::unit_test::suite
         }
 
         // accepted ledger entry
-        if (! BEAST_EXPECT (result[jss::accepted].isMember(jss::callchain_lines)))
+        if (! BEAST_EXPECT (result[jss::accepted].isMember(jss::call_lines)))
             return;
-        auto lines = result[jss::accepted][jss::callchain_lines];
+        auto lines = result[jss::accepted][jss::call_lines];
         if (! BEAST_EXPECT (lines.isArray() && lines.size() == 2))
             return;
 
@@ -155,9 +155,9 @@ class OwnerInfo_test : public beast::unit_test::suite
 
 
         // current ledger entry
-        if (! BEAST_EXPECT (result[jss::current].isMember(jss::callchain_lines)))
+        if (! BEAST_EXPECT (result[jss::current].isMember(jss::call_lines)))
             return;
-        lines = result[jss::current][jss::callchain_lines];
+        lines = result[jss::current][jss::call_lines];
         if (! BEAST_EXPECT (lines.isArray() && lines.size() == 2))
             return;
 
@@ -208,7 +208,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(OwnerInfo,app,callchain);
+BEAST_DEFINE_TESTSUITE(OwnerInfo,app,call);
 
-} // callchain
+} // call
 

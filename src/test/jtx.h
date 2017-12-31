@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,12 +17,12 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_JTX_H_INCLUDED
-#define CALLCHAIN_TEST_JTX_H_INCLUDED
+#ifndef CALL_TEST_JTX_H_INCLUDED
+#define CALL_TEST_JTX_H_INCLUDED
 
 // Convenience header that includes everything
 
-#include <callchain/json/to_string.h>
+#include <call/json/to_string.h>
 #include <test/jtx/Account.h>
 #include <test/jtx/amount.h>
 #include <test/jtx/balance.h>

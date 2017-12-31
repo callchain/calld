@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,14 +18,14 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/protocol/Sign.h>
-#include <callchain/protocol/STTx.h>
-#include <callchain/protocol/STParsedJSON.h>
-#include <callchain/protocol/types.h>
-#include <callchain/json/to_string.h>
-#include <callchain/beast/unit_test.h>
+#include <call/protocol/Sign.h>
+#include <call/protocol/STTx.h>
+#include <call/protocol/STParsedJSON.h>
+#include <call/protocol/types.h>
+#include <call/json/to_string.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain {
+namespace call {
 
 class STTx_test : public beast::unit_test::suite
 {
@@ -190,7 +190,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(STTx,callchain_app,callchain);
-BEAST_DEFINE_TESTSUITE(InnerObjectFormatsSerializer,callchain_app,callchain);
+BEAST_DEFINE_TESTSUITE(STTx,call_app,call);
+BEAST_DEFINE_TESTSUITE(InnerObjectFormatsSerializer,call_app,call);
 
-} // callchain
+} // call

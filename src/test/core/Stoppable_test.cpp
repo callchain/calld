@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,11 +17,11 @@
 */
 //==============================================================================
 
-#include <callchain/core/Stoppable.h>
-#include <callchain/beast/unit_test.h>
+#include <call/core/Stoppable.h>
+#include <call/beast/unit_test.h>
 #include <thread>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class Stoppable_test
@@ -457,7 +457,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Stoppable,core,callchain);
+BEAST_DEFINE_TESTSUITE(Stoppable,core,call);
 
 }
 }

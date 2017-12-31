@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,13 +18,13 @@
 //==============================================================================
 
 #include <test/jtx/Env.h>
-#include <callchain/beast/utility/temp_dir.h>
-#include <callchain/crypto/csprng.h>
+#include <call/beast/utility/temp_dir.h>
+#include <call/crypto/csprng.h>
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <streambuf>
 
-namespace callchain {
+namespace call {
 
 class CryptoPRNG_test : public beast::unit_test::suite
 {
@@ -120,6 +120,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE (CryptoPRNG, core, callchain);
+BEAST_DEFINE_TESTSUITE (CryptoPRNG, core, call);
 
-}  // callchain
+}  // call

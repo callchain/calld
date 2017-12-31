@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-  This file is part of callchaind: https://github.com/callchain/callchaind
+  This file is part of calld: https://github.com/call/calld
   Copyright (c) 2012-2016 Ripple Labs Inc.
 
   Permission to use, copy, modify, and/or distribute this software for any
@@ -19,13 +19,13 @@
 
 #include <BeastConfig.h>
 #include <test/jtx.h>
-#include <callchain/beast/unit_test.h>
-#include <callchain/protocol/Feature.h>
-#include <callchain/protocol/JsonFields.h>
-#include <callchain/protocol/SField.h>
+#include <call/beast/unit_test.h>
+#include <call/protocol/Feature.h>
+#include <call/protocol/JsonFields.h>
+#include <call/protocol/SField.h>
 #include <test/jtx/WSClient.h>
 
-namespace callchain {
+namespace call {
 
 class TrustAndBalance_test : public beast::unit_test::suite
 {
@@ -38,10 +38,10 @@ class TrustAndBalance_test : public beast::unit_test::suite
     {
         Json::Value jvParams;
         jvParams[jss::ledger_index] = "current";
-        jvParams[jss::callchain_state][jss::currency] = currency;
-        jvParams[jss::callchain_state][jss::accounts] = Json::arrayValue;
-        jvParams[jss::callchain_state][jss::accounts].append(acct_a.human());
-        jvParams[jss::callchain_state][jss::accounts].append(acct_b.human());
+        jvParams[jss::call_state][jss::currency] = currency;
+        jvParams[jss::call_state][jss::accounts] = Json::arrayValue;
+        jvParams[jss::call_state][jss::accounts].append(acct_a.human());
+        jvParams[jss::call_state][jss::accounts].append(acct_b.human());
         return env.rpc ("json", "ledger_entry", to_string(jvParams))[jss::result];
     };
 
@@ -513,8 +513,8 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE (TrustAndBalance, app, callchain);
+BEAST_DEFINE_TESTSUITE (TrustAndBalance, app, call);
 
-}  // callchain
+}  // call
 
 

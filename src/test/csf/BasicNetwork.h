@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,13 +17,13 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_CSF_BASICNETWORK_H_INCLUDED
-#define CALLCHAIN_TEST_CSF_BASICNETWORK_H_INCLUDED
+#ifndef CALL_TEST_CSF_BASICNETWORK_H_INCLUDED
+#define CALL_TEST_CSF_BASICNETWORK_H_INCLUDED
 
-#include <callchain/basics/qalloc.h>
-#include <callchain/beast/clock/manual_clock.h>
-#include <callchain/beast/hash/hash_append.h>
-#include <callchain/beast/hash/uhash.h>
+#include <call/basics/qalloc.h>
+#include <call/beast/clock/manual_clock.h>
+#include <call/beast/hash/hash_append.h>
+#include <call/beast/hash/uhash.h>
 #include <boost/container/flat_map.hpp>
 #include <boost/intrusive/list.hpp>
 #include <boost/intrusive/set.hpp>
@@ -39,7 +39,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace csf {
 /** Peer to peer network simulator.
@@ -855,6 +855,6 @@ BasicNetwork<Peer>::bfs(Peer const& start, Function&& f)
 
 }  // csf
 }  // test
-}  // callchain
+}  // call
 
 #endif

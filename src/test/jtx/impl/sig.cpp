@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -21,7 +21,7 @@
 #include <test/jtx/sig.h>
 #include <test/jtx/utility.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace jtx {
 
@@ -44,4 +44,4 @@ sig::operator()(Env&, JTx& jt) const
 
 } // jtx
 } // test
-} // callchain
+} // call

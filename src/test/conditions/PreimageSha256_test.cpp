@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,19 +17,19 @@
 */
 //==============================================================================
 
-#include <callchain/basics/Buffer.h>
-#include <callchain/basics/strHex.h>
-#include <callchain/basics/Slice.h>
-#include <callchain/beast/unit_test.h>
-#include <callchain/conditions/Condition.h>
-#include <callchain/conditions/Fulfillment.h>
-#include <callchain/conditions/impl/PreimageSha256.h>
+#include <call/basics/Buffer.h>
+#include <call/basics/strHex.h>
+#include <call/basics/Slice.h>
+#include <call/beast/unit_test.h>
+#include <call/conditions/Condition.h>
+#include <call/conditions/Fulfillment.h>
+#include <call/conditions/impl/PreimageSha256.h>
 #include <algorithm>
 #include <string>
 #include <utility>
 #include <vector>
 
-namespace callchain {
+namespace call {
 namespace cryptoconditions {
 
 class PreimageSha256_test : public beast::unit_test::suite
@@ -186,7 +186,7 @@ class PreimageSha256_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE (PreimageSha256, conditions, callchain);
+BEAST_DEFINE_TESTSUITE (PreimageSha256, conditions, call);
 
 }
 

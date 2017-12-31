@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright 2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,16 +18,16 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/BasicConfig.h>
+#include <call/basics/BasicConfig.h>
 #include <test/jtx/TestSuite.h>
-#include <callchain/overlay/Cluster.h>
-#include <callchain/overlay/ClusterNode.h>
-#include <callchain/protocol/SecretKey.h>
+#include <call/overlay/Cluster.h>
+#include <call/overlay/ClusterNode.h>
+#include <call/protocol/SecretKey.h>
 
-namespace callchain {
+namespace call {
 namespace tests {
 
-class cluster_test : public callchain::TestSuite
+class cluster_test : public call::TestSuite
 {
 public:
     std::unique_ptr<Cluster>
@@ -267,7 +267,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(cluster,overlay,callchain);
+BEAST_DEFINE_TESTSUITE(cluster,overlay,call);
 
 } // tests
-} // callchain
+} // call

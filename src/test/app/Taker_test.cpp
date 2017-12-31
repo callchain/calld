@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,12 +17,12 @@
 */
 //==============================================================================
 
-#include <callchain/app/tx/impl/Taker.h>
-#include <callchain/beast/unit_test.h>
-#include <callchain/beast/core/LexicalCast.h>
+#include <call/app/tx/impl/Taker.h>
+#include <call/beast/unit_test.h>
+#include <call/beast/core/LexicalCast.h>
 #include <type_traits>
 
-namespace callchain {
+namespace call {
 
 class Taker_test : public beast::unit_test::suite
 {
@@ -366,6 +366,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Taker,tx,callchain);
+BEAST_DEFINE_TESTSUITE(Taker,tx,call);
 
 }

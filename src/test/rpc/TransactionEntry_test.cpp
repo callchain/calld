@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,9 +19,9 @@
 
 #include <test/jtx.h>
 #include <test/jtx/Env.h>
-#include <callchain/protocol/JsonFields.h>
+#include <call/protocol/JsonFields.h>
 
-namespace callchain {
+namespace call {
 
 class TransactionEntry_test : public beast::unit_test::suite
 {
@@ -160,6 +160,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE (TransactionEntry, rpc, callchain);
+BEAST_DEFINE_TESTSUITE (TransactionEntry, rpc, call);
 
-}  // callchain
+}  // call

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,10 +18,10 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/RangeSet.h>
-#include <callchain/beast/unit_test.h>
+#include <call/basics/RangeSet.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain
+namespace call
 {
 class RangeSet_test : public beast::unit_test::suite
 {
@@ -83,6 +83,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(RangeSet, callchain_basics, callchain);
+BEAST_DEFINE_TESTSUITE(RangeSet, call_basics, call);
 
-}  // namespace callchain
+}  // namespace call

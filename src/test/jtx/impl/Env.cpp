@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -29,29 +29,29 @@
 #include <test/jtx/sig.h>
 #include <test/jtx/utility.h>
 #include <test/jtx/JSONRPCClient.h>
-#include <callchain/app/ledger/LedgerMaster.h>
-#include <callchain/consensus/LedgerTiming.h>
-#include <callchain/app/misc/NetworkOPs.h>
-#include <callchain/app/misc/TxQ.h>
-#include <callchain/basics/contract.h>
-#include <callchain/basics/Slice.h>
-#include <callchain/json/to_string.h>
-#include <callchain/net/HTTPClient.h>
-#include <callchain/net/RPCCall.h>
-#include <callchain/protocol/ErrorCodes.h>
-#include <callchain/protocol/HashPrefix.h>
-#include <callchain/protocol/Indexes.h>
-#include <callchain/protocol/JsonFields.h>
-#include <callchain/protocol/LedgerFormats.h>
-#include <callchain/protocol/Serializer.h>
-#include <callchain/protocol/SystemParameters.h>
-#include <callchain/protocol/TER.h>
-#include <callchain/protocol/TxFlags.h>
-#include <callchain/protocol/types.h>
-#include <callchain/protocol/Feature.h>
+#include <call/app/ledger/LedgerMaster.h>
+#include <call/consensus/LedgerTiming.h>
+#include <call/app/misc/NetworkOPs.h>
+#include <call/app/misc/TxQ.h>
+#include <call/basics/contract.h>
+#include <call/basics/Slice.h>
+#include <call/json/to_string.h>
+#include <call/net/HTTPClient.h>
+#include <call/net/RPCCall.h>
+#include <call/protocol/ErrorCodes.h>
+#include <call/protocol/HashPrefix.h>
+#include <call/protocol/Indexes.h>
+#include <call/protocol/JsonFields.h>
+#include <call/protocol/LedgerFormats.h>
+#include <call/protocol/Serializer.h>
+#include <call/protocol/SystemParameters.h>
+#include <call/protocol/TER.h>
+#include <call/protocol/TxFlags.h>
+#include <call/protocol/types.h>
+#include <call/protocol/Feature.h>
 #include <memory>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace jtx {
 
@@ -469,7 +469,7 @@ Env::do_rpc(std::vector<std::string> const& args)
     if (!jv.isMember(jss::jsonrpc))
     {
         jv[jss::jsonrpc] = "2.0";
-        jv[jss::callchainrpc] = "2.0";
+        jv[jss::callrpc] = "2.0";
         jv[jss::id] = 5;
     }
     auto response = client().invoke(
@@ -479,7 +479,7 @@ Env::do_rpc(std::vector<std::string> const& args)
     if (jv.isMember(jss::jsonrpc))
     {
         response[jss::jsonrpc] = jv[jss::jsonrpc];
-        response[jss::callchainrpc] = jv[jss::callchainrpc];
+        response[jss::callrpc] = jv[jss::callrpc];
         response[jss::id] = jv[jss::id];
     }
 
@@ -503,4 +503,4 @@ Env::enableFeature(uint256 const feature)
 } // jtx
 
 } // test
-} // callchain
+} // call

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,15 +17,15 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_JTX_FLAGS_H_INCLUDED
-#define CALLCHAIN_TEST_JTX_FLAGS_H_INCLUDED
+#ifndef CALL_TEST_JTX_FLAGS_H_INCLUDED
+#define CALL_TEST_JTX_FLAGS_H_INCLUDED
 
 #include <test/jtx/Env.h>
-#include <callchain/protocol/LedgerFormats.h>
-#include <callchain/protocol/TxFlags.h>
-#include <callchain/basics/contract.h>
+#include <call/protocol/LedgerFormats.h>
+#include <call/protocol/TxFlags.h>
+#include <call/basics/contract.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace jtx {
 
@@ -138,6 +138,6 @@ public:
 
 } // jtx
 } // test
-} // callchain
+} // call
 
 #endif

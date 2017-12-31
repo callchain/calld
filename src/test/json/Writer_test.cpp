@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,14 +18,14 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/json/json_writer.h>
-#include <callchain/json/Writer.h>
+#include <call/json/json_writer.h>
+#include <call/json/Writer.h>
 #include <test/json/TestOutputSuite.h>
-#include <callchain/beast/unit_test.h>
+#include <call/beast/unit_test.h>
 
 namespace Json {
 
-class JsonWriter_test : public callchain::test::TestOutputSuite
+class JsonWriter_test : public call::test::TestOutputSuite
 {
 public:
     void testTrivial ()
@@ -200,6 +200,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(JsonWriter, callchain_basics, callchain);
+BEAST_DEFINE_TESTSUITE(JsonWriter, call_basics, call);
 
 } // Json

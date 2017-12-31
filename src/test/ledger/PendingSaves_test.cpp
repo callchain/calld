@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -16,10 +16,10 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/app/ledger/PendingSaves.h>
-#include <callchain/beast/unit_test.h>
+#include <call/app/ledger/PendingSaves.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 struct PendingSaves_test : public beast::unit_test::suite
@@ -55,7 +55,7 @@ struct PendingSaves_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(PendingSaves,ledger,callchain);
+BEAST_DEFINE_TESTSUITE(PendingSaves,ledger,call);
 
 } // test
-} // callchain
+} // call

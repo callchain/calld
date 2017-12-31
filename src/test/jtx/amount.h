@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-  This file is part of callchaind: https://github.com/callchain/callchaind
+  This file is part of calld: https://github.com/call/calld
   Copyright (c) 2012-2015 Ripple Labs Inc.
 
   Permission to use, copy, modify, and/or distribute this software for any
@@ -17,21 +17,21 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_JTX_AMOUNT_H_INCLUDED
-#define CALLCHAIN_TEST_JTX_AMOUNT_H_INCLUDED
+#ifndef CALL_TEST_JTX_AMOUNT_H_INCLUDED
+#define CALL_TEST_JTX_AMOUNT_H_INCLUDED
 
 #include <test/jtx/Account.h>
 #include <test/jtx/amount.h>
 #include <test/jtx/tags.h>
-#include <callchain/protocol/Issue.h>
-#include <callchain/protocol/STAmount.h>
-#include <callchain/basics/contract.h>
+#include <call/protocol/Issue.h>
+#include <call/protocol/STAmount.h>
+#include <call/basics/contract.h>
 #include <cstdint>
 #include <ostream>
 #include <string>
 #include <type_traits>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace jtx {
 
@@ -148,10 +148,10 @@ operator<< (std::ostream& os,
 struct BookSpec
 {
     AccountID account;
-    callchain::Currency currency;
+    call::Currency currency;
 
     BookSpec(AccountID const& account_,
-        callchain::Currency const& currency_)
+        call::Currency const& currency_)
         : account(account_)
         , currency(currency_)
     {
@@ -287,10 +287,10 @@ class IOU
 {
 public:
     Account account;
-    callchain::Currency currency;
+    call::Currency currency;
 
     IOU(Account const& account_,
-            callchain::Currency const& currency_)
+            call::Currency const& currency_)
         : account(account_)
         , currency(currency_)
     {
@@ -403,6 +403,6 @@ extern any_t const any;
 
 } // jtx
 } // test
-} // callchain
+} // call
 
 #endif

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,16 +17,16 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_JTX_OWNERS_H_INCLUDED
-#define CALLCHAIN_TEST_JTX_OWNERS_H_INCLUDED
+#ifndef CALL_TEST_JTX_OWNERS_H_INCLUDED
+#define CALL_TEST_JTX_OWNERS_H_INCLUDED
 
 #include <test/jtx/Env.h>
-#include <callchain/ledger/View.h>
-#include <callchain/protocol/LedgerFormats.h>
-#include <callchain/protocol/UintTypes.h>
+#include <call/ledger/View.h>
+#include <call/protocol/LedgerFormats.h>
+#include <call/protocol/UintTypes.h>
 #include <cstdint>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace jtx {
 
@@ -88,13 +88,13 @@ public:
 };
 
 /** Match the number of trust lines in the account's owner directory */
-using lines = owner_count<ltCALLCHAIN_STATE>;
+using lines = owner_count<ltCALL_STATE>;
 
 /** Match the number of offers in the account's owner directory */
 using offers = owner_count<ltOFFER>;
 
 } // jtx
 } // test
-} // callchain
+} // call
 
 #endif

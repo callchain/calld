@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,16 +17,16 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_SHAMAP_TESTS_COMMON_H_INCLUDED
-#define CALLCHAIN_SHAMAP_TESTS_COMMON_H_INCLUDED
+#ifndef CALL_SHAMAP_TESTS_COMMON_H_INCLUDED
+#define CALL_SHAMAP_TESTS_COMMON_H_INCLUDED
 
 #include <BeastConfig.h>
-#include <callchain/basics/chrono.h>
-#include <callchain/nodestore/DummyScheduler.h>
-#include <callchain/nodestore/Manager.h>
-#include <callchain/shamap/Family.h>
+#include <call/basics/chrono.h>
+#include <call/nodestore/DummyScheduler.h>
+#include <call/nodestore/Manager.h>
+#include <call/shamap/Family.h>
 
-namespace callchain {
+namespace call {
 namespace tests {
 
 class TestFamily : public Family
@@ -116,6 +116,6 @@ public:
 };
 
 } // tests
-} // callchain
+} // call
 
 #endif

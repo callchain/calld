@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,20 +18,20 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/app/main/BasicApp.h>
-#include <callchain/app/misc/ValidatorSite.h>
-#include <callchain/beast/unit_test.h>
-#include <callchain/core/ConfigSections.h>
-#include <callchain/json/json_value.h>
-#include <callchain/protocol/JsonFields.h>
-#include <callchain/protocol/Sign.h>
+#include <call/app/main/BasicApp.h>
+#include <call/app/misc/ValidatorSite.h>
+#include <call/beast/unit_test.h>
+#include <call/core/ConfigSections.h>
+#include <call/json/json_value.h>
+#include <call/protocol/JsonFields.h>
+#include <call/protocol/Sign.h>
 #include <beast/core/detail/base64.hpp>
 #include <test/jtx.h>
 #include <test/jtx/TrustedPublisherServer.h>
 
 #include <set>
 
-namespace callchain {
+namespace call {
 
 namespace test {
 
@@ -394,7 +394,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(ValidatorRPC, app, callchain);
+BEAST_DEFINE_TESTSUITE(ValidatorRPC, app, call);
 
 }  // namespace test
-}  // namespace callchain
+}  // namespace call

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,14 +18,14 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/chrono.h>
-#include <callchain/basics/Slice.h>
-#include <callchain/protocol/PublicKey.h>
-#include <callchain/protocol/SecretKey.h>
-#include <callchain/peerfinder/impl/Logic.h>
-#include <callchain/beast/unit_test.h>
+#include <call/basics/chrono.h>
+#include <call/basics/Slice.h>
+#include <call/protocol/PublicKey.h>
+#include <call/protocol/SecretKey.h>
+#include <call/peerfinder/impl/Logic.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain {
+namespace call {
 namespace PeerFinder {
 
 class Logic_test : public beast::unit_test::suite
@@ -157,7 +157,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Logic,PeerFinder,callchain);
+BEAST_DEFINE_TESTSUITE(Logic,PeerFinder,call);
 
 }
 }

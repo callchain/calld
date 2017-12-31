@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,10 +18,10 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/protocol/types.h>
-#include <callchain/beast/unit_test.h>
+#include <call/protocol/types.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain {
+namespace call {
 
 struct types_test : public beast::unit_test::suite
 {
@@ -42,6 +42,6 @@ struct types_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(types,protocol,callchain);
+BEAST_DEFINE_TESTSUITE(types,protocol,call);
 
 }

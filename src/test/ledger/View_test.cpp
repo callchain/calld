@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,17 +19,17 @@
 
 #include <BeastConfig.h>
 #include <test/jtx.h>
-#include <callchain/app/ledger/Ledger.h>
-#include <callchain/ledger/ApplyViewImpl.h>
-#include <callchain/ledger/OpenView.h>
-#include <callchain/ledger/PaymentSandbox.h>
-#include <callchain/ledger/Sandbox.h>
-#include <callchain/core/ConfigSections.h>
-#include <callchain/protocol/Feature.h>
-#include <callchain/protocol/Protocol.h>
+#include <call/app/ledger/Ledger.h>
+#include <call/ledger/ApplyViewImpl.h>
+#include <call/ledger/OpenView.h>
+#include <call/ledger/PaymentSandbox.h>
+#include <call/ledger/Sandbox.h>
+#include <call/core/ConfigSections.h>
+#include <call/protocol/Feature.h>
+#include <call/protocol/Protocol.h>
 #include <type_traits>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class View_test
@@ -835,8 +835,8 @@ class GetAmendments_test
     }
 };
 
-BEAST_DEFINE_TESTSUITE(View,ledger,callchain);
-BEAST_DEFINE_TESTSUITE(GetAmendments,ledger,callchain);
+BEAST_DEFINE_TESTSUITE(View,ledger,call);
+BEAST_DEFINE_TESTSUITE(GetAmendments,ledger,call);
 
 }  // test
-}  // callchain
+}  // call

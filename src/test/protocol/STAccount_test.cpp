@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,10 +18,10 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/protocol/STAccount.h>
-#include <callchain/beast/unit_test.h>
+#include <call/protocol/STAccount.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain {
+namespace call {
 
 struct STAccount_test : public beast::unit_test::suite
 {
@@ -129,6 +129,6 @@ struct STAccount_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(STAccount,protocol,callchain);
+BEAST_DEFINE_TESTSUITE(STAccount,protocol,call);
 
 }

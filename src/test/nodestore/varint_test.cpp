@@ -17,12 +17,12 @@
 */
 //==============================================================================
 
-#include <callchain/beast/unit_test.h>
-#include <callchain/nodestore/impl/varint.h>
+#include <call/beast/unit_test.h>
+#include <call/nodestore/impl/varint.h>
 #include <array>
 #include <vector>
 
-namespace callchain {
+namespace call {
 namespace NodeStore {
 namespace tests {
 
@@ -67,8 +67,8 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(varint,NodeStore,callchain);
+BEAST_DEFINE_TESTSUITE(varint,NodeStore,call);
 
 } // test
 } // NodeStore
-} // callchain
+} // call

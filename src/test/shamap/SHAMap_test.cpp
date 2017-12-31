@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,14 +18,14 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/shamap/SHAMap.h>
+#include <call/shamap/SHAMap.h>
 #include <test/shamap/common.h>
-#include <callchain/basics/Blob.h>
-#include <callchain/basics/StringUtilities.h>
-#include <callchain/beast/unit_test.h>
-#include <callchain/beast/utility/Journal.h>
+#include <call/basics/Blob.h>
+#include <call/basics/StringUtilities.h>
+#include <call/beast/unit_test.h>
+#include <call/beast/utility/Journal.h>
 
-namespace callchain {
+namespace call {
 namespace tests {
 
 #ifndef __INTELLISENSE__
@@ -322,7 +322,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(SHAMap,callchain_app,callchain);
+BEAST_DEFINE_TESTSUITE(SHAMap,call_app,call);
 
 } // tests
-} // callchain
+} // call

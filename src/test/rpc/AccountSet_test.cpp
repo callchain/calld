@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,15 +17,15 @@
 */
 //==============================================================================
 
-#include <callchain/basics/StringUtilities.h>
-#include <callchain/protocol/AmountConversions.h>
-#include <callchain/protocol/Feature.h>
-#include <callchain/protocol/JsonFields.h>
-#include <callchain/protocol/Quality.h>
-#include <callchain/protocol/Rate.h>
+#include <call/basics/StringUtilities.h>
+#include <call/protocol/AmountConversions.h>
+#include <call/protocol/Feature.h>
+#include <call/protocol/JsonFields.h>
+#include <call/protocol/Quality.h>
+#include <call/protocol/Rate.h>
 #include <test/jtx.h>
 
-namespace callchain {
+namespace call {
 
 class AccountSet_test : public beast::unit_test::suite
 {
@@ -36,7 +36,7 @@ public:
         using namespace test::jtx;
         Env env(*this);
         Account const alice ("alice");
-        env.fund(XRP(10000), nocallchain(alice));
+        env.fund(XRP(10000), nocall(alice));
         //ask for the ledger entry - account root, to check its flags
         auto const jrr = env.le(alice);
         BEAST_EXPECT((*env.le(alice))[ sfFlags ] == 0u);
@@ -47,7 +47,7 @@ public:
         using namespace test::jtx;
         Env env(*this);
         Account const alice ("alice");
-        env.fund(XRP(10000), nocallchain(alice));
+        env.fund(XRP(10000), nocall(alice));
         env.memoize("eric");
         env(regkey(alice, "eric"));
 
@@ -67,7 +67,7 @@ public:
         using namespace test::jtx;
         Env env(*this);
         Account const alice ("alice");
-        env.fund(XRP(10000), nocallchain(alice));
+        env.fund(XRP(10000), nocall(alice));
 
         unsigned int orig_flags = (*env.le(alice))[ sfFlags ];
 
@@ -87,7 +87,7 @@ public:
         using namespace test::jtx;
         Env env(*this);
         Account const alice ("alice");
-        env.fund(XRP(10000), nocallchain(alice));
+        env.fund(XRP(10000), nocall(alice));
         env.memoize("eric");
         env(regkey(alice, "eric"));
 
@@ -419,7 +419,7 @@ public:
 
 };
 
-BEAST_DEFINE_TESTSUITE(AccountSet,app,callchain);
+BEAST_DEFINE_TESTSUITE(AccountSet,app,call);
 
 }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,11 +18,11 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/app/ledger/Ledger.h>
+#include <call/app/ledger/Ledger.h>
 #include <test/jtx.h>
-#include <callchain/beast/unit_test.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 // Test that converting a ledger to SHAMapV2
@@ -75,7 +75,7 @@ class SHAMapV2_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(SHAMapV2,ledger,callchain);
+BEAST_DEFINE_TESTSUITE(SHAMapV2,ledger,call);
 
 }  // test
-}  // callchain
+}  // call

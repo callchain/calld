@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,15 +18,15 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/contract.h>
-#include <callchain/protocol/InnerObjectFormats.h>
-#include <callchain/protocol/ErrorCodes.h>          // RPC::containsError
-#include <callchain/json/json_reader.h>             // Json::Reader
-#include <callchain/protocol/STParsedJSON.h>        // STParsedJSONObject
-#include <callchain/beast/unit_test.h>
+#include <call/basics/contract.h>
+#include <call/protocol/InnerObjectFormats.h>
+#include <call/protocol/ErrorCodes.h>          // RPC::containsError
+#include <call/json/json_reader.h>             // Json::Reader
+#include <call/protocol/STParsedJSON.h>        // STParsedJSONObject
+#include <call/beast/unit_test.h>
 #include <test/jtx.h>
 
-namespace callchain {
+namespace call {
 
 namespace InnerObjectFormatsUnitTestDetail
 {
@@ -204,6 +204,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(InnerObjectFormatsParsedJSON,callchain_app,callchain);
+BEAST_DEFINE_TESTSUITE(InnerObjectFormatsParsedJSON,call_app,call);
 
-} // callchain
+} // call

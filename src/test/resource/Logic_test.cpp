@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,17 +18,17 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/chrono.h>
-#include <callchain/basics/random.h>
-#include <callchain/beast/unit_test.h>
+#include <call/basics/chrono.h>
+#include <call/basics/random.h>
+#include <call/beast/unit_test.h>
 #include <boost/utility/base_from_member.hpp>
-#include <callchain/resource/Consumer.h>
-#include <callchain/resource/impl/Entry.h>
-#include <callchain/resource/impl/Logic.h>
+#include <call/resource/Consumer.h>
+#include <call/resource/impl/Entry.h>
+#include <call/resource/impl/Logic.h>
 
 
 
-namespace callchain {
+namespace call {
 namespace Resource {
 
 class Manager_test : public beast::unit_test::suite
@@ -254,7 +254,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Manager,resource,callchain);
+BEAST_DEFINE_TESTSUITE(Manager,resource,call);
 
 }
 }

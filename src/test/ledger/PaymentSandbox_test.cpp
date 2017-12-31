@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-  This file is part of callchaind: https://github.com/callchain/callchaind
+  This file is part of calld: https://github.com/call/calld
   Copyright (c) 2012-2015 Ripple Labs Inc.
 
   Permission to use, copy, modify, and/or distribute this software for any
@@ -18,14 +18,14 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/ledger/ApplyViewImpl.h>
-#include <callchain/ledger/PaymentSandbox.h>
+#include <call/ledger/ApplyViewImpl.h>
+#include <call/ledger/PaymentSandbox.h>
 #include <test/jtx/PathSet.h>
-#include <callchain/ledger/View.h>
-#include <callchain/protocol/AmountConversions.h>
-#include <callchain/protocol/Feature.h>
+#include <call/ledger/View.h>
+#include <call/protocol/AmountConversions.h>
+#include <call/protocol/Feature.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class PaymentSandbox_test : public beast::unit_test::suite
@@ -141,19 +141,19 @@ class PaymentSandbox_test : public beast::unit_test::suite
         }
 
         {
-            // callchainCredit, no deferredCredits
+            // callCredit, no deferredCredits
             ApplyViewImpl av (&*env.current(), tapNONE);
 
             auto const iss = USD_gw1.issue ();
             auto const startingAmount = accountHolds (
                 av, alice, iss.currency, iss.account, fhIGNORE_FREEZE, j);
 
-            callchainCredit (av, gw1, alice, toCredit, true, j);
+            callCredit (av, gw1, alice, toCredit, true, j);
             BEAST_EXPECT(accountHolds (av, alice, iss.currency, iss.account,
                         fhIGNORE_FREEZE, j) ==
                     startingAmount + toCredit);
 
-            callchainCredit (av, alice, gw1, toDebit, true, j);
+            callCredit (av, alice, gw1, toDebit, true, j);
             BEAST_EXPECT(accountHolds (av, alice, iss.currency, iss.account,
                         fhIGNORE_FREEZE, j) ==
                     startingAmount + toCredit - toDebit);
@@ -180,7 +180,7 @@ class PaymentSandbox_test : public beast::unit_test::suite
         }
 
         {
-            // callchainCredit, w/ deferredCredits
+            // callCredit, w/ deferredCredits
             ApplyViewImpl av (&*env.current(), tapNONE);
             PaymentSandbox pv (&av);
 
@@ -188,7 +188,7 @@ class PaymentSandbox_test : public beast::unit_test::suite
             auto const startingAmount = accountHolds (
                 pv, alice, iss.currency, iss.account, fhIGNORE_FREEZE, j);
 
-            callchainCredit (pv, gw1, alice, toCredit, true, j);
+            callCredit (pv, gw1, alice, toCredit, true, j);
             BEAST_EXPECT(accountHolds (pv, alice, iss.currency, iss.account,
                         fhIGNORE_FREEZE, j) ==
                     startingAmount);
@@ -383,7 +383,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE (PaymentSandbox, ledger, callchain);
+BEAST_DEFINE_TESTSUITE (PaymentSandbox, ledger, call);
 
 }  // test
-}  // callchain
+}  // call

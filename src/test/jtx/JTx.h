@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,19 +17,19 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_JTX_JTX_H_INCLUDED
-#define CALLCHAIN_TEST_JTX_JTX_H_INCLUDED
+#ifndef CALL_TEST_JTX_JTX_H_INCLUDED
+#define CALL_TEST_JTX_JTX_H_INCLUDED
 
 #include <test/jtx/requires.h>
 #include <test/jtx/basic_prop.h>
-#include <callchain/json/json_value.h>
-#include <callchain/protocol/STTx.h>
-#include <callchain/protocol/TER.h>
+#include <call/json/json_value.h>
+#include <call/protocol/STTx.h>
+#include <call/protocol/TER.h>
 #include <functional>
 #include <memory>
 #include <vector>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace jtx {
 
@@ -170,6 +170,6 @@ private:
 
 } // jtx
 } // test
-} // callchain
+} // call
 
 #endif

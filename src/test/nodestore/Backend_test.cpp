@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,14 +18,14 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/unity/rocksdb.h>
+#include <call/unity/rocksdb.h>
 #include <test/nodestore/TestBase.h>
-#include <callchain/nodestore/DummyScheduler.h>
-#include <callchain/nodestore/Manager.h>
-#include <callchain/beast/utility/temp_dir.h>
+#include <call/nodestore/DummyScheduler.h>
+#include <call/nodestore/Manager.h>
+#include <call/beast/utility/temp_dir.h>
 #include <algorithm>
 
-namespace callchain {
+namespace call {
 namespace NodeStore {
 
 // Tests the Backend interface
@@ -105,17 +105,17 @@ public:
 
         testBackend ("nudb", seedValue);
 
-    #if CALLCHAIN_ROCKSDB_AVAILABLE
+    #if CALL_ROCKSDB_AVAILABLE
         testBackend ("rocksdb", seedValue);
     #endif
 
-    #ifdef CALLCHAIN_ENABLE_SQLITE_BACKEND_TESTS
+    #ifdef CALL_ENABLE_SQLITE_BACKEND_TESTS
         testBackend ("sqlite", seedValue);
     #endif
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Backend,callchain_core,callchain);
+BEAST_DEFINE_TESTSUITE(Backend,call_core,call);
 
 }
 }

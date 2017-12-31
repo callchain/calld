@@ -19,7 +19,7 @@
 #include <string>
 #include <utility>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 /** A simple test runner that only reports failures and a summary to the output
@@ -216,7 +216,7 @@ private:
         }
     }
 };
-} // callchain
+} // call
 } // test
 
 #endif

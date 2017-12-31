@@ -1,6 +1,6 @@
 ﻿//------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -20,10 +20,10 @@
 #include <BeastConfig.h>
 #include <test/jtx/WSClient.h>
 #include <test/jtx.h>
-#include <callchain/beast/unit_test.h>
+#include <call/beast/unit_test.h>
 #include <beast/core/handler_alloc.hpp>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class WSClient_test : public beast::unit_test::suite
@@ -46,7 +46,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(WSClient,test,callchain);
+BEAST_DEFINE_TESTSUITE(WSClient,test,call);
 
 } // test
-} // callchain
+} // call

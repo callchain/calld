@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2017 Ripple Labs Inc
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,8 +17,8 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_CSF_UNL_H_INCLUDED
-#define CALLCHAIN_TEST_CSF_UNL_H_INCLUDED
+#ifndef CALL_TEST_CSF_UNL_H_INCLUDED
+#define CALL_TEST_CSF_UNL_H_INCLUDED
 
 #include <boost/container/flat_set.hpp>
 #include <boost/optional.hpp>
@@ -27,7 +27,7 @@
 #include <random>
 #include <vector>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace csf {
 
@@ -253,6 +253,6 @@ public:
 
 }  // csf
 }  // test
-}  // callchain
+}  // call
 
 #endif

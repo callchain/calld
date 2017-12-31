@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/beast/unit_test.h>
+#include <call/beast/unit_test.h>
 #include <set>
 #include <test/csf/BasicNetwork.h>
 #include <vector>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class BasicNetwork_test : public beast::unit_test::suite
@@ -118,7 +118,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(BasicNetwork, test, callchain);
+BEAST_DEFINE_TESTSUITE(BasicNetwork, test, call);
 
 }  // test
-}  // callchain
+}  // call

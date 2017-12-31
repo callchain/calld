@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,14 +17,14 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_RPC_TESTOUTPUTSUITE_H_INCLUDED
-#define CALLCHAIN_RPC_TESTOUTPUTSUITE_H_INCLUDED
+#ifndef CALL_RPC_TESTOUTPUTSUITE_H_INCLUDED
+#define CALL_RPC_TESTOUTPUTSUITE_H_INCLUDED
 
-#include <callchain/json/Output.h>
-#include <callchain/json/Writer.h>
+#include <call/json/Output.h>
+#include <call/json/Writer.h>
 #include <test/jtx/TestSuite.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class TestOutputSuite : public TestSuite
@@ -52,6 +52,6 @@ protected:
 };
 
 } // test
-} // callchain
+} // call
 
 #endif

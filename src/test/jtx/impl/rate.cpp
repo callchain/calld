@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,11 +19,11 @@
 
 #include <BeastConfig.h>
 #include <test/jtx/rate.h>
-#include <callchain/protocol/JsonFields.h>
-#include <callchain/basics/contract.h>
+#include <call/protocol/JsonFields.h>
+#include <call/basics/contract.h>
 #include <stdexcept>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace jtx {
 
@@ -43,4 +43,4 @@ rate (Account const& account, double multiplier)
 
 } // jtx
 } // test
-} // callchain
+} // call

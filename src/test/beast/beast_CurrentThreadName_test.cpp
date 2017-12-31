@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/beast/core/CurrentThreadName.h>
-#include <callchain/beast/unit_test.h>
+#include <call/beast/core/CurrentThreadName.h>
+#include <call/beast/unit_test.h>
 #include <atomic>
 #include <thread>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class CurrentThreadName_test : public beast::unit_test::suite
@@ -85,4 +85,4 @@ public:
 BEAST_DEFINE_TESTSUITE(CurrentThreadName,core,beast);
 
 } // test
-} // callchain
+} // call

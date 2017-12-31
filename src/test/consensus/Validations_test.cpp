@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,16 +17,16 @@
 */
 //==============================================================================
 #include <BeastConfig.h>
-#include <callchain/beast/clock/manual_clock.h>
-#include <callchain/beast/unit_test.h>
-#include <callchain/consensus/Validations.h>
+#include <call/beast/clock/manual_clock.h>
+#include <call/beast/unit_test.h>
+#include <call/consensus/Validations.h>
 
 #include <tuple>
 #include <type_traits>
 #include <vector>
 #include <memory>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class Validations_test : public beast::unit_test::suite
@@ -958,6 +958,6 @@ class Validations_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Validations, consensus, callchain);
+BEAST_DEFINE_TESTSUITE(Validations, consensus, call);
 }  // namespace test
-}  // namespace callchain
+}  // namespace call

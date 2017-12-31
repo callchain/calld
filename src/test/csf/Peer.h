@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2017 Ripple Labs Inc
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -16,18 +16,18 @@
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 //==============================================================================
-#ifndef CALLCHAIN_TEST_CSF_PEER_H_INCLUDED
-#define CALLCHAIN_TEST_CSF_PEER_H_INCLUDED
+#ifndef CALL_TEST_CSF_PEER_H_INCLUDED
+#define CALL_TEST_CSF_PEER_H_INCLUDED
 
 #include <boost/container/flat_map.hpp>
 #include <boost/container/flat_set.hpp>
-#include <callchain/consensus/Consensus.h>
-#include <callchain/consensus/ConsensusProposal.h>
+#include <call/consensus/Consensus.h>
+#include <call/consensus/ConsensusProposal.h>
 #include <test/csf/Ledger.h>
 #include <test/csf/Tx.h>
 #include <test/csf/UNL.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace csf {
 
@@ -500,5 +500,5 @@ struct Peer
 
 }  // csf
 }  // test
-}  // callchain
+}  // call
 #endif

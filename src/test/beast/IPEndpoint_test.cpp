@@ -23,10 +23,10 @@
 #include "../../BeastConfig.h"
 #endif
 
-#include <callchain/beast/net/IPEndpoint.h>
-#include <callchain/beast/net/detail/Parse.h>
+#include <call/beast/net/IPEndpoint.h>
+#include <call/beast/net/detail/Parse.h>
 
-#include <callchain/beast/unit_test.h>
+#include <call/beast/unit_test.h>
 
 #include <typeinfo>
 

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,17 +18,17 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/chrono.h>
-#include <callchain/protocol/Feature.h>
-#include <callchain/protocol/Indexes.h>
-#include <callchain/protocol/JsonFields.h>
-#include <callchain/protocol/PayChan.h>
-#include <callchain/protocol/TxFlags.h>
+#include <call/basics/chrono.h>
+#include <call/protocol/Feature.h>
+#include <call/protocol/Indexes.h>
+#include <call/protocol/JsonFields.h>
+#include <call/protocol/PayChan.h>
+#include <call/protocol/TxFlags.h>
 #include <test/jtx.h>
 
 #include <chrono>
 
-namespace callchain
+namespace call
 {
 namespace test
 {
@@ -893,6 +893,6 @@ struct PayChan_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE (PayChan, app, callchain);
+BEAST_DEFINE_TESTSUITE (PayChan, app, call);
 }  // test
-}  // callchain
+}  // call

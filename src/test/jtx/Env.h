@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,8 +17,8 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_JTX_ENV_H_INCLUDED
-#define CALLCHAIN_TEST_JTX_ENV_H_INCLUDED
+#ifndef CALL_TEST_JTX_ENV_H_INCLUDED
+#define CALL_TEST_JTX_ENV_H_INCLUDED
 
 #include <test/jtx/Account.h>
 #include <test/jtx/amount.h>
@@ -28,24 +28,24 @@
 #include <test/jtx/tags.h>
 #include <test/jtx/AbstractClient.h>
 #include <test/jtx/ManualTimeKeeper.h>
-#include <callchain/app/main/Application.h>
-#include <callchain/app/ledger/Ledger.h>
-#include <callchain/app/ledger/OpenLedger.h>
-#include <callchain/app/paths/Pathfinder.h>
-#include <callchain/basics/chrono.h>
-#include <callchain/basics/Log.h>
-#include <callchain/core/Config.h>
-#include <callchain/json/json_value.h>
-#include <callchain/json/to_string.h>
-#include <callchain/ledger/CachedSLEs.h>
-#include <callchain/protocol/Feature.h>
-#include <callchain/protocol/Indexes.h>
-#include <callchain/protocol/Issue.h>
-#include <callchain/protocol/STAmount.h>
-#include <callchain/protocol/STObject.h>
-#include <callchain/protocol/STTx.h>
+#include <call/app/main/Application.h>
+#include <call/app/ledger/Ledger.h>
+#include <call/app/ledger/OpenLedger.h>
+#include <call/app/paths/Pathfinder.h>
+#include <call/basics/chrono.h>
+#include <call/basics/Log.h>
+#include <call/core/Config.h>
+#include <call/json/json_value.h>
+#include <call/json/to_string.h>
+#include <call/ledger/CachedSLEs.h>
+#include <call/protocol/Feature.h>
+#include <call/protocol/Indexes.h>
+#include <call/protocol/Issue.h>
+#include <call/protocol/STAmount.h>
+#include <call/protocol/STObject.h>
+#include <call/protocol/STTx.h>
 #include <beast/core/detail/type_traits.hpp>
-#include <callchain/beast/unit_test.h>
+#include <call/beast/unit_test.h>
 #include <functional>
 #include <string>
 #include <tuple>
@@ -55,7 +55,7 @@
 #include <vector>
 
 
-namespace callchain {
+namespace call {
 
 namespace detail {
 extern
@@ -66,10 +66,10 @@ supportedAmendments ();
 namespace test {
 namespace jtx {
 
-/** Designate accounts as no-callchain in Env::fund */
+/** Designate accounts as no-call in Env::fund */
 template <class... Args>
 std::array<Account, 1 + sizeof...(Args)>
-nocallchain (Account const& account, Args const&... args)
+nocall (Account const& account, Args const&... args)
 {
     return {{account, args...}};
 }
@@ -112,7 +112,7 @@ FeatureBitset
 all_amendments()
 {
     static const FeatureBitset ids = []{
-        auto const& sa = callchain::detail::supportedAmendments();
+        auto const& sa = call::detail::supportedAmendments();
         std::vector<uint256> feats;
         feats.reserve(sa.size());
         for (auto const& s : sa)
@@ -671,7 +671,7 @@ public:
         Effects:
             The asfDefaultRipple on the account is set,
             and the sequence number is incremented, unless
-            the account is wrapped with a call to nocallchain.
+            the account is wrapped with a call to nocall.
 
             The account's XRP balance is set to amount.
 
@@ -681,7 +681,7 @@ public:
                       each account.
 
         @param args A heterogeneous list of accounts to fund
-                    or calls to nocallchain with lists of accounts
+                    or calls to nocall with lists of accounts
                     to fund.
     */
     template<class Arg, class... Args>
@@ -836,6 +836,6 @@ Env::rpc(std::string const& cmd, Args&&... args)
 
 } // jtx
 } // test
-} // callchain
+} // call
 
 #endif

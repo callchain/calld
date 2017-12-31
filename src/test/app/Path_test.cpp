@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,26 +18,26 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/app/paths/AccountCurrencies.h>
-#include <callchain/basics/contract.h>
-#include <callchain/core/JobQueue.h>
-#include <callchain/json/json_reader.h>
-#include <callchain/json/to_string.h>
-#include <callchain/protocol/JsonFields.h>
-#include <callchain/protocol/STParsedJSON.h>
-#include <callchain/protocol/TxFlags.h>
-#include <callchain/resource/Fees.h>
-#include <callchain/rpc/Context.h>
-#include <callchain/rpc/impl/Tuning.h>
-#include <callchain/rpc/RPCHandler.h>
+#include <call/app/paths/AccountCurrencies.h>
+#include <call/basics/contract.h>
+#include <call/core/JobQueue.h>
+#include <call/json/json_reader.h>
+#include <call/json/to_string.h>
+#include <call/protocol/JsonFields.h>
+#include <call/protocol/STParsedJSON.h>
+#include <call/protocol/TxFlags.h>
+#include <call/resource/Fees.h>
+#include <call/rpc/Context.h>
+#include <call/rpc/impl/Tuning.h>
+#include <call/rpc/RPCHandler.h>
 #include <test/jtx.h>
-#include <callchain/beast/unit_test.h>
+#include <call/beast/unit_test.h>
 #include <chrono>
 #include <condition_variable>
 #include <mutex>
 #include <thread>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 //------------------------------------------------------------------------------
@@ -153,7 +153,7 @@ Json::Value
 rpf(jtx::Account const& src, jtx::Account const& dst, std::uint32_t num_src)
 {
     Json::Value jv = Json::objectValue;
-    jv[jss::command] = "callchain_path_find";
+    jv[jss::command] = "call_path_find";
     jv[jss::source_account] = toBase58(src);
 
     if (num_src > 0)
@@ -235,7 +235,7 @@ public:
             app.getOPs(), app.getLedgerMaster(), c, Role::USER, {}};
 
         Json::Value params = Json::objectValue;
-        params[jss::command] = "callchain_path_find";
+        params[jss::command] = "call_path_find";
         params[jss::source_account] = toBase58 (src);
         params[jss::destination_account] = toBase58 (dst);
         params[jss::destination_amount] = saDstAmount.getJson(0);
@@ -681,9 +681,9 @@ public:
     // alice --> carol --> dan --> bob
     // Balance of 100 USD Bob - Balance of 37 USD -> Rod
     void
-    issues_path_negative_callchain_client_issue_23_smaller()
+    issues_path_negative_call_client_issue_23_smaller()
     {
-        testcase("path negative: callchain-client issue #23: smaller");
+        testcase("path negative: call-client issue #23: smaller");
         using namespace jtx;
         Env env(*this);
         env.fund(XRP(10000), "alice", "bob", "carol", "dan");
@@ -700,9 +700,9 @@ public:
     // alice -120 USD-> edward -25 USD-> bob
     // alice -25 USD-> carol -75 USD -> dan -100 USD-> bob
     void
-    issues_path_negative_callchain_client_issue_23_larger()
+    issues_path_negative_call_client_issue_23_larger()
     {
-        testcase("path negative: callchain-client issue #23: larger");
+        testcase("path negative: call-client issue #23: larger");
         using namespace jtx;
         Env env(*this);
         env.fund(XRP(10000), "alice", "bob", "carol", "dan", "edward");
@@ -1122,7 +1122,7 @@ public:
         env(pay(G1BS, A1, G1BS["HKD"](1000)));
         env(pay(G2SW, A2, G2SW["HKD"](1000)));
         // SnapSwap wants to be able to set trust line quality settings so they
-        // can charge a fee when transactions callchain across. Liquidity
+        // can charge a fee when transactions call across. Liquidity
         // provider, via trusting/holding both accounts
         env(pay(G1BS, M1, G1BS["HKD"](1200)));
         env(pay(G2SW, M1, G2SW["HKD"](5000)));
@@ -1365,8 +1365,8 @@ public:
         alternative_paths_consume_best_transfer_first();
         alternative_paths_limit_returned_paths_to_best_quality();
         issues_path_negative_issue();
-        issues_path_negative_callchain_client_issue_23_smaller();
-        issues_path_negative_callchain_client_issue_23_larger();
+        issues_path_negative_call_client_issue_23_smaller();
+        issues_path_negative_call_client_issue_23_larger();
         via_offers_via_gateway();
         indirect_paths_path_find();
         quality_paths_quality_set_and_test();
@@ -1389,7 +1389,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Path,app,callchain);
+BEAST_DEFINE_TESTSUITE(Path,app,call);
 
 } // test
-} // callchain
+} // call

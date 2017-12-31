@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,19 +19,19 @@
 
 #include <BeastConfig.h>
 
-#include <callchain/app/misc/AmendmentTable.h>
-#include <callchain/basics/BasicConfig.h>
-#include <callchain/basics/chrono.h>
-#include <callchain/basics/Log.h>
-#include <callchain/core/ConfigSections.h>
-#include <callchain/protocol/Feature.h>
-#include <callchain/protocol/PublicKey.h>
-#include <callchain/protocol/SecretKey.h>
-#include <callchain/protocol/digest.h>
-#include <callchain/protocol/TxFlags.h>
-#include <callchain/beast/unit_test.h>
+#include <call/app/misc/AmendmentTable.h>
+#include <call/basics/BasicConfig.h>
+#include <call/basics/chrono.h>
+#include <call/basics/Log.h>
+#include <call/core/ConfigSections.h>
+#include <call/protocol/Feature.h>
+#include <call/protocol/PublicKey.h>
+#include <call/protocol/SecretKey.h>
+#include <call/protocol/digest.h>
+#include <call/protocol/TxFlags.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain
+namespace call
 {
 
 namespace detail {
@@ -775,6 +775,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE (AmendmentTable, app, callchain);
+BEAST_DEFINE_TESTSUITE (AmendmentTable, app, call);
 
-}  // callchain
+}  // call

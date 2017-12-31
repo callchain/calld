@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-  This file is part of callchaind: https://github.com/callchain/callchaind
+  This file is part of calld: https://github.com/call/calld
   Copyright (c) 2012-2015 Ripple Labs Inc.
 
   Permission to use, copy, modify, and/or distribute this software for any
@@ -17,17 +17,17 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_JTX_ACCOUNT_H_INCLUDED
-#define CALLCHAIN_TEST_JTX_ACCOUNT_H_INCLUDED
+#ifndef CALL_TEST_JTX_ACCOUNT_H_INCLUDED
+#define CALL_TEST_JTX_ACCOUNT_H_INCLUDED
 
-#include <callchain/protocol/SecretKey.h>
-#include <callchain/protocol/UintTypes.h>
-#include <callchain/crypto/KeyType.h>
-#include <callchain/beast/hash/uhash.h>
+#include <call/protocol/SecretKey.h>
+#include <call/protocol/UintTypes.h>
+#include <call/crypto/KeyType.h>
+#include <call/beast/hash/uhash.h>
 #include <unordered_map>
 #include <string>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace jtx {
 
@@ -162,6 +162,6 @@ operator< (Account const& lhs,
 
 } // jtx
 } // test
-} // callchain
+} // call
 
 #endif

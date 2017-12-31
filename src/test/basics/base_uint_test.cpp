@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/base_uint.h>
-#include <callchain/basics/hardened_hash.h>
-#include <callchain/beast/unit_test.h>
+#include <call/basics/base_uint.h>
+#include <call/basics/hardened_hash.h>
+#include <call/beast/unit_test.h>
 #include <boost/algorithm/string.hpp>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 // a non-hashing Hasher that just copies the bytes.
@@ -195,7 +195,7 @@ struct base_uint_test : beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(base_uint, callchain_basics, callchain);
+BEAST_DEFINE_TESTSUITE(base_uint, call_basics, call);
 
 }  // namespace test
-}  // namespace callchain
+}  // namespace call

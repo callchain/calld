@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,21 +18,21 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/contract.h>
-#include <callchain/core/Config.h>
-#include <callchain/core/ConfigSections.h>
+#include <call/basics/contract.h>
+#include <call/core/Config.h>
+#include <call/core/ConfigSections.h>
 #include <test/jtx/TestSuite.h>
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <fstream>
 #include <iostream>
 
-namespace callchain {
+namespace call {
 namespace detail {
 std::string configContents (std::string const& dbPath,
     std::string const& validatorsFile)
 {
-    static boost::format configContentsTemplate (R"callchainConfig(
+    static boost::format configContentsTemplate (R"callConfig(
 [server]
 port_rpc
 port_peer
@@ -65,14 +65,14 @@ protocol = wss
 [node_size]
 medium
 
-# This is primary persistent datastore for callchaind.  This includes transaction
+# This is primary persistent datastore for calld.  This includes transaction
 # metadata, account states, and ledger headers.  Helpful information can be
-# found here: https://callchain.com/wiki/NodeBackEnd
+# found here: https://call.com/wiki/NodeBackEnd
 # delete old ledgers while maintaining at least 2000. Do not require an
 # external administrative command to initiate deletion.
 [node_db]
 type=memory
-path=/Users/dummy/callchain/config/db/rocksdb
+path=/Users/dummy/call/config/db/rocksdb
 open_files=2000
 filter_bits=12
 cache_mb=256
@@ -86,7 +86,7 @@ file_size_mult=2
 # This needs to be an absolute directory reference, not a relative one.
 # Modify this value as required.
 [debug_logfile]
-/Users/dummy/callchain/config/log/debug.log
+/Users/dummy/call/config/log/debug.log
 
 [sntp_servers]
 time.windows.com
@@ -97,7 +97,7 @@ pool.ntp.org
 # Where to find some other servers speaking the Ripple protocol.
 #
 [ips]
-r.callchain.com 51235
+r.call.com 51235
 
 # Turn down default logging to save disk space in the long run.
 # Valid values here are trace, debug, info, warning, error, and fatal
@@ -111,7 +111,7 @@ r.callchain.com 51235
 
 [sqdb]
 backend=sqlite
-)callchainConfig");
+)callConfig");
 
     std::string dbPathSection =
         dbPath.empty () ? "" : "[database_path]\n" + dbPath;
@@ -197,7 +197,7 @@ public:
 };
 
 /**
-   Write a callchaind config file and remove when done.
+   Write a calld config file and remove when done.
  */
 class RippledCfgGuard : public ConfigGuard
 {
@@ -287,7 +287,7 @@ public:
 
 std::string valFileContents ()
 {
-    std::string configContents (R"callchainConfig(
+    std::string configContents (R"callConfig(
 [validators]
 n949f75evCHwgyP4fPVgaHqNHxUVN15PsJEZ3B3HnXPcPjcZAoy7
 n9MD5h24qrQqiyBC8aeqqCWvpiBiYQ3jxSr91uiDvmrkyHRdYLUj
@@ -301,13 +301,13 @@ nHBu9PTL9dn2GuZtdW4U2WzBwffyX9qsQCd9CNU4Z5YG3PQfViM8
 nHUPDdcdb2Y5DZAJne4c2iabFuAP3F34xZUgYQT2NH7qfkdapgnz
 
 [validator_list_sites]
-recommendedcallchainvalidators.com
-morecallchainvalidators.net
+recommendedcallvalidators.com
+morecallvalidators.net
 
 [validator_list_keys]
 03E74EE14CB525AFBB9F1B7D86CD58ECC4B91452294B42AB4E78F260BD905C091D
 030775A669685BD6ABCEBD80385921C7851783D991A8055FD21D2F3966C96F1B56
-)callchainConfig");
+)callConfig");
     return configContents;
 }
 
@@ -385,7 +385,7 @@ public:
 
         Config c;
 
-        std::string toLoad(R"callchainConfig(
+        std::string toLoad(R"callConfig(
 [server]
 port_rpc
 port_peer
@@ -393,7 +393,7 @@ port_wss_admin
 
 [ssl_verify]
 0
-)callchainConfig");
+)callConfig");
 
         c.loadFromString (toLoad);
 
@@ -492,13 +492,13 @@ port_wss_admin
 
         {
             Config c;
-            static boost::format configTemplate (R"callchainConfig(
+            static boost::format configTemplate (R"callConfig(
 [validation_seed]
 %1%
 
 [validator_token]
 %2%
-)callchainConfig");
+)callConfig");
             std::string error;
             auto const expectedError =
                 "Cannot have both [validation_seed] "
@@ -555,7 +555,7 @@ port_wss_admin
         {
             // load validators from config into single section
             Config c;
-            std::string toLoad(R"callchainConfig(
+            std::string toLoad(R"callConfig(
 [validators]
 n949f75evCHwgyP4fPVgaHqNHxUVN15PsJEZ3B3HnXPcPjcZAoy7
 n9MD5h24qrQqiyBC8aeqqCWvpiBiYQ3jxSr91uiDvmrkyHRdYLUj
@@ -564,7 +564,7 @@ n9L81uNCaPgtUJfaHh89gmdvXKAmSt5Gdsw2g1iPWaPkAHW5Nm4C
 [validator_keys]
 nHUhG1PgAG8H8myUENypM35JgfqXAKNQvRVVAFDRzJrny5eZN8d5
 nHBu9PTL9dn2GuZtdW4U2WzBwffyX9qsQCd9CNU4Z5YG3PQfViM8
-)callchainConfig");
+)callConfig");
             c.loadFromString (toLoad);
             BEAST_EXPECT(c.legacy ("validators_file").empty ());
             BEAST_EXPECT(c.section (SECTION_VALIDATORS).values ().size () == 5);
@@ -572,20 +572,20 @@ nHBu9PTL9dn2GuZtdW4U2WzBwffyX9qsQCd9CNU4Z5YG3PQfViM8
         {
             // load validator list sites and keys from config
             Config c;
-            std::string toLoad(R"callchainConfig(
+            std::string toLoad(R"callConfig(
 [validator_list_sites]
-callchainvalidators.com
+callvalidators.com
 trustthesevalidators.gov
 
 [validator_list_keys]
 021A99A537FDEBC34E4FCA03B39BEADD04299BB19E85097EC92B15A3518801E566
-)callchainConfig");
+)callConfig");
             c.loadFromString (toLoad);
             BEAST_EXPECT(
                 c.section (SECTION_VALIDATOR_LIST_SITES).values ().size () == 2);
             BEAST_EXPECT(
                 c.section (SECTION_VALIDATOR_LIST_SITES).values ()[0] ==
-                    "callchainvalidators.com");
+                    "callvalidators.com");
             BEAST_EXPECT(
                 c.section (SECTION_VALIDATOR_LIST_SITES).values ()[1] ==
                     "trustthesevalidators.gov");
@@ -599,11 +599,11 @@ trustthesevalidators.gov
             // load should throw if [validator_list_sites] is configured but
             // [validator_list_keys] is not
             Config c;
-            std::string toLoad(R"callchainConfig(
+            std::string toLoad(R"callConfig(
 [validator_list_sites]
-callchainvalidators.com
+callvalidators.com
 trustthesevalidators.gov
-)callchainConfig");
+)callConfig");
             std::string error;
             auto const expectedError =
                 "[validator_list_keys] config section is missing";
@@ -704,7 +704,7 @@ trustthesevalidators.gov
 
         {
             // load validators from both config and validators file
-            boost::format cc (R"callchainConfig(
+            boost::format cc (R"callConfig(
 [validators_file]
 %1%
 
@@ -720,12 +720,12 @@ nHB1X37qrniVugfQcuBTAjswphC1drx7QjFFojJPZwKHHnt8kU7v
 nHUkAWDR4cB8AgPg7VXMX6et8xRTQb2KJfgv1aBEXozwrawRKgMB
 
 [validator_list_sites]
-callchainvalidators.com
+callvalidators.com
 trustthesevalidators.gov
 
 [validator_list_keys]
 021A99A537FDEBC34E4FCA03B39BEADD04299BB19E85097EC92B15A3518801E566
-)callchainConfig");
+)callConfig");
             detail::ValidatorsTxtGuard const vtg (
                 *this, "test_cfg", "validators.cfg");
             BEAST_EXPECT(vtg.validatorsFileExists ());
@@ -740,7 +740,7 @@ trustthesevalidators.gov
         }
         {
             // load should throw if [validators], [validator_keys] and
-            // [validator_list_keys] are missing from callchaind cfg and
+            // [validator_list_keys] are missing from calld cfg and
             // validators file
             Config c;
             boost::format cc ("[validators_file]\n%1%\n");
@@ -864,6 +864,6 @@ trustthesevalidators.gov
     }
 };
 
-BEAST_DEFINE_TESTSUITE (Config, core, callchain);
+BEAST_DEFINE_TESTSUITE (Config, core, call);
 
-}  // callchain
+}  // call

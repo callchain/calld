@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/chrono.h>
-#include <callchain/basics/TaggedCache.h>
-#include <callchain/beast/unit_test.h>
-#include <callchain/beast/clock/manual_clock.h>
+#include <call/basics/chrono.h>
+#include <call/basics/TaggedCache.h>
+#include <call/beast/unit_test.h>
+#include <call/beast/clock/manual_clock.h>
 
-namespace callchain {
+namespace call {
 
 /*
 I guess you can put some items in, make sure they're still there. Let some
@@ -147,6 +147,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(TaggedCache,common,callchain);
+BEAST_DEFINE_TESTSUITE(TaggedCache,common,call);
 
 }

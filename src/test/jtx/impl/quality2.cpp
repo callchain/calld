@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,10 +19,10 @@
 
 #include <BeastConfig.h>
 #include <test/jtx/quality.h>
-#include <callchain/protocol/SField.h>
-#include <callchain/protocol/Quality.h>
+#include <call/protocol/SField.h>
+#include <call/protocol/Quality.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace jtx {
 
@@ -70,4 +70,4 @@ qualityOutPercent::operator()(Env&, JTx& jt) const
 
 } // jtx
 } // test
-} // callchain
+} // call

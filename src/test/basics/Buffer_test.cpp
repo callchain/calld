@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github0.com/callchain/callchaind
+    This file is part of calld: https://github0.com/call/calld
     Copyright (c) 2012-2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,11 +18,11 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/Buffer.h>
-#include <callchain/beast/unit_test.h>
+#include <call/basics/Buffer.h>
+#include <call/beast/unit_test.h>
 #include <cstdint>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 struct Buffer_test : beast::unit_test::suite
@@ -268,7 +268,7 @@ struct Buffer_test : beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Buffer, callchain_basics, callchain);
+BEAST_DEFINE_TESTSUITE(Buffer, call_basics, call);
 
 }  // namespace test
-}  // namespace callchain
+}  // namespace call

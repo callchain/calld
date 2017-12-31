@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,12 +17,12 @@
 */
 //==============================================================================
 
-#include <callchain/basics/StringUtilities.h>
-#include <callchain/protocol/Feature.h>
-#include <callchain/protocol/JsonFields.h>
+#include <call/basics/StringUtilities.h>
+#include <call/protocol/Feature.h>
+#include <call/protocol/JsonFields.h>
 #include <test/jtx.h>
 
-namespace callchain {
+namespace call {
 
 class LedgerData_test : public beast::unit_test::suite
 {
@@ -438,6 +438,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(LedgerData,app,callchain);
+BEAST_DEFINE_TESTSUITE(LedgerData,app,call);
 
 }

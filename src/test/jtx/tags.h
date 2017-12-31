@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,10 +17,10 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_JTX_TAGS_H_INCLUDED
-#define CALLCHAIN_TEST_JTX_TAGS_H_INCLUDED
+#ifndef CALL_TEST_JTX_TAGS_H_INCLUDED
+#define CALL_TEST_JTX_TAGS_H_INCLUDED
 
-namespace callchain {
+namespace call {
 namespace test {
 
 namespace jtx {
@@ -37,6 +37,6 @@ static disabled_t const disabled;
 } // jtx
 
 } // test
-} // callchain
+} // call
 
 #endif

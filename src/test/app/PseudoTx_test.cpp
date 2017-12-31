@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2017 Ripple Labs Inc.
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -16,13 +16,13 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/app/tx/apply.h>
-#include <callchain/protocol/STAccount.h>
+#include <call/app/tx/apply.h>
+#include <call/protocol/STAccount.h>
 #include <string>
 #include <test/jtx.h>
 #include <vector>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 struct PseudoTx_test : public beast::unit_test::suite
@@ -82,7 +82,7 @@ struct PseudoTx_test : public beast::unit_test::suite
             env.app().openLedger().modify(
                 [&](OpenView& view, beast::Journal j) {
                     auto const result =
-                        callchain::apply(env.app(), view, stx, tapNONE, j);
+                        call::apply(env.app(), view, stx, tapNONE, j);
                     BEAST_EXPECT(!result.second && result.first == temINVALID);
                     return result.second;
                 });
@@ -108,7 +108,7 @@ struct PseudoTx_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(PseudoTx, app, callchain);
+BEAST_DEFINE_TESTSUITE(PseudoTx, app, call);
 
 }  // test
-}  // callchain
+}  // call

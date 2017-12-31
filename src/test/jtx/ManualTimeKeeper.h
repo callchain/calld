@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,13 +17,13 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_MANUALTIMEKEEPER_H_INCLUDED
-#define CALLCHAIN_TEST_MANUALTIMEKEEPER_H_INCLUDED
+#ifndef CALL_TEST_MANUALTIMEKEEPER_H_INCLUDED
+#define CALL_TEST_MANUALTIMEKEEPER_H_INCLUDED
 
-#include <callchain/core/TimeKeeper.h>
+#include <call/core/TimeKeeper.h>
 #include <mutex>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class ManualTimeKeeper : public TimeKeeper
@@ -64,6 +64,6 @@ private:
 };
 
 } // test
-} // callchain
+} // call
 
 #endif

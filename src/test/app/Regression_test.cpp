@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -18,13 +18,13 @@
 #include <BeastConfig.h>
 #include <test/jtx.h>
 #include <test/jtx/envconfig.h>
-#include <callchain/app/tx/apply.h>
-#include <callchain/basics/StringUtilities.h>
-#include <callchain/json/json_reader.h>
-#include <callchain/protocol/Feature.h>
-#include <callchain/protocol/JsonFields.h>
+#include <call/app/tx/apply.h>
+#include <call/basics/StringUtilities.h>
+#include <call/json/json_reader.h>
+#include <call/protocol/Feature.h>
+#include <call/protocol/JsonFields.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 struct Regression_test : public beast::unit_test::suite
@@ -70,7 +70,7 @@ struct Regression_test : public beast::unit_test::suite
             auto const jt = env.jt(pay(env.master, "alice", aliceAmount));
             OpenView accum(&*next);
 
-            auto const result = callchain::apply(env.app(),
+            auto const result = call::apply(env.app(),
                 accum, *jt.stx, tapNONE, env.journal);
             BEAST_EXPECT(result.first == tesSUCCESS);
             BEAST_EXPECT(result.second);
@@ -96,7 +96,7 @@ struct Regression_test : public beast::unit_test::suite
 
             OpenView accum(&*next);
 
-            auto const result = callchain::apply(env.app(),
+            auto const result = call::apply(env.app(),
                 accum, *jt.stx, tapNONE, env.journal);
             BEAST_EXPECT(result.first == tecINSUFF_FEE);
             BEAST_EXPECT(result.second);
@@ -228,7 +228,7 @@ struct Regression_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Regression,app,callchain);
+BEAST_DEFINE_TESTSUITE(Regression,app,call);
 
 } // test
-} // callchain
+} // call

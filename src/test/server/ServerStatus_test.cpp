@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,15 +18,15 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/rpc/ServerHandler.h>
-#include <callchain/json/json_reader.h>
-#include <callchain/app/misc/LoadFeeTrack.h>
+#include <call/rpc/ServerHandler.h>
+#include <call/json/json_reader.h>
+#include <call/app/misc/LoadFeeTrack.h>
 #include <test/jtx.h>
 #include <test/jtx/envconfig.h>
 #include <test/jtx/WSClient.h>
 #include <test/jtx/JSONRPCClient.h>
-#include <callchain/app/misc/NetworkOPs.h>
-#include <callchain/app/ledger/LedgerMaster.h>
+#include <call/app/misc/NetworkOPs.h>
+#include <call/app/ledger/LedgerMaster.h>
 #include <beast/http.hpp>
 #include <beast/test/yield_to.hpp>
 #include <beast/websocket/detail/mask.hpp>
@@ -36,7 +36,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <regex>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class ServerStatus_test :
@@ -1003,8 +1003,8 @@ public:
     };
 };
 
-BEAST_DEFINE_TESTSUITE(ServerStatus, server, callchain);
+BEAST_DEFINE_TESTSUITE(ServerStatus, server, call);
 
 } // test
-} // callchain
+} // call
 

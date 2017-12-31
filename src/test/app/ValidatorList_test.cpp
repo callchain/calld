@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright 2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,18 +18,18 @@
 //==============================================================================
 
 #include <beast/core/detail/base64.hpp>
-#include <callchain/basics/Slice.h>
-#include <callchain/basics/strHex.h>
-#include <callchain/app/misc/ValidatorList.h>
+#include <call/basics/Slice.h>
+#include <call/basics/strHex.h>
+#include <call/app/misc/ValidatorList.h>
 #include <test/jtx.h>
-#include <callchain/protocol/digest.h>
-#include <callchain/protocol/HashPrefix.h>
-#include <callchain/protocol/PublicKey.h>
-#include <callchain/protocol/SecretKey.h>
-#include <callchain/protocol/Sign.h>
+#include <call/protocol/digest.h>
+#include <call/protocol/HashPrefix.h>
+#include <call/protocol/PublicKey.h>
+#include <call/protocol/SecretKey.h>
+#include <call/protocol/Sign.h>
 
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class ValidatorList_test : public beast::unit_test::suite
@@ -1071,7 +1071,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(ValidatorList, app, callchain);
+BEAST_DEFINE_TESTSUITE(ValidatorList, app, call);
 
 } // test
-} // callchain
+} // call

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2017 Ripple Labs Inc
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -21,7 +21,7 @@
 #include <fstream>
 #include <test/csf/UNL.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 namespace csf {
 
@@ -128,4 +128,4 @@ TrustGraph::save_dot(std::string const& fileName)
 
 }  // csf
 }  // test
-}  // callchain
+}  // call

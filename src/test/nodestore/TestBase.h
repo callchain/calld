@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,19 +17,19 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_NODESTORE_BASE_H_INCLUDED
-#define CALLCHAIN_NODESTORE_BASE_H_INCLUDED
+#ifndef CALL_NODESTORE_BASE_H_INCLUDED
+#define CALL_NODESTORE_BASE_H_INCLUDED
 
-#include <callchain/nodestore/Database.h>
-#include <callchain/basics/random.h>
-#include <callchain/basics/StringUtilities.h>
-#include <callchain/beast/unit_test.h>
-#include <callchain/beast/utility/rngfill.h>
-#include <callchain/beast/xor_shift_engine.h>
+#include <call/nodestore/Database.h>
+#include <call/basics/random.h>
+#include <call/basics/StringUtilities.h>
+#include <call/beast/unit_test.h>
+#include <call/beast/utility/rngfill.h>
+#include <call/beast/xor_shift_engine.h>
 #include <boost/algorithm/string.hpp>
 #include <iomanip>
 
-namespace callchain {
+namespace call {
 namespace NodeStore {
 
 /** Binary function that satisfies the strict-weak-ordering requirement.

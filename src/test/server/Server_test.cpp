@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/make_SSLContext.h>
-#include <callchain/beast/rfc2616.h>
-#include <callchain/server/Server.h>
-#include <callchain/server/Session.h>
-#include <callchain/beast/unit_test.h>
-#include <callchain/core/ConfigSections.h>
+#include <call/basics/make_SSLContext.h>
+#include <call/beast/rfc2616.h>
+#include <call/server/Server.h>
+#include <call/server/Session.h>
+#include <call/beast/unit_test.h>
+#include <call/core/ConfigSections.h>
 #include <test/jtx.h>
 #include <test/jtx/envconfig.h>
 #include <boost/asio.hpp>
@@ -33,7 +33,7 @@
 #include <stdexcept>
 #include <thread>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class Server_test : public beast::unit_test::suite
@@ -553,8 +553,8 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Server,http,callchain);
+BEAST_DEFINE_TESTSUITE(Server,http,call);
 
 } // test
-} // callchain
+} // call
 

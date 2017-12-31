@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -16,11 +16,11 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/core/JobQueue.h>
-#include <callchain/protocol/ErrorCodes.h>
+#include <call/core/JobQueue.h>
+#include <call/protocol/ErrorCodes.h>
 #include <test/jtx.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 struct Transaction_ordering_test : public beast::unit_test::suite
@@ -31,7 +31,7 @@ struct Transaction_ordering_test : public beast::unit_test::suite
 
         Env env(*this);
         auto const alice = Account("alice");
-        env.fund(XRP(1000), nocallchain(alice));
+        env.fund(XRP(1000), nocall(alice));
 
         auto const aliceSequence = env.seq(alice);
 
@@ -65,7 +65,7 @@ struct Transaction_ordering_test : public beast::unit_test::suite
         Env env(*this);
         env.app().getJobQueue().setThreadCount(0, false);
         auto const alice = Account("alice");
-        env.fund(XRP(1000), nocallchain(alice));
+        env.fund(XRP(1000), nocall(alice));
 
         auto const aliceSequence = env.seq(alice);
 
@@ -98,7 +98,7 @@ struct Transaction_ordering_test : public beast::unit_test::suite
         Env env(*this);
         env.app().getJobQueue().setThreadCount(0, false);
         auto const alice = Account("alice");
-        env.fund(XRP(1000), nocallchain(alice));
+        env.fund(XRP(1000), nocall(alice));
 
         auto const aliceSequence = env.seq(alice);
 
@@ -138,7 +138,7 @@ struct Transaction_ordering_test : public beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Transaction_ordering,app,callchain);
+BEAST_DEFINE_TESTSUITE(Transaction_ordering,app,call);
 
 } // test
-} // callchain
+} // call

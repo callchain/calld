@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,11 +18,11 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/CheckLibraryVersions.h>
-#include <callchain/basics/impl/CheckLibraryVersionsImpl.h>
-#include <callchain/beast/unit_test.h>
+#include <call/basics/CheckLibraryVersions.h>
+#include <call/basics/impl/CheckLibraryVersionsImpl.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain {
+namespace call {
 namespace version {
 
 struct CheckLibraryVersions_test : beast::unit_test::suite
@@ -50,7 +50,7 @@ struct CheckLibraryVersions_test : beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(CheckLibraryVersions, callchain_basics, callchain);
+BEAST_DEFINE_TESTSUITE(CheckLibraryVersions, call_basics, call);
 
 }  // namespace version
-}  // namespace callchain
+}  // namespace call

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012, 2013 Ripple Labs Inc.
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -16,16 +16,16 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/app/misc/LoadFeeTrack.h>
-#include <callchain/app/misc/NetworkOPs.h>
-#include <callchain/core/ConfigSections.h>
-#include <callchain/protocol/JsonFields.h>
+#include <call/app/misc/LoadFeeTrack.h>
+#include <call/app/misc/NetworkOPs.h>
+#include <call/core/ConfigSections.h>
+#include <call/protocol/JsonFields.h>
 #include <test/jtx/WSClient.h>
 #include <test/jtx/envconfig.h>
 #include <test/jtx.h>
-#include <callchain/beast/unit_test.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class Subscribe_test : public beast::unit_test::suite
@@ -47,7 +47,7 @@ public:
             if (wsc->version() == 2)
             {
                 BEAST_EXPECT(jv.isMember(jss::jsonrpc) && jv[jss::jsonrpc] == "2.0");
-                BEAST_EXPECT(jv.isMember(jss::callchainrpc) && jv[jss::callchainrpc] == "2.0");
+                BEAST_EXPECT(jv.isMember(jss::callrpc) && jv[jss::callrpc] == "2.0");
                 BEAST_EXPECT(jv.isMember(jss::id) && jv[jss::id] == 5);
             }
             BEAST_EXPECT(jv[jss::status] == "success");
@@ -74,7 +74,7 @@ public:
             if (wsc->version() == 2)
             {
                 BEAST_EXPECT(jv.isMember(jss::jsonrpc) && jv[jss::jsonrpc] == "2.0");
-                BEAST_EXPECT(jv.isMember(jss::callchainrpc) && jv[jss::callchainrpc] == "2.0");
+                BEAST_EXPECT(jv.isMember(jss::callrpc) && jv[jss::callrpc] == "2.0");
                 BEAST_EXPECT(jv.isMember(jss::id) && jv[jss::id] == 5);
             }
             BEAST_EXPECT(jv[jss::status] == "success");
@@ -108,7 +108,7 @@ public:
             if (wsc->version() == 2)
             {
                 BEAST_EXPECT(jv.isMember(jss::jsonrpc) && jv[jss::jsonrpc] == "2.0");
-                BEAST_EXPECT(jv.isMember(jss::callchainrpc) && jv[jss::callchainrpc] == "2.0");
+                BEAST_EXPECT(jv.isMember(jss::callrpc) && jv[jss::callrpc] == "2.0");
                 BEAST_EXPECT(jv.isMember(jss::id) && jv[jss::id] == 5);
             }
             BEAST_EXPECT(jv[jss::result][jss::ledger_index] == 2);
@@ -143,7 +143,7 @@ public:
         if (wsc->version() == 2)
         {
             BEAST_EXPECT(jv.isMember(jss::jsonrpc) && jv[jss::jsonrpc] == "2.0");
-            BEAST_EXPECT(jv.isMember(jss::callchainrpc) && jv[jss::callchainrpc] == "2.0");
+            BEAST_EXPECT(jv.isMember(jss::callrpc) && jv[jss::callrpc] == "2.0");
             BEAST_EXPECT(jv.isMember(jss::id) && jv[jss::id] == 5);
         }
         BEAST_EXPECT(jv[jss::status] == "success");
@@ -165,7 +165,7 @@ public:
             if (wsc->version() == 2)
             {
                 BEAST_EXPECT(jv.isMember(jss::jsonrpc) && jv[jss::jsonrpc] == "2.0");
-                BEAST_EXPECT(jv.isMember(jss::callchainrpc) && jv[jss::callchainrpc] == "2.0");
+                BEAST_EXPECT(jv.isMember(jss::callrpc) && jv[jss::callrpc] == "2.0");
                 BEAST_EXPECT(jv.isMember(jss::id) && jv[jss::id] == 5);
             }
             BEAST_EXPECT(jv[jss::status] == "success");
@@ -221,7 +221,7 @@ public:
             if (wsc->version() == 2)
             {
                 BEAST_EXPECT(jv.isMember(jss::jsonrpc) && jv[jss::jsonrpc] == "2.0");
-                BEAST_EXPECT(jv.isMember(jss::callchainrpc) && jv[jss::callchainrpc] == "2.0");
+                BEAST_EXPECT(jv.isMember(jss::callrpc) && jv[jss::callrpc] == "2.0");
                 BEAST_EXPECT(jv.isMember(jss::id) && jv[jss::id] == 5);
             }
             BEAST_EXPECT(jv[jss::status] == "success");
@@ -236,7 +236,7 @@ public:
             if (wsc->version() == 2)
             {
                 BEAST_EXPECT(jv.isMember(jss::jsonrpc) && jv[jss::jsonrpc] == "2.0");
-                BEAST_EXPECT(jv.isMember(jss::callchainrpc) && jv[jss::callchainrpc] == "2.0");
+                BEAST_EXPECT(jv.isMember(jss::callrpc) && jv[jss::callrpc] == "2.0");
                 BEAST_EXPECT(jv.isMember(jss::id) && jv[jss::id] == 5);
             }
             BEAST_EXPECT(jv[jss::status] == "success");
@@ -275,7 +275,7 @@ public:
         if (wsc->version() == 2)
         {
             BEAST_EXPECT(jv.isMember(jss::jsonrpc) && jv[jss::jsonrpc] == "2.0");
-            BEAST_EXPECT(jv.isMember(jss::callchainrpc) && jv[jss::callchainrpc] == "2.0");
+            BEAST_EXPECT(jv.isMember(jss::callrpc) && jv[jss::callrpc] == "2.0");
             BEAST_EXPECT(jv.isMember(jss::id) && jv[jss::id] == 5);
         }
         BEAST_EXPECT(jv[jss::status] == "success");
@@ -296,7 +296,7 @@ public:
             if (wsc->version() == 2)
             {
                 BEAST_EXPECT(jv.isMember(jss::jsonrpc) && jv[jss::jsonrpc] == "2.0");
-                BEAST_EXPECT(jv.isMember(jss::callchainrpc) && jv[jss::callchainrpc] == "2.0");
+                BEAST_EXPECT(jv.isMember(jss::callrpc) && jv[jss::callrpc] == "2.0");
                 BEAST_EXPECT(jv.isMember(jss::id) && jv[jss::id] == 5);
             }
             BEAST_EXPECT(jv[jss::status] == "success");
@@ -307,7 +307,7 @@ public:
         if (wsc->version() == 2)
         {
             BEAST_EXPECT(jv.isMember(jss::jsonrpc) && jv[jss::jsonrpc] == "2.0");
-            BEAST_EXPECT(jv.isMember(jss::callchainrpc) && jv[jss::callchainrpc] == "2.0");
+            BEAST_EXPECT(jv.isMember(jss::callrpc) && jv[jss::callrpc] == "2.0");
             BEAST_EXPECT(jv.isMember(jss::id) && jv[jss::id] == 5);
         }
         BEAST_EXPECT(jv[jss::status] == "success");
@@ -342,7 +342,7 @@ public:
             if (wsc->version() == 2)
             {
                 BEAST_EXPECT(jv.isMember(jss::jsonrpc) && jv[jss::jsonrpc] == "2.0");
-                BEAST_EXPECT(jv.isMember(jss::callchainrpc) && jv[jss::callchainrpc] == "2.0");
+                BEAST_EXPECT(jv.isMember(jss::callrpc) && jv[jss::callrpc] == "2.0");
                 BEAST_EXPECT(jv.isMember(jss::id) && jv[jss::id] == 5);
             }
             BEAST_EXPECT(jv[jss::status] == "success");
@@ -377,7 +377,7 @@ public:
         if (wsc->version() == 2)
         {
             BEAST_EXPECT(jv.isMember(jss::jsonrpc) && jv[jss::jsonrpc] == "2.0");
-            BEAST_EXPECT(jv.isMember(jss::callchainrpc) && jv[jss::callchainrpc] == "2.0");
+            BEAST_EXPECT(jv.isMember(jss::callrpc) && jv[jss::callrpc] == "2.0");
             BEAST_EXPECT(jv.isMember(jss::id) && jv[jss::id] == 5);
         }
         BEAST_EXPECT(jv[jss::status] == "success");
@@ -649,7 +649,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(Subscribe,app,callchain);
+BEAST_DEFINE_TESTSUITE(Subscribe,app,call);
 
 } // test
-} // callchain
+} // call

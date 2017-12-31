@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-  This file is part of callchaind: https://github.com/callchain/callchaind
+  This file is part of calld: https://github.com/call/calld
   Copyright (c) 2016 Ripple Labs Inc.
 
   Permission to use, copy, modify, and/or distribute this software for any
@@ -18,11 +18,11 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/ledger/CashDiff.h>
-#include <callchain/protocol/STAmount.h>
-#include <callchain/beast/unit_test.h>
+#include <call/ledger/CashDiff.h>
+#include <call/protocol/STAmount.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 class CashDiff_test : public beast::unit_test::suite
@@ -98,7 +98,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE (CashDiff, ledger, callchain);
+BEAST_DEFINE_TESTSUITE (CashDiff, ledger, call);
 
 }  // test
-}  // callchain
+}  // call

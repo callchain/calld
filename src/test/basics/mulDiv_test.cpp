@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2016 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,10 +18,10 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <callchain/basics/mulDiv.h>
-#include <callchain/beast/unit_test.h>
+#include <call/basics/mulDiv.h>
+#include <call/beast/unit_test.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 struct mulDiv_test : beast::unit_test::suite
@@ -56,7 +56,7 @@ struct mulDiv_test : beast::unit_test::suite
     }
 };
 
-BEAST_DEFINE_TESTSUITE(mulDiv, callchain_basics, callchain);
+BEAST_DEFINE_TESTSUITE(mulDiv, call_basics, call);
 
 }  // namespace test
-}  // namespace callchain
+}  // namespace call

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2015 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -19,15 +19,15 @@
 
 #include <BeastConfig.h>
 
-#include <callchain/core/ConfigSections.h>
-#include <callchain/core/SociDB.h>
-#include <callchain/basics/contract.h>
+#include <call/core/ConfigSections.h>
+#include <call/core/SociDB.h>
+#include <call/basics/contract.h>
 #include <test/jtx/TestSuite.h>
-#include <callchain/basics/BasicConfig.h>
+#include <call/basics/BasicConfig.h>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
-namespace callchain {
+namespace call {
 class SociDB_test final : public TestSuite
 {
 private:
@@ -374,6 +374,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(SociDB,core,callchain);
+BEAST_DEFINE_TESTSUITE(SociDB,core,call);
 
-}  // callchain
+}  // call

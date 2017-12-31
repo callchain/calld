@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of callchaind: https://github.com/callchain/callchaind
+    This file is part of calld: https://github.com/call/calld
     Copyright (c) 2012-2017 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -17,12 +17,12 @@
 */
 //==============================================================================
 
-#ifndef CALLCHAIN_TEST_JTX_ENVCONFIG_H_INCLUDED
-#define CALLCHAIN_TEST_JTX_ENVCONFIG_H_INCLUDED
+#ifndef CALL_TEST_JTX_ENVCONFIG_H_INCLUDED
+#define CALL_TEST_JTX_ENVCONFIG_H_INCLUDED
 
-#include <callchain/core/Config.h>
+#include <call/core/Config.h>
 
-namespace callchain {
+namespace call {
 namespace test {
 
 /// @brief initializes a config object for use with jtx::Env
@@ -52,7 +52,7 @@ envconfig()
 ///
 /// @param modfunc callable function or lambda to modify the default config.
 /// The first argument to the function must be std::unique_ptr to
-/// callchain::Config. The function takes ownership of the unique_ptr and
+/// call::Config. The function takes ownership of the unique_ptr and
 /// relinquishes ownership by returning a unique_ptr.
 ///
 /// @param args additional arguments that will be passed to
@@ -105,7 +105,7 @@ port_increment(std::unique_ptr<Config>, int);
 
 } // jtx
 } // test
-} // callchain
+} // call
 
 #endif
 
