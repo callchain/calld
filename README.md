@@ -2,7 +2,7 @@ CallChain Backend Project
 
 - - -
 
-Copyright © 2087 CallChain Labs. All rights reserved.
+Copyright © 2018,CallChain Fundation. All rights reserved.
 
 Copyright © 2017,Ripple Labs. All rights reserved.
 
