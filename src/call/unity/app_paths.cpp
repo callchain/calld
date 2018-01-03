@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -19,7 +19,7 @@
 
 #include <BeastConfig.h>
 
-#include <call/app/paths/RippleState.cpp>
+#include <call/app/paths/CallState.cpp>
 #include <call/app/paths/AccountCurrencies.cpp>
 #include <call/app/paths/Credit.cpp>
 #include <call/app/paths/Pathfinder.cpp>
@@ -27,8 +27,8 @@
 #include <call/app/paths/PathRequest.cpp>
 #include <call/app/paths/PathRequests.cpp>
 #include <call/app/paths/PathState.cpp>
-#include <call/app/paths/RippleCalc.cpp>
-#include <call/app/paths/RippleLineCache.cpp>
+#include <call/app/paths/CallCalc.cpp>
+#include <call/app/paths/CallLineCache.cpp>
 #include <call/app/paths/Flow.cpp>
 #include <call/app/paths/impl/PaySteps.cpp>
 #include <call/app/paths/impl/DirectStep.cpp>
@@ -45,4 +45,4 @@
 #include <call/app/paths/cursor/NextIncrement.cpp>
 #include <call/app/paths/cursor/ReverseLiquidity.cpp>
 #include <call/app/paths/cursor/ReverseLiquidityForAccount.cpp>
-#include <call/app/paths/cursor/RippleLiquidity.cpp>
+#include <call/app/paths/cursor/CallLiquidity.cpp>

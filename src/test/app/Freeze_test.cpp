@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012-2016 Ripple Labs Inc.
+    Copyright (c) 2012-2016 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -53,9 +53,9 @@ class Freeze_test : public beast::unit_test::suite
         return val.isArray() && val.size() == size;
     }
 
-    void testRippleState(std::initializer_list<uint256> fs)
+    void testCallState(std::initializer_list<uint256> fs)
     {
-        testcase("RippleState Freeze");
+        testcase("CallState Freeze");
 
         using namespace test::jtx;
         Env env(*this, with_features(fs));
@@ -525,7 +525,7 @@ public:
     {
         auto testAll = [this](std::initializer_list<uint256> fs)
         {
-            testRippleState(fs);
+            testCallState(fs);
             testGlobalFreeze(fs);
             testNoFreeze(fs);
             testOffersWhenFrozen(fs);

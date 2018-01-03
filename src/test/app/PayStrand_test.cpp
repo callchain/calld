@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
     copyright notice and this permission notice appear in all copies.
@@ -17,7 +17,7 @@
 
 #include <BeastConfig.h>
 #include <call/app/paths/Flow.h>
-#include <call/app/paths/RippleCalc.h>
+#include <call/app/paths/CallCalc.h>
 #include <call/app/paths/impl/Steps.h>
 #include <call/basics/contract.h>
 #include <call/core/Config.h>
@@ -60,8 +60,8 @@ enum class TrustFlag {freeze, auth, nocall};
             return lsfLowAuth;
         case TrustFlag::nocall:
             if (useHigh)
-                return lsfHighNoRipple;
-            return lsfLowNoRipple;
+                return lsfHighNoCall;
+            return lsfLowNoCall;
     }
     return 0; // Silence warning about end of non-void function
 }
@@ -629,7 +629,7 @@ struct PayStrandAllPairs_test : public beast::unit_test::suite
     {
         testcase("All pairs");
         using namespace jtx;
-        using RippleCalc = ::call::path::RippleCalc;
+        using CallCalc = ::call::path::CallCalc;
 
         ExistingElementPool eep;
         Env env(*this, with_features(fs));
@@ -643,7 +643,7 @@ struct PayStrandAllPairs_test : public beast::unit_test::suite
         auto const src = eep.getAvailAccount();
         auto const dst = eep.getAvailAccount();
 
-        RippleCalc::Input inputs;
+        CallCalc::Input inputs;
         inputs.defaultPathsAllowed = false;
 
         auto callback = [&](
@@ -653,7 +653,7 @@ struct PayStrandAllPairs_test : public beast::unit_test::suite
             std::array<PaymentSandbox, 2> sbs{
                 {PaymentSandbox{env.current().get(), tapNONE},
                  PaymentSandbox{env.current().get(), tapNONE}}};
-            std::array<RippleCalc::Output, 2> rcOutputs;
+            std::array<CallCalc::Output, 2> rcOutputs;
             // pay with both env1 and env2
             // check all result and account balances match
             // save results so can see if run out of funds or somesuch
@@ -668,7 +668,7 @@ struct PayStrandAllPairs_test : public beast::unit_test::suite
 
                 try
                 {
-                    rcOutputs[i] = RippleCalc::callCalculate(
+                    rcOutputs[i] = CallCalc::callCalculate(
                         sbs[i],
                         sendMax,
                         deliver,
@@ -1151,7 +1151,7 @@ struct PayStrand_test : public beast::unit_test::suite
             env(pay(alice, carol, USD(100)),
                 path(~USD, ~EUR, ~USD),
                 sendmax(XRP(200)),
-                txflags(tfNoRippleDirect),
+                txflags(tfNoCallDirect),
                 ter(temBAD_PATH_LOOP));
         }
 
@@ -1314,7 +1314,7 @@ struct PayStrand_test : public beast::unit_test::suite
             env(pay(alice, alice, EUR(1)),
                 json(paths.json()),
                 sendmax(XRP(10)),
-                txflags(tfNoRippleDirect | tfPartialPayment),
+                txflags(tfNoCallDirect | tfPartialPayment),
                 ter(temBAD_PATH));
         }
 
@@ -1332,7 +1332,7 @@ struct PayStrand_test : public beast::unit_test::suite
             // payment path: XRP -> XRP/USD -> USD/XRP
             env(pay(alice, carol, XRP(100)),
                 path(~USD, ~XRP),
-                txflags(tfNoRippleDirect),
+                txflags(tfNoCallDirect),
                 ter(temBAD_SEND_XRP_PATHS));
         }
 
@@ -1351,7 +1351,7 @@ struct PayStrand_test : public beast::unit_test::suite
             env(pay(alice, carol, XRP(100)),
                 path(~USD, ~XRP),
                 sendmax(XRP(200)),
-                txflags(tfNoRippleDirect),
+                txflags(tfNoCallDirect),
                 ter(temBAD_SEND_XRP_MAX));
         }
     }
@@ -1392,7 +1392,7 @@ struct PayStrand_test : public beast::unit_test::suite
             env(pay(alice, carol, USD(100)),
                 sendmax(USD(100)),
                 path(~XRP, ~USD),
-                txflags(tfNoRippleDirect),
+                txflags(tfNoCallDirect),
                 ter(expectedResult));
         }
         {
@@ -1415,7 +1415,7 @@ struct PayStrand_test : public beast::unit_test::suite
             env(pay(alice, carol, CNY(100)),
                 sendmax(XRP(100)),
                 path(~USD, ~EUR, ~USD, ~CNY),
-                txflags(tfNoRippleDirect),
+                txflags(tfNoCallDirect),
                 ter(temBAD_PATH_LOOP));
         }
     }
@@ -1440,31 +1440,31 @@ struct PayStrand_test : public beast::unit_test::suite
         AccountID const srcAcc = alice.id();
         AccountID dstAcc = bob.id();
         STPathSet pathSet;
-        ::call::path::RippleCalc::Input inputs;
+        ::call::path::CallCalc::Input inputs;
         inputs.defaultPathsAllowed = true;
         try
         {
             PaymentSandbox sb{env.current().get(), tapNONE};
             {
-                auto const r = ::call::path::RippleCalc::callCalculate(
+                auto const r = ::call::path::CallCalc::callCalculate(
                     sb, sendMax, deliver, dstAcc, noAccount(), pathSet,
                     env.app().logs(), &inputs);
                 BEAST_EXPECT(r.result() == temBAD_PATH);
             }
             {
-                auto const r = ::call::path::RippleCalc::callCalculate(
+                auto const r = ::call::path::CallCalc::callCalculate(
                     sb, sendMax, deliver, noAccount(), srcAcc, pathSet,
                     env.app().logs(), &inputs);
                 BEAST_EXPECT(r.result() == temBAD_PATH);
             }
             {
-                auto const r = ::call::path::RippleCalc::callCalculate(
+                auto const r = ::call::path::CallCalc::callCalculate(
                     sb, noAccountAmount, deliver, dstAcc, srcAcc, pathSet,
                     env.app().logs(), &inputs);
                 BEAST_EXPECT(r.result() == temBAD_PATH);
             }
             {
-                auto const r = ::call::path::RippleCalc::callCalculate(
+                auto const r = ::call::path::CallCalc::callCalculate(
                     sb, sendMax, noAccountAmount, dstAcc, srcAcc, pathSet,
                     env.app().logs(), &inputs);
                 BEAST_EXPECT(r.result() == temBAD_PATH);

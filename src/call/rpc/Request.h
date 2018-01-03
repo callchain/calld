@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -52,7 +52,7 @@ struct Request
     // [in] The JSON-RPC method
     std::string method;
 
-    // [in] The Ripple-specific "params" object
+    // [in] The Call-specific "params" object
     Json::Value params;
 
     // [in, out] The resource cost for the command

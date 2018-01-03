@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
   This file is part of calld: https://github.com/call/calld
-  Copyright (c) 2012-2015 Ripple Labs Inc.
+  Copyright (c) 2012-2015 Call Labs Inc.
 
   Permission to use, copy, modify, and/or distribute this software for any
   purpose  with  or without fee is hereby granted, provided that the above
@@ -90,7 +90,7 @@ class PaymentSandbox_test : public beast::unit_test::suite
 
         env (pay (snd, rcv, any (USD_gw1 (4))),
             json (paths.json ()),
-            txflags (tfNoRippleDirect | tfPartialPayment));
+            txflags (tfNoCallDirect | tfPartialPayment));
 
         env.require (balance ("rcv", USD_gw1 (0)));
         env.require (balance ("rcv", USD_gw2 (2)));

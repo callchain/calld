@@ -5,7 +5,7 @@
 # 2) The last namepart of BOOST_ROOT matches the
 # folder name internal to boost's .tar.gz
 # When testing you can force a boost build by clearing travis caches:
-# https://travis-ci.org/ripple/rippled/caches
+# https://travis-ci.org/call/calld/caches
 set -eu
 if [ ! -d "$BOOST_ROOT/lib" ]
 then

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -17,43 +17,15 @@
 */
 //==============================================================================
 
-#ifndef CALL_APP_PATHS_CURSOR_CALLLIQUIDITY_H_INCLUDED
-#define CALL_APP_PATHS_CURSOR_CALLLIQUIDITY_H_INCLUDED
+#ifndef CALL_PROTOCOL_CALLLEDGERHASH_H_INCLUDED
+#define CALL_PROTOCOL_CALLLEDGERHASH_H_INCLUDED
 
-#include <call/app/paths/cursor/PathCursor.h>
-#include <call/app/paths/RippleCalc.h>
-#include <call/app/paths/Tuning.h>
-#include <call/ledger/View.h>
-#include <call/protocol/Rate.h>
+#include <call/basics/base_uint.h>
 
 namespace call {
-namespace path {
 
-void callLiquidity (
-    RippleCalc&,
-    Rate const& qualityIn,
-    Rate const& qualityOut,
-    STAmount const& saPrvReq,
-    STAmount const& saCurReq,
-    STAmount& saPrvAct,
-    STAmount& saCurAct,
-    std::uint64_t& uRateMax);
+using LedgerHash = uint256;
 
-Rate
-quality_in (
-    ReadView const& view,
-    AccountID const& uToAccountID,
-    AccountID const& uFromAccountID,
-    Currency const& currency);
-
-Rate
-quality_out (
-    ReadView const& view,
-    AccountID const& uToAccountID,
-    AccountID const& uFromAccountID,
-    Currency const& currency);
-
-} // path
-} // call
+}
 
 #endif

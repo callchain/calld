@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -31,10 +31,10 @@
 
 namespace call {
 
-/** Get the current RippleLineCache, updating it if necessary.
+/** Get the current CallLineCache, updating it if necessary.
     Get the correct ledger to use.
 */
-std::shared_ptr<RippleLineCache>
+std::shared_ptr<CallLineCache>
 PathRequests::getLineCache (
     std::shared_ptr <ReadView const> const& ledger,
     bool authoritative)
@@ -49,7 +49,7 @@ PathRequests::getLineCache (
          (authoritative && ((lgrSeq + 8)  < lineSeq)) ||   // we jumped way back for some reason
          (lgrSeq > (lineSeq + 8)))                         // we jumped way forward for some reason
     {
-        mLineCache = std::make_shared<RippleLineCache> (ledger);
+        mLineCache = std::make_shared<CallLineCache> (ledger);
     }
     return mLineCache;
 }
@@ -62,7 +62,7 @@ void PathRequests::updateAll (std::shared_ptr <ReadView const> const& inLedger,
             jtPATH_FIND, "PathRequest::updateAll");
 
     std::vector<PathRequest::wptr> requests;
-    std::shared_ptr<RippleLineCache> cache;
+    std::shared_ptr<CallLineCache> cache;
 
     // Get the ledger and cache we should be using
     {
@@ -265,7 +265,7 @@ PathRequests::doLegacyPathRequest (
         std::shared_ptr<ReadView const> const& inLedger,
         Json::Value const& request)
 {
-    auto cache = std::make_shared<RippleLineCache> (inLedger);
+    auto cache = std::make_shared<CallLineCache> (inLedger);
 
     auto req = std::make_shared<PathRequest> (app_, []{},
         consumer, ++mLastIdentifier, *this, mJournal);

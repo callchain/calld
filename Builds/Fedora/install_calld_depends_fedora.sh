@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-# This scripts installs the dependencies needed by rippled. It should be run
+# This scripts installs the dependencies needed by calld. It should be run
 # with sudo.
 #
 

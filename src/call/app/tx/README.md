@@ -29,7 +29,7 @@ classes the ability to replace portions of the default implementation.
 
 ## SetSignerList ##
 
-In order to enhance the flexibility of Ripple and provide support for enhanced
+In order to enhance the flexibility of Call and provide support for enhanced
 security of accounts, native support for "multi-signature" or "multi-sign"
 accounts is required.
 
@@ -37,7 +37,7 @@ Transactions on an account which is designated as multi-sign can be authorized
 either by using the master or regular keys (unless those are disabled) or by
 being signed by a certain number (a quorum) of pre-authorized accounts.
 
-Some technical details, including tables indicating some of the Ripple
+Some technical details, including tables indicating some of the Call
 commands and ledger entries to be used for implementing multi-signature, are
 currently listed on the [wiki](https://call.com/wiki/Multisign) but will
 eventually be migrated into this document as well.
@@ -51,12 +51,12 @@ specifies which accounts are authorized to sign and the quorum threshold.
 
 ### Verification of Multiple Signatures During TX Processing
 The current approach to adding multi-signature support is to require that a
-transaction is to be signed outside the Ripple network and only submitted
+transaction is to be signed outside the Call network and only submitted
 after the quorum has been reached.
 
 This reduces the implementation footprint and the load imposed on the network,
 and mirrors the way transaction signing is currently handled. It will require
-some messaging mechanism outside the Ripple network to disseminate the proposed
+some messaging mechanism outside the Call network to disseminate the proposed
 transaction to the authorized signers and to allow them to apply signatures.
 
 Supporting in-ledger voting should be considered, but it has both advantages
@@ -156,7 +156,7 @@ The data for a transaction that removes any signer list has this form:
 
 ## Tickets ##
 
-Currently transactions on the Ripple network require the use of sequence
+Currently transactions on the Call network require the use of sequence
 numbers and sequence numbers must monotonically increase. Since the sequence
 number is part of the transaction, it is "covered" by the signature that
 authorizes the transaction, which means that the sequence number would have

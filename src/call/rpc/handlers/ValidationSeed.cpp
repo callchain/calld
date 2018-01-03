@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012-2014 Ripple Labs Inc.
+    Copyright (c) 2012-2014 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -64,8 +64,8 @@ Json::Value doValidationSeed (RPC::Context& context)
     //     auto& seed = context.app.config().VALIDATION_SEED;
     //     auto& pub = context.app.config().VALIDATION_PUB;
 
-    //     pub = RippleAddress::createNodePublic (seed);
-    //     context.app.config().VALIDATION_PRIV = RippleAddress::createNodePrivate (seed);
+    //     pub = CallAddress::createNodePublic (seed);
+    //     context.app.config().VALIDATION_PRIV = CallAddress::createNodePrivate (seed);
 
     //     obj[jss::validation_public_key] = pub.humanNodePublic ();
     //     obj[jss::validation_seed] = seed.humanSeed ();

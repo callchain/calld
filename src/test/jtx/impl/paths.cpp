@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -37,7 +37,7 @@ paths::operator()(Env& env, JTx& jt) const
     auto const amount = amountFromJson(
         sfAmount, jv[jss::Amount]);
     Pathfinder pf (
-        std::make_shared<RippleLineCache>(env.current()),
+        std::make_shared<CallLineCache>(env.current()),
             from, to, in_.currency, in_.account,
                 amount, boost::none, env.app());
     if (! pf.findPaths(depth_))

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -17,15 +17,36 @@
 */
 //==============================================================================
 
-#ifndef CALL_PROTOCOL_CALLLEDGERHASH_H_INCLUDED
-#define CALL_PROTOCOL_CALLLEDGERHASH_H_INCLUDED
-
-#include <call/basics/base_uint.h>
+#include <BeastConfig.h>
+#include <call/app/paths/CallLineCache.h>
+#include <call/ledger/OpenView.h>
 
 namespace call {
 
-using LedgerHash = uint256;
-
+CallLineCache::CallLineCache(
+    std::shared_ptr <ReadView const> const& ledger)
+{
+    // We want the caching that OpenView provides
+    // And we need to own a shared_ptr to the input view
+    // VFALCO TODO This should be a CachedLedger
+    mLedger = std::make_shared<OpenView>(&*ledger, ledger);
 }
 
-#endif
+std::vector<CallState::pointer> const&
+CallLineCache::getCallLines (AccountID const& accountID)
+{
+    AccountKey key (accountID, hasher_ (accountID));
+
+    std::lock_guard <std::mutex> sl (mLock);
+
+    auto it = lines_.emplace (key,
+        std::vector<CallState::pointer>());
+
+    if (it.second)
+        it.first->second = getCallStateItems (
+            accountID, *mLedger);
+
+    return it.first->second;
+}
+
+} // call

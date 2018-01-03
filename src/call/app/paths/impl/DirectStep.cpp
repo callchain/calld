@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -423,10 +423,10 @@ DirectIPaymentStep::check (
         {
             if (ctx.prevStep->bookStepBook())
             {
-                auto const noRippleSrcToDst =
+                auto const noCallSrcToDst =
                     ((*sleLine)[sfFlags] &
-                     ((src_ > dst_) ? lsfHighNoRipple : lsfLowNoRipple));
-                if (noRippleSrcToDst)
+                     ((src_ > dst_) ? lsfHighNoCall : lsfLowNoCall));
+                if (noCallSrcToDst)
                     return terNO_CALL;
             }
         }
@@ -849,7 +849,7 @@ TER DirectStepI<TDerived>::check (StrandContext const& ctx) const
     {
         if (auto prevSrc = ctx.prevStep->directStepSrcAcct())
         {
-            auto const ter = checkNoRipple(
+            auto const ter = checkNoCall(
                 ctx.view, *prevSrc, src_, dst_, currency_, j_);
             if (ter != tesSUCCESS)
                 return ter;

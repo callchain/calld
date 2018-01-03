@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -40,7 +40,7 @@ auto finishFlow (PaymentSandbox& sb,
     Issue const& srcIssue, Issue const& dstIssue,
     FlowResult&& f)
 {
-    path::RippleCalc::Output result;
+    path::CallCalc::Output result;
     if (f.ter == tesSUCCESS)
         f.sandbox->apply (sb);
     else
@@ -53,7 +53,7 @@ auto finishFlow (PaymentSandbox& sb,
     return result;
 };
 
-path::RippleCalc::Output
+path::CallCalc::Output
 flow (
     PaymentSandbox& sb,
     STAmount const& deliver,
@@ -90,7 +90,7 @@ flow (
 
     if (sr.first != tesSUCCESS)
     {
-        path::RippleCalc::Output result;
+        path::CallCalc::Output result;
         result.setResult (sr.first);
         return result;
     }

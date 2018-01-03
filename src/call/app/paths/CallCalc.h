@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -36,12 +36,12 @@ namespace detail {
 struct FlowDebugInfo;
 }
 
-/** RippleCalc calculates the quality of a payment path.
+/** CallCalc calculates the quality of a payment path.
 
     Quality is the amount of input required to produce a given output along a
     specified path - another name for this is exchange rate.
 */
-class RippleCalc
+class CallCalc
 {
 public:
     struct Input
@@ -127,7 +127,7 @@ public:
     Logs& logs_;
 
 private:
-    RippleCalc (
+    CallCalc (
         PaymentSandbox& view_,
         STAmount const& saMaxAmountReq,             // --> -1 = no limit.
         STAmount const& saDstAmountReq,
@@ -137,7 +137,7 @@ private:
         STPathSet const& spsPaths,
         Logs& l)
             : view (view_),
-              j_ (l.journal ("RippleCalc")),
+              j_ (l.journal ("CallCalc")),
               logs_ (l),
               saDstAmountReq_(saDstAmountReq),
               saMaxAmountReq_(saMaxAmountReq),

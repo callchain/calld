@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2017 Ripple Labs Inc.
+    Copyright (c) 2017 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -29,7 +29,7 @@
 
 namespace call {
 
-class NoRippleCheck_test : public beast::unit_test::suite
+class NoCallCheck_test : public beast::unit_test::suite
 {
     void
     testBadInput ()
@@ -139,13 +139,13 @@ class NoRippleCheck_test : public beast::unit_test::suite
         env.fund (XRP(10000), gw, alice);
         if ((user && problems) || (!user && !problems))
         {
-            env (fset (alice, asfDefaultRipple));
+            env (fset (alice, asfDefaultCall));
             env (trust (alice, gw["USD"](100)));
         }
         else
         {
-            env (fclear (alice, asfDefaultRipple));
-            env (trust (alice, gw["USD"](100), gw, tfSetNoRipple));
+            env (fclear (alice, asfDefaultCall));
+            env (trust (alice, gw["USD"](100), gw, tfSetNoCall));
         }
         env.close ();
 
@@ -235,7 +235,7 @@ public:
     }
 };
 
-class NoRippleCheckLimits_test : public beast::unit_test::suite
+class NoCallCheckLimits_test : public beast::unit_test::suite
 {
     void
     testLimits(bool admin)
@@ -249,10 +249,10 @@ class NoRippleCheckLimits_test : public beast::unit_test::suite
 
         auto const alice = Account {"alice"};
         env.fund (XRP (100000), alice);
-        env (fset (alice, asfDefaultRipple));
+        env (fset (alice, asfDefaultCall));
         env.close ();
 
-        for (auto i = 0; i < call::RPC::Tuning::noRippleCheck.rmax + 5; ++i)
+        for (auto i = 0; i < call::RPC::Tuning::noCallCheck.rmax + 5; ++i)
         {
             if (! admin)
             {
@@ -322,13 +322,13 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(NoRippleCheck, app, call);
+BEAST_DEFINE_TESTSUITE(NoCallCheck, app, call);
 
 // These tests that deal with limit amounts are slow because of the
 // offer/account setup, so making them manual -- the additional coverage provided
 // by them is minimal
 
-BEAST_DEFINE_TESTSUITE_MANUAL(NoRippleCheckLimits, app, call);
+BEAST_DEFINE_TESTSUITE_MANUAL(NoCallCheckLimits, app, call);
 
 } // call
 

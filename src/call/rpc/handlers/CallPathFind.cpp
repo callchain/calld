@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012-2014 Ripple Labs Inc.
+    Copyright (c) 2012-2014 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -29,7 +29,7 @@
 namespace call {
 
 // This interface is deprecated.
-Json::Value doRipplePathFind (RPC::Context& context)
+Json::Value doCallPathFind (RPC::Context& context)
 {
     if (context.app.config().PATH_SEARCH_MAX == 0)
         return rpcError (rpcNOT_SUPPORTED);
@@ -59,11 +59,11 @@ Json::Value doRipplePathFind (RPC::Context& context)
         // be aware this code runs in a JobQueue::Coro, which is a coroutine.
         // And we may be flipping around between threads.  Here's an overview:
         //
-        // 1. We're running doRipplePathFind() due to a call to
-        //    call_path_find.  doRipplePathFind() is currently running
+        // 1. We're running doCallPathFind() due to a call to
+        //    call_path_find.  doCallPathFind() is currently running
         //    inside of a JobQueue::Coro using a JobQueue thread.
         //
-        // 2. doRipplePathFind's call to makeLegacyPathRequest() enqueues the
+        // 2. doCallPathFind's call to makeLegacyPathRequest() enqueues the
         //    path-finding request.  That request will (probably) run at some
         //    indeterminate future time on a (probably different) JobQueue
         //    thread.

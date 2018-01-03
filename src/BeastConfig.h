@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of rippled: https://github.com/ripple/rippled
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    This file is part of calld: https://github.com/call/calld
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -106,7 +106,7 @@
 
 //------------------------------------------------------------------------------
 //
-// Ripple
+// Call
 //
 //------------------------------------------------------------------------------
 
@@ -129,11 +129,11 @@
 //------------------------------------------------------------------------------
 
 // These control whether or not certain functionality gets
-// compiled into the resulting rippled executable
+// compiled into the resulting calld executable
 
 /** Config: RIPPLE_ROCKSDB_AVAILABLE
     Controls whether or not the RocksDB database back-end is compiled into
-    rippled. RocksDB requires a relatively modern C++ compiler (tested with
+    calld. RocksDB requires a relatively modern C++ compiler (tested with
     gcc versions 4.8.1 and later) that supports some C++11 features.
 */
 #ifndef   RIPPLE_ROCKSDB_AVAILABLE

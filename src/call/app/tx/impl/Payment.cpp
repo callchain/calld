@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -19,7 +19,7 @@
 
 #include <BeastConfig.h>
 #include <call/app/tx/impl/Payment.h>
-#include <call/app/paths/RippleCalc.h>
+#include <call/app/paths/CallCalc.h>
 #include <call/basics/Log.h>
 #include <call/core/Config.h>
 #include <call/protocol/st.h>
@@ -65,7 +65,7 @@ Payment::preflight (PreflightContext const& ctx)
 
     bool const partialPaymentAllowed = uTxFlags & tfPartialPayment;
     bool const limitQuality = uTxFlags & tfLimitQuality;
-    bool const defaultPathsAllowed = !(uTxFlags & tfNoRippleDirect);
+    bool const defaultPathsAllowed = !(uTxFlags & tfNoCallDirect);
     bool const bPaths = tx.isFieldPresent (sfPaths);
     bool const bMax = tx.isFieldPresent (sfSendMax);
 
@@ -204,7 +204,7 @@ Payment::preflight (PreflightContext const& ctx)
 TER
 Payment::preclaim(PreclaimContext const& ctx)
 {
-    // Ripple if source or destination is non-native or if there are paths.
+    // Call if source or destination is non-native or if there are paths.
     std::uint32_t const uTxFlags = ctx.tx.getFlags();
     bool const partialPaymentAllowed = uTxFlags & tfPartialPayment;
     auto const paths = ctx.tx.isFieldPresent(sfPaths);
@@ -270,7 +270,7 @@ Payment::preclaim(PreclaimContext const& ctx)
 
     if (paths || sendMax || !saDstAmount.native())
     {
-        // Ripple payment with at least one intermediate step and uses
+        // Call payment with at least one intermediate step and uses
         // transitive balances.
 
         // Copy paths into an editable class.
@@ -301,11 +301,11 @@ Payment::doApply ()
 {
     auto const deliverMin = ctx_.tx[~sfDeliverMin];
 
-    // Ripple if source or destination is non-native or if there are paths.
+    // Call if source or destination is non-native or if there are paths.
     std::uint32_t const uTxFlags = ctx_.tx.getFlags ();
     bool const partialPaymentAllowed = uTxFlags & tfPartialPayment;
     bool const limitQuality = uTxFlags & tfLimitQuality;
-    bool const defaultPathsAllowed = !(uTxFlags & tfNoRippleDirect);
+    bool const defaultPathsAllowed = !(uTxFlags & tfNoCallDirect);
     auto const paths = ctx_.tx.isFieldPresent(sfPaths);
     auto const sendMax = ctx_.tx[~sfSendMax];
 
@@ -348,29 +348,29 @@ Payment::doApply ()
 
     TER terResult;
 
-    bool const bRipple = paths || sendMax || !saDstAmount.native ();
+    bool const bCall = paths || sendMax || !saDstAmount.native ();
     // XXX Should sendMax be sufficient to imply call?
 
-    if (bRipple)
+    if (bCall)
     {
-        // Ripple payment with at least one intermediate step and uses
+        // Call payment with at least one intermediate step and uses
         // transitive balances.
 
         // Copy paths into an editable class.
         STPathSet spsPaths = ctx_.tx.getFieldPathSet (sfPaths);
 
-        path::RippleCalc::Input rcInput;
+        path::CallCalc::Input rcInput;
         rcInput.partialPaymentAllowed = partialPaymentAllowed;
         rcInput.defaultPathsAllowed = defaultPathsAllowed;
         rcInput.limitQuality = limitQuality;
         rcInput.isLedgerOpen = view().open();
 
-        path::RippleCalc::Output rc;
+        path::CallCalc::Output rc;
         {
             PaymentSandbox pv(&view());
             JLOG(j_.debug())
-                << "Entering RippleCalc in payment: " << ctx_.tx.getTransactionID();
-            rc = path::RippleCalc::callCalculate (
+                << "Entering CallCalc in payment: " << ctx_.tx.getTransactionID();
+            rc = path::CallCalc::callCalculate (
                 pv,
                 maxSourceAmount,
                 saDstAmount,
@@ -399,7 +399,7 @@ Payment::doApply ()
 
         terResult = rc.result ();
 
-        // Because of its overhead, if RippleCalc
+        // Because of its overhead, if CallCalc
         // fails with a retry code, claim a fee
         // instead. Maybe the user will be more
         // careful with their path spec next time.

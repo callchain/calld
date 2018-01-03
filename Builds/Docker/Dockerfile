@@ -1,4 +1,4 @@
-# rippled
+# calld
 
 # use the ubuntu base image
 FROM ubuntu
@@ -12,19 +12,19 @@ RUN apt-get -y upgrade
 RUN apt-get -y install git scons pkg-config protobuf-compiler libprotobuf-dev libssl-dev libboost1.55-all-dev
 
 # download source code from official repository
-RUN git clone https://github.com/ripple/rippled.git src; cd src/; git checkout master
+RUN git clone https://github.com/call/calld.git src; cd src/; git checkout master
 
 # compile
-RUN cd src/; scons build/rippled
+RUN cd src/; scons build/calld
 
 # move to root directory and strip
-RUN cp src/build/rippled rippled; strip rippled
+RUN cp src/build/calld calld; strip calld
 
 # copy default config
-RUN cp src/doc/rippled-example.cfg rippled.cfg
+RUN cp src/doc/calld-example.cfg calld.cfg
 
 # clean source
 RUN rm -r src
 
-# launch rippled when launching the container
-ENTRYPOINT ./rippled
+# launch calld when launching the container
+ENTRYPOINT ./calld

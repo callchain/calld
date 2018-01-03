@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012-2014 Ripple Labs Inc.
+    Copyright (c) 2012-2014 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -206,7 +206,7 @@ static Json::Value checkPayment(
             STPathSet result;
             if (ledger)
             {
-                Pathfinder pf(std::make_shared<RippleLineCache>(ledger),
+                Pathfinder pf(std::make_shared<CallLineCache>(ledger),
                     srcAddressID, *dstAccountID, sendMax.issue().currency,
                         sendMax.issue().account, amount, boost::none, app);
                 if (pf.findPaths(app.config().PATH_SEARCH_OLD))

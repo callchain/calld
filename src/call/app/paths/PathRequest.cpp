@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -19,7 +19,7 @@
 
 #include <BeastConfig.h>
 #include <call/app/paths/AccountCurrencies.h>
-#include <call/app/paths/RippleCalc.h>
+#include <call/app/paths/CallCalc.h>
 #include <call/app/paths/PathRequest.h>
 #include <call/app/paths/PathRequests.h>
 #include <call/app/main/Application.h>
@@ -164,7 +164,7 @@ void PathRequest::updateComplete ()
     }
 }
 
-bool PathRequest::isValid (std::shared_ptr<RippleLineCache> const& crCache)
+bool PathRequest::isValid (std::shared_ptr<CallLineCache> const& crCache)
 {
     if (! raSrcAccount || ! raDstAccount)
         return false;
@@ -239,7 +239,7 @@ bool PathRequest::isValid (std::shared_ptr<RippleLineCache> const& crCache)
 */
 std::pair<bool, Json::Value>
 PathRequest::doCreate (
-    std::shared_ptr<RippleLineCache> const& cache,
+    std::shared_ptr<CallLineCache> const& cache,
     Json::Value const& value)
 {
     bool valid = false;
@@ -456,7 +456,7 @@ Json::Value PathRequest::doStatus (Json::Value const&)
 }
 
 std::unique_ptr<Pathfinder> const&
-PathRequest::getPathFinder(std::shared_ptr<RippleLineCache> const& cache,
+PathRequest::getPathFinder(std::shared_ptr<CallLineCache> const& cache,
     hash_map<Currency, std::unique_ptr<Pathfinder>>& currency_map,
         Currency const& currency, STAmount const& dst_amount,
             int const level)
@@ -475,7 +475,7 @@ PathRequest::getPathFinder(std::shared_ptr<RippleLineCache> const& cache,
 }
 
 bool
-PathRequest::findPaths (std::shared_ptr<RippleLineCache> const& cache,
+PathRequest::findPaths (std::shared_ptr<CallLineCache> const& cache,
     int const level, Json::Value& jvArray)
 {
     auto sourceCurrencies = sciSourceCurrencies;
@@ -531,12 +531,12 @@ PathRequest::findPaths (std::shared_ptr<RippleLineCache> const& cache,
         JLOG(m_journal.debug()) << iIdentifier
             << " Paths found, calling callCalc";
 
-        path::RippleCalc::Input rcInput;
+        path::CallCalc::Input rcInput;
         if (convert_all_)
             rcInput.partialPaymentAllowed = true;
         auto sandbox = std::make_unique<PaymentSandbox>
             (&*cache->getLedger(), tapNONE);
-        auto rc = path::RippleCalc::callCalculate(
+        auto rc = path::CallCalc::callCalculate(
             *sandbox,
             saMaxAmount,    // --> Amount to send is unlimited
                             //     to get an estimate.
@@ -557,7 +557,7 @@ PathRequest::findPaths (std::shared_ptr<RippleLineCache> const& cache,
             ps.push_back(fullLiquidityPath);
             sandbox = std::make_unique<PaymentSandbox>
                 (&*cache->getLedger(), tapNONE);
-            rc = path::RippleCalc::callCalculate(
+            rc = path::CallCalc::callCalculate(
                 *sandbox,
                 saMaxAmount,    // --> Amount to send is unlimited
                                 //     to get an estimate.
@@ -617,7 +617,7 @@ PathRequest::findPaths (std::shared_ptr<RippleLineCache> const& cache,
 }
 
 Json::Value PathRequest::doUpdate(
-    std::shared_ptr<RippleLineCache> const& cache, bool fast)
+    std::shared_ptr<CallLineCache> const& cache, bool fast)
 {
     using namespace std::chrono;
     JLOG(m_journal.debug()) << iIdentifier

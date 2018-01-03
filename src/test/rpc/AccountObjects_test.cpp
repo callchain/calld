@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2016 Ripple Labs Inc.
+    Copyright (c) 2016 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -76,7 +76,7 @@ R"json({
         "value" : "1000"
     },
     "HighNode" : "0000000000000000",
-    "LedgerEntryType" : "RippleState",
+    "LedgerEntryType" : "CallState",
     "LowLimit" : {
         "currency" : "USD",
         "issuer" : "r9cZvwKU3zzuZK9JFovGg1JC5n7QiqNL8L",
@@ -99,7 +99,7 @@ R"json({
         "value" : "1000"
     },
     "HighNode" : "0000000000000000",
-    "LedgerEntryType" : "RippleState",
+    "LedgerEntryType" : "CallState",
     "LowLimit" : {
         "currency" : "USD",
         "issuer" : "r32rQHyesiTtdWFU7UJVtff4nCR5SHCbJW",

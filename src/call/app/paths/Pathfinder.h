@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -21,7 +21,7 @@
 #define CALL_APP_PATHS_PATHFINDER_H_INCLUDED
 
 #include <call/app/ledger/Ledger.h>
-#include <call/app/paths/RippleLineCache.h>
+#include <call/app/paths/CallLineCache.h>
 #include <call/core/LoadEvent.h>
 #include <call/protocol/STAmount.h>
 #include <call/protocol/STPathSet.h>
@@ -30,16 +30,16 @@ namespace call {
 
 /** Calculates payment paths.
 
-    The @ref RippleCalc determines the quality of the found paths.
+    The @ref CallCalc determines the quality of the found paths.
 
-    @see RippleCalc
+    @see CallCalc
 */
 class Pathfinder
 {
 public:
     /** Construct a pathfinder without an issuer.*/
     Pathfinder (
-        std::shared_ptr<RippleLineCache> const& cache,
+        std::shared_ptr<CallLineCache> const& cache,
         AccountID const& srcAccount,
         AccountID const& dstAccount,
         Currency const& uSrcCurrency,
@@ -112,8 +112,8 @@ private:
                   addLink:
                       getPathsOut
                       issueMatchesOrigin
-                      isNoRippleOut:
-                          isNoRipple
+                      isNoCallOut:
+                          isNoCall
 
       computePathRanks:
           callCalculate
@@ -157,10 +157,10 @@ private:
 
     // Does this path end on an account-to-account link whose last account has
     // set the "no call" flag on the link?
-    bool isNoRippleOut (STPath const& currentPath);
+    bool isNoCallOut (STPath const& currentPath);
 
     // Is the "no call" flag set from one account to another?
-    bool isNoRipple (
+    bool isNoCall (
         AccountID const& fromAccount,
         AccountID const& toAccount,
         Currency const& currency);
@@ -184,7 +184,7 @@ private:
 
     std::shared_ptr <ReadView const> mLedger;
     std::unique_ptr<LoadEvent> m_loadEvent;
-    std::shared_ptr<RippleLineCache> mRLCache;
+    std::shared_ptr<CallLineCache> mRLCache;
 
     STPathElement mSource;
     STPathSet mCompletePaths;

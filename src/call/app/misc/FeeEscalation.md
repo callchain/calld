@@ -1,6 +1,6 @@
 # Fees
 
-Rippled's fee mechanism consists of several interrelated processes:
+Calld's fee mechanism consists of several interrelated processes:
 
 1. [Rapid Fee escalation](#fee-escalation)
 2. [The Transaction Queue](#transaction-queue)

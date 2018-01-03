@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012-2014 Ripple Labs Inc.
+    Copyright (c) 2012-2014 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -20,7 +20,7 @@
 #include <BeastConfig.h>
 #include <call/app/main/Application.h>
 #include <call/app/misc/LoadFeeTrack.h>
-#include <call/app/paths/RippleState.h>
+#include <call/app/paths/CallState.h>
 #include <call/ledger/ReadView.h>
 #include <call/net/RPCErr.h>
 #include <call/protocol/ErrorCodes.h>
@@ -56,7 +56,7 @@ static void fillTransaction (
 //   role: gateway|user             // account role to assume
 //   transactions: true             // optional, reccommend transactions
 // }
-Json::Value doNoRippleCheck (RPC::Context& context)
+Json::Value doNoCallCheck (RPC::Context& context)
 {
     auto const& params (context.params);
     if (! params.isMember (jss::account))
@@ -74,7 +74,7 @@ Json::Value doNoRippleCheck (RPC::Context& context)
     }
 
     unsigned int limit;
-    if (auto err = readLimitField(limit, RPC::Tuning::noRippleCheck, context))
+    if (auto err = readLimitField(limit, RPC::Tuning::noCallCheck, context))
         return *err;
 
     bool transactions = false;
@@ -109,14 +109,14 @@ Json::Value doNoRippleCheck (RPC::Context& context)
 
     Json::Value& problems = (result["problems"] = Json::arrayValue);
 
-    bool bDefaultRipple = sle->getFieldU32 (sfFlags) & lsfDefaultRipple;
+    bool bDefaultCall = sle->getFieldU32 (sfFlags) & lsfDefaultCall;
 
-    if (bDefaultRipple & ! roleGateway)
+    if (bDefaultCall & ! roleGateway)
     {
         problems.append ("You appear to have set your default call flag even though you "
             "are not a gateway. This is not recommended unless you are experimenting");
     }
-    else if (roleGateway & ! bDefaultRipple)
+    else if (roleGateway & ! bDefaultCall)
     {
         problems.append ("You should immediately set your default call flag");
         if (transactions)
@@ -136,17 +136,17 @@ Json::Value doNoRippleCheck (RPC::Context& context)
             {
                 bool const bLow = accountID == ownedItem->getFieldAmount(sfLowLimit).getIssuer();
 
-                bool const bNoRipple = ownedItem->getFieldU32(sfFlags) &
-                    (bLow ? lsfLowNoRipple : lsfHighNoRipple);
+                bool const bNoCall = ownedItem->getFieldU32(sfFlags) &
+                    (bLow ? lsfLowNoCall : lsfHighNoCall);
 
                 std::string problem;
                 bool needFix = false;
-                if (bNoRipple & roleGateway)
+                if (bNoCall & roleGateway)
                 {
                     problem = "You should clear the no call flag on your ";
                     needFix = true;
                 }
-                else if (! roleGateway & ! bNoRipple)
+                else if (! roleGateway & ! bNoCall)
                 {
                     problem = "You should probably set the no call flag on your ";
                     needFix = true;
@@ -167,7 +167,7 @@ Json::Value doNoRippleCheck (RPC::Context& context)
                     Json::Value& tx = jvTransactions.append (Json::objectValue);
                     tx["TransactionType"] = "TrustSet";
                     tx["LimitAmount"] = limitAmount.getJson (0);
-                    tx["Flags"] = bNoRipple ? tfClearNoRipple : tfSetNoRipple;
+                    tx["Flags"] = bNoCall ? tfClearNoCall : tfSetNoCall;
                     fillTransaction(context, tx, accountID, seq, *ledger);
 
                     return true;

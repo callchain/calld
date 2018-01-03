@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012-2015 Ripple Labs Inc.
+    Copyright (c) 2012-2015 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -19,7 +19,7 @@
 
 /*  Stub functions for soci dynamic backends.
 
-    Ripple does not use dynamic backends, and inclduing soci's
+    Call does not use dynamic backends, and inclduing soci's
     dynamic backends compilcates the build (it requires a generated
     header file and some macros to be defined.)
 */

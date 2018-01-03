@@ -50,17 +50,17 @@ An issue is a balance in some specific currency.  An issuer is someone who "crea
 
 For tx processing, people submit a tx to a calld node, which attempts to apply the tx locally first, and if succeesful, distributes it to other nodes.
 
-When someone accepts payment they list their specific payment terms, "what must happen before the payment goes off."  That can be done completely in the Ripple Network.  Normally a payment on the Ripple net can be completely settled there.  When the ledger closes, the terms are met, or they are not met.
+When someone accepts payment they list their specific payment terms, "what must happen before the payment goes off."  That can be done completely in the Call Network.  Normally a payment on the Call net can be completely settled there.  When the ledger closes, the terms are met, or they are not met.
 
 For a bridge payment, based on a previous promise it will deliver payment off-network. A bridge promises to execute the final leg of a payment, but there's the possibility of default. If you want to trust a bridge for a specific pathfinding request, you need to include it in the request.
 
-In contrast, a gateway is in the business of redeeming value on the Ripple Network for value off the Ripnet.  A gateway is in the business of issuing balances.
+In contrast, a gateway is in the business of redeeming value on the Call Network for value off the Ripnet.  A gateway is in the business of issuing balances.
 
 Bitstamp is a gateway - you send 'em cash, they give you a call balance and vice versa.  There's no promise or forwarding for a transaction.
 
 A bridge is a facility that allows payments to be made from the Ripnet to off the Ripnet.
 
-Suppose I'm on the Ripple network and want to send value to the bitcoin network.  See:  https://call.com/wiki/Outbound_Bridge_Payments
+Suppose I'm on the Call network and want to send value to the bitcoin network.  See:  https://call.com/wiki/Outbound_Bridge_Payments
 https://call.com/wiki/Services_API
 
 
@@ -100,7 +100,7 @@ If you can compute a path already yourself or know one, you don't need to do ste
   * finding paths (exactly "path finding")
   * filtering by liquidity.
     * take a selection of paths that should satisfy the transaction's conditions.
-    * This routine is called RippleCalc::callCalc.
+    * This routine is called CallCalc::callCalc.
 
 2. Build a payment transaction containing the path set.
   * a path set is a group of paths that a transaction is supposed to use for liquidity
@@ -134,4 +134,4 @@ If you can compute a path already yourself or know one, you don't need to do ste
 3. Executing a payment
  * very little time, can't afford to do a search.
  * that's why we do the path building before the payment is due.
- * The routine used to compute liquidity and ledger change is also called RippleCalc::callCalc.
+ * The routine used to compute liquidity and ledger change is also called CallCalc::callCalc.

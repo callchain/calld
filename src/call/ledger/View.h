@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -258,7 +258,7 @@ trustCreate (ApplyView& view,
     uint256 const&  uIndex,             // --> call state entry
     SLE::ref        sleAccount,         // --> the account being set.
     const bool      bAuth,              // --> authorize account.
-    const bool      bNoRipple,          // --> others cannot call through
+    const bool      bNoCall,          // --> others cannot call through
     const bool      bFreeze,            // --> funds cannot leave
     STAmount const& saBalance,          // --> balance of account being set.
                                         // Issuer should be noAccount()
@@ -270,7 +270,7 @@ trustCreate (ApplyView& view,
 
 TER
 trustDelete (ApplyView& view,
-    std::shared_ptr<SLE> const& sleRippleState,
+    std::shared_ptr<SLE> const& sleCallState,
         AccountID const& uLowAccountID,
             AccountID const& uHighAccountID,
                 beast::Journal j);

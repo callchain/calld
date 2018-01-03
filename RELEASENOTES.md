@@ -1,19 +1,19 @@
-![Ripple](/images/ripple.png)
+![Call](/images/call.png)
 
-This document contains the release notes for `rippled`, the reference server implementation of the Ripple protocol. To learn more about how to build and run a `rippled` server, visit https://ripple.com/build/rippled-setup/
+This document contains the release notes for `calld`, the reference server implementation of the Call protocol. To learn more about how to build and run a `calld` server, visit https://call.com/build/calld-setup/
 
 **Do you work at a digital asset exchange or wallet provider?** 
 
-Please [contact us](mailto:support@ripple.com). We can help guide your integration.
+Please [contact us](mailto:support@call.com). We can help guide your integration.
 
-## Updating `rippled`
-If you are using Red Hat Enterprise Linux 7 or CentOS 7, you can [update using `yum`](https://ripple.com/build/rippled-setup/#updating-rippled). For other platforms, please [compile from source](https://wiki.ripple.com/Rippled_build_instructions).
+## Updating `calld`
+If you are using Red Hat Enterprise Linux 7 or CentOS 7, you can [update using `yum`](https://call.com/build/calld-setup/#updating-calld). For other platforms, please [compile from source](https://wiki.call.com/Calld_build_instructions).
 
 # Releases
 
 ## Version 0.80.2
 
-The `rippled` 0.80.2 release introduces changes that improve the scalability of the XRP Ledger.
+The `calld` 0.80.2 release introduces changes that improve the scalability of the XRP Ledger.
 
 **New and Updated Features**
 
@@ -23,30 +23,30 @@ This release has no new features.
 
 - Do not dispatch a transaction received from a peer for processing if it has already been dispatched within the past ten seconds.
 - Increase the number of transaction handlers that can be in flight in the job queue and decrease the relative cost for peers to share transaction and ledger data.
-- Make better use of resources by adjusting the number of threads we initialize, by reverting commit [#68b8ffd](https://github.com/ripple/rippled/commit/68b8ffdb638d07937f841f7217edeb25efdb3b5d).
+- Make better use of resources by adjusting the number of threads we initialize, by reverting commit [#68b8ffd](https://github.com/call/calld/commit/68b8ffdb638d07937f841f7217edeb25efdb3b5d).
 
 ## Version 0.80.1
 
-The `rippled` 0.80.1 release provides several enhancements in support of published validator lists and corrects several bugs.
+The `calld` 0.80.1 release provides several enhancements in support of published validator lists and corrects several bugs.
 
 **New and Updated Features**
 
-- Allow including validator manifests in published list ([#2278](https://github.com/ripple/rippled/issues/2278))
-- Add validator list RPC commands ([#2242](https://github.com/ripple/rippled/issues/2242))
-- Support [SNI](https://en.wikipedia.org/wiki/Server_Name_Indication) when querying published list sites and use Windows system root certificates ([#2275](https://github.com/ripple/rippled/issues/2275))
-- Grow TxQ expected size quickly, shrink slowly ([#2235](https://github.com/ripple/rippled/issues/2235))
+- Allow including validator manifests in published list ([#2278](https://github.com/call/calld/issues/2278))
+- Add validator list RPC commands ([#2242](https://github.com/call/calld/issues/2242))
+- Support [SNI](https://en.wikipedia.org/wiki/Server_Name_Indication) when querying published list sites and use Windows system root certificates ([#2275](https://github.com/call/calld/issues/2275))
+- Grow TxQ expected size quickly, shrink slowly ([#2235](https://github.com/call/calld/issues/2235))
 
 **Bug Fixes**
 
-- Make consensus quorum unreachable if validator list expires ([#2240](https://github.com/ripple/rippled/issues/2240))
-- Properly use ledger hash to break ties when determing working ledger for consensus ([#2257](https://github.com/ripple/rippled/issues/2257))
-- Explictly use std::deque for missing node handler in SHAMap code ([#2252](https://github.com/ripple/rippled/issues/2252))
-- Verify validator token manifest matches private key ([#2268](https://github.com/ripple/rippled/issues/2268))
+- Make consensus quorum unreachable if validator list expires ([#2240](https://github.com/call/calld/issues/2240))
+- Properly use ledger hash to break ties when determing working ledger for consensus ([#2257](https://github.com/call/calld/issues/2257))
+- Explictly use std::deque for missing node handler in SHAMap code ([#2252](https://github.com/call/calld/issues/2252))
+- Verify validator token manifest matches private key ([#2268](https://github.com/call/calld/issues/2268))
 
 
 ## Version 0.80.0
 
-The `rippled` 0.80.0 release introduces several enhancements that improve the reliability, scalability and security of the XRP Ledger.
+The `calld` 0.80.0 release introduces several enhancements that improve the reliability, scalability and security of the XRP Ledger.
 
 Highlights of this release include:
 
@@ -58,24 +58,24 @@ Highlights of this release include:
 
 **New and Updated Features**
 
-- Improve directory insertion and deletion ([#2165](https://github.com/ripple/rippled/issues/2165))
-- Move consensus thread safety logic from the generic implementation in Consensus into the RCL adapted version RCLConsensus ([#2106](https://github.com/ripple/rippled/issues/2106))
-- Refactor Validations class into a generic version that can be adapted ([#2084](https://github.com/ripple/rippled/issues/2084))
-- Make minimum quorum Byzantine fault tolerant ([#2093](https://github.com/ripple/rippled/issues/2093))
-- Make amendment blocked state thread-safe and simplify a constructor ([#2207](https://github.com/ripple/rippled/issues/2207))
-- Use ledger hash to break ties ([#2169](https://github.com/ripple/rippled/issues/2169))
-- Refactor RangeSet ([#2113](https://github.com/ripple/rippled/issues/2113))
+- Improve directory insertion and deletion ([#2165](https://github.com/call/calld/issues/2165))
+- Move consensus thread safety logic from the generic implementation in Consensus into the RCL adapted version RCLConsensus ([#2106](https://github.com/call/calld/issues/2106))
+- Refactor Validations class into a generic version that can be adapted ([#2084](https://github.com/call/calld/issues/2084))
+- Make minimum quorum Byzantine fault tolerant ([#2093](https://github.com/call/calld/issues/2093))
+- Make amendment blocked state thread-safe and simplify a constructor ([#2207](https://github.com/call/calld/issues/2207))
+- Use ledger hash to break ties ([#2169](https://github.com/call/calld/issues/2169))
+- Refactor RangeSet ([#2113](https://github.com/call/calld/issues/2113))
 
 **Bug Fixes**
 
-- Fix an issue where `setAmendmentBlocked` is only called when processing the `EnableAmendment` transaction for the amendment ([#2137](https://github.com/ripple/rippled/issues/2137))
-- Track escrow in recipient's owner directory ([#2212](https://github.com/ripple/rippled/issues/2212))
+- Fix an issue where `setAmendmentBlocked` is only called when processing the `EnableAmendment` transaction for the amendment ([#2137](https://github.com/call/calld/issues/2137))
+- Track escrow in recipient's owner directory ([#2212](https://github.com/call/calld/issues/2212))
 
 **New and Updated Features**
 
 ## Version 0.70.2
 
-The `rippled` 0.70.2 release corrects an emergent behavior which causes large numbers of transactions to get
+The `calld` 0.70.2 release corrects an emergent behavior which causes large numbers of transactions to get
 stuck in different nodes' open ledgers without being passed on to validators, resulting in a spike in the open
 ledger fee on those nodes.
 
@@ -85,13 +85,13 @@ This release has no new features.
 
 **Bug Fixes**
 
-- Recent fee rises and TxQ issues ([#2215](https://github.com/ripple/rippled/issues/2215))
+- Recent fee rises and TxQ issues ([#2215](https://github.com/call/calld/issues/2215))
 
 
 ## Version 0.70.1
 
-The `rippled` 0.70.1 release corrects a technical flaw in the newly refactored consensus code that could cause a node to get stuck in consensus due to stale votes from a
-peer, and allows compiling `rippled` under the 1.1.x releases of OpenSSL.
+The `calld` 0.70.1 release corrects a technical flaw in the newly refactored consensus code that could cause a node to get stuck in consensus due to stale votes from a
+peer, and allows compiling `calld` under the 1.1.x releases of OpenSSL.
 
 **New and Updated Features**
 
@@ -99,14 +99,14 @@ This release has no new features.
 
 **Bug Fixes**
 
-- Allow compiling against OpenSSL 1.1.0 ([#2151](https://github.com/ripple/rippled/pull/2151))
-- Log invariant check messages at "fatal" level ([2154](https://github.com/ripple/rippled/pull/2154))
-- Fix the consensus code to update all disputed transactions after a node changes a position ([2156](https://github.com/ripple/rippled/pull/2156))
+- Allow compiling against OpenSSL 1.1.0 ([#2151](https://github.com/call/calld/pull/2151))
+- Log invariant check messages at "fatal" level ([2154](https://github.com/call/calld/pull/2154))
+- Fix the consensus code to update all disputed transactions after a node changes a position ([2156](https://github.com/call/calld/pull/2156))
 
 
 ## Version 0.70.0
 
-The `rippled` 0.70.0 release introduces several enhancements that improve the reliability, scalability and security of the network.
+The `calld` 0.70.0 release introduces several enhancements that improve the reliability, scalability and security of the network.
 
 Highlights of this release include:
 
@@ -143,7 +143,7 @@ Highlights of this release include:
 
 ## Version 0.60.3
 
-The `rippled` 0.60.3 release helps to increase the stability of the network under heavy load.
+The `calld` 0.60.3 release helps to increase the stability of the network under heavy load.
 
 **New and Updated Features**
 
@@ -151,11 +151,11 @@ This release has no new features.
 
 **Bug Fixes**
 
-Server overlay improvements ([#2110](https://github.com/ripple/rippled/pull/2011))
+Server overlay improvements ([#2110](https://github.com/call/calld/pull/2011))
 
 ## Version 0.60.2
 
-The `rippled` 0.60.2 release further strengthens handling of cases associated with a previously patched exploit, in which NoRipple flags were being bypassed by using offers.
+The `calld` 0.60.2 release further strengthens handling of cases associated with a previously patched exploit, in which NoCall flags were being bypassed by using offers.
 
 **New and Updated Features**
 
@@ -163,11 +163,11 @@ This release has no new features.
 
 **Bug Fixes**
 
-Prevent the ability to bypass the `NoRipple` flag using offers ([#7cd4d78](https://github.com/ripple/rippled/commit/4ff40d4954dfaa237c8b708c2126cb39566776da))
+Prevent the ability to bypass the `NoCall` flag using offers ([#7cd4d78](https://github.com/call/calld/commit/4ff40d4954dfaa237c8b708c2126cb39566776da))
 
 ## Version 0.60.1
 
-The `rippled` 0.60.1 release corrects a technical flaw that resulted from using 32-bit space identifiers instead of the protocol-defined 16-bit values for Escrow and Payment Channel ledger entries. rippled version 0.60.1 also fixes a problem where the WebSocket timeout timer would not be cancelled when certain errors occurred during subscription streams. Ripple requires upgrading to rippled version 0.60.1 immediately.
+The `calld` 0.60.1 release corrects a technical flaw that resulted from using 32-bit space identifiers instead of the protocol-defined 16-bit values for Escrow and Payment Channel ledger entries. calld version 0.60.1 also fixes a problem where the WebSocket timeout timer would not be cancelled when certain errors occurred during subscription streams. Call requires upgrading to calld version 0.60.1 immediately.
 
 **New and Updated Feature**
 
@@ -180,12 +180,12 @@ Fix WebSocket timeout timer issues.
 
 ## Version 0.60.0
 
-The `rippled` 0.60.0 release introduces several enhancements that improve the reliability and scalability of the Ripple Consensus Ledger (RCL), including features that add ledger interoperability by improving Interledger Protocol compatibility. Ripple recommends that all server operators upgrade to version 0.60.0 by Thursday, 2017-03-30, for service continuity.
+The `calld` 0.60.0 release introduces several enhancements that improve the reliability and scalability of the Call Consensus Ledger (RCL), including features that add ledger interoperability by improving Interledger Protocol compatibility. Call recommends that all server operators upgrade to version 0.60.0 by Thursday, 2017-03-30, for service continuity.
 
 Highlights of this release include:
 
-- `Escrow` (previously called `SusPay`) which permits users to cryptographically escrow XRP on RCL with an expiration date, and optionally a hashlock crypto-condition. Ripple expects Escrow to be enabled via an Amendment named [`Escrow`](https://ripple.com/build/amendments/#escrow) on Thursday, 2017-03-30. See below for details.
-- Dynamic UNL Lite, which allows `rippled` to automatically adjust which validators it trusts based on recommended lists from trusted publishers.
+- `Escrow` (previously called `SusPay`) which permits users to cryptographically escrow XRP on RCL with an expiration date, and optionally a hashlock crypto-condition. Call expects Escrow to be enabled via an Amendment named [`Escrow`](https://call.com/build/amendments/#escrow) on Thursday, 2017-03-30. See below for details.
+- Dynamic UNL Lite, which allows `calld` to automatically adjust which validators it trusts based on recommended lists from trusted publishers.
 
 **New and Updated Features**
 
@@ -203,7 +203,7 @@ Highlights of this release include:
 - Do not close socket on a foreign thread (#2014)
 - Update build scripts to support latest boost and ubuntu distros (#1997)
 - Handle protoc targets in scons ninja build (#2022)
-- Specify syntax version for ripple.proto file (#2007)
+- Specify syntax version for call.proto file (#2007)
 - Eliminate protocol header dependency (#1962)
 - Use gnu gold or clang lld linkers if available (#2031)
 - Add tests for `lookupLedger` (#1989)
@@ -224,7 +224,7 @@ Highlights of this release include:
 
 ## Version 0.50.3
 
-The `rippled` 0.50.3 release corrects a reported exploit that would allow a combination of trust lines and order books in a payment path to bypass the blocking effect of the [`NoRipple`](https://ripple.com/build/understanding-the-noripple-flag/) flag. Ripple recommends that all server operators immediately upgrade to version 0.50.3.
+The `calld` 0.50.3 release corrects a reported exploit that would allow a combination of trust lines and order books in a payment path to bypass the blocking effect of the [`NoCall`](https://call.com/build/understanding-the-nocall-flag/) flag. Call recommends that all server operators immediately upgrade to version 0.50.3.
 
 **New and Updated Features**
 
@@ -232,12 +232,12 @@ This release has no new features.
 
 **Bug Fixes**
 
-Correct a reported exploit that would allow a combination of trust lines and order books in a payment path to bypass the blocking effect of the “NoRipple” flag.
+Correct a reported exploit that would allow a combination of trust lines and order books in a payment path to bypass the blocking effect of the “NoCall” flag.
 
 
 ## Version 0.50.2
 
-The `rippled` 0.50.2 release adjusts the default TLS cipher list and corrects a flaw that would not allow an SSL handshake to properly complete if the port was configured using the `wss` keyword. Ripple recommends upgrading to 0.50.2 only if server operators are running rippled servers that accept client connections over TLS.
+The `calld` 0.50.2 release adjusts the default TLS cipher list and corrects a flaw that would not allow an SSL handshake to properly complete if the port was configured using the `wss` keyword. Call recommends upgrading to 0.50.2 only if server operators are running calld servers that accept client connections over TLS.
 
 **New and Updated Features**
 
@@ -250,15 +250,15 @@ Adjust the default cipher list and correct a flaw that would not allow an SSL ha
 
 ## Version 0.50.0
 
-The `rippled` 0.50.0 release includes TickSize, which allows gateways to set a "tick size" for assets they issue to help promote faster price discovery and deeper liquidity, as well as reduce transaction spam and ledger churn on RCL. Ripple expects TickSize to be enabled via an Amendment called TickSize on Tuesday, 2017-02-21.
+The `calld` 0.50.0 release includes TickSize, which allows gateways to set a "tick size" for assets they issue to help promote faster price discovery and deeper liquidity, as well as reduce transaction spam and ledger churn on RCL. Call expects TickSize to be enabled via an Amendment called TickSize on Tuesday, 2017-02-21.
 
-You can [update to the new version](https://ripple.com/build/rippled-setup/#updating-rippled) on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please [compile the new version from source](https://wiki.ripple.com/Rippled_build_instructions).
+You can [update to the new version](https://call.com/build/calld-setup/#updating-calld) on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please [compile the new version from source](https://wiki.call.com/Calld_build_instructions).
 
 **New and Updated Features**
 
 **Tick Size**
 
-Currently, offers on RCL can differ by as little as one part in a quadrillion. This means that there is essentially no value to placing an offer early, as an offer placed later at a microscopically better price gets priority over it. The [TickSize](https://ripple.com/build/amendments/#ticksize) Amendment solves this problem by introducing a minimum tick size that a price must move for an offer to be considered to be at a better price. The tick size is controlled by the issuers of the assets involved.
+Currently, offers on RCL can differ by as little as one part in a quadrillion. This means that there is essentially no value to placing an offer early, as an offer placed later at a microscopically better price gets priority over it. The [TickSize](https://call.com/build/amendments/#ticksize) Amendment solves this problem by introducing a minimum tick size that a price must move for an offer to be considered to be at a better price. The tick size is controlled by the issuers of the assets involved.
 
 This change lets issuers quantize the exchange rates of offers to use a specified number of significant digits. Gateways must enable a TickSize on their account for this feature to benefit them. A single AccountSet transaction may set a `TickSize` parameter. Legal values are 0 and 3-15 inclusive. Zero removes the setting. 3-15 allow that many decimal digits of precision in the pricing of offers for assets issued by this account. It will still be possible to place an offer to buy or sell any amount of an asset and the offer will still keep that amount as exactly as it does now. If an offer involves two assets that each have a tick size, the smaller number of significant figures (larger ticks) controls.
 
@@ -282,7 +282,7 @@ We also expect larger tick sizes to benefit market makers in the following ways:
 
 **Hardened TLS configuration**
 
-This release updates the default TLS configuration for rippled. The new release supports only 2048-bit DH parameters and defines a new default set of modern ciphers to use, removing support for ciphers and hash functions that are no longer considered secure.
+This release updates the default TLS configuration for calld. The new release supports only 2048-bit DH parameters and defines a new default set of modern ciphers to use, removing support for ciphers and hash functions that are no longer considered secure.
 
 Server administrators who wish to have different settings can configure custom global and per-port cipher suites in the configuration file using the `ssl_ciphers` directive.
 
@@ -292,7 +292,7 @@ Remove websocketpp support (#1910)
 
 Increase OpenSSL requirements & harden default TLS cipher suites (#1913)
 
-Move test support sources out of ripple directory (#1916)
+Move test support sources out of call directory (#1916)
 
 Enhance ledger header RPC commands (#1918)
 
@@ -332,16 +332,16 @@ Validator's manifest not forwarded beyond directly connected peers (#1919)
 
 **Upcoming Features**
 
-We expect the previously announced Suspended Payments feature, which introduces new transaction types to the Ripple protocol that will permit users to cryptographically escrow XRP on RCL, to be enabled via the [SusPay](https://ripple.com/build/amendments/#suspay) Amendment on Tuesday, 2017-02-21.
+We expect the previously announced Suspended Payments feature, which introduces new transaction types to the Call protocol that will permit users to cryptographically escrow XRP on RCL, to be enabled via the [SusPay](https://call.com/build/amendments/#suspay) Amendment on Tuesday, 2017-02-21.
 
-Also, we expect support for crypto-conditions, which are signature-like structures that can be used with suspended payments to support ILP integration, to be included in the next rippled release scheduled for March.
+Also, we expect support for crypto-conditions, which are signature-like structures that can be used with suspended payments to support ILP integration, to be included in the next calld release scheduled for March.
 
-Lastly, we do not have an update on the previously announced changes to the hash tree structure that rippled uses to represent a ledger, called [SHAMapV2](https://ripple.com/build/amendments/#shamapv2). At the time of activation, this amendment will require brief scheduled allowable unavailability while the changes to the hash tree structure are computed by the network. We will keep the community updated as we progress towards this date (TBA).
+Lastly, we do not have an update on the previously announced changes to the hash tree structure that calld uses to represent a ledger, called [SHAMapV2](https://call.com/build/amendments/#shamapv2). At the time of activation, this amendment will require brief scheduled allowable unavailability while the changes to the hash tree structure are computed by the network. We will keep the community updated as we progress towards this date (TBA).
 
 
 ## Version 0.40.1
 
-The `rippled` 0.40.1 release  increases SQLite database limits in all rippled servers. Ripple recommends upgrading to 0.40.1 only if server operators are running rippled servers with full-history of the ledger. There are no new or updated features in the 0.40.1 release.
+The `calld` 0.40.1 release  increases SQLite database limits in all calld servers. Call recommends upgrading to 0.40.1 only if server operators are running calld servers with full-history of the ledger. There are no new or updated features in the 0.40.1 release.
 
 You can update to the new version on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please compile the new version from source.
 
@@ -355,21 +355,21 @@ Increase SQLite database limits to prevent full-history servers from crashing wh
 
 ## Version 0.40.0
 
-The `rippled` 0.40.0 release includes Suspended Payments, a new transaction type on the Ripple network that functions similar to an escrow service, which permits users cryptographically escrow XRP on RCL with an expiration date. Ripple expects Suspended Payments to be enabled via an Amendment named [SusPay](https://ripple.com/build/amendments/#suspay) on Tuesday, 2017-01-17.
+The `calld` 0.40.0 release includes Suspended Payments, a new transaction type on the Call network that functions similar to an escrow service, which permits users cryptographically escrow XRP on RCL with an expiration date. Call expects Suspended Payments to be enabled via an Amendment named [SusPay](https://call.com/build/amendments/#suspay) on Tuesday, 2017-01-17.
 
 You can update to the new version on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please compile the new version from source.
 
 **New and Updated Features**
 
-Previously, Ripple announced the introduction of Payment Channels during the release of rippled version 0.33.0, which permit scalable, off-ledger checkpoints of high volume, low value payments flowing in a single direction. This was the first step in a multi-phase effort to make RCL more scalable and to support Interledger Protocol (ILP). Ripple expects Payment Channels to be enabled via an Amendment called [PayChan](https://ripple.com/build/amendments/#paychan) on a future date to be determined.
+Previously, Call announced the introduction of Payment Channels during the release of calld version 0.33.0, which permit scalable, off-ledger checkpoints of high volume, low value payments flowing in a single direction. This was the first step in a multi-phase effort to make RCL more scalable and to support Interledger Protocol (ILP). Call expects Payment Channels to be enabled via an Amendment called [PayChan](https://call.com/build/amendments/#paychan) on a future date to be determined.
 
-In the second phase towards making RCL more scalable and compatible with ILP, Ripple is introducing Suspended Payments, a new transaction type on the Ripple network that functions similar to an escrow service, which permits users to cryptographically escrow XRP on RCL with an expiration date. Ripple expects Suspended Payments to be enabled via an Amendment named [SusPay](https://ripple.com/build/amendments/#suspay) on Tuesday, 2017-01-17.
+In the second phase towards making RCL more scalable and compatible with ILP, Call is introducing Suspended Payments, a new transaction type on the Call network that functions similar to an escrow service, which permits users to cryptographically escrow XRP on RCL with an expiration date. Call expects Suspended Payments to be enabled via an Amendment named [SusPay](https://call.com/build/amendments/#suspay) on Tuesday, 2017-01-17.
 
 A Suspended Payment can be created, which deducts the funds from the sending account. It can then be either fulfilled or canceled. It can only be fulfilled if the fulfillment transaction makes it into a ledger with a CloseTime lower than the expiry date of the transaction. It can be canceled with a transaction that makes it into a ledger with a CloseTime greater than the expiry date of the transaction.
 
-In the third phase towards making RCL more scalable and compatible with ILP, Ripple plans to introduce additional library support for crypto-conditions, which are distributable event descriptions written in a standard format that describe how to recognize a fulfillment message without saying exactly what the fulfillment is. Fulfillments are cryptographically verifiable messages that prove an event occurred. If you transmit a fulfillment, then everyone who has the condition can agree that the condition has been met. Fulfillment requires the submission of a signature that matches the condition (message hash and public key). This format supports multiple algorithms, including different hash functions and cryptographic signing schemes. Crypto-conditions can be nested in multiple levels, with each level possibly having multiple signatures.
+In the third phase towards making RCL more scalable and compatible with ILP, Call plans to introduce additional library support for crypto-conditions, which are distributable event descriptions written in a standard format that describe how to recognize a fulfillment message without saying exactly what the fulfillment is. Fulfillments are cryptographically verifiable messages that prove an event occurred. If you transmit a fulfillment, then everyone who has the condition can agree that the condition has been met. Fulfillment requires the submission of a signature that matches the condition (message hash and public key). This format supports multiple algorithms, including different hash functions and cryptographic signing schemes. Crypto-conditions can be nested in multiple levels, with each level possibly having multiple signatures.
 
-Lastly, we do not have an update on the previously announced changes to the hash tree structure that rippled uses to represent a ledger, called [SHAMapV2](https://ripple.com/build/amendments/#shamapv2). This will require brief scheduled allowable downtime while the changes to the hash tree structure are propagated by the network. We will keep the community updated as we progress towards this date (TBA).
+Lastly, we do not have an update on the previously announced changes to the hash tree structure that calld uses to represent a ledger, called [SHAMapV2](https://call.com/build/amendments/#shamapv2). This will require brief scheduled allowable downtime while the changes to the hash tree structure are propagated by the network. We will keep the community updated as we progress towards this date (TBA).
 
 Consensus refactor (#1874)
 
@@ -384,25 +384,25 @@ Correctly parse multi-buffer JSON messages (#1862)
 
 ## Version 0.33.0
 
-The `rippled` 0.33.0 release includes an improved version of the payment code, which we expect to be activated via Amendment on Wednesday, 2016-10-20 with the name [Flow](https://ripple.com/build/amendments/#flow). We are also introducing XRP Payment Channels, a new structure in the ledger designed to support [Interledger Protocol](https://interledger.org/) trust lines as balances get substantial, which we expect to be activated via Amendment on a future date (TBA) with the name [PayChan](https://ripple.com/build/amendments/#paychan). Lastly, we will be introducing changes to the hash tree structure that rippled uses to represent a ledger, which we expect to be available via Amendment on a future date (TBA) with the name [SHAMapV2](https://ripple.com/build/amendments/#shamapv2).
+The `calld` 0.33.0 release includes an improved version of the payment code, which we expect to be activated via Amendment on Wednesday, 2016-10-20 with the name [Flow](https://call.com/build/amendments/#flow). We are also introducing XRP Payment Channels, a new structure in the ledger designed to support [Interledger Protocol](https://interledger.org/) trust lines as balances get substantial, which we expect to be activated via Amendment on a future date (TBA) with the name [PayChan](https://call.com/build/amendments/#paychan). Lastly, we will be introducing changes to the hash tree structure that calld uses to represent a ledger, which we expect to be available via Amendment on a future date (TBA) with the name [SHAMapV2](https://call.com/build/amendments/#shamapv2).
 
-You can [update to the new version](https://ripple.com/build/rippled-setup/#updating-rippled) on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please [compile the new version from source](https://wiki.ripple.com/Rippled_build_instructions).
+You can [update to the new version](https://call.com/build/calld-setup/#updating-calld) on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please [compile the new version from source](https://wiki.call.com/Calld_build_instructions).
 
 ** New and Updated Features **
 
-A fixed version of the new payment processing engine, which we initially announced on Friday, 2016-07-29, is expected to be available via Amendment on Wednesday, 2016-10-20 with the name [Flow](https://ripple.com/build/amendments/#flow). The new payments code adds no new features, but improves efficiency and robustness in payment handling.
+A fixed version of the new payment processing engine, which we initially announced on Friday, 2016-07-29, is expected to be available via Amendment on Wednesday, 2016-10-20 with the name [Flow](https://call.com/build/amendments/#flow). The new payments code adds no new features, but improves efficiency and robustness in payment handling.
 
 The Flow code may occasionally produce slightly different results than the old payment processing engine due to the effects of floating point rounding.
 
-We will be introducing changes to the hash tree structure that rippled uses to represent a ledger, which we expect to be activated via Amendment on a future date (TBA) with the name [SHAMapV2](https://ripple.com/build/amendments/#shamapv2). The new structure is more compact and efficient than the previous version. This affects how ledger hashes are calculated, but has no other user-facing consequences. The activation of the SHAMapV2 amendment will require brief scheduled allowable downtime, while the changes to the hash tree structure are propagated by the network. We will keep the community updated as we progress towards this date (TBA).
+We will be introducing changes to the hash tree structure that calld uses to represent a ledger, which we expect to be activated via Amendment on a future date (TBA) with the name [SHAMapV2](https://call.com/build/amendments/#shamapv2). The new structure is more compact and efficient than the previous version. This affects how ledger hashes are calculated, but has no other user-facing consequences. The activation of the SHAMapV2 amendment will require brief scheduled allowable downtime, while the changes to the hash tree structure are propagated by the network. We will keep the community updated as we progress towards this date (TBA).
 
-In an effort to make RCL more scalable and to support Interledger Protocol (ILP) trust lines as balances get more substantial, we’re introducing XRP Payment Channels, a new structure in the ledger, which we expect to be available via Amendment on a future date (TBA) with the name [PayChan](https://ripple.com/build/amendments/#paychan).
+In an effort to make RCL more scalable and to support Interledger Protocol (ILP) trust lines as balances get more substantial, we’re introducing XRP Payment Channels, a new structure in the ledger, which we expect to be available via Amendment on a future date (TBA) with the name [PayChan](https://call.com/build/amendments/#paychan).
 
 XRP Payment Channels permit scalable, intermittent, off-ledger settlement of ILP trust lines for high volume payments flowing in a single direction. For bidirectional channels, an XRP Payment Channel can be used in each direction. The recipient can claim any unpaid balance at any time. The owner can top off the channel as needed. The owner must wait out a delay to close the channel to give the recipient a chance to supply any claims. The total amount paid increases monotonically as newer claims are issued.
 
 The initial concept behind payment channels was discussed as early as 2011 and the first implementation was done by Mike Hearn in bitcoinj. Recent work being done by Lightning Network has showcased examples of the many use cases for payment channels. The introduction of XRP Payment Channels allows for a more efficient integration between RCL and ILP to further support enterprise use cases for high volume payments.
 
-Added `getInfoRippled.sh` support script to gather health check for rippled servers [RIPD-1284]
+Added `getInfoCalld.sh` support script to gather health check for calld servers [RIPD-1284]
 
 The `account_info` command can now return information about queued transactions - [RIPD-1205]
 
@@ -433,9 +433,9 @@ Add HTTP status page for new websocket implementation [#1855]
 
 ## Version 0.32.1
 
-The `rippled` 0.32.1 release includes an improved version of the payment code, which we expect to be available via Amendment on Wednesday, 2016-08-24 with the name FlowV2, and a completely new implementation of the WebSocket protocol for serving clients.
+The `calld` 0.32.1 release includes an improved version of the payment code, which we expect to be available via Amendment on Wednesday, 2016-08-24 with the name FlowV2, and a completely new implementation of the WebSocket protocol for serving clients.
 
-You can [update to the new version](https://ripple.com/build/rippled-setup/#updating-rippled) on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please [compile the new version from source](https://wiki.ripple.com/Rippled_build_instructions).
+You can [update to the new version](https://call.com/build/calld-setup/#updating-calld) on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please [compile the new version from source](https://wiki.call.com/Calld_build_instructions).
 
 **New and Updated Features**
 
@@ -445,14 +445,14 @@ The FlowV2 code may occasionally produce slightly different results than the old
 
 **Beast WebSocket**
 
-A completely new implementation of the WebSocket protocol for serving clients is available as a configurable option for `rippled` administrators. To enable this new implementation, change the “protocol” field in `rippled.cfg` from “ws” to “ws2” (or from “wss” to “wss2” for Secure WebSockets), as illustrated in this example:
+A completely new implementation of the WebSocket protocol for serving clients is available as a configurable option for `calld` administrators. To enable this new implementation, change the “protocol” field in `calld.cfg` from “ws” to “ws2” (or from “wss” to “wss2” for Secure WebSockets), as illustrated in this example:
 
     [port_ws_public]
     port = 5006
     ip = 0.0.0.0
     protocol = wss2
 
-The new implementation paves the way for increased reliability and future performance when submitting commands over WebSocket. The behavior and syntax of commands should be identical to the previous implementation. Please report any issues to support@ripple.com. A future version of rippled will remove the old WebSocket implementation, and use only the new one.
+The new implementation paves the way for increased reliability and future performance when submitting commands over WebSocket. The behavior and syntax of commands should be identical to the previous implementation. Please report any issues to support@call.com. A future version of calld will remove the old WebSocket implementation, and use only the new one.
 
 **Bug fixes**
 
@@ -470,7 +470,7 @@ Autofilling a transaction fee (sign / submit) with the experimental `x-queue-oka
 
 ## Version 0.32.0
 
-The `rippled` 0.32.0 release improves transaction queue which now supports batching and can hold up to 10 transactions per account, allowing users to queue multiple transactions for processing when the network load is high. Additionally, the `server_info` and `server_state` commands now include information on transaction cost multipliers and the fee command is available to unprivileged users. We advise rippled operators to upgrade immediately.
+The `calld` 0.32.0 release improves transaction queue which now supports batching and can hold up to 10 transactions per account, allowing users to queue multiple transactions for processing when the network load is high. Additionally, the `server_info` and `server_state` commands now include information on transaction cost multipliers and the fee command is available to unprivileged users. We advise calld operators to upgrade immediately.
 
 You can update to the new version on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please compile the new version from source.
 
@@ -481,7 +481,7 @@ You can update to the new version on Red Hat Enterprise Linux 7 or CentOS 7 usin
 - New implementation of payment processing engine. This implementation is not yet enabled by default.
 - Include amendments in validations subscription
 - Add C++17 compatibility
-- New WebSocket server implementation with Beast.WebSocket library. The new library offers a stable, high-performance websocket server implementation. To take advantage of this implementation, change websocket protocol under rippled.cfg from wss and ws to wss2 and ws2 under `[port_wss_admin]` and `[port_ws_public]` stanzas:
+- New WebSocket server implementation with Beast.WebSocket library. The new library offers a stable, high-performance websocket server implementation. To take advantage of this implementation, change websocket protocol under calld.cfg from wss and ws to wss2 and ws2 under `[port_wss_admin]` and `[port_ws_public]` stanzas:
 ```
      [port_wss_admin]
      port = 51237
@@ -523,9 +523,9 @@ You can update to the new version on Red Hat Enterprise Linux 7 or CentOS 7 usin
 
 ## Version 0.31.2
 
-The `rippled` 0.31.2 release corrects issues with the fee escalation algorithm. We advise `rippled` operators to upgrade immediately.
+The `calld` 0.31.2 release corrects issues with the fee escalation algorithm. We advise `calld` operators to upgrade immediately.
 
-You can [update to the new version](https://ripple.com/build/rippled-setup/#updating-rippled) on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please [compile the new version from source](https://wiki.ripple.com/Rippled_build_instructions).
+You can [update to the new version](https://call.com/build/calld-setup/#updating-calld) on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please [compile the new version from source](https://wiki.call.com/Calld_build_instructions).
 
 **New and Updated Features**
 
@@ -540,9 +540,9 @@ This release has no new features.
 
 ## Version 0.31.1
 
-The `rippled` 0.31.1 release contains one important bug fix. We advise `rippled` operators to upgrade immediately.
+The `calld` 0.31.1 release contains one important bug fix. We advise `calld` operators to upgrade immediately.
 
-You can [update to the new version](https://ripple.com/build/rippled-setup/#updating-rippled) on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please [compile the new version from source](https://wiki.ripple.com/Rippled_build_instructions).
+You can [update to the new version](https://call.com/build/calld-setup/#updating-calld) on Red Hat Enterprise Linux 7 or CentOS 7 using yum. For other platforms, please [compile the new version from source](https://wiki.call.com/Calld_build_instructions).
 
 **New and Updated Features**
 
@@ -550,19 +550,19 @@ This release has no new features.
 
 **Bug Fixes**
 
-`rippled` 0.31.1 contains the following fix:
+`calld` 0.31.1 contains the following fix:
 
-- Correctly handle ledger validations with no `LedgerSequence` field. Previous versions of `rippled` incorrectly assumed that the optional validation field would always be included. Current versions of the software always include the field, and gracefully handle its absence.
+- Correctly handle ledger validations with no `LedgerSequence` field. Previous versions of `calld` incorrectly assumed that the optional validation field would always be included. Current versions of the software always include the field, and gracefully handle its absence.
 
 
 
 ## Version 0.31.0
 
-`rippled` 0.31.0 has been released.
+`calld` 0.31.0 has been released.
 
-You can [update to the new version](https://ripple.com/build/rippled-setup/#updating-rippled) on Red Hat Enterprise Linux 7 or CentOS 7 using yum.
+You can [update to the new version](https://call.com/build/calld-setup/#updating-calld) on Red Hat Enterprise Linux 7 or CentOS 7 using yum.
 
-For other platforms, please [compile the new version from source](https://wiki.ripple.com/Rippled_build_instructions). Use the `git log` command to confirm you have the correct source tree. The first log entry should be the change setting the version:
+For other platforms, please [compile the new version from source](https://wiki.call.com/Calld_build_instructions). Use the `git log` command to confirm you have the correct source tree. The first log entry should be the change setting the version:
 
 
      commit a5d58566386fd86ae4c816c82085fe242b255d2c
@@ -576,21 +576,21 @@ For other platforms, please [compile the new version from source](https://wiki.r
 
 Please expect a one-time delay when starting 0.31.0 while certain database indices are being built or rebuilt. The delay can be up to five minutes, during which CPU will spike and the server will appear unresponsive (no response to RPC, etc.).
 
-Additionally, `rippled` 0.31.0 now checks at start-up time that it has sufficient open file descriptors available, and shuts down with an error message if it does not. Previous versions of `rippled` could run out of file descriptors unexpectedly during operation. If you get a file-descriptor error message, increase the number of file descriptors available to `rippled` (for example, editing `/etc/security/limits.conf`) and restart.
+Additionally, `calld` 0.31.0 now checks at start-up time that it has sufficient open file descriptors available, and shuts down with an error message if it does not. Previous versions of `calld` could run out of file descriptors unexpectedly during operation. If you get a file-descriptor error message, increase the number of file descriptors available to `calld` (for example, editing `/etc/security/limits.conf`) and restart.
 
 **New and Updated Features**
 
-`rippled` 0.31.0 has the following new or updated features:
+`calld` 0.31.0 has the following new or updated features:
 
-- (New) [**Amendments**](https://ripple.com/build/amendments/) - A consensus-based system for introducing changes to transaction processing.
-- (New) [**Multi-Signing**](https://ripple.com/build/transactions/#multi-signing) - (To be enabled as an amendment) Allow transactions to be authorized by a list of signatures. (RIPD-182)
-- (New) **Transaction queue and FeeEscalation** - (To be enabled as an amendment) Include or defer transactions based on the [transaction cost](https://ripple.com/build/transaction-cost/) offered, for better behavior in DDoS conditions. (RIPD-598)
+- (New) [**Amendments**](https://call.com/build/amendments/) - A consensus-based system for introducing changes to transaction processing.
+- (New) [**Multi-Signing**](https://call.com/build/transactions/#multi-signing) - (To be enabled as an amendment) Allow transactions to be authorized by a list of signatures. (RIPD-182)
+- (New) **Transaction queue and FeeEscalation** - (To be enabled as an amendment) Include or defer transactions based on the [transaction cost](https://call.com/build/transaction-cost/) offered, for better behavior in DDoS conditions. (RIPD-598)
 - (Updated) Validations subscription stream now includes `ledger_index` field. (DEC-564)
 - (Updated) You can request SignerList information in the `account_info` command (RIPD-1061)
 
 **Closed Issues**
 
-`rippled` 0.31.0 has the following fixes and improvements:
+`calld` 0.31.0 has the following fixes and improvements:
 
 - Improve held transaction submission
 - Update SQLite from 3.8.11.1 to 3.11.0
@@ -614,7 +614,7 @@ Additionally, `rippled` 0.31.0 now checks at start-up time that it has sufficien
 
 ## Version 0.30.1
 
-rippled 0.30.1 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.30.1>
+calld 0.30.1 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/tree/0.30.1>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -624,15 +624,15 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
        Set version to 0.30.1
 
-This release incorporates a number of important features, bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.30.1) for more detailed information.
+This release incorporates a number of important features, bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.30.1) for more detailed information.
 
 **Release Overview**
 
-The rippled team is proud to release rippled version 0.30.1. This version contains a several minor new features as well as significant improvements to the consensus algorithm that make it work faster and with more consistency. In the time we have been testing the new release on our validators, these changes have led to increased agreement and shorter close times between ledger versions, for approximately 40% more ledgers validated per day.
+The calld team is proud to release calld version 0.30.1. This version contains a several minor new features as well as significant improvements to the consensus algorithm that make it work faster and with more consistency. In the time we have been testing the new release on our validators, these changes have led to increased agreement and shorter close times between ledger versions, for approximately 40% more ledgers validated per day.
 
 **New Features**
 
--   Secure gateway: configured IPs can forward identifying user data in HTTP headers, including user name and origin IP. If the user name exists, then resource limits are lifted for that session. See rippled-example.cfg for more information.
+-   Secure gateway: configured IPs can forward identifying user data in HTTP headers, including user name and origin IP. If the user name exists, then resource limits are lifted for that session. See calld-example.cfg for more information.
 -   Allow fractional fee multipliers (RIPD-626)
 -   Add “expiration” to account\_offers (RIPD-1049)
 -   Add “owner\_funds” to “transactions” array in RPC ledger (RIPD-1050)
@@ -640,7 +640,7 @@ The rippled team is proud to release rippled version 0.30.1. This version contai
 -   Add server uptime in server\_info
 -   Allow multiple incoming connections from the same IP
 -   Report connection uptime in peer command (RIPD-927)
--   Permit pathfinding to be disabled by setting \[path\_search\_max\] to 0 in rippled.cfg file (RIPD-271)
+-   Permit pathfinding to be disabled by setting \[path\_search\_max\] to 0 in calld.cfg file (RIPD-271)
 -   Add subscription to peer status changes (RIPD-579)
 
 **Improvements**
@@ -667,18 +667,18 @@ The rippled team is proud to release rippled version 0.30.1. This version contai
 -   Fix delivered\_amount reporting for minor ledgers (RIPD-1051)
 -   Fix setting admin privileges on websocket
 -   Fix race conditions in account\_tx command (RIPD-1035)
--   Fix to enforce no-ripple constraints
+-   Fix to enforce no-call constraints
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 
@@ -687,7 +687,7 @@ For more information or assistance, the following resources will be of use:
 
 ## Version 0.30.0
 
-rippled 0.30.0 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.30.0>
+calld 0.30.0 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/tree/0.30.0>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -697,33 +697,33 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
         Set version to 0.30.0
 
-This release incorporates a number of important features, bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.30.0) for more detailed information.
+This release incorporates a number of important features, bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.30.0) for more detailed information.
 
 **Release Overview**
 
-As part of Ripple Labs’ ongoing commitment toward protocol security, the rippled team would like to release rippled 0.30.0.
+As part of Call Labs’ ongoing commitment toward protocol security, the calld team would like to release calld 0.30.0.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**`grep '^processor' /proc/cpuinfo | wc -l`**), you can use them to assist in the build process by compiling with the command **`scons -j[number of CPUs - 1]`**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**`grep '^processor' /proc/cpuinfo | wc -l`**), you can use them to assist in the build process by compiling with the command **`scons -j[number of CPUs - 1]`**.
 
 **New Features**
 
--   Honor markers in ledger\_data requests ([RIPD-1010](https://ripplelabs.atlassian.net/browse/RIPD-1010)).
--   New Amendment - **TrustSetAuth** (Not currently enabled) Create zero balance trust lines with auth flag ([RIPD-1003](https://ripplelabs.atlassian.net/browse/RIPD-1003)): this allows a TrustSet transaction to create a trust line if the only thing being changed is setting the tfSetfAuth flag.
--   Randomize the initial transaction execution order for closed ledgers based on the hash of the consensus set ([RIPD-961](https://ripplelabs.atlassian.net/browse/RIPD-961)). **Activates on October 27, 2015 at 11:00 AM PCT**.
--   Differentiate path\_find response ([RIPD-1013](https://ripplelabs.atlassian.net/browse/RIPD-1013)).
--   Convert all of an asset ([RIPD-655](https://ripplelabs.atlassian.net/browse/RIPD-655)).
+-   Honor markers in ledger\_data requests ([RIPD-1010](https://calllabs.atlassian.net/browse/RIPD-1010)).
+-   New Amendment - **TrustSetAuth** (Not currently enabled) Create zero balance trust lines with auth flag ([RIPD-1003](https://calllabs.atlassian.net/browse/RIPD-1003)): this allows a TrustSet transaction to create a trust line if the only thing being changed is setting the tfSetfAuth flag.
+-   Randomize the initial transaction execution order for closed ledgers based on the hash of the consensus set ([RIPD-961](https://calllabs.atlassian.net/browse/RIPD-961)). **Activates on October 27, 2015 at 11:00 AM PCT**.
+-   Differentiate path\_find response ([RIPD-1013](https://calllabs.atlassian.net/browse/RIPD-1013)).
+-   Convert all of an asset ([RIPD-655](https://calllabs.atlassian.net/browse/RIPD-655)).
 
 **Improvements**
 
 -   SHAMap improvements.
 -   Upgrade SQLite from 3.8.8.2 to 3.8.11.1.
--   Limit the number of offers that can be consumed during crossing ([RIPD-1026](https://ripplelabs.atlassian.net/browse/RIPD-1026)).
--   Remove unfunded offers on tecOVERSIZE ([RIPD-1026](https://ripplelabs.atlassian.net/browse/RIPD-1026)).
--   Improve transport security ([RIPD-1029](https://ripplelabs.atlassian.net/browse/RIPD-1029)): to take full advantage of the improved transport security, servers with a single, static public IP address should add it to their configuration file, as follows:
+-   Limit the number of offers that can be consumed during crossing ([RIPD-1026](https://calllabs.atlassian.net/browse/RIPD-1026)).
+-   Remove unfunded offers on tecOVERSIZE ([RIPD-1026](https://calllabs.atlassian.net/browse/RIPD-1026)).
+-   Improve transport security ([RIPD-1029](https://calllabs.atlassian.net/browse/RIPD-1029)): to take full advantage of the improved transport security, servers with a single, static public IP address should add it to their configuration file, as follows:
 
      [overlay]
      public_ip=<ip_address>
@@ -734,18 +734,18 @@ While it may be possible to compile rippled on (virtual) machines with 4GB of RA
 -   Transitional support for C++ 14: to enable support define the environment variable `RIPPLED_USE_CPP_14`=1
 -   Visual Studio 2015 support
 -   Updates to integration tests
--   Add uptime to crawl data ([RIPD-997](https://ripplelabs.atlassian.net/browse/RIPD-997))
+-   Add uptime to crawl data ([RIPD-997](https://calllabs.atlassian.net/browse/RIPD-997))
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 
@@ -754,7 +754,7 @@ For more information or assistance, the following resources will be of use:
 
 ## Version 0.29.0
 
-rippled 0.29.0 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/commits/0.29.0>
+calld 0.29.0 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/commits/0.29.0>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -764,21 +764,21 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
         Set version to 0.29.0
 
-This release incorporates a number of important features, bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.29.0) for more detailed information.
+This release incorporates a number of important features, bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.29.0) for more detailed information.
 
 **Release Overview**
 
-As part of Ripple Labs’ ongoing commitment toward protocol security, the rippled team would like to announce rippled release 0.29.0.
+As part of Call Labs’ ongoing commitment toward protocol security, the calld team would like to announce calld release 0.29.0.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
 **New Features**
 
--   Subscription stream for validations ([RIPD-504](https://ripplelabs.atlassian.net/browse/RIPD-504))
+-   Subscription stream for validations ([RIPD-504](https://calllabs.atlassian.net/browse/RIPD-504))
 
 **Deprecated features**
 
@@ -787,32 +787,32 @@ While it may be possible to compile rippled on (virtual) machines with 4GB of RA
 **Bug Fixes**
 
 -   Fix off-by one bug that overstates the account reserve during OfferCreate transaction. **Activates August 17, 2015**.
--   Fix funded offer removal during Payment transaction ([RIPD-113](https://ripplelabs.atlassian.net/browse/RIPD-113)). **Activates August 17, 2015**.
+-   Fix funded offer removal during Payment transaction ([RIPD-113](https://calllabs.atlassian.net/browse/RIPD-113)). **Activates August 17, 2015**.
 -   Fix display discrepancy in fee.
 
 **Improvements**
 
 -   Add “quality” field to account\_offers API response: quality is defined as the exchange rate, the ratio taker\_pays divided by taker\_gets.
--   Add [full\_reply](https://ripple.com/build/rippled-apis/#path-find-create) field to path\_find API response: full\_reply is defined as true/false value depending on the completed depth of pathfinding search ([RIPD-894](https://ripplelabs.atlassian.net/browse/RIPD-894)).
--   Add [DeliverMin](https://ripple.com/build/transactions/#payment) transaction field ([RIPD-930](https://ripplelabs.atlassian.net/browse/RIPD-930)). **Activates August 17, 2015**.
+-   Add [full\_reply](https://call.com/build/calld-apis/#path-find-create) field to path\_find API response: full\_reply is defined as true/false value depending on the completed depth of pathfinding search ([RIPD-894](https://calllabs.atlassian.net/browse/RIPD-894)).
+-   Add [DeliverMin](https://call.com/build/transactions/#payment) transaction field ([RIPD-930](https://calllabs.atlassian.net/browse/RIPD-930)). **Activates August 17, 2015**.
 
 **Development-Related Updates**
 
--   Add uptime to crawl data ([RIPD-997](https://ripplelabs.atlassian.net/browse/RIPD-997)).
--   Add IOUAmount and XRPAmount: these numeric types replace the monolithic functionality found in STAmount ([RIPD-976](https://ripplelabs.atlassian.net/browse/RIPD-976)).
+-   Add uptime to crawl data ([RIPD-997](https://calllabs.atlassian.net/browse/RIPD-997)).
+-   Add IOUAmount and XRPAmount: these numeric types replace the monolithic functionality found in STAmount ([RIPD-976](https://calllabs.atlassian.net/browse/RIPD-976)).
 -   Log metadata differences on built ledger mismatch.
 -   Add enableTesting flag to applyTransactions.
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 
@@ -821,7 +821,7 @@ For more information or assistance, the following resources will be of use:
 
 ## Version 0.28.2
 
-rippled 0.28.2 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/commits/release>
+calld 0.28.2 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/commits/release>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -831,31 +831,31 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
         Set version to 0.28.2
 
-This release incorporates a number of important features, bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/release) for more detailed information.
+This release incorporates a number of important features, bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/call/calld/commits/release) for more detailed information.
 
 **Release Overview**
 
-As part of Ripple Labs’ ongoing commitment toward protocol security, the rippled team would like to announce rippled release 0.28.2. **This release is necessary for compatibility with OpenSSL v.1.0.1n and later.**
+As part of Call Labs’ ongoing commitment toward protocol security, the calld team would like to announce calld release 0.28.2. **This release is necessary for compatibility with OpenSSL v.1.0.1n and later.**
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
-**rippled.cfg Updates**
+**calld.cfg Updates**
 
-For \[ips\] stanza, a port must be specified for each listed IP address with the space between IP address and port, ex.: `r.ripple.com` `51235` ([RIPD-893](https://ripplelabs.atlassian.net/browse/RIPD-893))
+For \[ips\] stanza, a port must be specified for each listed IP address with the space between IP address and port, ex.: `r.call.com` `51235` ([RIPD-893](https://calllabs.atlassian.net/browse/RIPD-893))
 
 **New Features**
 
--   New API: [gateway\_balances](https://ripple.com/build/rippled-apis/#gateway-balances) to get a gateway's hot wallet balances and total obligations.
+-   New API: [gateway\_balances](https://call.com/build/calld-apis/#gateway-balances) to get a gateway's hot wallet balances and total obligations.
 
 **Deprecated features**
 
--   Removed temp\_db ([RIPD-887](https://ripplelabs.atlassian.net/browse/RIPD-887))
+-   Removed temp\_db ([RIPD-887](https://calllabs.atlassian.net/browse/RIPD-887))
 
 **Improvements**
 
@@ -872,14 +872,14 @@ For \[ips\] stanza, a port must be specified for each listed IP address with the
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 
@@ -888,7 +888,7 @@ For more information or assistance, the following resources will be of use:
 
 ## Version 0.28.1
 
-rippled 0.28.1 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.28.1>
+calld 0.28.1 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/tree/0.28.1>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -898,20 +898,20 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
         Set version to 0.28.1
 
-This release incorporates a number of important features, bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.28.1) for more detailed information.
+This release incorporates a number of important features, bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.28.1) for more detailed information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **New Features**
 
--   Filtering for Account Objects ([RIPD-868](https://ripplelabs.atlassian.net/browse/RIPD-868)).
--   Track rippled server peers latency ([RIPD-879](https://ripplelabs.atlassian.net/browse/RIPD-879)).
+-   Filtering for Account Objects ([RIPD-868](https://calllabs.atlassian.net/browse/RIPD-868)).
+-   Track calld server peers latency ([RIPD-879](https://calllabs.atlassian.net/browse/RIPD-879)).
 
 **Bug fixes**
 
@@ -920,32 +920,32 @@ The minimum supported version of Boost is v1.57.0. You **must** upgrade to this 
 
 **Deprecated features**
 
--   Wallet\_accounts and generator maps ([RIPD-804](https://ripplelabs.atlassian.net/browse/RIPD-804))
+-   Wallet\_accounts and generator maps ([RIPD-804](https://calllabs.atlassian.net/browse/RIPD-804))
 
 **Improvements**
 
 -   Control ledger query depth based on peers latency
 -   Improvements to ledger history fetches
--   Improve RPC ledger synchronization requirements ([RIPD-27](https://ripplelabs.atlassian.net/browse/RIPD-27), [RIPD-840](https://ripplelabs.atlassian.net/browse/RIPD-840))
--   Eliminate need for ledger in delivered\_amount calculation ([RIPD-860](https://ripplelabs.atlassian.net/browse/RIPD-860))
+-   Improve RPC ledger synchronization requirements ([RIPD-27](https://calllabs.atlassian.net/browse/RIPD-27), [RIPD-840](https://calllabs.atlassian.net/browse/RIPD-840))
+-   Eliminate need for ledger in delivered\_amount calculation ([RIPD-860](https://calllabs.atlassian.net/browse/RIPD-860))
 -   Improvements to JSON parsing
 
 **Development-Related Updates**
 
 -   Add historical ledger fetches per minute to get\_counts
 -   Compute validated ledger age from signing time
--   Remove unused database table ([RIPD-755](https://ripplelabs.atlassian.net/browse/RIPD-755))
+-   Remove unused database table ([RIPD-755](https://calllabs.atlassian.net/browse/RIPD-755))
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 
@@ -954,7 +954,7 @@ For more information or assistance, the following resources will be of use:
 
 ## Version 0.28.0
 
-rippled 0.28.0 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.28.0>
+calld 0.28.0 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/tree/0.28.0>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -964,65 +964,65 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
         Set version to 0.28.0
 
-This release incorporates a number of important features, bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.28.0) for more detailed information.
+This release incorporates a number of important features, bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.28.0) for more detailed information.
 
 **Release Overview**
 
-As part of Ripple Labs’ ongoing commitment toward improving the protocol, the rippled team is excited to announce **autobridging** — a feature that allows XRP to serve as a bridge currency. Autobridging enhances utility and has the potential to expose more of the network to liquidity and improve prices. For more information please refer to the [autobridging blog post](https://ripple.com/uncategorized/introducing-offer-autobridging/).
+As part of Call Labs’ ongoing commitment toward improving the protocol, the calld team is excited to announce **autobridging** — a feature that allows XRP to serve as a bridge currency. Autobridging enhances utility and has the potential to expose more of the network to liquidity and improve prices. For more information please refer to the [autobridging blog post](https://call.com/uncategorized/introducing-offer-autobridging/).
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
-**Important rippled.cfg update**
+**Important calld.cfg update**
 
-With rippled version 0.28, the rippled.cfg file must be changed according to these instructions:
+With calld version 0.28, the calld.cfg file must be changed according to these instructions:
 
 -   Change any entries that say
 
 `admin` `=` `allow` to `admin` `=` <IP address>
 
--   For most installations, 127.0.0.1 will preserve current behavior. 0.0.0.0 may be specified to indicate "any IP" but cannot be combined with other IP addresses. Use of 0.0.0.0 may introduce severe security risks and is not recommended. See docs/rippled-example.cfg for more information.
+-   For most installations, 127.0.0.1 will preserve current behavior. 0.0.0.0 may be specified to indicate "any IP" but cannot be combined with other IP addresses. Use of 0.0.0.0 may introduce severe security risks and is not recommended. See docs/calld-example.cfg for more information.
 
 **More Strict Requirements on MemoType**
 
-The requirements on the contents of the MemoType field, if present, are more strict than the previous version. Transactions that can successfully be submitted to 0.27.4 and earlier may fail in 0.28.0. For details, please refer to [updated memo documentation](https://ripple.com/build/transactions/#memos) for details. Partners should check their implementation to make sure that their MemoType follows the new rules.
+The requirements on the contents of the MemoType field, if present, are more strict than the previous version. Transactions that can successfully be submitted to 0.27.4 and earlier may fail in 0.28.0. For details, please refer to [updated memo documentation](https://call.com/build/transactions/#memos) for details. Partners should check their implementation to make sure that their MemoType follows the new rules.
 
 **New Features**
 
--   Autobridging implementation ([RIPD-423](https://ripplelabs.atlassian.net/browse/RIPD-423)). **This feature will be turned on May 12, 2015**.
--   Combine history\_ledger\_index and online\_delete settings in rippled.cfg ([RIPD-774](https://ripplelabs.atlassian.net/browse/RIPD-774)).
--   Claim a fee when a required destination tag is not specified ([RIPD-574](https://ripplelabs.atlassian.net/browse/RIPD-574)).
--   Require the master key when disabling the use of the master key or when enabling 'no freeze' ([RIPD-666](https://ripplelabs.atlassian.net/browse/RIPD-666)).
--   Change the port setting admin to accept allowable admin IP addresses ([RIPD-820](https://ripplelabs.atlassian.net/browse/RIPD-820)):
+-   Autobridging implementation ([RIPD-423](https://calllabs.atlassian.net/browse/RIPD-423)). **This feature will be turned on May 12, 2015**.
+-   Combine history\_ledger\_index and online\_delete settings in calld.cfg ([RIPD-774](https://calllabs.atlassian.net/browse/RIPD-774)).
+-   Claim a fee when a required destination tag is not specified ([RIPD-574](https://calllabs.atlassian.net/browse/RIPD-574)).
+-   Require the master key when disabling the use of the master key or when enabling 'no freeze' ([RIPD-666](https://calllabs.atlassian.net/browse/RIPD-666)).
+-   Change the port setting admin to accept allowable admin IP addresses ([RIPD-820](https://calllabs.atlassian.net/browse/RIPD-820)):
     -   rpc\_admin\_allow has been removed.
     -   Comma-separated list of IP addresses that are allowed administrative privileges (subject to username & password authentication if configured).
     -   127.0.0.1 is no longer a default admin IP.
     -   0.0.0.0 may be specified to indicate "any IP" but cannot be combined with other MIP addresses. Use of 0.0.0.0 may introduce severe security risks and is not recommended.
--   Enable Amendments from config file or static data ([RIPD-746](https://ripplelabs.atlassian.net/browse/RIPD-746)).
+-   Enable Amendments from config file or static data ([RIPD-746](https://calllabs.atlassian.net/browse/RIPD-746)).
 
 **Bug fixes**
 
--   Fix payment engine handling of offer ⇔ account ⇔ offer cases ([RIPD-639](https://ripplelabs.atlassian.net/browse/RIPD-639)). **This fix will take effect on May 12, 2015**.
--   Fix specified destination issuer in pathfinding ([RIPD-812](https://ripplelabs.atlassian.net/browse/RIPD-812)).
--   Only report delivered\_amount for executed payments ([RIPD-827](https://ripplelabs.atlassian.net/browse/RIPD-827)).
--   Return a validated ledger if there is one ([RIPD-814](https://ripplelabs.atlassian.net/browse/RIPD-814)).
--   Refund owner's ticket reserve when a ticket is canceled ([RIPD-855](https://ripplelabs.atlassian.net/browse/RIPD-855)).
--   Return descriptive error from account\_currencies RPC ([RIPD-806](https://ripplelabs.atlassian.net/browse/RIPD-806)).
--   Fix transaction enumeration in account\_tx API ([RIPD-734](https://ripplelabs.atlassian.net/browse/RIPD-734)).
--   Fix inconsistent ledger\_current return ([RIPD-669](https://ripplelabs.atlassian.net/browse/RIPD-669)).
--   Fix flags --rpc\_ip and --rpc\_port ([RIPD-679](https://ripplelabs.atlassian.net/browse/RIPD-679)).
--   Skip inefficient SQL query ([RIPD-870](https://ripplelabs.atlassian.net/browse/RIPD-870))
+-   Fix payment engine handling of offer ⇔ account ⇔ offer cases ([RIPD-639](https://calllabs.atlassian.net/browse/RIPD-639)). **This fix will take effect on May 12, 2015**.
+-   Fix specified destination issuer in pathfinding ([RIPD-812](https://calllabs.atlassian.net/browse/RIPD-812)).
+-   Only report delivered\_amount for executed payments ([RIPD-827](https://calllabs.atlassian.net/browse/RIPD-827)).
+-   Return a validated ledger if there is one ([RIPD-814](https://calllabs.atlassian.net/browse/RIPD-814)).
+-   Refund owner's ticket reserve when a ticket is canceled ([RIPD-855](https://calllabs.atlassian.net/browse/RIPD-855)).
+-   Return descriptive error from account\_currencies RPC ([RIPD-806](https://calllabs.atlassian.net/browse/RIPD-806)).
+-   Fix transaction enumeration in account\_tx API ([RIPD-734](https://calllabs.atlassian.net/browse/RIPD-734)).
+-   Fix inconsistent ledger\_current return ([RIPD-669](https://calllabs.atlassian.net/browse/RIPD-669)).
+-   Fix flags --rpc\_ip and --rpc\_port ([RIPD-679](https://calllabs.atlassian.net/browse/RIPD-679)).
+-   Skip inefficient SQL query ([RIPD-870](https://calllabs.atlassian.net/browse/RIPD-870))
 
 **Deprecated features**
 
--   Remove support for deprecated PreviousTxnID field ([RIPD-710](https://ripplelabs.atlassian.net/browse/RIPD-710)). **This will take effect on May 12, 2015**.
--   Eliminate temREDUNDANT\_SEND\_MAX ([RIPD-690](https://ripplelabs.atlassian.net/browse/RIPD-690)).
--   Remove WalletAdd ([RIPD-725](https://ripplelabs.atlassian.net/browse/RIPD-725)).
+-   Remove support for deprecated PreviousTxnID field ([RIPD-710](https://calllabs.atlassian.net/browse/RIPD-710)). **This will take effect on May 12, 2015**.
+-   Eliminate temREDUNDANT\_SEND\_MAX ([RIPD-690](https://calllabs.atlassian.net/browse/RIPD-690)).
+-   Remove WalletAdd ([RIPD-725](https://calllabs.atlassian.net/browse/RIPD-725)).
 -   Remove SMS support.
 
 **Improvements**
@@ -1031,32 +1031,32 @@ The requirements on the contents of the MemoType field, if present, are more str
 -   Reduce master lock for client requests.
 -   Update SQLite to 3.8.8.2.
 -   Require Boost 1.57.
--   Improvements to Universal Port ([RIPD-687](https://ripplelabs.atlassian.net/browse/RIPD-687)).
--   Constrain valid inputs for memo fields ([RIPD-712](https://ripplelabs.atlassian.net/browse/RIPD-712)).
--   Binary option for ledger command ([RIPD-692](https://ripplelabs.atlassian.net/browse/RIPD-692)).
--   Optimize transaction checks ([RIPD-751](https://ripplelabs.atlassian.net/browse/RIPD-751)).
+-   Improvements to Universal Port ([RIPD-687](https://calllabs.atlassian.net/browse/RIPD-687)).
+-   Constrain valid inputs for memo fields ([RIPD-712](https://calllabs.atlassian.net/browse/RIPD-712)).
+-   Binary option for ledger command ([RIPD-692](https://calllabs.atlassian.net/browse/RIPD-692)).
+-   Optimize transaction checks ([RIPD-751](https://calllabs.atlassian.net/browse/RIPD-751)).
 
 **Development-Related Updates**
 
--   Add RPC metrics ([RIPD-705](https://ripplelabs.atlassian.net/browse/RIPD-705)).
+-   Add RPC metrics ([RIPD-705](https://calllabs.atlassian.net/browse/RIPD-705)).
 -   Track and report peer load.
 -   Builds/Test.py will build and test by one or more scons targets.
 -   Support a --noserver command line option in tests:
--   Run npm/integration tests without launching rippled, using a running instance of rippled (possibly in a debugger) instead.
+-   Run npm/integration tests without launching calld, using a running instance of calld (possibly in a debugger) instead.
 -   Works for npm test and mocha.
 -   Display human readable SSL error codes.
--   Better transaction analysis ([RIPD-755](https://ripplelabs.atlassian.net/browse/RIPD-755)).
+-   Better transaction analysis ([RIPD-755](https://calllabs.atlassian.net/browse/RIPD-755)).
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 
@@ -1065,7 +1065,7 @@ For more information or assistance, the following resources will be of use:
 
 ## Version 0.27.4
 
-rippled 0.27.4 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.27.4>
+calld 0.27.4 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/tree/0.27.4>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1075,15 +1075,15 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
         Set version to 0.27.4
 
-This release includes one new feature. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.27.4) for more detailed information.
+This release includes one new feature. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.27.4) for more detailed information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **Bug Fixes**
 
@@ -1091,14 +1091,14 @@ The minimum supported version of Boost is v1.57.0. You **must** upgrade to this 
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 
@@ -1107,7 +1107,7 @@ For more information or assistance, the following resources will be of use:
 
 ## Version 0.27.3-sp2
 
-rippled 0.27.3-sp2 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.27.3-sp2>
+calld 0.27.3-sp2 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/tree/0.27.3-sp2>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1117,30 +1117,30 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
         Set version to 0.27.3-sp2
 
-This release includes one new feature. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.27.3-sp2) for more detailed information.
+This release includes one new feature. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.27.3-sp2) for more detailed information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **New Features**
 
--   Add noripple\_check RPC command: this command tells gateways what they need to do to set "Default Ripple" account flag and fix any trust lines created before the flag was set.
+-   Add nocall\_check RPC command: this command tells gateways what they need to do to set "Default Call" account flag and fix any trust lines created before the flag was set.
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 
@@ -1149,7 +1149,7 @@ For more information or assistance, the following resources will be of use:
 
 ## Version 0.27.3-sp1
 
-rippled 0.27.3-sp1 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.27.3-sp1>
+calld 0.27.3-sp1 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/tree/0.27.3-sp1>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1159,37 +1159,37 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
        Set version to 0.27.3-sp1
 
-This release includes one new feature. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.27.3-sp1) for more detailed information.
+This release includes one new feature. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.27.3-sp1) for more detailed information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **New Features**
 
--   Add "Default Ripple" account flag
+-   Add "Default Call" account flag
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 -----------------------------------------------------------
 
 ## Version 0.27.3
 
-rippled 0.27.3 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.27.3>
+calld 0.27.3 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/tree/0.27.3>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1199,37 +1199,37 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
         Set version to 0.27.3
 
-This release includes one new feature. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.27.3) for more detailed information.
+This release includes one new feature. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.27.3) for more detailed information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **New Features**
 
--   Add "Default Ripple" account flag
+-   Add "Default Call" account flag
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 -----------------------------------------------------------
 
 ## Version 0.27.2
 
-rippled 0.27.2 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.27.2>
+calld 0.27.2 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/tree/0.27.2>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1239,21 +1239,21 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
        Set version to 0.27.2
 
-This release incorporates a number of important bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.27.2) for more detailed information.
+This release incorporates a number of important bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.27.2) for more detailed information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **New Features**
 
--   NuDB backend option: high performance key/value database optimized for rippled (set “type=nudb” in .cfg).
+-   NuDB backend option: high performance key/value database optimized for calld (set “type=nudb” in .cfg).
     -   Either import RockdDB to NuDB using import tool, or
-    -   Start fresh with NuDB but delete SQLite databases if rippled ran previously with RocksDB:
+    -   Start fresh with NuDB but delete SQLite databases if calld ran previously with RocksDB:
 
      rm [database_path]/transaction.* [database_path]/ledger.*
 
@@ -1267,21 +1267,21 @@ The minimum supported version of Boost is v1.57.0. You **must** upgrade to this 
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 -----------------------------------------------------------
 
 ## Version 0.27.1
 
-rippled 0.27.1 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.27.1>
+calld 0.27.1 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/tree/0.27.1>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1291,19 +1291,19 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
        Set version to 0.27.1
 
-This release incorporates a number of important bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.27.1) for more detailed information.
+This release incorporates a number of important bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.27.1) for more detailed information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **New Features**
 
--   RocksDB to NuDB import tool ([RIPD-781](https://ripplelabs.atlassian.net/browse/RIPD-781), [RIPD-785](https://ripplelabs.atlassian.net/browse/RIPD-785)): custom tool specifically designed for very fast import of RocksDB nodestore databases into NuDB
+-   RocksDB to NuDB import tool ([RIPD-781](https://calllabs.atlassian.net/browse/RIPD-781), [RIPD-785](https://calllabs.atlassian.net/browse/RIPD-785)): custom tool specifically designed for very fast import of RocksDB nodestore databases into NuDB
 
 **Bug Fixes**
 
@@ -1313,30 +1313,30 @@ The minimum supported version of Boost is v1.57.0. You **must** upgrade to this 
 
 -   Update RocksDB backend settings
 -   NuDB improvements:
-    -   Limit size of mempool ([RIPD-787](https://ripplelabs.atlassian.net/browse/RIPD-787))
-    -   Performance improvements ([RIPD-793](https://ripplelabs.atlassian.net/browse/RIPD-793), [RIPD-796](https://ripplelabs.atlassian.net/browse/RIPD-796)): changes in Nudb to improve speed, reduce database size, and enhance correctness. The most significant change is to store hashes rather than entire keys in the key file. The output of the hash function is reduced to 48 bits, and stored directly in buckets.
+    -   Limit size of mempool ([RIPD-787](https://calllabs.atlassian.net/browse/RIPD-787))
+    -   Performance improvements ([RIPD-793](https://calllabs.atlassian.net/browse/RIPD-793), [RIPD-796](https://calllabs.atlassian.net/browse/RIPD-796)): changes in Nudb to improve speed, reduce database size, and enhance correctness. The most significant change is to store hashes rather than entire keys in the key file. The output of the hash function is reduced to 48 bits, and stored directly in buckets.
 
 **Experimental**
 
--   Add /crawl cgi request feature to peer protocol ([RIPD-729](https://ripplelabs.atlassian.net/browse/RIPD-729)): adds support for a cgi /crawl request, issued over HTTPS to the configured peer protocol port. The response to the request is a JSON object containing the node public key, type, and IP address of each directly connected neighbor. The IP address is suppressed unless the neighbor has requested its address to be revealed by adding "Crawl: public" to its HTTP headers. This field is currently set by the peer\_private option in the rippled.cfg file.
+-   Add /crawl cgi request feature to peer protocol ([RIPD-729](https://calllabs.atlassian.net/browse/RIPD-729)): adds support for a cgi /crawl request, issued over HTTPS to the configured peer protocol port. The response to the request is a JSON object containing the node public key, type, and IP address of each directly connected neighbor. The IP address is suppressed unless the neighbor has requested its address to be revealed by adding "Crawl: public" to its HTTP headers. This field is currently set by the peer\_private option in the calld.cfg file.
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 -----------------------------------------------------------
 
 ## Version 0.27.0
 
-rippled 0.27.0 has been released. The commit can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.27.0>
+calld 0.27.0 has been released. The commit can be found on GitHub at: <https://github.com/call/calld/tree/0.27.0>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1346,67 +1346,67 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
          Set version to 0.27.0
 
-This release incorporates a number of important bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.27.0) for more detailed information.
+This release incorporates a number of important bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.27.0) for more detailed information.
 
 **Release Overview**
 
-The rippled team is proud to release rippled 0.27.0. This new version includes many exciting features that will appeal to our users. The team continues to work on stability, scalability, and performance.
+The calld team is proud to release calld 0.27.0. This new version includes many exciting features that will appeal to our users. The team continues to work on stability, scalability, and performance.
 
-The first feature is Online Delete. This feature allows rippled to maintain it’s database of previous ledgers within a fixed amount of disk space. It does this while allowing rippled to stay online and maintain an administrator specify minimum number of ledgers. This means administrators with limited disk space will no longer need to manage disk space by periodically manually removing the database. Also, with the previously existing backend databases performance would gradually degrade as the database grew in size. In particular, rippled would perform poorly whenever the backend database performed ever growing compaction operations. By limiting rippled to less history, compaction is less resource intensive and systems with less disk performance can now run rippled.
+The first feature is Online Delete. This feature allows calld to maintain it’s database of previous ledgers within a fixed amount of disk space. It does this while allowing calld to stay online and maintain an administrator specify minimum number of ledgers. This means administrators with limited disk space will no longer need to manage disk space by periodically manually removing the database. Also, with the previously existing backend databases performance would gradually degrade as the database grew in size. In particular, calld would perform poorly whenever the backend database performed ever growing compaction operations. By limiting calld to less history, compaction is less resource intensive and systems with less disk performance can now run calld.
 
-Additionally, we are very excited to include Universal Port. This feature allows rippled's listening port to handshake in multiple protocols. For example, a single listening port can be configured to receive incoming peer connections, incoming RPC commands over HTTP, and incoming RPC commands over HTTPS at the same time. Or, a single port can receive both Websockets and Secure Websockets clients at the same.
+Additionally, we are very excited to include Universal Port. This feature allows calld's listening port to handshake in multiple protocols. For example, a single listening port can be configured to receive incoming peer connections, incoming RPC commands over HTTP, and incoming RPC commands over HTTPS at the same time. Or, a single port can receive both Websockets and Secure Websockets clients at the same.
 
-Finally, a new, experimental backend database, NuDB, has been added. This database was developed by Ripple Labs to take advantage of rippled’s specific data usage profile and performs much better than previous databases. Significantly, this database does not degrade in performance as the database grows. Very excitingly, this database works on OS X and Windows. This allows rippled to use these platforms for the first time.
+Finally, a new, experimental backend database, NuDB, has been added. This database was developed by Call Labs to take advantage of calld’s specific data usage profile and performs much better than previous databases. Significantly, this database does not degrade in performance as the database grows. Very excitingly, this database works on OS X and Windows. This allows calld to use these platforms for the first time.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.57.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
-**Important rippled.cfg Update**
+**Important calld.cfg Update**
 
-**The format of the configuration file has changed. If upgrading from a previous version of rippled, please see the migration instructions below.**
+**The format of the configuration file has changed. If upgrading from a previous version of calld, please see the migration instructions below.**
 
 **New Features**
 
--   SHAMapStore Online Delete ([RIPD-415](https://ripplelabs.atlassian.net/browse/RIPD-415)): Makes rippled configurable to support deletion of all data in its key-value store (nodestore) and ledger and transaction SQLite databases based on validated ledger sequence numbers. See doc/rippled-example.cfg for configuration setup.
--   [Universal Port](https://forum.ripple.com/viewtopic.php?f=2&t=8313&p=57969). See necessary config changes below.
--   Config "ledger\_history\_index" option ([RIPD-559](https://ripplelabs.atlassian.net/browse/RIPD-559))
+-   SHAMapStore Online Delete ([RIPD-415](https://calllabs.atlassian.net/browse/RIPD-415)): Makes calld configurable to support deletion of all data in its key-value store (nodestore) and ledger and transaction SQLite databases based on validated ledger sequence numbers. See doc/calld-example.cfg for configuration setup.
+-   [Universal Port](https://forum.call.com/viewtopic.php?f=2&t=8313&p=57969). See necessary config changes below.
+-   Config "ledger\_history\_index" option ([RIPD-559](https://calllabs.atlassian.net/browse/RIPD-559))
 
 **Bug Fixes**
 
--   Fix pathfinding with multiple issuers for one currency ([RIPD-618](https://ripplelabs.atlassian.net/browse/RIPD-618))
--   Fix account\_lines, account\_offers and book\_offers result ([RIPD-682](https://ripplelabs.atlassian.net/browse/RIPD-682))
--   Fix pathfinding bugs ([RIPD-735](https://ripplelabs.atlassian.net/browse/RIPD-735))
--   Fix RPC subscribe with multiple books ([RIPD-77](https://ripplelabs.atlassian.net/browse/RIPD-77))
+-   Fix pathfinding with multiple issuers for one currency ([RIPD-618](https://calllabs.atlassian.net/browse/RIPD-618))
+-   Fix account\_lines, account\_offers and book\_offers result ([RIPD-682](https://calllabs.atlassian.net/browse/RIPD-682))
+-   Fix pathfinding bugs ([RIPD-735](https://calllabs.atlassian.net/browse/RIPD-735))
+-   Fix RPC subscribe with multiple books ([RIPD-77](https://calllabs.atlassian.net/browse/RIPD-77))
 -   Fix account\_tx API
 
 **Improvements**
 
 -   Improve the human-readable description of the tesSUCCESS code
--   Add 'delivered\_amount' to Transaction JSON ([RIPD-643](https://ripplelabs.atlassian.net/browse/RIPD-643)): The synthetic field 'delivered\_amount' can be used to determine the exact amount delivered by a Payment without having to check the DeliveredAmount field, if present, or the Amount field otherwise.
+-   Add 'delivered\_amount' to Transaction JSON ([RIPD-643](https://calllabs.atlassian.net/browse/RIPD-643)): The synthetic field 'delivered\_amount' can be used to determine the exact amount delivered by a Payment without having to check the DeliveredAmount field, if present, or the Amount field otherwise.
 
 **Development-Related Updates**
 
--   HTTP Handshaking for Peers on Universal Port ([RIPD-446](https://ripplelabs.atlassian.net/browse/RIPD-446))
--   Use asio signal handling in Application ([RIPD-140](https://ripplelabs.atlassian.net/browse/RIPD-140))
+-   HTTP Handshaking for Peers on Universal Port ([RIPD-446](https://calllabs.atlassian.net/browse/RIPD-446))
+-   Use asio signal handling in Application ([RIPD-140](https://calllabs.atlassian.net/browse/RIPD-140))
 -   Build dependency on Boost 1.57.0
 -   Support a "no\_server" flag in test config
--   API for improved Unit Testing ([RIPD-432](https://ripplelabs.atlassian.net/browse/RIPD-432))
--   Option to specify rippled path on command line (--rippled=\<absolute or relative path\>)
+-   API for improved Unit Testing ([RIPD-432](https://calllabs.atlassian.net/browse/RIPD-432))
+-   Option to specify calld path on command line (--calld=\<absolute or relative path\>)
 
 **Experimental**
 
--   NuDB backend option: high performance key/value database optimized for rippled (set “type=nudb” in .cfg)
+-   NuDB backend option: high performance key/value database optimized for calld (set “type=nudb” in .cfg)
 
 **Migration Instructions**
 
-With rippled version 0.27.0, the rippled.cfg file must be changed according to these instructions:
+With calld version 0.27.0, the calld.cfg file must be changed according to these instructions:
 
--   Add new stanza - `[server]`. This section will contain a list of port names and key/value pairs. A port name must start with a letter and contain only letters and numbers. The name is not case-sensitive. For each name in this list, rippled will look for a configuration file section with the same name and use it to create a listening port. To simplify migration, you can use port names from your previous version of rippled.cfg (see Section 1. Server for detailed explanation in doc/rippled-example.cfg). For example:
+-   Add new stanza - `[server]`. This section will contain a list of port names and key/value pairs. A port name must start with a letter and contain only letters and numbers. The name is not case-sensitive. For each name in this list, calld will look for a configuration file section with the same name and use it to create a listening port. To simplify migration, you can use port names from your previous version of calld.cfg (see Section 1. Server for detailed explanation in doc/calld-example.cfg). For example:
 
          [server]
          rpc_port
@@ -1435,18 +1435,18 @@ With rippled version 0.27.0, the rippled.cfg file must be changed according to t
          admin = allow
          protocol = wss
 
--   Remove current `[rpc_port],` `[rpc_ip],` `[rpc_allow_remote],` `[rpc_ssl_key],` `[rpc_ssl_cert],` `and` `[rpc_ssl_chain],` `[peer_port],` `[peer_ip],` `[websocket_port],` `[websocket_ip]` settings from rippled.cfg
+-   Remove current `[rpc_port],` `[rpc_ip],` `[rpc_allow_remote],` `[rpc_ssl_key],` `[rpc_ssl_cert],` `and` `[rpc_ssl_chain],` `[peer_port],` `[peer_ip],` `[websocket_port],` `[websocket_ip]` settings from calld.cfg
 
--   If you allow untrusted websocket connections to your rippled, add `[websocket_public_port]` stanza under `[server]` section and replace websocket public settings with `[websocket_public_port]` section:
+-   If you allow untrusted websocket connections to your calld, add `[websocket_public_port]` stanza under `[server]` section and replace websocket public settings with `[websocket_public_port]` section:
 
          [websocket_public_port]
          port = <your current [websocket_public_port], usually 5005>
          ip = <your current [websocket_public_ip], usually 127.0.0.1>
          protocol = ws ← make sure this is ws, not wss`
 
--   Remove `[websocket_public_port],` `[websocket_public_ip],` `[websocket_ssl_key],` `[websocket_ssl_cert],` `[websocket_ssl_chain]` settings from rippled.cfg
+-   Remove `[websocket_public_port],` `[websocket_public_ip],` `[websocket_ssl_key],` `[websocket_ssl_cert],` `[websocket_ssl_chain]` settings from calld.cfg
 -   Disable `[ssl_verify]` section by setting it to 0
--   Migrate the remaining configurations without changes. To enable online delete feature, check Section 6. Database in doc/rippled-example.cfg
+-   Migrate the remaining configurations without changes. To enable online delete feature, check Section 6. Database in doc/calld-example.cfg
 
 **Integration Notes**
 
@@ -1470,21 +1470,21 @@ With this release, integrators should deprecate the "DeliveredAmount" field in f
 
 **Assistance**
 
-For assistance, please contact **integration@ripple.com**
+For assistance, please contact **integration@call.com**
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 -----------------------------------------------------------
 
 ## Version 0.26.4
 
-rippled 0.26.4 has been released. The repository tag is *0.26.4* and can be found on GitHub at: <https://github.com/ripple/rippled/commits/0.26.4>
+calld 0.26.4 has been released. The repository tag is *0.26.4* and can be found on GitHub at: <https://github.com/call/calld/commits/0.26.4>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1494,19 +1494,19 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
          Set version to 0.26.4
 
-This release incorporates a number of important bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.26.4) for more detailed information.
+This release incorporates a number of important bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.26.4) for more detailed information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.55.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.55.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **Important JSON-RPC Update**
 
-With rippled version 0.26.4, the [rippled.cfg](https://github.com/ripple/rippled/blob/0.26.4/doc/rippled-example.cfg) file must set the ssl\_verify property to 0. Without this update, JSON-RPC API calls may not work.
+With calld version 0.26.4, the [calld.cfg](https://github.com/call/calld/blob/0.26.4/doc/calld-example.cfg) file must set the ssl\_verify property to 0. Without this update, JSON-RPC API calls may not work.
 
 **New Features**
 
@@ -1515,39 +1515,39 @@ With rippled version 0.26.4, the [rippled.cfg](https://github.com/ripple/rippled
 -   Disable SSLv3
 -   Add counters to track ledger read and write activities
 -   Use trusted validators median fee when determining transaction fee
--   Add --quorum argument for server start ([RIPD-563](https://ripplelabs.atlassian.net/browse/RIPD-563))
--   Add account\_offers paging ([RIPD-344](https://ripplelabs.atlassian.net/browse/RIPD-344))
--   Add account\_lines paging ([RIPD-343](https://ripplelabs.atlassian.net/browse/RIPD-343))
--   Ability to configure network fee in rippled.cfg file ([RIPD-564](https://ripplelabs.atlassian.net/browse/RIPD-564))
+-   Add --quorum argument for server start ([RIPD-563](https://calllabs.atlassian.net/browse/RIPD-563))
+-   Add account\_offers paging ([RIPD-344](https://calllabs.atlassian.net/browse/RIPD-344))
+-   Add account\_lines paging ([RIPD-343](https://calllabs.atlassian.net/browse/RIPD-343))
+-   Ability to configure network fee in calld.cfg file ([RIPD-564](https://calllabs.atlassian.net/browse/RIPD-564))
 
 **Bug Fixes**
 
 -   Fix OS X version parsing/error related to OS X 10.10 update
 -   Fix incorrect address in connectivity check report
--   Fix page sizes for ledger\_data ([RIPD-249](https://ripplelabs.atlassian.net/browse/RIPD-249))
--   Make log partitions case-insensitive in rippled.cfg
+-   Fix page sizes for ledger\_data ([RIPD-249](https://calllabs.atlassian.net/browse/RIPD-249))
+-   Make log partitions case-insensitive in calld.cfg
 
 **Improvements**
 
 -   Performance
-    -   Ledger performance improvements for storage and traversal ([RIPD-434](https://ripplelabs.atlassian.net/browse/RIPD-434))
-    -   Improve client performance for JSON responses ([RIPD-439](https://ripplelabs.atlassian.net/browse/RIPD-439))
+    -   Ledger performance improvements for storage and traversal ([RIPD-434](https://calllabs.atlassian.net/browse/RIPD-434))
+    -   Improve client performance for JSON responses ([RIPD-439](https://calllabs.atlassian.net/browse/RIPD-439))
 -   Other
     -   Remove PROXY handshake feature
-    -   Change to rippled.cfg to support sections containing both key/value pairs and a list of values
-    -   Return descriptive error message for memo validation ([RIPD-591](https://ripplelabs.atlassian.net/browse/RIPD-591))
+    -   Change to calld.cfg to support sections containing both key/value pairs and a list of values
+    -   Return descriptive error message for memo validation ([RIPD-591](https://calllabs.atlassian.net/browse/RIPD-591))
     -   Changes to enforce JSON-RPC 2.0 error format
-    -   Optimize account\_lines and account\_offers ([RIPD-587](https://ripplelabs.atlassian.net/browse/RIPD-587))
-    -   Improve fee setting logic ([RIPD-614](https://ripplelabs.atlassian.net/browse/RIPD-614))
+    -   Optimize account\_lines and account\_offers ([RIPD-587](https://calllabs.atlassian.net/browse/RIPD-587))
+    -   Improve fee setting logic ([RIPD-614](https://calllabs.atlassian.net/browse/RIPD-614))
     -   Improve transaction security
     -   Config improvements
-    -   Improve path filtering ([RIPD-561](https://ripplelabs.atlassian.net/browse/RIPD-561))
-    -   Logging to distinguish Byzantine failure from tx bug ([RIPD-523](https://ripplelabs.atlassian.net/browse/RIPD-523))
+    -   Improve path filtering ([RIPD-561](https://calllabs.atlassian.net/browse/RIPD-561))
+    -   Logging to distinguish Byzantine failure from tx bug ([RIPD-523](https://calllabs.atlassian.net/browse/RIPD-523))
 
 **Experimental**
 
 -   Add "deferred" flag to transaction relay message (required for future code that will relay deferred transactions)
--   Refactor STParsedJSON to parse an object or array (required for multisign implementation) ([RIPD-480](https://ripplelabs.atlassian.net/browse/RIPD-480))
+-   Refactor STParsedJSON to parse an object or array (required for multisign implementation) ([RIPD-480](https://calllabs.atlassian.net/browse/RIPD-480))
 
 **Development-Related Updates**
 
@@ -1558,15 +1558,15 @@ With rippled version 0.26.4, the [rippled.cfg](https://github.com/ripple/rippled
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 -----------------------------------------------------------
 
 ## Version 0.26.3-sp1
 
-rippled 0.26.3-sp1 has been released. The repository tag is *0.26.3-sp1* and can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.26.3-sp1>
+calld 0.26.3-sp1 has been released. The repository tag is *0.26.3-sp1* and can be found on GitHub at: <https://github.com/call/calld/tree/0.26.3-sp1>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1576,23 +1576,23 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
          Set version to 0.26.3-sp1
 
-This release incorporates a number of important bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.26.3-sp1) for more detailed information.
+This release incorporates a number of important bugfixes and functional improvements. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.26.3-sp1) for more detailed information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.55.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.55.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **New Features**
 
--   New command to display HTTP/S-RPC sessions metrics ([RIPD-533](https://ripplelabs.atlassian.net/browse/RIPD-533))
+-   New command to display HTTP/S-RPC sessions metrics ([RIPD-533](https://calllabs.atlassian.net/browse/RIPD-533))
 
 **Bug Fixes**
 
--   Improved handling of HTTP/S-RPC sessions ([RIPD-489](https://ripplelabs.atlassian.net/browse/RIPD-489))
+-   Improved handling of HTTP/S-RPC sessions ([RIPD-489](https://calllabs.atlassian.net/browse/RIPD-489))
 -   Fix unit tests for Windows.
 -   Fix integer overflows in JSON parser.
 
@@ -1602,7 +1602,7 @@ The minimum supported version of Boost is v1.55.0. You **must** upgrade to this 
 
 **Experimental Features**
 
--   Added a command line utility called LedgerTool for retrieving and processing ledger blocks from the Ripple network.
+-   Added a command line utility called LedgerTool for retrieving and processing ledger blocks from the Call network.
 
 **Development-Related Updates**
 
@@ -1618,24 +1618,24 @@ The minimum supported version of Boost is v1.55.0. You **must** upgrade to this 
 -   Add enable\_if\_lvalue.
 -   Updates to includes and scons.
 -   Additional ledger.history.mismatch insight statistic.
--   Convert rvalue to an lvalue. ([RIPD-494](https://ripplelabs.atlassian.net/browse/RIPD-494))
+-   Convert rvalue to an lvalue. ([RIPD-494](https://calllabs.atlassian.net/browse/RIPD-494))
 -   Enable heap profiling with jemalloc.
--   Add aged containers to Validators module. ([RIPD-349](https://ripplelabs.atlassian.net/browse/RIPD-349))
--   Account for high-ASCII characters. ([RIPD-464](https://ripplelabs.atlassian.net/browse/RIPD-464))
+-   Add aged containers to Validators module. ([RIPD-349](https://calllabs.atlassian.net/browse/RIPD-349))
+-   Account for high-ASCII characters. ([RIPD-464](https://calllabs.atlassian.net/browse/RIPD-464))
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 -----------------------------------------------------------
 
 ## Version 0.26.2
 
-rippled 0.26.2 has been released. The repository tag is *0.26.2* and can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.26.2>
+calld 0.26.2 has been released. The repository tag is *0.26.2* and can be found on GitHub at: <https://github.com/call/calld/tree/0.26.2>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1645,30 +1645,30 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
         Set version to 0.26.2
 
-This release incorporates a small number of important bugfixes. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.26.2) for more detailed information.
+This release incorporates a small number of important bugfixes. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.26.2) for more detailed information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.55.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.55.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **New Features**
 
--   Freeze enforcement: activates on September 15, 2014 ([RIPD-399](https://ripplelabs.atlassian.net/browse/RIPD-399))
--   Add pubkey\_node and hostid to server stream messages ([RIPD-407](https://ripplelabs.atlassian.net/browse/RIPD-407))
+-   Freeze enforcement: activates on September 15, 2014 ([RIPD-399](https://calllabs.atlassian.net/browse/RIPD-399))
+-   Add pubkey\_node and hostid to server stream messages ([RIPD-407](https://calllabs.atlassian.net/browse/RIPD-407))
 
 **Bug Fixes**
 
--   Fix intermittent exception when closing HTTPS connections ([RIPD-475](https://ripplelabs.atlassian.net/browse/RIPD-475))
--   Correct Pathfinder::getPaths out to handle order books ([RIPD-427](https://ripplelabs.atlassian.net/browse/RIPD-427))
--   Detect inconsistency in PeerFinder self-connects ([RIPD-411](https://ripplelabs.atlassian.net/browse/RIPD-411))
+-   Fix intermittent exception when closing HTTPS connections ([RIPD-475](https://calllabs.atlassian.net/browse/RIPD-475))
+-   Correct Pathfinder::getPaths out to handle order books ([RIPD-427](https://calllabs.atlassian.net/browse/RIPD-427))
+-   Detect inconsistency in PeerFinder self-connects ([RIPD-411](https://calllabs.atlassian.net/browse/RIPD-411))
 
 **Experimental Features**
 
--   Add owner\_funds to client subscription data ([RIPD-377](https://ripplelabs.atlassian.net/browse/RIPD-377))
+-   Add owner\_funds to client subscription data ([RIPD-377](https://calllabs.atlassian.net/browse/RIPD-377))
 
 The offer funding status feature is “experimental” in this version. Developers are able to see the field, but it is subject to change in future releases.
 
@@ -1676,15 +1676,15 @@ The offer funding status feature is “experimental” in this version. Develope
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 -----------------------------------------------------------
 
 ## Version 0.26.1
 
-rippled v0.26.1 has been released. The repository tag is **0.26.1** and can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.26.1>
+calld v0.26.1 has been released. The repository tag is **0.26.1** and can be found on GitHub at: <https://github.com/call/calld/tree/0.26.1>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1694,34 +1694,34 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
          Set version to 0.26.1
 
-This release incorporates a small number of important bugfixes. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/0.26.1) for more detailed information.
+This release incorporates a small number of important bugfixes. Please refer to the [Git commit history](https://github.com/call/calld/commits/0.26.1) for more detailed information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.55.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.55.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **Bug Fixes**
 
--   Enabled asynchronous handling of HTTP-RPC interactions. This fixes client handlers using RPC that periodically return blank responses to requests. ([RIPD-390](https://ripplelabs.atlassian.net/browse/RIPD-390))
--   Fixed auth handling during OfferCreate. This fixes a regression of [RIPD-256](https://ripplelabs.atlassian.net/browse/RIPD-256). ([RIPD-414](https://ripplelabs.atlassian.net/browse/RIPD-414))
+-   Enabled asynchronous handling of HTTP-RPC interactions. This fixes client handlers using RPC that periodically return blank responses to requests. ([RIPD-390](https://calllabs.atlassian.net/browse/RIPD-390))
+-   Fixed auth handling during OfferCreate. This fixes a regression of [RIPD-256](https://calllabs.atlassian.net/browse/RIPD-256). ([RIPD-414](https://calllabs.atlassian.net/browse/RIPD-414))
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 -----------------------------------------------------------
 
 ## Version 0.26.0
 
-rippled v0.26.0 has been released. The repository tag is **0.26.0** and can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.26.0>
+calld v0.26.0 has been released. The repository tag is **0.26.0** and can be found on GitHub at: <https://github.com/call/calld/tree/0.26.0>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1731,74 +1731,74 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
          Set version to 0.26.0
 
-This release incorporates a significant number of improvements and important bugfixes. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/develop) for more detailed information.
+This release incorporates a significant number of improvements and important bugfixes. Please refer to the [Git commit history](https://github.com/call/calld/commits/develop) for more detailed information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend compiling on (virtual) machines with 8GB of RAM or more. If your build machine has more than one CPU (**\`grep '^processor' /proc/cpuinfo | wc -l\`**), you can use them to assist in the build process by compiling with the command **scons -j\[number of CPUs - 1\]**.
 
-The minimum supported version of Boost is v1.55.0. You **must** upgrade to this release or later to successfully compile this release of rippled. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.55.0. You **must** upgrade to this release or later to successfully compile this release of calld. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **Improvements**
 
 -   Updated integration tests.
 -   Updated tests for account freeze functionality.
--   Implement setting the no-freeze flag on Ripple accounts ([RIPD-394](https://ripplelabs.atlassian.net/browse/RIPD-394)).
--   Improve transaction fee and execution logic ([RIPD-323](https://ripplelabs.atlassian.net/browse/RIPD-323)).
--   Implemented finding of 'sabfd' paths ([RIPD-335](https://ripplelabs.atlassian.net/browse/RIPD-335)).
--   Imposed a local limit on paths lengths ([RIPD-350](https://ripplelabs.atlassian.net/browse/RIPD-350)).
--   Documented [ledger entries](https://github.com/ripple/rippled/blob/develop/src/ripple/module/app/ledger/README.md) ([RIPD-361](https://ripplelabs.atlassian.net/browse/RIPD-361)).
--   Documented [SHAMap](https://github.com/ripple/rippled/blob/develop/src/ripple/module/app/shamap/README.md).
+-   Implement setting the no-freeze flag on Call accounts ([RIPD-394](https://calllabs.atlassian.net/browse/RIPD-394)).
+-   Improve transaction fee and execution logic ([RIPD-323](https://calllabs.atlassian.net/browse/RIPD-323)).
+-   Implemented finding of 'sabfd' paths ([RIPD-335](https://calllabs.atlassian.net/browse/RIPD-335)).
+-   Imposed a local limit on paths lengths ([RIPD-350](https://calllabs.atlassian.net/browse/RIPD-350)).
+-   Documented [ledger entries](https://github.com/call/calld/blob/develop/src/call/module/app/ledger/README.md) ([RIPD-361](https://calllabs.atlassian.net/browse/RIPD-361)).
+-   Documented [SHAMap](https://github.com/call/calld/blob/develop/src/call/module/app/shamap/README.md).
 
 **Bug Fixes**
 
--   Fixed the limit parameter on book\_offers ([RIPD-295](https://ripplelabs.atlassian.net/browse/RIPD-295)).
--   Removed SHAMapNodeID from SHAMapTreeNode to fix "right data, wrong ID" bug in the tree node cache ([RIPD-347](https://ripplelabs.atlassian.net/browse/RIPD-347)).
--   Eliminated spurious SHAMap::getFetchPack failure ([RIPD-379](https://ripplelabs.atlassian.net/browse/RIPD-379)).
+-   Fixed the limit parameter on book\_offers ([RIPD-295](https://calllabs.atlassian.net/browse/RIPD-295)).
+-   Removed SHAMapNodeID from SHAMapTreeNode to fix "right data, wrong ID" bug in the tree node cache ([RIPD-347](https://calllabs.atlassian.net/browse/RIPD-347)).
+-   Eliminated spurious SHAMap::getFetchPack failure ([RIPD-379](https://calllabs.atlassian.net/browse/RIPD-379)).
 -   Disabled SSLv2.
--   Implemented rate-limiting of SSL client renegotiation to mitigate [SCIR DoS vulnerability](https://www.thc.org/thc-ssl-dos/) ([RIPD-360](https://ripplelabs.atlassian.net/browse/RIPD-360)).
+-   Implemented rate-limiting of SSL client renegotiation to mitigate [SCIR DoS vulnerability](https://www.thc.org/thc-ssl-dos/) ([RIPD-360](https://calllabs.atlassian.net/browse/RIPD-360)).
 -   Display unprintable or malformatted currency codes as hex digits.
--   Fix static initializers in RippleSSLContext ([RIPD-375](https://ripplelabs.atlassian.net/browse/RIPD-375)).
+-   Fix static initializers in CallSSLContext ([RIPD-375](https://calllabs.atlassian.net/browse/RIPD-375)).
 
 **More information**
 
 For more information or assistance, the following resources will be of use:
 
--   [Ripple Developer Forums](https://ripple.com/forum/viewforum.php?f=2)
--   [IRC](https://webchat.freenode.net/?channels=#ripple)
+-   [Call Developer Forums](https://call.com/forum/viewforum.php?f=2)
+-   [IRC](https://webchat.freenode.net/?channels=#call)
 
 
 -----------------------------------------------------------
 
 ## Version 0.25.2
 
-rippled v0.25.2 has been released. The repository tag is **0.25.2** and can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.25.2>
+calld v0.25.2 has been released. The repository tag is **0.25.2** and can be found on GitHub at: <https://github.com/call/calld/tree/0.25.2>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
      commit ddf68d464d74e1c76a0cfd100a08bc8e65b91fec
-     Author: Mark Travis <mtravis@ripple.com>
+     Author: Mark Travis <mtravis@call.com>
      Date:   Mon Jul 7 11:46:15 2014 -0700
 
          Set version to 0.25.2
 
-This release incorporates significant improvements which may not warrant separate entries but are incorporated into the feature changes as summary lines. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/develop) for more information.
+This release incorporates significant improvements which may not warrant separate entries but are incorporated into the feature changes as summary lines. Please refer to the [Git commit history](https://github.com/call/calld/commits/develop) for more information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
-While it may be possible to compile rippled on (virtual) machines with 4GB of RAM, we recommend build machines with 8GB of RAM.
+While it may be possible to compile calld on (virtual) machines with 4GB of RAM, we recommend build machines with 8GB of RAM.
 
-The minimum supported version of Boost is v1.55. You **must** upgrade to this release or later to successfully compile this release. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.55. You **must** upgrade to this release or later to successfully compile this release. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **Improvements**
 
 -   CPU utilization for certain operations has been optimized.
 -   Improve serialization of public ledger blocks.
--   rippled now takes much less time to compile.
+-   calld now takes much less time to compile.
 -   Additional pathfinding heuristic: increases liquidity in some cases.
 
 **Bug Fixes**
@@ -1811,7 +1811,7 @@ The minimum supported version of Boost is v1.55. You **must** upgrade to this re
 
 ## Version 0.25.1
 
-`rippled` v0.25.1 has been released. The repository tag is `0.25.1` and can be found on GitHub at: https://github.com/ripple/rippled/tree/0.25.1
+`calld` v0.25.1 has been released. The repository tag is `0.25.1` and can be found on GitHub at: https://github.com/call/calld/tree/0.25.1
 
 Prior to building, please confirm you have the correct source tree with the `git log` command. The first log entry should be the change setting the version:
 
@@ -1821,19 +1821,19 @@ Prior to building, please confirm you have the correct source tree with the `git
 
          Set version to 0.25.1
 
-This release incorporates significant improvements which may not warrant separate entries but are incorporated into the feature changes as summary lines.  Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/develop) for more information.
+This release incorporates significant improvements which may not warrant separate entries but are incorporated into the feature changes as summary lines.  Please refer to the [Git commit history](https://github.com/call/calld/commits/develop) for more information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8.  Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8.  Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
 A minimum of 4GB of RAM are required to successfully compile this release.
 
-The minimum supported version of Boost is v1.55.  You **must** upgrade to this release or later to successfully compile this release.  Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.55.  You **must** upgrade to this release or later to successfully compile this release.  Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **Major Features**
 
-* Option to compress the NodeStore db. More speed, less space. See [`rippled-example.cfg`](https://github.com/ripple/rippled/blob/0.25.1/doc/rippled-example.cfg#L691)
+* Option to compress the NodeStore db. More speed, less space. See [`calld-example.cfg`](https://github.com/call/calld/blob/0.25.1/doc/calld-example.cfg#L691)
 
 **Improvements**
 
@@ -1843,7 +1843,7 @@ The minimum supported version of Boost is v1.55.  You **must** upgrade to this r
 * Improved handling of modified ledger nodes.
 * Improved performance of JSON document generator.
 * Made strConcat operate in O(n) time for greater efficiency.
-* Added some new configuration options to doc/rippled-example.cfg
+* Added some new configuration options to doc/calld-example.cfg
 
 **Bug Fixes**
 
@@ -1858,7 +1858,7 @@ The minimum supported version of Boost is v1.55.  You **must** upgrade to this r
 
 ## Version 0.25.0
 
-rippled version 0.25.0 has been released. The repository tag is **0.25.0** and can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.25.0>
+calld version 0.25.0 has been released. The repository tag is **0.25.0** and can be found on GitHub at: <https://github.com/call/calld/tree/0.25.0>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1868,19 +1868,19 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
          Set version to 0.25.0
 
-This release incorporates significant improvements which may not warrant separate entries but are incorporated into the feature changes as summary lines. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/develop) for more information.
+This release incorporates significant improvements which may not warrant separate entries but are incorporated into the feature changes as summary lines. Please refer to the [Git commit history](https://github.com/call/calld/commits/develop) for more information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
 A minimum of 4GB of RAM are required to successfully compile this release.
 
-The minimum supported version of Boost is v1.55. You **must** upgrade to this release or later to successfully compile this release. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.55. You **must** upgrade to this release or later to successfully compile this release. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **Major Features**
 
--   Option to compress the NodeStore db. More speed, less space. See [`rippled-example.cfg`](https://github.com/ripple/rippled/blob/0.25.0/doc/rippled-example.cfg#L691)
+-   Option to compress the NodeStore db. More speed, less space. See [`calld-example.cfg`](https://github.com/call/calld/blob/0.25.0/doc/calld-example.cfg#L691)
 
 **Improvements**
 
@@ -1903,7 +1903,7 @@ The minimum supported version of Boost is v1.55. You **must** upgrade to this re
 
 ## Version 0.24.0
 
-rippled version 0.24.0 has been released. The repository tag is **0.24.0** and can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.24.0>
+calld version 0.24.0 has been released. The repository tag is **0.24.0** and can be found on GitHub at: <https://github.com/call/calld/tree/0.24.0>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1913,15 +1913,15 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
          Set version to 0.24.0
 
-This release incorporates significant improvements which may not warrant separate entries but are incorporated into the feature changes as summary lines. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/develop) for more information.
+This release incorporates significant improvements which may not warrant separate entries but are incorporated into the feature changes as summary lines. Please refer to the [Git commit history](https://github.com/call/calld/commits/develop) for more information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
 A minimum of 4GB of RAM are required to successfully compile this release.
 
-The minimum supported version of Boost is v1.55. You **must** upgrade to this release or later to successfully compile this release. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.55. You **must** upgrade to this release or later to successfully compile this release. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **Improvements**
 
@@ -1932,7 +1932,7 @@ The minimum supported version of Boost is v1.55. You **must** upgrade to this re
 **Bug Fixes**
 
 -   Fix AccountSet for canonical transactions.
--   The RPC [sign](https://ripple.com/build/rippled-apis/#sign) command will now sign with either an account's master or regular secret key.
+-   The RPC [sign](https://call.com/build/calld-apis/#sign) command will now sign with either an account's master or regular secret key.
 -   Fixed out-of-order network initialization.
 -   Improved efficiency of pathfinding for transactions.
 -   Reworked timing of ledger validation and related operations to fix race condition against the network.
@@ -1943,7 +1943,7 @@ The minimum supported version of Boost is v1.55. You **must** upgrade to this re
 
 ## Version 0.23.0
 
-rippled version 0.23.0 has been released. The repository tag is **0.23.0** and can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.23.0>
+calld version 0.23.0 has been released. The repository tag is **0.23.0** and can be found on GitHub at: <https://github.com/call/calld/tree/0.23.0>
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
@@ -1953,15 +1953,15 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
          Set version to 0.23.0
 
-This release incorporates significant improvements which may not warrant separate entries but are incorporated into the feature changes as summary lines. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/develop) for more information.
+This release incorporates significant improvements which may not warrant separate entries but are incorporated into the feature changes as summary lines. Please refer to the [Git commit history](https://github.com/call/calld/commits/develop) for more information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
 A minimum of 4GB of RAM are required to successfully compile this release.
 
-The minimum supported version of Boost is v1.55. You **must** upgrade to this release or later to successfully compile this release. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of Boost is v1.55. You **must** upgrade to this release or later to successfully compile this release. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **Improvements**
 
@@ -1994,21 +1994,21 @@ The minimum supported version of Boost is v1.55. You **must** upgrade to this re
 
 ## Version 0.22.0
 
-rippled version 0.22.0 has been released. This release is currently the tip of the **develop/** branch and can be found on GitHub at: <https://github.com/ripple/rippled/tree/develop> The tag is **0.22.0** and can be found on GitHub at: <https://github.com/ripple/rippled/tree/0.22.0>
+calld version 0.22.0 has been released. This release is currently the tip of the **develop/** branch and can be found on GitHub at: <https://github.com/call/calld/tree/develop> The tag is **0.22.0** and can be found on GitHub at: <https://github.com/call/calld/tree/0.22.0>
 
 **This is a critical release affecting transaction processing. All partners should update immediately.**
 
 Prior to building, please confirm you have the correct source tree with the **git log** command. The first log entry should be the change setting the version:
 
-This release incorporates significant improvements which may not warrant separate entries but are incorporated into the feature changes as summary lines. Please refer to the [Git commit history](https://github.com/ripple/rippled/commits/develop) for more information.
+This release incorporates significant improvements which may not warrant separate entries but are incorporated into the feature changes as summary lines. Please refer to the [Git commit history](https://github.com/call/calld/commits/develop) for more information.
 
 **Toolchain support**
 
-The minimum supported version of GCC used to compile rippled is v4.8. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
+The minimum supported version of GCC used to compile calld is v4.8. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Ubuntu_versions_older_than_13.10_:_Install_gcc_4.8) if you have not upgraded already.
 
 A minimum of 4GB of RAM are required to successfully compile this release.
 
-The minimum supported version of libBOOST is v1.55. You **must** upgrade to this release or later to successfully compile this release. Please follow [these instructions](https://wiki.ripple.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
+The minimum supported version of libBOOST is v1.55. You **must** upgrade to this release or later to successfully compile this release. Please follow [these instructions](https://wiki.call.com/Ubuntu_build_instructions#Install_Boost) if you have not upgraded already.
 
 **Key release features**
 
@@ -2059,7 +2059,7 @@ The minimum supported version of libBOOST is v1.55. You **must** upgrade to this
 
 ## Version 0.21.0
 
-rippled version 0.21.0 has been released. This release is currently the tip of the **develop/** branch and can be found on GitHub at [1](https://github.com/ripple/rippled/tree/develop). The tag is **0.21.0-rc2** and can be found on GitHub at [2](https://github.com/ripple/rippled/tree/0.21.0-rc2).
+calld version 0.21.0 has been released. This release is currently the tip of the **develop/** branch and can be found on GitHub at [1](https://github.com/call/calld/tree/develop). The tag is **0.21.0-rc2** and can be found on GitHub at [2](https://github.com/call/calld/tree/0.21.0-rc2).
 
 **This is a critical release. All partners should update immediately.**
 
@@ -2081,11 +2081,11 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
 **Toolchain support**
 
-As with the previous release, the minimum supported version of GCC used to compile rippled is v4.8.
+As with the previous release, the minimum supported version of GCC used to compile calld is v4.8.
 
 **Significant Changes**
 
--   Pairwise no-ripple
+-   Pairwise no-call
     -   Permits trust lines to be protected from rippling
     -   Operates on protected pairs
 -   Performance improvements
@@ -2107,11 +2107,11 @@ RC2 fixed a bug that caused crashes in order processing and a bug in parsing ord
 
 **Notice**
 
-If you are upgrading from version 0.12 or earlier of rippled, these next sections apply to you because the format of the *rippled.cfg* file changed around that time. If you have upgraded since that time and you have applied the configuration file fixes, you can safely ignore them.
+If you are upgrading from version 0.12 or earlier of calld, these next sections apply to you because the format of the *calld.cfg* file changed around that time. If you have upgraded since that time and you have applied the configuration file fixes, you can safely ignore them.
 
 **Validators**
 
-Ripple Labs is now running five validators. You can use this template for your *validators.txt* file (or place this in your config file):
+Call Labs is now running five validators. You can use this template for your *validators.txt* file (or place this in your config file):
 
      [validators]
      n9KPnVLn7ewVzHvn218DcEYsnWLzKerTDwhpofhk4Ym1RUq4TeGw    RIP1
@@ -2120,7 +2120,7 @@ Ripple Labs is now running five validators. You can use this template for your *
      n9LeQeDcLDMZKjx1TZtrXoLBLo5q1bR1sUQrWG7tEADFU6R27UBp    RIP4
      n9KF6RpvktjNs2MDBkmxpJbup4BKrKeMKDXPhaXkq7cKTwLmWkFr    RIP5
 
-You should also raise your quorum to at least three by putting the following in your *rippled.cfg* file:
+You should also raise your quorum to at least three by putting the following in your *calld.cfg* file:
 
      [validation_quorum]
      3
@@ -2129,7 +2129,7 @@ If you are a validator, you should set your quorum to at least four.
 
 **IPs**
 
-A list of Ripple Labs server IP addresses can be found by resolving **r.ripple.com**. You can also add this to your *rippled.cfg* file to ensure you always have several peer connections to Ripple Labs servers:
+A list of Call Labs server IP addresses can be found by resolving **r.call.com**. You can also add this to your *calld.cfg* file to ensure you always have several peer connections to Call Labs servers:
 
      [ips]
      184.73.226.101 51235
@@ -2143,11 +2143,11 @@ A list of Ripple Labs server IP addresses can be found by resolving **r.ripple.c
 
 RocksDB is based on LevelDB with improvements from Facebook and the community. Preliminary tests show that it stalls less often than HyperLevelDB for our use cases.
 
-If you are switching over from an existing back end, you have two options. You can remove your old database and let rippled recreate it as it re-syncs, or you can import your old database into the new one.
+If you are switching over from an existing back end, you have two options. You can remove your old database and let calld recreate it as it re-syncs, or you can import your old database into the new one.
 
-To remove your old database, make sure the server is shut down (\`rippled stop\`). Remove the *db/ledger.db* and *db/transaction.db* files. Remove all the files in your back end store directory (*db/hashnode* by default). Then change your configuration file to use the RocksDB back end and restart.
+To remove your old database, make sure the server is shut down (\`calld stop\`). Remove the *db/ledger.db* and *db/transaction.db* files. Remove all the files in your back end store directory (*db/hashnode* by default). Then change your configuration file to use the RocksDB back end and restart.
 
-To import your old database, start by shutting the server down. Then modify the configuration file by renaming your *\[node\_db\]* stanza to *\[import\_db\]*. Create a new *\[node\_db\]* stanza and specify a RocksDB back end with a different directory. Start the server with the command **rippled --import**. When the import finishes gracefully stop the server (\`rippled stop\`). Please wait for rippled to stop on its own because it can take several minutes for it to shut down after an import. Remove the old database, put the new database into place, remove the *\[import\_db\]* section, change the *\[node\_db\]* section to refer to the final location, and restart the server.
+To import your old database, start by shutting the server down. Then modify the configuration file by renaming your *\[node\_db\]* stanza to *\[import\_db\]*. Create a new *\[node\_db\]* stanza and specify a RocksDB back end with a different directory. Start the server with the command **calld --import**. When the import finishes gracefully stop the server (\`calld stop\`). Please wait for calld to stop on its own because it can take several minutes for it to shut down after an import. Remove the old database, put the new database into place, remove the *\[import\_db\]* section, change the *\[node\_db\]* section to refer to the final location, and restart the server.
 
 The recommended RocksDB configuration is:
 
@@ -2162,7 +2162,7 @@ The recommended RocksDB configuration is:
 
 **Configuring your Node DB**
 
-You need to configure the [NodeBackEnd](https://wiki.ripple.com/NodeBackEnd) that you want the server to use. See above for an example RocksDB configuration.
+You need to configure the [NodeBackEnd](https://wiki.call.com/NodeBackEnd) that you want the server to use. See above for an example RocksDB configuration.
 
 -   **Note**: HyperLevelDB and RocksDB are not available on Windows platform.
 
@@ -2171,7 +2171,7 @@ You need to configure the [NodeBackEnd](https://wiki.ripple.com/NodeBackEnd) tha
 
 ## Version 0.20.1
 
-rippled version 0.20.1 has been released. This release is currently the tip of the [develop](https://github.com/ripple/rippled/tree/develop) branch and the tag is [0.20.1](https://github.com/ripple/rippled/tree/0.20.1).
+calld version 0.20.1 has been released. This release is currently the tip of the [develop](https://github.com/call/calld/tree/develop) branch and the tag is [0.20.1](https://github.com/call/calld/tree/0.20.1).
 
 **This is a critical release. All partners should update immediately.**
 
@@ -2185,26 +2185,26 @@ Prior to building, please confirm you have the correct source tree with the **gi
 
 **Major Partner Issues Fixed**
 
--   rippled will crash randomly.
-    -   Entries in the three parts of the order book are missing or do not match. In such a case, rippled will crash.
+-   calld will crash randomly.
+    -   Entries in the three parts of the order book are missing or do not match. In such a case, calld will crash.
 -   Server loses sync randomly.
-    -   This is due to rippled restarting after it crashes. That the server restarted is not obvious and appears to be something else.
+    -   This is due to calld restarting after it crashes. That the server restarted is not obvious and appears to be something else.
 -   Server goes 'offline' randomly.
-    -   This is due to rippled restarting after it crashes. That the server restarted is not obvious and appears to be something else.
+    -   This is due to calld restarting after it crashes. That the server restarted is not obvious and appears to be something else.
 -   **complete\_ledgers** part of **server\_info** output says "None".
-    -   This is due to rippled restarting and reconstructing the ledger after it crashes.
-    -   If the node back end is corrupted or has been moved without being renamed in rippled.cfg, this can cause rippled to crash and restart.
+    -   This is due to calld restarting and reconstructing the ledger after it crashes.
+    -   If the node back end is corrupted or has been moved without being renamed in calld.cfg, this can cause calld to crash and restart.
 
 **Toolchain support**
 
-Starting with this release, the minimum supported version of GCC used to compile rippled is v4.8.
+Starting with this release, the minimum supported version of GCC used to compile calld is v4.8.
 
 **Significant Changes**
 
 -   Don't log StatsD messages to the console by default.
 -   Fixed missing jtACCEPT job limit.
 -   Removed dead code to clean up the codebase.
--   Reset liquidity before retrying rippleCalc.
+-   Reset liquidity before retrying callCalc.
 -   Made improvements becuase items in SHAMaps are immutable.
 -   Multiple pathfinding bugfixes:
     -   Make each path request track whether it needs updating.
@@ -2217,8 +2217,8 @@ Starting with this release, the minimum supported version of GCC used to compile
 -   Refactored codebase to make it C++11 compliant.
 -   Multiple fixes to ledger acquisition, cleanup, and logging.
 -   Made multiple improvements to WebSockets server.
--   Added Debian-style initscript (doc/rippled.init).
--   Updated default config file (doc/rippled-example.cfg) to reflect best practices.
+-   Added Debian-style initscript (doc/calld.init).
+-   Updated default config file (doc/calld-example.cfg) to reflect best practices.
 -   Made changes to SHAMapTreeNode and visitLeavesInternal to conserve memory.
 -   Implemented new fee schedule:
     -   Transaction fee: 10 drops
@@ -2231,11 +2231,11 @@ Starting with this release, the minimum supported version of GCC used to compile
 
 **Notice**
 
-If you are upgrading from version 0.12 or earlier of rippled, these next sections apply to you because the format of the *rippled.cfg* file changed around that time. If you have upgraded since that time and you have applied the configuration file fixes, you can safely ignore them.
+If you are upgrading from version 0.12 or earlier of calld, these next sections apply to you because the format of the *calld.cfg* file changed around that time. If you have upgraded since that time and you have applied the configuration file fixes, you can safely ignore them.
 
 **Validators**
 
-Ripple Labs is now running five validators. You can use this template for your *validators.txt* file (or place this in your config file):
+Call Labs is now running five validators. You can use this template for your *validators.txt* file (or place this in your config file):
 
     [validators]
     n9KPnVLn7ewVzHvn218DcEYsnWLzKerTDwhpofhk4Ym1RUq4TeGw    RIP1
@@ -2244,7 +2244,7 @@ Ripple Labs is now running five validators. You can use this template for your *
     n9LeQeDcLDMZKjx1TZtrXoLBLo5q1bR1sUQrWG7tEADFU6R27UBp    RIP4
     n9KF6RpvktjNs2MDBkmxpJbup4BKrKeMKDXPhaXkq7cKTwLmWkFr    RIP5
 
-You should also raise your quorum to at least three by putting the following in your *rippled.cfg* file:
+You should also raise your quorum to at least three by putting the following in your *calld.cfg* file:
 
     [validation_quorum]
     3
@@ -2253,7 +2253,7 @@ If you are a validator, you should set your quorum to at least four.
 
 **IPs**
 
-A list of Ripple Labs server IP addresses can be found by resolving **r.ripple.com**. You can also add this to your *rippled.cfg* file to ensure you always have several peer connections to Ripple Labs servers:
+A list of Call Labs server IP addresses can be found by resolving **r.call.com**. You can also add this to your *calld.cfg* file to ensure you always have several peer connections to Call Labs servers:
 
     [ips]
     54.225.112.220 51235
@@ -2267,11 +2267,11 @@ A list of Ripple Labs server IP addresses can be found by resolving **r.ripple.c
 
 RocksDB is based on LevelDB with improvements from Facebook and the community. Preliminary tests show that it stalls less often than HyperLevelDB for our use cases.
 
-If you are switching over from an existing back end, you have two options. You can remove your old database and let rippled recreate it as it re-syncs, or you can import your old database into the new one.
+If you are switching over from an existing back end, you have two options. You can remove your old database and let calld recreate it as it re-syncs, or you can import your old database into the new one.
 
-To remove your old database, make sure the server is shut down (`rippled stop`). Remove the *db/ledger.db* and *db/transaction.db* files. Remove all the files in your back end store directory (*db/hashnode* by default). Then change your configuration file to use the RocksDB back end and restart.
+To remove your old database, make sure the server is shut down (`calld stop`). Remove the *db/ledger.db* and *db/transaction.db* files. Remove all the files in your back end store directory (*db/hashnode* by default). Then change your configuration file to use the RocksDB back end and restart.
 
-To import your old database, start by shutting the server down. Then modify the configuration file by renaming your *\[node\_db\]* stanza to *\[import\_db\]*. Create a new *\[node\_db\]* stanza and specify a RocksDB back end with a different directory. Start the server with the command **rippled --import**. When the import finishes gracefully stop the server (`rippled stop`). Please wait for rippled to stop on its own because it can take several minutes for it to shut down after an import. Remove the old database, put the new database into place, remove the *\[import\_db\]* section, change the *\[node\_db\]* section to refer to the final location, and restart the server.
+To import your old database, start by shutting the server down. Then modify the configuration file by renaming your *\[node\_db\]* stanza to *\[import\_db\]*. Create a new *\[node\_db\]* stanza and specify a RocksDB back end with a different directory. Start the server with the command **calld --import**. When the import finishes gracefully stop the server (`calld stop`). Please wait for calld to stop on its own because it can take several minutes for it to shut down after an import. Remove the old database, put the new database into place, remove the *\[import\_db\]* section, change the *\[node\_db\]* section to refer to the final location, and restart the server.
 
 The recommended RocksDB configuration is:
 
@@ -2286,7 +2286,7 @@ The recommended RocksDB configuration is:
 
 **Configuring your Node DB**
 
-You need to configure the [NodeBackEnd](https://wiki.ripple.com/NodeBackEnd) that you want the server to use. See above for an example RocksDB configuration.
+You need to configure the [NodeBackEnd](https://wiki.call.com/NodeBackEnd) that you want the server to use. See above for an example RocksDB configuration.
 
 -   **Note**: HyperLevelDB and RocksDB are not available on Windows platform.
 
@@ -2295,7 +2295,7 @@ You need to configure the [NodeBackEnd](https://wiki.ripple.com/NodeBackEnd) tha
 
 ## Version 0.19
 
-rippled version 0.19 has now been released. This release is currently the tip of the [release](https://github.com/ripple/rippled/tree/release) branch and the tag is [0.19.0](https://github.com/ripple/rippled/tree/0.19.0).
+calld version 0.19 has now been released. This release is currently the tip of the [release](https://github.com/call/calld/tree/release) branch and the tag is [0.19.0](https://github.com/call/calld/tree/0.19.0).
 
 Prior to building, please confirm you have the correct source tree with the `git log` command. The first log entry should be the change setting the version:
 
@@ -2315,7 +2315,7 @@ Prior to building, please confirm you have the correct source tree with the `git
 
 **Validators**
 
-Ripple Labs is now running five validators. You can use this template for your `validators.txt` file (or place this in your config file):
+Call Labs is now running five validators. You can use this template for your `validators.txt` file (or place this in your config file):
 
     [validators]
     n9KPnVLn7ewVzHvn218DcEYsnWLzKerTDwhpofhk4Ym1RUq4TeGw    RIP1
@@ -2324,7 +2324,7 @@ Ripple Labs is now running five validators. You can use this template for your `
     n9LeQeDcLDMZKjx1TZtrXoLBLo5q1bR1sUQrWG7tEADFU6R27UBp    RIP4
     n9KF6RpvktjNs2MDBkmxpJbup4BKrKeMKDXPhaXkq7cKTwLmWkFr    RIP5
 
-You should also raise your quorum to at least three by putting the following in your `rippled.cfg` file:
+You should also raise your quorum to at least three by putting the following in your `calld.cfg` file:
 
     [validation_quorum]
     3
@@ -2333,7 +2333,7 @@ If you are a validator, you should set your quorum to at least four.
 
 **IPs**
 
-A list of Ripple Labs server IP addresses can be found by resolving `r.ripple.com`. You can also add this to your `rippled.cfg` file to ensure you always have several peer connections to Ripple Labs servers:
+A list of Call Labs server IP addresses can be found by resolving `r.call.com`. You can also add this to your `calld.cfg` file to ensure you always have several peer connections to Call Labs servers:
 
     [ips]
     54.225.112.220 51235
@@ -2351,7 +2351,7 @@ If you are switching over from an existing back end, you have two choices. You c
 
 To remove your old database, make sure the server is shutdown. Remove the `db/ledger.db` and `db/transaction.db` files. Remove all the files in your back end store directory, `db/hashnode` by default. Then you can change your configuration file to use the RocksDB back end and restart.
 
-To import your old database, start by shutting the server down. Then modify the configuration file by renaming your `[node_db]` portion to `[import_db]`. Create a new `[node_db]` section specify a RocksDB back end and a different directory. Start the server with `rippled --import`. When the import finishes, stop the server (it can take several minutes to shut down after an import), remove the old database, put the new database into place, remove the `[import_db]` section, change the `[node_db]` section to refer to the final location, and restart the server.
+To import your old database, start by shutting the server down. Then modify the configuration file by renaming your `[node_db]` portion to `[import_db]`. Create a new `[node_db]` section specify a RocksDB back end and a different directory. Start the server with `calld --import`. When the import finishes, stop the server (it can take several minutes to shut down after an import), remove the old database, put the new database into place, remove the `[import_db]` section, change the `[node_db]` section to refer to the final location, and restart the server.
 
 The recommended RocksDB configuration is:
 
@@ -2366,7 +2366,7 @@ The recommended RocksDB configuration is:
 
 **Configuring your Node DB**
 
-You need to configure the [NodeBackEnd](https://wiki.ripple.com/NodeBackEnd) that you want the server to use. See above for an example RocksDB configuration.
+You need to configure the [NodeBackEnd](https://wiki.call.com/NodeBackEnd) that you want the server to use. See above for an example RocksDB configuration.
 
 -   **Note:** HyperLevelDB and RocksDB are not available on Windows platform.
 
@@ -2375,7 +2375,7 @@ You need to configure the [NodeBackEnd](https://wiki.ripple.com/NodeBackEnd) tha
 
 ## Version 0.16
 
-rippled version 0.16 has now been released. This release is currently the tip of the [master](https://github.com/ripple/rippled/tree/master) branch and the tag is [v0.16.0](https://github.com/ripple/rippled/tree/v0.16.0).
+calld version 0.16 has now been released. This release is currently the tip of the [master](https://github.com/call/calld/tree/master) branch and the tag is [v0.16.0](https://github.com/call/calld/tree/v0.16.0).
 
 Prior to building, please confirm you have the correct source tree with the `git log` command. The first log entry should be the change setting the version:
 
@@ -2392,13 +2392,13 @@ Prior to building, please confirm you have the correct source tree with the `git
 -   Ledger speed improvements
 -   Reduced memory consumption
 -   Improved server stability
--   rippled no longer throws and exception on exiting
+-   calld no longer throws and exception on exiting
 -   Better error reporting
--   Ripple-lib tests have been ported to use the Mocha testing framework
+-   Call-lib tests have been ported to use the Mocha testing framework
 
 **Validators**
 
-Ripple Labs is now running five validators. You can use this template for your `validators.txt` file:
+Call Labs is now running five validators. You can use this template for your `validators.txt` file:
 
     [validators]
     n9KPnVLn7ewVzHvn218DcEYsnWLzKerTDwhpofhk4Ym1RUq4TeGw    RIP1
@@ -2407,7 +2407,7 @@ Ripple Labs is now running five validators. You can use this template for your `
     n9LeQeDcLDMZKjx1TZtrXoLBLo5q1bR1sUQrWG7tEADFU6R27UBp    RIP4
     n9KF6RpvktjNs2MDBkmxpJbup4BKrKeMKDXPhaXkq7cKTwLmWkFr    RIP5
 
-You should also raise your quorum to at least three by putting the following in your `rippled.cfg` file:
+You should also raise your quorum to at least three by putting the following in your `calld.cfg` file:
 
     [validation_quorum]
     3
@@ -2416,7 +2416,7 @@ If you are a validator, you should set your quorum to at least four.
 
 **IPs**
 
-A list of Ripple Labs server IP addresses can be found by resolving `r.ripple.com`. You can also add this to your `rippled.cfg` file to ensure you always have several peer connections to Ripple Labs servers:
+A list of Call Labs server IP addresses can be found by resolving `r.call.com`. You can also add this to your `calld.cfg` file to ensure you always have several peer connections to Call Labs servers:
 
     [ips]
     54.225.112.220 51235
@@ -2428,7 +2428,7 @@ A list of Ripple Labs server IP addresses can be found by resolving `r.ripple.co
 
 **Node DB**
 
-You need to configure the [NodeBackEnd](https://wiki.ripple.com/NodeBackEnd) that you want the server to use. In most cases, that will mean adding this to your configuration file:
+You need to configure the [NodeBackEnd](https://wiki.call.com/NodeBackEnd) that you want the server to use. In most cases, that will mean adding this to your configuration file:
 
     [node_db]
     type=HyperLevelDB
@@ -2447,7 +2447,7 @@ None known
 
 ## Version 0.14
 
-rippled version 0.14 has now been released. This release is currently the tip of the [master](https://github.com/ripple/rippled/tree/master) branch and the tag is [v0.12.0](https://github.com/ripple/rippled/tree/v0.14.0).
+calld version 0.14 has now been released. This release is currently the tip of the [master](https://github.com/call/calld/tree/master) branch and the tag is [v0.12.0](https://github.com/call/calld/tree/v0.14.0).
 
 Prior to building, please confirm you have the correct source tree with the `git log` command. The first log entry should be the change setting the version:
 
@@ -2464,13 +2464,13 @@ Prior to building, please confirm you have the correct source tree with the `git
 -   Ledger speed improvements
 -   Reduced memory consumption
 -   Improved server stability
--   rippled no longer throws and exception on exiting
+-   calld no longer throws and exception on exiting
 -   Better error reporting
--   Ripple-lib tests have been ported to use the Mocha testing framework
+-   Call-lib tests have been ported to use the Mocha testing framework
 
 **Validators**
 
-Ripple Labs is now running five validators. You can use this template for your `validators.txt` file:
+Call Labs is now running five validators. You can use this template for your `validators.txt` file:
 
     [validators]
     n9KPnVLn7ewVzHvn218DcEYsnWLzKerTDwhpofhk4Ym1RUq4TeGw    RIP1
@@ -2479,7 +2479,7 @@ Ripple Labs is now running five validators. You can use this template for your `
     n9LeQeDcLDMZKjx1TZtrXoLBLo5q1bR1sUQrWG7tEADFU6R27UBp    RIP4
     n9KF6RpvktjNs2MDBkmxpJbup4BKrKeMKDXPhaXkq7cKTwLmWkFr    RIP5
 
-You should also raise your quorum to at least three by putting the following in your `rippled.cfg` file:
+You should also raise your quorum to at least three by putting the following in your `calld.cfg` file:
 
     [validation_quorum]
     3
@@ -2488,7 +2488,7 @@ If you are a validator, you should set your quorum to at least four.
 
 **IPs**
 
-A list of Ripple Labs server IP addresses can be found by resolving `r.ripple.com`. You can also add this to your `rippled.cfg` file to ensure you always have several peer connections to Ripple Labs servers:
+A list of Call Labs server IP addresses can be found by resolving `r.call.com`. You can also add this to your `calld.cfg` file to ensure you always have several peer connections to Call Labs servers:
 
     [ips]
     54.225.112.220 51235
@@ -2500,7 +2500,7 @@ A list of Ripple Labs server IP addresses can be found by resolving `r.ripple.co
 
 **Node DB**
 
-You need to configure the [NodeBackEnd](https://wiki.ripple.com/NodeBackEnd) that you want the server to use. In most cases, that will mean adding this to your configuration file:
+You need to configure the [NodeBackEnd](https://wiki.call.com/NodeBackEnd) that you want the server to use. In most cases, that will mean adding this to your configuration file:
 
     [node_db]
     type=HyperLevelDB
@@ -2519,7 +2519,7 @@ None known
 
 ## Version 0.12
 
-rippled version 0.12 has now been released. This release is currently the tip of the [master branch](https://github.com/ripple/rippled/tree/master) and can be found on GitHub. The tag is [v0.12.0](https://github.com/ripple/rippled/tree/v0.12.0).
+calld version 0.12 has now been released. This release is currently the tip of the [master branch](https://github.com/call/calld/tree/master) and can be found on GitHub. The tag is [v0.12.0](https://github.com/call/calld/tree/v0.12.0).
 
 Prior to building, please confirm you have the correct source tree with the `git log` command. The first log entry should be the change setting the version:
 
@@ -2533,7 +2533,7 @@ Prior to building, please confirm you have the correct source tree with the `git
 
 -   Server Showing "Offline"
 
-This issue was caused by LevelDB periodically compacting its internal data structure. While compacting, rippled's processing would stall causing the node to lose sync with the rest of the network. This issue was solved by switching from LevelDB to HyperLevelDB. rippled operators will need to change their ripple.cfg file. See below for configuration details.
+This issue was caused by LevelDB periodically compacting its internal data structure. While compacting, calld's processing would stall causing the node to lose sync with the rest of the network. This issue was solved by switching from LevelDB to HyperLevelDB. calld operators will need to change their call.cfg file. See below for configuration details.
 
 -   Premature Validation of Transactions
 
@@ -2541,7 +2541,7 @@ On rare occasions, a transaction would show as locally validated before the full
 
 -   Missing Ledgers
 
-Occasionally, some rippled servers would fail to fetch all ledgers. This left gaps in the local history and caused some API calls to report incomplete results. The ledger fetch code was rewritten to both prevent this and to repair any existing gaps.
+Occasionally, some calld servers would fail to fetch all ledgers. This left gaps in the local history and caused some API calls to report incomplete results. The ledger fetch code was rewritten to both prevent this and to repair any existing gaps.
 
 **Significant Changes**
 
@@ -2557,7 +2557,7 @@ Occasionally, some rippled servers would fail to fetch all ledgers. This left ga
 
 **Validators**
 
-Ripple Labs is now running five validators. You can use this template for your `validators.txt` file:
+Call Labs is now running five validators. You can use this template for your `validators.txt` file:
 
 <strike>
 
@@ -2570,7 +2570,7 @@ Ripple Labs is now running five validators. You can use this template for your `
 
 </strike>
 
-**Update April 2014** - Due to a vulnerability in OpenSSL the validator keys above have been cycled out, the five validators by RippleLabs use the following keys now:
+**Update April 2014** - Due to a vulnerability in OpenSSL the validator keys above have been cycled out, the five validators by CallLabs use the following keys now:
 
     [validators]
     n949f75evCHwgyP4fPVgaHqNHxUVN15PsJEZ3B3HnXPcPjcZAoy7     RL1
@@ -2579,7 +2579,7 @@ Ripple Labs is now running five validators. You can use this template for your `
     n9KiYM9CgngLvtRCQHZwgC2gjpdaZcCcbt3VboxiNFcKuwFVujzS     RL4
     n9LdgEtkmGB9E2h3K4Vp7iGUaKuq23Zr32ehxiU8FWY7xoxbWTSA     RL5
 
-You should also raise your quorum to at least three by putting the following in your `rippled.cfg` file:
+You should also raise your quorum to at least three by putting the following in your `calld.cfg` file:
 
     [validation_quorum]
     3
@@ -2588,7 +2588,7 @@ If you are a validator, you should set your quorum to at least four.
 
 **IPs**
 
-A list of Ripple Labs server IP addresses can be found by resolving `r.ripple.com`. You can also add this to your `rippled.cfg` file to ensure you always have several peer connections to Ripple Labs servers:
+A list of Call Labs server IP addresses can be found by resolving `r.call.com`. You can also add this to your `calld.cfg` file to ensure you always have several peer connections to Call Labs servers:
 
     [ips]
     54.225.112.220 51235
@@ -2600,7 +2600,7 @@ A list of Ripple Labs server IP addresses can be found by resolving `r.ripple.co
 
 **Node DB**
 
-You need to configure the [NodeBackEnd](https://wiki.ripple.com/NodeBackEnd) that you want the server to use. In most cases, that will mean adding this to your configuration file:
+You need to configure the [NodeBackEnd](https://wiki.call.com/NodeBackEnd) that you want the server to use. In most cases, that will mean adding this to your configuration file:
 
     [node_db]
     type=HyperLevelDB

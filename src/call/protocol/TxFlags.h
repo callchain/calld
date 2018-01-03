@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -67,7 +67,7 @@ const std::uint32_t asfDisableMaster       = 4;
 const std::uint32_t asfAccountTxnID        = 5;
 const std::uint32_t asfNoFreeze            = 6;
 const std::uint32_t asfGlobalFreeze        = 7;
-const std::uint32_t asfDefaultRipple       = 8;
+const std::uint32_t asfDefaultCall       = 8;
 
 // OfferCreate flags:
 const std::uint32_t tfPassive              = 0x00010000;
@@ -77,18 +77,18 @@ const std::uint32_t tfSell                 = 0x00080000;
 const std::uint32_t tfOfferCreateMask      = ~ (tfUniversal | tfPassive | tfImmediateOrCancel | tfFillOrKill | tfSell);
 
 // Payment flags:
-const std::uint32_t tfNoRippleDirect       = 0x00010000;
+const std::uint32_t tfNoCallDirect       = 0x00010000;
 const std::uint32_t tfPartialPayment       = 0x00020000;
 const std::uint32_t tfLimitQuality         = 0x00040000;
-const std::uint32_t tfPaymentMask          = ~ (tfUniversal | tfPartialPayment | tfLimitQuality | tfNoRippleDirect);
+const std::uint32_t tfPaymentMask          = ~ (tfUniversal | tfPartialPayment | tfLimitQuality | tfNoCallDirect);
 
 // TrustSet flags:
 const std::uint32_t tfSetfAuth             = 0x00010000;
-const std::uint32_t tfSetNoRipple          = 0x00020000;
-const std::uint32_t tfClearNoRipple        = 0x00040000;
+const std::uint32_t tfSetNoCall          = 0x00020000;
+const std::uint32_t tfClearNoCall        = 0x00040000;
 const std::uint32_t tfSetFreeze            = 0x00100000;
 const std::uint32_t tfClearFreeze          = 0x00200000;
-const std::uint32_t tfTrustSetMask         = ~ (tfUniversal | tfSetfAuth | tfSetNoRipple | tfClearNoRipple
+const std::uint32_t tfTrustSetMask         = ~ (tfUniversal | tfSetfAuth | tfSetNoCall | tfClearNoCall
                                              | tfSetFreeze | tfClearFreeze);
 
 // EnableAmendment flags:

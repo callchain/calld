@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -19,26 +19,26 @@
 
 #include <BeastConfig.h>
 #include <call/app/main/Application.h>
-#include <call/app/paths/RippleState.h>
+#include <call/app/paths/CallState.h>
 #include <call/protocol/STAmount.h>
 #include <cstdint>
 #include <memory>
 
 namespace call {
 
-RippleState::pointer
-RippleState::makeItem (
+CallState::pointer
+CallState::makeItem (
     AccountID const& accountID,
         std::shared_ptr<SLE const> sle)
 {
     // VFALCO Does this ever happen in practice?
     if (! sle || sle->getType () != ltCALL_STATE)
         return {};
-    return std::make_shared<RippleState>(
+    return std::make_shared<CallState>(
         std::move(sle), accountID);
 }
 
-RippleState::RippleState (
+CallState::CallState (
     std::shared_ptr<SLE const>&& sle,
         AccountID const& viewAccount)
     : sle_ (std::move(sle))
@@ -59,7 +59,7 @@ RippleState::RippleState (
         mBalance.negate ();
 }
 
-Json::Value RippleState::getJson (int)
+Json::Value CallState::getJson (int)
 {
     Json::Value ret (Json::objectValue);
     ret["low_id"] = to_string (mLowID);
@@ -67,16 +67,16 @@ Json::Value RippleState::getJson (int)
     return ret;
 }
 
-std::vector <RippleState::pointer>
-getRippleStateItems (AccountID const& accountID,
+std::vector <CallState::pointer>
+getCallStateItems (AccountID const& accountID,
     ReadView const& view)
 {
-    std::vector <RippleState::pointer> items;
+    std::vector <CallState::pointer> items;
     forEachItem(view, accountID,
         [&items,&accountID](
         std::shared_ptr<SLE const> const&sleCur)
         {
-             auto ret = RippleState::makeItem (accountID, sleCur);
+             auto ret = CallState::makeItem (accountID, sleCur);
              if (ret)
                 items.push_back (ret);
         });

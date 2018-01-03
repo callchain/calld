@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -341,7 +341,7 @@ public:
         return *bundle_.timeKeeper;
     }
 
-    /** Returns the current Ripple Network Time
+    /** Returns the current Call Network Time
 
         @note This is manually advanced when ledgers
               close or by callers.
@@ -629,7 +629,7 @@ public:
 
 private:
     void
-    fund (bool setDefaultRipple,
+    fund (bool setDefaultCall,
         STAmount const& amount,
             Account const& account);
 
@@ -669,7 +669,7 @@ public:
             The account must not already exist
 
         Effects:
-            The asfDefaultRipple on the account is set,
+            The asfDefaultCall on the account is set,
             and the sequence number is incremented, unless
             the account is wrapped with a call to nocall.
 

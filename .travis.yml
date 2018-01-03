@@ -78,6 +78,6 @@ notifications:
     false
   irc:
     channels:
-      - "chat.freenode.net#ripple-dev"
+      - "chat.freenode.net#call-dev"
 
 dist: precise

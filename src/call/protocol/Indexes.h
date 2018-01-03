@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -82,10 +82,10 @@ uint256
 getTicketIndex (AccountID const& account, std::uint32_t uSequence);
 
 uint256
-getRippleStateIndex (AccountID const& a, AccountID const& b, Currency const& currency);
+getCallStateIndex (AccountID const& a, AccountID const& b, Currency const& currency);
 
 uint256
-getRippleStateIndex (AccountID const& a, Issue const& issue);
+getCallStateIndex (AccountID const& a, Issue const& issue);
 
 uint256
 getSignerListIndex (AccountID const& account);

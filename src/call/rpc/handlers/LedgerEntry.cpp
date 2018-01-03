@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012-2014 Ripple Labs Inc.
+    Copyright (c) 2012-2014 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -138,17 +138,17 @@ Json::Value doLedgerEntry (RPC::Context& context)
     else if (context.params.isMember (jss::call_state))
     {
         Currency         uCurrency;
-        Json::Value     jvRippleState   = context.params[jss::call_state];
+        Json::Value     jvCallState   = context.params[jss::call_state];
 
-        if (!jvRippleState.isObject ()
-            || !jvRippleState.isMember (jss::currency)
-            || !jvRippleState.isMember (jss::accounts)
-            || !jvRippleState[jss::accounts].isArray ()
-            || 2 != jvRippleState[jss::accounts].size ()
-            || !jvRippleState[jss::accounts][0u].isString ()
-            || !jvRippleState[jss::accounts][1u].isString ()
-            || (jvRippleState[jss::accounts][0u].asString ()
-                == jvRippleState[jss::accounts][1u].asString ())
+        if (!jvCallState.isObject ()
+            || !jvCallState.isMember (jss::currency)
+            || !jvCallState.isMember (jss::accounts)
+            || !jvCallState[jss::accounts].isArray ()
+            || 2 != jvCallState[jss::accounts].size ()
+            || !jvCallState[jss::accounts][0u].isString ()
+            || !jvCallState[jss::accounts][1u].isString ()
+            || (jvCallState[jss::accounts][0u].asString ()
+                == jvCallState[jss::accounts][1u].asString ())
            )
         {
             jvResult[jss::error]   = "malformedRequest";
@@ -156,21 +156,21 @@ Json::Value doLedgerEntry (RPC::Context& context)
         else
         {
             auto const id1 = parseBase58<AccountID>(
-                jvRippleState[jss::accounts][0u].asString());
+                jvCallState[jss::accounts][0u].asString());
             auto const id2 = parseBase58<AccountID>(
-                jvRippleState[jss::accounts][1u].asString());
+                jvCallState[jss::accounts][1u].asString());
             if (! id1 || ! id2)
             {
                 jvResult[jss::error]   = "malformedAddress";
             }
             else if (!to_currency (uCurrency,
-                jvRippleState[jss::currency].asString()))
+                jvCallState[jss::currency].asString()))
             {
                 jvResult[jss::error]   = "malformedCurrency";
             }
             else
             {
-                uNodeIndex  = getRippleStateIndex(
+                uNodeIndex  = getCallStateIndex(
                     *id1, *id2, uCurrency);
             }
         }

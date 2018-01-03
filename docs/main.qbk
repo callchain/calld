@@ -1,5 +1,5 @@
 [/
-    Copyright (c) Copyright (c) 2012-2017 Ripple Labs Inc.
+    Copyright (c) Copyright (c) 2012-2017 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -14,14 +14,14 @@
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ]
 
-[library rippled
+[library calld
     [quickbook 1.6]
-    [copyright 2012 - 2017 Ripple Labs Inc.]
+    [copyright 2012 - 2017 Call Labs Inc.]
     [purpose C++ Library]
     [license
         Distributed under the ISC License
     ]
-    [authors [Labs, Ripple]]
+    [authors [Labs, Call]]
     [category template]
     [category generic]
 ]

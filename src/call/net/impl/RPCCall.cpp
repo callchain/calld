@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -124,7 +124,7 @@ private:
 
             if (strIssuer.length ())
             {
-                // Could confirm issuer is a valid Ripple address.
+                // Could confirm issuer is a valid Call address.
                 jvResult[jss::issuer]      = strIssuer;
             }
 
@@ -769,7 +769,7 @@ private:
     }
 
     // call_path_find <json> [<ledger>]
-    Json::Value parseRipplePathFind (Json::Value const& jvParams)
+    Json::Value parseCallPathFind (Json::Value const& jvParams)
     {
         Json::Reader    reader;
         Json::Value     jvRequest;
@@ -1035,7 +1035,7 @@ public:
             {   "print",                &RPCParser::parseAsIs,                  0,  1   },
     //      {   "profile",              &RPCParser::parseProfile,               1,  9   },
             {   "random",               &RPCParser::parseAsIs,                  0,  0   },
-            {   "call_path_find",     &RPCParser::parseRipplePathFind,        1,  2   },
+            {   "call_path_find",     &RPCParser::parseCallPathFind,        1,  2   },
             {   "sign",                 &RPCParser::parseSignSubmit,            2,  3   },
             {   "sign_for",             &RPCParser::parseSignFor,               3,  4   },
             {   "submit",               &RPCParser::parseSignSubmit,            1,  3   },

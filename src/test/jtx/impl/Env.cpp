@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -226,12 +226,12 @@ Env::le (Keylet const& k) const
 }
 
 void
-Env::fund (bool setDefaultRipple,
+Env::fund (bool setDefaultCall,
     STAmount const& amount,
         Account const& account)
 {
     memoize(account);
-    if (setDefaultRipple)
+    if (setDefaultCall)
     {
         // VFALCO NOTE Is the fee formula correct?
         apply(pay(master, account, amount +
@@ -239,11 +239,11 @@ Env::fund (bool setDefaultRipple,
                 jtx::seq(jtx::autofill),
                     fee(jtx::autofill),
                         sig(jtx::autofill));
-        apply(fset(account, asfDefaultRipple),
+        apply(fset(account, asfDefaultCall),
             jtx::seq(jtx::autofill),
                 fee(jtx::autofill),
                     sig(jtx::autofill));
-        require(flags(account, asfDefaultRipple));
+        require(flags(account, asfDefaultCall));
     }
     else
     {
@@ -251,7 +251,7 @@ Env::fund (bool setDefaultRipple,
             jtx::seq(jtx::autofill),
                 fee(jtx::autofill),
                     sig(jtx::autofill));
-        require(nflags(account, asfDefaultRipple));
+        require(nflags(account, asfDefaultCall));
     }
     require(jtx::balance(account, amount));
 }

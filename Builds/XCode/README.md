@@ -2,7 +2,7 @@
 
 ## Important
 
-We don't recommend macos for rippled production use at this time. Currently, the
+We don't recommend macos for calld production use at this time. Currently, the
 Ubuntu platform has received the highest level of quality assurance and
 testing. That said, macos is suitable for many development/test tasks.
 
@@ -11,7 +11,7 @@ testing. That said, macos is suitable for many development/test tasks.
 You'll need macos 10.8 or later
 
 To clone the source code repository, create branches for inspection or
-modification, build rippled using clang, and run the system tests you will need
+modification, build calld using clang, and run the system tests you will need
 these software components:
 
 * [XCode](https://developer.apple.com/xcode/)
@@ -59,7 +59,7 @@ For more info, see "Step 4: Install Git"
 
 **NOTE**: To gain full featured access to the
 [git-subtree](http://blogs.atlassian.com/2013/05/alternatives-to-git-submodule-git-subtree/)
-functionality used in the rippled repository, we suggest Git version 1.8.3.2 or
+functionality used in the calld repository, we suggest Git version 1.8.3.2 or
 later.
 
 ### Install Scons
@@ -71,7 +71,7 @@ brew install cmake
 ```
 
 `brew` will generally install the latest stable version of any package, which
-should satisfy the cmake minimum version requirement for rippled.
+should satisfy the cmake minimum version requirement for calld.
 
 ### Install Package Config
 
@@ -83,8 +83,8 @@ brew install pkg-config
 
 ### Build Google Protocol Buffers Compiler
 
-Building rippled on osx requires `protoc` version 2.5.x or 2.6.x (later versions
-do not work with rippled at this time).
+Building calld on osx requires `protoc` version 2.5.x or 2.6.x (later versions
+do not work with calld at this time).
 
 Download [this](https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.bz2)
 
@@ -125,17 +125,17 @@ Extract it to a folder, making note of where, open a terminal, then:
 Create an environment variable `BOOST_ROOT` in one of your `rc` files, pointing
 to the root of the extracted directory.
 
-### Clone the rippled repository
+### Clone the calld repository
 
 From the terminal
 
 ```
-git clone git@github.com:ripple/rippled.git
-cd rippled
+git clone git@github.com:call/calld.git
+cd calld
 ```
 
 Choose the master branch or one of the tagged releases listed on
-[GitHub](https://github.com/ripple/rippled/releases GitHub).
+[GitHub](https://github.com/call/calld/releases GitHub).
 
 ```
 git checkout master
@@ -176,8 +176,8 @@ build and debug.
 
 ## Unit Tests (Recommended)
 
-rippled builds a set of unit tests into the server executable. To run these unit
-tests after building, pass the `--unittest` option to the compiled `rippled`
+calld builds a set of unit tests into the server executable. To run these unit
+tests after building, pass the `--unittest` option to the compiled `calld`
 executable. The executable will exit after running the unit tests.
 
 

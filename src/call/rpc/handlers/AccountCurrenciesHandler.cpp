@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012-2014 Ripple Labs Inc.
+    Copyright (c) 2012-2014 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -19,7 +19,7 @@
 
 #include <BeastConfig.h>
 #include <call/app/main/Application.h>
-#include <call/app/paths/RippleState.h>
+#include <call/app/paths/CallState.h>
 #include <call/ledger/ReadView.h>
 #include <call/protocol/JsonFields.h>
 #include <call/rpc/Context.h>
@@ -58,7 +58,7 @@ Json::Value doAccountCurrencies (RPC::Context& context)
         return rpcError (rpcACT_NOT_FOUND);
 
     std::set<Currency> send, receive;
-    for (auto const& item : getRippleStateItems (accountID, *ledger))
+    for (auto const& item : getCallStateItems (accountID, *ledger))
     {
         auto const rspEntry = item.get();
 

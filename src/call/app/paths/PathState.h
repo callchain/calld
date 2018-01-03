@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -96,7 +96,7 @@ class PathState : public CountedObject <PathState>
     void setIndex (int i) { mIndex  = i; }
     int index() const { return mIndex; }
 
-    TER checkNoRipple (AccountID const& destinationAccountID,
+    TER checkNoCall (AccountID const& destinationAccountID,
                        AccountID const& sourceAccountID);
     void checkFreeze ();
 
@@ -119,7 +119,7 @@ class PathState : public CountedObject <PathState>
     }
 
 private:
-    TER checkNoRipple (
+    TER checkNoCall (
         AccountID const&, AccountID const&, AccountID const&, Currency const&);
 
     /** Clear path structures, and clear each node. */

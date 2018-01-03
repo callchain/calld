@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -22,7 +22,7 @@
 
 #include <call/app/ledger/Ledger.h>
 #include <call/app/paths/Pathfinder.h>
-#include <call/app/paths/RippleLineCache.h>
+#include <call/app/paths/CallLineCache.h>
 #include <call/json/json_value.h>
 #include <call/net/InfoSub.h>
 #include <call/protocol/types.h>
@@ -37,7 +37,7 @@ namespace call {
 // A pathfinding request submitted by a client
 // The request issuer must maintain a strong pointer
 
-class RippleLineCache;
+class CallLineCache;
 class PathRequests;
 
 // Return values from parseJson <0 = invalid, >0 = valid
@@ -88,7 +88,7 @@ public:
     void updateComplete ();
 
     std::pair<bool, Json::Value> doCreate (
-        std::shared_ptr<RippleLineCache> const&,
+        std::shared_ptr<CallLineCache> const&,
         Json::Value const&);
 
     Json::Value doClose (Json::Value const&);
@@ -96,18 +96,18 @@ public:
 
     // update jvStatus
     Json::Value doUpdate (
-        std::shared_ptr<RippleLineCache> const&, bool fast);
+        std::shared_ptr<CallLineCache> const&, bool fast);
     InfoSub::pointer getSubscriber ();
     bool hasCompletion ();
 
 private:
     using ScopedLockType = std::lock_guard <std::recursive_mutex>;
 
-    bool isValid (std::shared_ptr<RippleLineCache> const& crCache);
+    bool isValid (std::shared_ptr<CallLineCache> const& crCache);
     void setValid ();
 
     std::unique_ptr<Pathfinder> const&
-    getPathFinder(std::shared_ptr<RippleLineCache> const&,
+    getPathFinder(std::shared_ptr<CallLineCache> const&,
         hash_map<Currency, std::unique_ptr<Pathfinder>>&, Currency const&,
             STAmount const&, int const);
 
@@ -115,7 +115,7 @@ private:
         Returns false if the source currencies are inavlid.
     */
     bool
-    findPaths (std::shared_ptr<RippleLineCache> const&, int const, Json::Value&);
+    findPaths (std::shared_ptr<CallLineCache> const&, int const, Json::Value&);
 
     int parseJson (Json::Value const&);
 

@@ -1,0 +1,10 @@
+[Unit]
+Description=Call Peer-to-Peer Network Daemon
+ 
+[Service]
+Type=simple
+User=nobody
+ExecStart=/usr/bin/calld --conf=/etc/calld/calld.cfg
+ 
+[Install]
+WantedBy=multi-user.target

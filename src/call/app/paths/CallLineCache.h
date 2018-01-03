@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -21,7 +21,7 @@
 #define CALL_APP_PATHS_CALLLINECACHE_H_INCLUDED
 
 #include <call/app/ledger/Ledger.h>
-#include <call/app/paths/RippleState.h>
+#include <call/app/paths/CallState.h>
 #include <call/basics/hardened_hash.h>
 #include <cstddef>
 #include <memory>
@@ -31,11 +31,11 @@
 namespace call {
 
 // Used by Pathfinder
-class RippleLineCache
+class CallLineCache
 {
 public:
     explicit
-    RippleLineCache (
+    CallLineCache (
         std::shared_ptr <ReadView const> const& l);
 
     std::shared_ptr <ReadView const> const&
@@ -44,8 +44,8 @@ public:
         return mLedger;
     }
 
-    std::vector<RippleState::pointer> const&
-    getRippleLines (AccountID const& accountID);
+    std::vector<CallState::pointer> const&
+    getCallLines (AccountID const& accountID);
 
 private:
     std::mutex mLock;
@@ -91,7 +91,7 @@ private:
 
     hash_map <
         AccountKey,
-        std::vector <RippleState::pointer>,
+        std::vector <CallState::pointer>,
         AccountKey::Hash> lines_;
 };
 

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -46,7 +46,7 @@ public:
     {
         testcase ("strUnHex");
 
-        testUnHexSuccess ("526970706c6544", "RippleD");
+        testUnHexSuccess ("526970706c6544", "CallD");
         testUnHexSuccess ("A", "\n");
         testUnHexSuccess ("0A", "\n");
         testUnHexSuccess ("D0A", "\r\n");

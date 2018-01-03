@@ -1,4 +1,4 @@
-# This is a set of common functions and settings for rippled
+# This is a set of common functions and settings for calld
 # and derived products.
 
 ############################################################
@@ -502,13 +502,13 @@ macro(use_protobuf)
   endif()
   include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-  file(GLOB ripple_proto src/ripple/proto/*.proto)
-  PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ${ripple_proto})
+  file(GLOB call_proto src/call/proto/*.proto)
+  PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ${call_proto})
 
   if (WIN32)
     include_directories(src/protobuf/src
       src/protobuf/vsprojects
-      ${CMAKE_CURRENT_BINARY_DIR}/src/ripple/proto)
+      ${CMAKE_CURRENT_BINARY_DIR}/src/call/proto)
   endif()
 
 endmacro()
@@ -712,8 +712,8 @@ macro(setup_build_boilerplate)
 
   if (static)
     append_flags(CMAKE_EXE_LINKER_FLAGS -static-libstdc++)
-    # set_target_properties(ripple-libpp PROPERTIES LINK_SEARCH_START_STATIC 1)
-    # set_target_properties(ripple-libpp PROPERTIES LINK_SEARCH_END_STATIC 1)
+    # set_target_properties(call-libpp PROPERTIES LINK_SEARCH_START_STATIC 1)
+    # set_target_properties(call-libpp PROPERTIES LINK_SEARCH_END_STATIC 1)
   endif()
 endmacro()
 

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -32,7 +32,7 @@ namespace call {
 // liquidity. No need to revisit path in the future if all liquidity is used.
 //
 
-class RippleCalc; // for logging
+class CallCalc; // for logging
 
 void PathState::clear()
 {
@@ -272,12 +272,12 @@ TER PathState::pushNode (
             auto const& backNode = nodes_.back ();
             if (backNode.isAccount())
             {
-                auto sleRippleState = view().peek(
+                auto sleCallState = view().peek(
                     keylet::line(backNode.account_, node.account_, backNode.issue_.currency));
 
-                // A "RippleState" means a balance betweeen two accounts for a
+                // A "CallState" means a balance betweeen two accounts for a
                 // specific currency.
-                if (!sleRippleState)
+                if (!sleCallState)
                 {
                     JLOG (j_.trace())
                             << "pushNode: No credit line between "
@@ -309,9 +309,9 @@ TER PathState::pushNode (
                         resultCode   = terNO_ACCOUNT;
                     }
                     else if ((sleBck->getFieldU32 (sfFlags) & lsfRequireAuth) &&
-                             !(sleRippleState->getFieldU32 (sfFlags) &
+                             !(sleCallState->getFieldU32 (sfFlags) &
                                   (bHigh ? lsfHighAuth : lsfLowAuth)) &&
-                             sleRippleState->getFieldAmount(sfBalance) == zero)
+                             sleCallState->getFieldAmount(sfBalance) == zero)
                     {
                         JLOG (j_.warn())
                                 << "pushNode: delay: can't receive IOUs from "
@@ -673,7 +673,7 @@ void PathState::checkFreeze()
     Disallowed if 'second' set no call on [first]->[second] and
     [second]->[third]
 */
-TER PathState::checkNoRipple (
+TER PathState::checkNoCall (
     AccountID const& firstAccount,
     AccountID const& secondAccount,
     // This is the account whose constraints we are checking
@@ -692,12 +692,12 @@ TER PathState::checkNoRipple (
     }
     else if (
         sleIn->getFieldU32 (sfFlags) &
-            ((secondAccount > firstAccount) ? lsfHighNoRipple : lsfLowNoRipple) &&
+            ((secondAccount > firstAccount) ? lsfHighNoCall : lsfLowNoCall) &&
         sleOut->getFieldU32 (sfFlags) &
-            ((secondAccount > thirdAccount) ? lsfHighNoRipple : lsfLowNoRipple))
+            ((secondAccount > thirdAccount) ? lsfHighNoCall : lsfLowNoCall))
     {
         JLOG (j_.info())
-            << "Path violates noRipple constraint between "
+            << "Path violates noCall constraint between "
             << firstAccount << ", "
             << secondAccount << " and "
             << thirdAccount;
@@ -707,9 +707,9 @@ TER PathState::checkNoRipple (
     return terStatus;
 }
 
-// Check a fully-expanded path to make sure it doesn't violate no-Ripple
+// Check a fully-expanded path to make sure it doesn't violate no-Call
 // settings.
-TER PathState::checkNoRipple (
+TER PathState::checkNoCall (
     AccountID const& uDstAccountID,
     AccountID const& uSrcAccountID)
 {
@@ -732,7 +732,7 @@ TER PathState::checkNoRipple (
             }
             else
             {
-                terStatus = checkNoRipple (
+                terStatus = checkNoCall (
                     uSrcAccountID, nodes_[0].account_, uDstAccountID,
                     nodes_[0].issue_.currency);
             }
@@ -752,7 +752,7 @@ TER PathState::checkNoRipple (
         }
         else
         {
-            terStatus = checkNoRipple (
+            terStatus = checkNoCall (
                 uSrcAccountID, nodes_[0].account_, nodes_[1].account_,
                 nodes_[0].issue_.currency);
             if (terStatus != tesSUCCESS)
@@ -773,7 +773,7 @@ TER PathState::checkNoRipple (
         }
         else
         {
-            terStatus = checkNoRipple (
+            terStatus = checkNoCall (
                 nodes_[s].account_, nodes_[s+1].account_,
                 uDstAccountID, nodes_[s].issue_.currency);
             if (tesSUCCESS != terStatus)
@@ -797,7 +797,7 @@ TER PathState::checkNoRipple (
                 terStatus = temBAD_PATH;
                 return terStatus;
             }
-            terStatus = checkNoRipple (
+            terStatus = checkNoCall (
                 nodes_[i-1].account_, nodes_[i].account_, nodes_[i+1].account_,
                 currencyID);
             if (terStatus != tesSUCCESS)
@@ -810,7 +810,7 @@ TER PathState::checkNoRipple (
             nodes_[i -1].issue_.account != nodes_[i].account_)
         { // offer -> account -> account
             auto const& currencyID = nodes_[i].issue_.currency;
-            terStatus = checkNoRipple (
+            terStatus = checkNoCall (
                 nodes_[i-1].issue_.account, nodes_[i].account_, nodes_[i+1].account_,
                 currencyID);
             if (terStatus != tesSUCCESS)

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012-2014 Ripple Labs Inc.
+    Copyright (c) 2012-2014 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -19,7 +19,7 @@
 
 #include <BeastConfig.h>
 #include <call/app/main/Application.h>
-#include <call/app/paths/RippleState.h>
+#include <call/app/paths/CallState.h>
 #include <call/ledger/ReadView.h>
 #include <call/net/RPCErr.h>
 #include <call/protocol/ErrorCodes.h>
@@ -33,13 +33,13 @@ namespace call {
 
 struct VisitData
 {
-    std::vector <RippleState::pointer> items;
+    std::vector <CallState::pointer> items;
     AccountID const& accountID;
     bool hasPeer;
     AccountID const& raPeerAccount;
 };
 
-void addLine (Json::Value& jsonLines, RippleState const& line)
+void addLine (Json::Value& jsonLines, CallState const& line)
 {
     STAmount const& saBalance (line.getBalance ());
     STAmount const& saLimit (line.getLimit ());
@@ -62,9 +62,9 @@ void addLine (Json::Value& jsonLines, RippleState const& line)
         jPeer[jss::authorized] = true;
     if (line.getAuthPeer ())
         jPeer[jss::peer_authorized] = true;
-    if (line.getNoRipple ())
+    if (line.getNoCall ())
         jPeer[jss::no_call] = true;
-    if (line.getNoRipplePeer ())
+    if (line.getNoCallPeer ())
         jPeer[jss::no_call_peer] = true;
     if (line.getFreeze ())
         jPeer[jss::freeze] = true;
@@ -152,7 +152,7 @@ Json::Value doAccountLines (RPC::Context& context)
             return rpcError (rpcINVALID_PARAMS);
 
         // Caller provided the first line (startAfter), add it as first result
-        auto const line = RippleState::makeItem (accountID, sleLine);
+        auto const line = CallState::makeItem (accountID, sleLine);
         if (line == nullptr)
             return rpcError (rpcINVALID_PARAMS);
 
@@ -172,7 +172,7 @@ Json::Value doAccountLines (RPC::Context& context)
             [&visitData](std::shared_ptr<SLE const> const& sleCur)
             {
                 auto const line =
-                    RippleState::makeItem (visitData.accountID, sleCur);
+                    CallState::makeItem (visitData.accountID, sleCur);
                 if (line != nullptr &&
                     (! visitData.hasPeer ||
                      visitData.raPeerAccount == line->getAccountIDPeer ()))
@@ -192,7 +192,7 @@ Json::Value doAccountLines (RPC::Context& context)
     {
         result[jss::limit] = limit;
 
-        RippleState::pointer line (visitData.items.back ());
+        CallState::pointer line (visitData.items.back ());
         result[jss::marker] = to_string (line->key());
         visitData.items.pop_back ();
     }

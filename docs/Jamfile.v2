@@ -9,7 +9,7 @@ import os ;
 
 local broot = [ os.environ BOOST_ROOT ] ;
 
-project rippled/doc ;
+project calld/doc ;
 
 using boostbook ;
 using quickbook ;

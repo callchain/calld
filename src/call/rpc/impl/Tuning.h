@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -48,7 +48,7 @@ static LimitRange const accountOffers = {10, 200, 400};
 static LimitRange const bookOffers = {0, 300, 400};
 
 /** Limits for the no_call_check command. */
-static LimitRange const noRippleCheck = {10, 300, 400};
+static LimitRange const noCallCheck = {10, 300, 400};
 
 static int const defaultAutoFillFeeMultiplier = 10;
 static int const defaultAutoFillFeeDivisor = 1;

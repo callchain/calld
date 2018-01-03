@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-rippled_exe=/opt/ripple/bin/rippled
-conf_file=/etc/opt/ripple/rippled.cfg
+calld_exe=/opt/call/bin/calld
+conf_file=/etc/opt/call/calld.cfg
 
 while getopts ":e:c:" opt; do
     case $opt in
         e)
-            rippled_exe=${OPTARG}
+            calld_exe=${OPTARG}
             ;;
         c)
             conf_file=${OPTARG}
@@ -16,13 +16,13 @@ while getopts ":e:c:" opt; do
     esac
 done
 
-tmp_loc=$(mktemp -d --tmpdir ripple_info.XXXX)
+tmp_loc=$(mktemp -d --tmpdir call_info.XXXX)
 cd /tmp
-chmod 751 ripple_info.*
+chmod 751 call_info.*
 cd ~
 echo ${tmp_loc}
 
-cleaned_conf=${tmp_loc}/cleaned_rippled_cfg.txt
+cleaned_conf=${tmp_loc}/cleaned_calld_cfg.txt
 
 if [[ -f ${conf_file} ]]
 then
@@ -55,10 +55,10 @@ exec 3>&1 1>>${log_file} 2>&1
 
 ## Send all stdout files to /tmp
 
-if [[ -x ${rippled_exe} ]]
+if [[ -x ${calld_exe} ]]
 then
-    pgrep rippled && \
-    ${rippled_exe} --conf ${conf_file} \
+    pgrep calld && \
+    ${calld_exe} --conf ${conf_file} \
     -- server_info                  > ${tmp_loc}/server_info.txt
 fi
 
@@ -82,5 +82,5 @@ pushd ${tmp_loc}
 tar -czvf info-package.tar.gz *.txt *.log
 popd
 
-echo "Use the following command on your local machine to download from your rippled instance: scp <remote_rippled_username>@<remote_host>:${tmp_loc}/info-package.tar.gz <path/to/local_machine/directory>"| tee /dev/fd/3
+echo "Use the following command on your local machine to download from your calld instance: scp <remote_calld_username>@<remote_host>:${tmp_loc}/info-package.tar.gz <path/to/local_machine/directory>"| tee /dev/fd/3
 

@@ -16,7 +16,7 @@ ENV BOOST_ROOT=/boost_1_62_0
 RUN apt-get -y install doxygen
 RUN apt-get -y install xsltproc
 
-CMD cd /opt/rippled/docs && \
+CMD cd /opt/calld/docs && \
     chmod +x makeqbk.sh && \
     ./makeqbk.sh && \
     $BOOST_ROOT/b2

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -22,7 +22,7 @@
 
 #include <call/app/main/Application.h>
 #include <call/app/paths/PathRequest.h>
-#include <call/app/paths/RippleLineCache.h>
+#include <call/app/paths/CallLineCache.h>
 #include <call/core/Job.h>
 #include <atomic>
 #include <mutex>
@@ -52,7 +52,7 @@ public:
     void updateAll (std::shared_ptr<ReadView const> const& ledger,
                     Job::CancelCallback shouldCancel);
 
-    std::shared_ptr<RippleLineCache> getLineCache (
+    std::shared_ptr<CallLineCache> getLineCache (
         std::shared_ptr <ReadView const> const& ledger, bool authoritative);
 
     // Create a new-style path request that pushes
@@ -101,8 +101,8 @@ private:
     // Track all requests
     std::vector<PathRequest::wptr> requests_;
 
-    // Use a RippleLineCache
-    std::shared_ptr<RippleLineCache>         mLineCache;
+    // Use a CallLineCache
+    std::shared_ptr<CallLineCache>         mLineCache;
 
     std::atomic<int>                 mLastIdentifier;
 

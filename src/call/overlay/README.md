@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The _Ripple payment network_ consists of a collection of _peers_ running
+The _Call payment network_ consists of a collection of _peers_ running
 **calld**. Each peer maintains multiple outgoing connections and optional
 incoming connections to other peers. These connections are made over both
 the public Internet and private local area networks. This network defines a
@@ -12,7 +12,7 @@ other connected peers. This peer to peer network, layered on top of the public
 and private Internet, forms an [_overlay network_][overlay_network]. The
 contents of the messages and the behavior of peers in response to the messages,
 plus the information exchanged during the handshaking phase of connection
-establishment, defines the _Ripple peer protocol_ (_protocol_ in this context).
+establishment, defines the _Call peer protocol_ (_protocol_ in this context).
 
 ## Overview
 
@@ -183,9 +183,9 @@ Content-Type: application/json
     through the configuration. These headers will be transmitted in the
     corresponding request or response messages.
 
-# Ripple Clustering #
+# Call Clustering #
 
-A cluster consists of more than one Ripple server under common
+A cluster consists of more than one Call server under common
 administration that share load information, distribute cryptography
 operations, and provide greater response consistency.
 

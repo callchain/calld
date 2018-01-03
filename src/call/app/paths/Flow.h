@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -21,7 +21,7 @@
 #define CALL_APP_PATHS_FLOW_H_INCLUDED
 
 #include <call/app/paths/impl/Steps.h>
-#include <call/app/paths/RippleCalc.h>
+#include <call/app/paths/CallCalc.h>
 #include <call/protocol/Quality.h>
 
 namespace call
@@ -52,7 +52,7 @@ struct FlowDebugInfo;
   @param flowDebugInfo If non-null a pointer to FlowDebugInfo for debugging
   @return Actual amount in and out, and the result code
 */
-path::RippleCalc::Output
+path::CallCalc::Output
 flow (PaymentSandbox& view,
     STAmount const& deliver,
     AccountID const& src,

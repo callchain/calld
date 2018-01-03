@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -32,7 +32,7 @@
 #include <call/rpc/handlers/Ping.cpp>
 #include <call/rpc/handlers/Print.cpp>
 #include <call/rpc/handlers/Random.cpp>
-#include <call/rpc/handlers/RipplePathFind.cpp>
+#include <call/rpc/handlers/CallPathFind.cpp>
 #include <call/rpc/handlers/ServerInfo.cpp>
 #include <call/rpc/handlers/ServerState.cpp>
 #include <call/rpc/handlers/SignFor.cpp>

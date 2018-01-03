@@ -24,7 +24,7 @@ bin/project-cache.jam
 build
 tags
 TAGS
-bin/rippled
+bin/calld
 Debug/*.*
 Release/*.*
 
@@ -45,7 +45,7 @@ tmp
 debug_log.txt
 
 # Ignore customized configs
-rippled.cfg
+calld.cfg
 validators.txt
 
 # Doxygen generated documentation output
@@ -71,13 +71,13 @@ DerivedData
 *.hmap
 
 # Intel Parallel Studio 2013 XE
-My Amplifier XE Results - RippleD
+My Amplifier XE Results - CallD
 
 # Compiler intermediate output
 /out.txt
 
 # Build Log
-rippled-build.log
+calld-build.log
 
 # Profiling data
 gmon.out

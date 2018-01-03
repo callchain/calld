@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -78,7 +78,7 @@ JSS ( acquiring );                  // out: LedgerRequest
 JSS ( address );                    // out: PeerImp
 JSS ( affected );                   // out: AcceptedLedgerTx
 JSS ( age );                        // out: NetworkOPs, Peers
-JSS ( alternatives );               // out: PathRequest, RipplePathFind
+JSS ( alternatives );               // out: PathRequest, CallPathFind
 JSS ( amendment_blocked );          // out: NetworkOPs
 JSS ( amendments );                 // in: AccountObjects, out: NetworkOPs
 JSS ( amount );                     // out: AccountChannels
@@ -140,10 +140,10 @@ JSS ( debug_signing );              // in: TransactionSign
 JSS ( delivered_amount );           // out: addPaymentDeliveredAmount
 JSS ( deprecated );                 // out: WalletSeed
 JSS ( descending );                 // in: AccountTx*
-JSS ( destination_account );        // in: PathRequest, RipplePathFind, account_lines
+JSS ( destination_account );        // in: PathRequest, CallPathFind, account_lines
                                     // out: AccountChannels
-JSS ( destination_amount );         // in: PathRequest, RipplePathFind
-JSS ( destination_currencies );     // in: PathRequest, RipplePathFind
+JSS ( destination_amount );         // in: PathRequest, CallPathFind
+JSS ( destination_currencies );     // in: PathRequest, CallPathFind
 JSS ( destination_tag );            // in: PathRequest
                                     // out: AccountChannels
 JSS ( dir_entry );                  // out: DirectoryEntryIterator
@@ -211,7 +211,7 @@ JSS ( info );                       // out: ServerInfo, ConsensusInfo, FetchInfo
 JSS ( internal_command );           // in: Internal
 JSS ( io_latency_ms );              // out: NetworkOPs
 JSS ( ip );                         // in: Connect, out: OverlayImpl
-JSS ( issuer );                     // in: RipplePathFind, Subscribe,
+JSS ( issuer );                     // in: CallPathFind, Subscribe,
                                     //     Unsubscribe, BookOffers
                                     // out: paths/Node, STPathSet, STAmount
 JSS ( jsonrpc );                    // json version
@@ -229,7 +229,7 @@ JSS ( ledger_current_index );       // out: NetworkOPs, RPCHelpers,
                                     //      LedgerCurrent, LedgerAccept
 JSS ( ledger_data );                // out: LedgerHeader
 JSS ( ledger_hash );                // in: RPCHelpers, LedgerRequest,
-                                    //     RipplePathFind, TransactionEntry,
+                                    //     CallPathFind, TransactionEntry,
                                     //     handlers/Ledger
                                     // out: NetworkOPs, RPCHelpers,
                                     //      LedgerClosed, LedgerData
@@ -318,9 +318,9 @@ JSS ( parent_hash );                // out: LedgerToJson
 JSS ( partition );                  // in: LogLevel
 JSS ( passphrase );                 // in: WalletPropose
 JSS ( password );                   // in: Subscribe
-JSS ( paths );                      // in: RipplePathFind
-JSS ( paths_canonical );            // out: RipplePathFind
-JSS ( paths_computed );             // out: PathRequest, RipplePathFind
+JSS ( paths );                      // in: CallPathFind
+JSS ( paths_canonical );            // out: CallPathFind
+JSS ( paths_computed );             // out: PathRequest, CallPathFind
 JSS ( payment_channel );            // in: LedgerEntry
 JSS ( peer );                       // in: AccountLines
 JSS ( peer_authorized );            // out: AccountLines
@@ -364,14 +364,14 @@ JSS ( callrpc );                  // call RPC version
 JSS ( role );                       // out: Ping.cpp
 JSS ( rt_accounts );                // in: Subscribe, Unsubscribe
 JSS ( sanity );                     // out: PeerImp
-JSS ( search_depth );               // in: RipplePathFind
+JSS ( search_depth );               // in: CallPathFind
 JSS ( secret );                     // in: TransactionSign, WalletSeed,
                                     //     ValidationCreate, ValidationSeed,
                                     //     channel_authorize
 JSS ( seed );                       // in: WalletAccounts, out: WalletSeed
 JSS ( seed_hex );                   // in: WalletPropose, TransactionSign
 JSS ( send_currencies );            // out: AccountCurrencies
-JSS ( send_max );                   // in: PathRequest, RipplePathFind
+JSS ( send_max );                   // in: PathRequest, CallPathFind
 JSS ( seq );                        // in: LedgerEntry;
                                     // out: NetworkOPs, RPCSub, AccountOffers,
                                     //      ValidatorList
@@ -388,9 +388,9 @@ JSS ( signing_time );               // out: NetworkOPs
 JSS ( signer_list );                // in: AccountObjects
 JSS ( signer_lists );               // in/out: AccountInfo
 JSS ( snapshot );                   // in: Subscribe
-JSS ( source_account );             // in: PathRequest, RipplePathFind
-JSS ( source_amount );              // in: PathRequest, RipplePathFind
-JSS ( source_currencies );          // in: PathRequest, RipplePathFind
+JSS ( source_account );             // in: PathRequest, CallPathFind
+JSS ( source_amount );              // in: PathRequest, CallPathFind
+JSS ( source_currencies );          // in: PathRequest, CallPathFind
 JSS ( source_tag );                 // out: AccountChannels
 JSS ( stand_alone );                // out: NetworkOPs
 JSS ( start );                      // in: TxHistory

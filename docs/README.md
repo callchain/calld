@@ -24,7 +24,7 @@ Install these dependencies:
   1. Extract the compressed file contents to your (new) `$BOOST_ROOT` location.
   2. Open a command prompt or shell in the `$BOOST_ROOT`.
   3. `./bootstrap.bat`
-  4. (Optional, if you also plan to build rippled) `./bjam.exe --toolset=msvc-14.0
+  4. (Optional, if you also plan to build calld) `./bjam.exe --toolset=msvc-14.0
    --build-type=complete variant=debug,release link=static runtime-link=static
    address-model=64 stage`
   5. If it is not already there, add your `$BOOST_ROOT` to your environment `$PATH`.
@@ -42,7 +42,7 @@ Install these dependencies:
   1. Extract the compressed file contents to your (new) `$BOOST_ROOT` location.
   2. Open a command prompt or shell in the `$BOOST_ROOT`.
   3. `$ ./bootstrap.bat`
-  4. (Optional, if you also plan to build rippled)
+  4. (Optional, if you also plan to build calld)
      `$ ./b2 toolset=clang threading=multi runtime-link=static  link=static
      cxxflags="-stdlib=libc++" linkflags="-stdlib=libc++" adress-model=64`
   5. If it is not already there, add your `$BOOST_ROOT` to your environment
@@ -53,14 +53,14 @@ Install these dependencies:
 ### Linux
 
 1. Install [Docker](https://docs.docker.com/engine/installation/)
-2. Build Docker image. From the rippled root folder:
+2. Build Docker image. From the calld root folder:
 ```
-sudo docker build -t rippled-docs docs/
+sudo docker build -t calld-docs docs/
 ```
 
 ## Setup project submodules
 
-1. Open a shell in your rippled root folder.
+1. Open a shell in your calld root folder.
 2. `git submodule init`
 3. `git submodule update docs/docca`
 
@@ -68,7 +68,7 @@ sudo docker build -t rippled-docs docs/
 
 ### Windows & MacOS
 
-From the rippled root folder:
+From the calld root folder:
 ```
 cd docs
 ./makeqbk.sh && b2
@@ -77,8 +77,8 @@ The output will be in `docs/html`.
 
 ### Linux
 
-From the rippled root folder:
+From the calld root folder:
 ```
-sudo docker run -v $PWD:/opt/rippled --rm rippled-docs
+sudo docker run -v $PWD:/opt/calld --rm calld-docs
 ```
 The output will be in `docs/html`.

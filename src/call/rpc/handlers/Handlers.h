@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -55,14 +55,14 @@ Json::Value doLedgerHeader          (RPC::Context&);
 Json::Value doLedgerRequest         (RPC::Context&);
 Json::Value doLogLevel              (RPC::Context&);
 Json::Value doLogRotate             (RPC::Context&);
-Json::Value doNoRippleCheck         (RPC::Context&);
+Json::Value doNoCallCheck         (RPC::Context&);
 Json::Value doOwnerInfo             (RPC::Context&);
 Json::Value doPathFind              (RPC::Context&);
 Json::Value doPeers                 (RPC::Context&);
 Json::Value doPing                  (RPC::Context&);
 Json::Value doPrint                 (RPC::Context&);
 Json::Value doRandom                (RPC::Context&);
-Json::Value doRipplePathFind        (RPC::Context&);
+Json::Value doCallPathFind        (RPC::Context&);
 Json::Value doServerInfo            (RPC::Context&); // for humans
 Json::Value doServerState           (RPC::Context&); // for machines
 Json::Value doSessionClose          (RPC::Context&);

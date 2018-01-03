@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -36,23 +36,23 @@ namespace call {
     a chosen account on the line.
 */
 // VFALCO TODO Rename to TrustLine
-class RippleState
+class CallState
 {
 public:
     // VFALCO Why is this shared_ptr?
-    using pointer = std::shared_ptr <RippleState>;
+    using pointer = std::shared_ptr <CallState>;
 
 public:
-    RippleState () = delete;
+    CallState () = delete;
 
-    virtual ~RippleState() = default;
+    virtual ~CallState() = default;
 
-    static RippleState::pointer makeItem(
+    static CallState::pointer makeItem(
         AccountID const& accountID,
         std::shared_ptr<SLE const> sle);
 
     // Must be public, for make_shared
-    RippleState (std::shared_ptr<SLE const>&& sle,
+    CallState (std::shared_ptr<SLE const>&& sle,
         AccountID const& viewAccount);
 
     /** Returns the state map key for the ledger entry. */
@@ -85,14 +85,14 @@ public:
         return mFlags & (!mViewLowest ? lsfLowAuth : lsfHighAuth);
     }
 
-    bool getNoRipple () const
+    bool getNoCall () const
     {
-        return mFlags & (mViewLowest ? lsfLowNoRipple : lsfHighNoRipple);
+        return mFlags & (mViewLowest ? lsfLowNoCall : lsfHighNoCall);
     }
 
-    bool getNoRipplePeer () const
+    bool getNoCallPeer () const
     {
-        return mFlags & (!mViewLowest ? lsfLowNoRipple : lsfHighNoRipple);
+        return mFlags & (!mViewLowest ? lsfLowNoCall : lsfHighNoCall);
     }
 
     /** Have we set the freeze flag on our peer */
@@ -157,8 +157,8 @@ private:
     STAmount                        mBalance;
 };
 
-std::vector <RippleState::pointer>
-getRippleStateItems (AccountID const& accountID,
+std::vector <CallState::pointer>
+getCallStateItems (AccountID const& accountID,
     ReadView const& view);
 
 } // call

@@ -8,7 +8,7 @@
 [section Design Choices]
 
 The implementations were originally driven by business needs of cryptocurrency
-server applications (e.g.  [@https://github.com/ripple/rippled rippled]),
+server applications (e.g.  [@https://github.com/call/calld calld]),
 written in C++. These needs were not met by existing solutions so Beast
 was written from scratch as a solution. Beast's design philosophy avoids
 flaws exhibited by other libraries:

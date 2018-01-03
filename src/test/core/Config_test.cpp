@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012-2015 Ripple Labs Inc.
+    Copyright (c) 2012-2015 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -94,7 +94,7 @@ time.apple.com
 time.nist.gov
 pool.ntp.org
 
-# Where to find some other servers speaking the Ripple protocol.
+# Where to find some other servers speaking the Call protocol.
 #
 [ips]
 r.call.com 51235
@@ -199,7 +199,7 @@ public:
 /**
    Write a calld config file and remove when done.
  */
-class RippledCfgGuard : public ConfigGuard
+class CalldCfgGuard : public ConfigGuard
 {
 private:
     path configFile_;
@@ -210,7 +210,7 @@ private:
     Config config_;
 
 public:
-    RippledCfgGuard (beast::unit_test::suite& test,
+    CalldCfgGuard (beast::unit_test::suite& test,
         path subDir, path const& dbPath,
             path const& validatorsFile,
                 bool useCounter = true)
@@ -259,7 +259,7 @@ public:
         return boost::filesystem::exists (configFile_);
     }
 
-    ~RippledCfgGuard ()
+    ~CalldCfgGuard ()
     {
         try
         {
@@ -279,7 +279,7 @@ public:
         catch (std::exception& e)
         {
             // if we throw here, just let it die.
-            test_.log << "Error in ~RippledCfgGuard: "
+            test_.log << "Error in ~CalldCfgGuard: "
                       << e.what () << std::endl;
         };
     }
@@ -443,7 +443,7 @@ port_wss_admin
             detail::ConfigGuard const g0(*this, "test_db");
             path const dataDirRel ("test_data_dir");
             path const dataDirAbs(cwd / g0.subdir () / dataDirRel);
-            detail::RippledCfgGuard const g (*this, g0.subdir(),
+            detail::CalldCfgGuard const g (*this, g0.subdir(),
                 dataDirAbs, "", false);
             auto const& c (g.config ());
             BEAST_EXPECT(g.dataDirExists ());
@@ -453,7 +453,7 @@ port_wss_admin
         {
             // read from file relative path
             std::string const dbPath ("my_db");
-            detail::RippledCfgGuard const g (*this, "test_db", dbPath, "");
+            detail::CalldCfgGuard const g (*this, "test_db", dbPath, "");
             auto const& c (g.config ());
             std::string const nativeDbPath = absolute (path (dbPath)).string ();
             BEAST_EXPECT(g.dataDirExists ());
@@ -462,7 +462,7 @@ port_wss_admin
         }
         {
             // read from file no path
-            detail::RippledCfgGuard const g (*this, "test_db", "", "");
+            detail::CalldCfgGuard const g (*this, "test_db", "", "");
             auto const& c (g.config ());
             std::string const nativeDbPath =
                 absolute (g.subdir () /
@@ -635,7 +635,7 @@ trustthesevalidators.gov
             std::string const valFileName = "validators.txt";
             detail::ValidatorsTxtGuard const vtg (
                 *this, "test_cfg", valFileName);
-            detail::RippledCfgGuard const rcg (
+            detail::CalldCfgGuard const rcg (
                 *this, vtg.subdir (), "", valFileName, false);
             BEAST_EXPECT(vtg.validatorsFileExists ());
             BEAST_EXPECT(rcg.configFileExists ());
@@ -653,7 +653,7 @@ trustthesevalidators.gov
             detail::ValidatorsTxtGuard const vtg (
                 *this, "test_cfg", "validators.txt");
             auto const valFilePath = ".." / vtg.subdir() / "validators.txt";
-            detail::RippledCfgGuard const rcg (
+            detail::CalldCfgGuard const rcg (
                 *this, vtg.subdir (), "", valFilePath, false);
             BEAST_EXPECT(vtg.validatorsFileExists ());
             BEAST_EXPECT(rcg.configFileExists ());
@@ -669,7 +669,7 @@ trustthesevalidators.gov
             // load from validators file in default location
             detail::ValidatorsTxtGuard const vtg (
                 *this, "test_cfg", "validators.txt");
-            detail::RippledCfgGuard const rcg (*this, vtg.subdir (),
+            detail::CalldCfgGuard const rcg (*this, vtg.subdir (),
                 "", "", false);
             BEAST_EXPECT(vtg.validatorsFileExists ());
             BEAST_EXPECT(rcg.configFileExists ());
@@ -690,7 +690,7 @@ trustthesevalidators.gov
             detail::ValidatorsTxtGuard const vtgDefault (
                 *this, vtg.subdir (), "validators.txt", false);
             BEAST_EXPECT(vtgDefault.validatorsFileExists ());
-            detail::RippledCfgGuard const rcg (
+            detail::CalldCfgGuard const rcg (
                 *this, vtg.subdir (), "", vtg.validatorsFile (), false);
             BEAST_EXPECT(rcg.configFileExists ());
             auto const& c (rcg.config ());
@@ -765,7 +765,7 @@ trustthesevalidators.gov
 
     void testSetup(bool explicitPath)
     {
-        detail::RippledCfgGuard const cfg(*this, "testSetup",
+        detail::CalldCfgGuard const cfg(*this, "testSetup",
             explicitPath ? "test_db" : "", "");
         /* ConfigGuard has a Config object that gets loaded on construction,
             but Config::setup is not reentrant, so we need a fresh config

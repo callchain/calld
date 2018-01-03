@@ -124,7 +124,7 @@ import glob
 import SCons.Action
 
 if (not platform.machine().endswith('64')):
-    print('Warning: Detected {} architecture. Rippled requires a 64-bit OS.'.format(
+    print('Warning: Detected {} architecture. Calld requires a 64-bit OS.'.format(
           platform.machine()));
 
 sys.path.append(os.path.join('src', 'call', 'beast', 'site_scons'))
@@ -1269,7 +1269,7 @@ for key, value in aliases.items():
     env.Alias(key, value)
 
 vcxproj = base.VSProject(
-    os.path.join('Builds', 'VisualStudio2015', 'RippleD'),
+    os.path.join('Builds', 'VisualStudio2015', 'CallD'),
     source = [],
     VSPROJECT_ROOT_DIRS = [
         'build/',

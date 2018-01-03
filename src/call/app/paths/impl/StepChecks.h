@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2015 Ripple Labs Inc.
+    Copyright (c) 2015 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -60,7 +60,7 @@ checkFreeze (
 
 inline
 TER
-checkNoRipple (
+checkNoCall (
     ReadView const& view,
     AccountID const& prev,
     AccountID const& cur,
@@ -77,11 +77,11 @@ checkNoRipple (
         return terNO_LINE;
 
     if ((*sleIn)[sfFlags] &
-            ((cur > prev) ? lsfHighNoRipple : lsfLowNoRipple) &&
+            ((cur > prev) ? lsfHighNoCall : lsfLowNoCall) &&
         (*sleOut)[sfFlags] &
-            ((cur > next) ? lsfHighNoRipple : lsfLowNoRipple))
+            ((cur > next) ? lsfHighNoCall : lsfLowNoCall))
     {
-        JLOG (j.info()) << "Path violates noRipple constraint between " << prev
+        JLOG (j.info()) << "Path violates noCall constraint between " << prev
                       << ", " << cur << " and " << next;
 
         return terNO_CALL;

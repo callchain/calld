@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -54,12 +54,12 @@ template <class T>
 boost::optional<T>
 parseHexOrBase58 (std::string const& s);
 
-// Facilities for converting Ripple tokens
+// Facilities for converting Call tokens
 // to and from their human readable strings
 
-/*  Base-58 encode a Ripple Token
+/*  Base-58 encode a Call Token
 
-    Ripple Tokens have a one-byte prefx indicating
+    Call Tokens have a one-byte prefx indicating
     the type of token, followed by the data for the
     token, and finally a 4-byte checksum.
 

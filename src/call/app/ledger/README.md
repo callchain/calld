@@ -222,7 +222,7 @@ conclusion about which last closed ledger is authoritative.
 
 ## Consensus ##
 
-A distributed agreement protocol. Ripple uses the consensus process to solve
+A distributed agreement protocol. Call uses the consensus process to solve
 the problem of double-spending.
 
 ## Validation ##
@@ -305,7 +305,7 @@ same value as a trust line between accounts B and A.
 
 **HighNode:** A deletion hint.
 
-**LedgerEntryType:** "RippleState".
+**LedgerEntryType:** "CallState".
 
 **LowLimit:**
  - **currency:** Same as for Balance.
@@ -319,7 +319,7 @@ same value as a trust line between accounts B and A.
 **PreviousTxnLgrSeq:** Ledger number sequence number of the previous
 transaction on this account.
 
-**index:** 256-bit hash of this RippleState.
+**index:** 256-bit hash of this CallState.
 
 
 ## Ledger Hashes ##
@@ -401,7 +401,7 @@ are occupied by the exchange rate.
 
 ## Overview ##
 
-The Ripple server permits clients to subscribe to a continuous stream of
+The Call server permits clients to subscribe to a continuous stream of
 fully-validated ledgers. The publication code maintains this stream.
 
 The server attempts to maintain this continuous stream unless it falls

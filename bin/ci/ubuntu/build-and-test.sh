@@ -8,8 +8,8 @@ __dirname=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 echo "using CC: $CC"
 echo "using TARGET: $TARGET"
 
-# Ensure APP defaults to rippled if it's not set.
-: ${APP:=rippled}
+# Ensure APP defaults to calld if it's not set.
+: ${APP:=calld}
 
 JOBS=${NUM_PROCESSORS:-2}
 if [[ ${TARGET} == *.nounity ]]; then
@@ -48,10 +48,10 @@ rm -f build/${APP}
 # See what we've actually built
 ldd $APP_PATH
 
-if [[ ${APP} == "rippled" ]]; then
+if [[ ${APP} == "calld" ]]; then
   export APP_ARGS="--unittest --quiet --unittest-log"
-  # Only report on src/ripple files
-  export LCOV_FILES="*/src/ripple/*"
+  # Only report on src/call files
+  export LCOV_FILES="*/src/call/*"
   # Nothing to explicitly exclude
   export LCOV_EXCLUDE_FILES="LCOV_NO_EXCLUDE"
 else

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -56,5 +56,5 @@
 #include <call/rpc/handlers/LedgerRequest.cpp>
 #include <call/rpc/handlers/LogLevel.cpp>
 #include <call/rpc/handlers/LogRotate.cpp>
-#include <call/rpc/handlers/NoRippleCheck.cpp>
+#include <call/rpc/handlers/NoCallCheck.cpp>
 #include <call/rpc/handlers/OwnerInfo.cpp>

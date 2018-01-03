@@ -1,16 +1,16 @@
 #
-# Sample ripple.txt
+# Sample call.txt
 #
-# More information: https://ripple.com/wiki/Ripple.txt
+# More information: https://call.com/wiki/Call.txt
 #
-# Publishing this file allows a site to declare in a trustworthy manor ripple
+# Publishing this file allows a site to declare in a trustworthy manor call
 # associated information.
 #
 # This file is stored on the web server for a domain.  This file is searched
 # for in the following order:
-# - https://ripple.DOMAIN/ripple.txt
-# - https://www.DOMAIN/ripple.txt
-# - https://DOMAIN/ripple.txt
+# - https://call.DOMAIN/call.txt
+# - https://www.DOMAIN/call.txt
+# - https://DOMAIN/call.txt
 #
 # The server MUST set the following HTTP header when serving this file:
 #  Access-Control-Allow-Origin: *
@@ -34,7 +34,7 @@
 #   Example: 30
 #
 # [accounts]
-#   Only valid in "ripple.txt". A list of accounts that are declared to be
+#   Only valid in "call.txt". A list of accounts that are declared to be
 #   controlled by this domain. A client wishing to indicate that an account is
 #   verified as belonging to a domain will be show the account with a green
 #   background. A client can verify that an account belongs to a domain by
@@ -45,29 +45,29 @@
 #   Example: rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn
 #
 # [hotwallets]
-#   Only valid in "ripple.txt". A list of accounts that are declared to be
+#   Only valid in "call.txt". A list of accounts that are declared to be
 #   controlled by this domain and used as hotwallets.
 #
 #   Example: rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn
 #
 # [validation_public_key]:
-#   Only valid in "ripple.txt". A validation public key that is declared
+#   Only valid in "call.txt". A validation public key that is declared
 #   to be used by this domain for validating ledgers and that it is the
 #   authorized signature for the domain. This does not imply that a node
-#   serving the Ripple protocol is avilable at the web host providing the
+#   serving the Call protocol is avilable at the web host providing the
 #   file.
 #
 #   Example: n9MZTnHe5D5Q2cgE8oV2usFwRqhUvEA8MwP5Mu1XVD6TxmssPRev
 #
 # [domain]:
-#   Mandatory in "ripple.txt".
-#   Only valid in "ripple.txt".
+#   Mandatory in "call.txt".
+#   Only valid in "call.txt".
 #   Must match location of file.
 #
 #   Example: google.com
 #
 # [ips]:
-#   Only valid in "rippled.cfg", "ripple.txt", and the referered [ips_url].
+#   Only valid in "calld.cfg", "call.txt", and the referered [ips_url].
 #   List of ips where the Newcoin protocol is avialable.
 #   One ipv4 or ipv6 address per line.
 #   A port may optionally be specified after adding a space to the address.
@@ -79,11 +79,11 @@
 #    2001:0db8:0100:f101:0210:a4ff:fee3:9566
 #
 # [validators]:
-#   Only valid in "rippled.cfg", "ripple.txt", and the referered [validators_url].
-#   List of Ripple validators this node recommends.
+#   Only valid in "calld.cfg", "call.txt", and the referered [validators_url].
+#   List of Call validators this node recommends.
 #
-#   For domains, rippled will probe for https web servers at the specied
-#   domain in the following order: ripple.DOMAIN, www.DOMAIN, DOMAIN
+#   For domains, calld will probe for https web servers at the specied
+#   domain in the following order: call.DOMAIN, www.DOMAIN, DOMAIN
 #
 #	These are encoded 257-bit secp256k1 public keys.
 #
@@ -93,16 +93,16 @@
 #    n9MqiExBcoG19UXwoLjBJnhsxEhAZMuWwJDRdkyDz1EkEkwzQTNt John Doe
 #
 # [ips_url]:
-#   Only valid in "ripple.txt".
+#   Only valid in "call.txt".
 #   https URL to a similarily formatted file containing [ips].
 #
-#   Example: https://google.com/ripple_ips.txt
+#   Example: https://google.com/call_ips.txt
 #
 # [validators_url]:
-#   Only valid in "ripple.txt".
+#   Only valid in "call.txt".
 #   https URL to a similarily formatted file containing [validators].
 #
-#   Example: https://google.com/ripple_validators.txt
+#   Example: https://google.com/call_validators.txt
 #
 # [currencies]:
 #   This section allows a site to declare currencies it currently issues.

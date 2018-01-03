@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
   This file is part of calld: https://github.com/call/calld
-  Copyright (c) 2012-2017 Ripple Labs Inc.
+  Copyright (c) 2012-2017 Call Labs Inc.
 
   Permission to use, copy, modify, and/or distribute this software for any
   purpose  with  or without fee is hereby granted, provided that the above
@@ -342,7 +342,7 @@ public:
             {
                 env (pay (alice, bob, USD (1)), path (~USD),
                     sendmax (XRP (102)),
-                    txflags (tfNoRippleDirect | tfPartialPayment));
+                    txflags (tfNoCallDirect | tfPartialPayment));
 
                 env.require (
                     offers (carol, 0),
@@ -366,9 +366,9 @@ public:
         }
     }
 
-    void testEnforceNoRipple (std::initializer_list<uint256> fs)
+    void testEnforceNoCall (std::initializer_list<uint256> fs)
     {
-        testcase ("Enforce No Ripple");
+        testcase ("Enforce No Call");
 
         using namespace jtx;
 
@@ -396,9 +396,9 @@ public:
 
             env.fund (XRP (10000), alice, nocall (bob), carol, dan, gw1, gw2);
             env.trust (USD1 (1000), alice, carol, dan);
-            env(trust (bob, USD1 (1000), tfSetNoRipple));
+            env(trust (bob, USD1 (1000), tfSetNoCall));
             env.trust (USD2 (1000), alice, carol, dan);
-            env(trust (bob, USD2 (1000), tfSetNoRipple));
+            env(trust (bob, USD2 (1000), tfSetNoCall));
 
             env (pay (gw1, dan, USD1 (50)));
             env (pay (gw1, bob, USD1 (50)));
@@ -407,7 +407,7 @@ public:
             env (offer (dan, XRP (50), USD1 (50)));
 
             env (pay (alice, carol, USD2 (50)), path (~USD1, bob),
-                sendmax (XRP (50)), txflags (tfNoRippleDirect),
+                sendmax (XRP (50)), txflags (tfNoCallDirect),
                 ter(tecPATH_DRY));
         }
         {
@@ -434,7 +434,7 @@ public:
             env (offer (dan, XRP (50), USD1 (50)));
 
             env (pay (alice, carol, USD2 (50)), path (~USD1, bob),
-                sendmax (XRP (50)), txflags (tfNoRippleDirect));
+                sendmax (XRP (50)), txflags (tfNoCallDirect));
 
             env.require (balance (alice, xrpMinusFee (env, 10000 - 50)));
             env.require (balance (bob, USD1 (100)));
@@ -4231,7 +4231,7 @@ public:
 
     void testRCSmoketest(std::initializer_list<uint256> fs)
     {
-        testcase("RippleConnect Smoketest payment flow");
+        testcase("CallConnect Smoketest payment flow");
         using namespace jtx;
 
         Env env {*this, with_features (fs)};
@@ -4240,7 +4240,7 @@ public:
                 100 * env.closed()->info().closeTimeResolution;
         env.close (closeTime);
 
-        // This test mimics the payment flow used in the Ripple Connect
+        // This test mimics the payment flow used in the Call Connect
         // smoke test.  The players:
         //   A USD gateway with hot and cold wallets
         //   A EUR gateway with hot and cold walllets
@@ -4264,16 +4264,16 @@ public:
         for (auto const& cold : {coldUS, coldEU})
         {
             env(fset (cold, asfRequireAuth));
-            env(fset (cold, asfDefaultRipple));
+            env(fset (cold, asfDefaultCall));
         }
         env.close();
 
         // Each hot wallet trusts the related cold wallet for a large amount
-        env (trust(hotUS, USD(10000000)), txflags (tfSetNoRipple));
-        env (trust(hotEU, EUR(10000000)), txflags (tfSetNoRipple));
+        env (trust(hotUS, USD(10000000)), txflags (tfSetNoCall));
+        env (trust(hotEU, EUR(10000000)), txflags (tfSetNoCall));
         // Market maker trusts both cold wallets for a large amount
-        env (trust(mm, USD(10000000)), txflags (tfSetNoRipple));
-        env (trust(mm, EUR(10000000)), txflags (tfSetNoRipple));
+        env (trust(mm, USD(10000000)), txflags (tfSetNoCall));
+        env (trust(mm, EUR(10000000)), txflags (tfSetNoCall));
         env.close();
 
         // Gateways authorize the trustlines of hot and market maker
@@ -4526,7 +4526,7 @@ public:
             testRmFundedOffer(fs);
             testTinyPayment(fs);
             testXRPTinyPayment(fs);
-            testEnforceNoRipple(fs);
+            testEnforceNoCall(fs);
             testInsufficientReserve(fs);
             testFillModes(fs);
             testMalformed(fs);

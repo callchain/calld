@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -99,7 +99,7 @@ enum LedgerNameSpace
     spaceAccount        = 'a',
     spaceDirNode        = 'd',
     spaceGenerator      = 'g',
-    spaceRipple         = 'r',
+    spaceCall         = 'r',
     spaceOffer          = 'o',  // Entry for an offer.
     spaceOwnerDir       = 'O',  // Directory of things owned by an account.
     spaceBookDir        = 'B',  // Directory of order books.
@@ -130,7 +130,7 @@ enum LedgerSpecificFlags
     lsfDisableMaster    = 0x00100000,   // True, force regular key
     lsfNoFreeze         = 0x00200000,   // True, cannot freeze call states
     lsfGlobalFreeze     = 0x00400000,   // True, all assets frozen
-    lsfDefaultRipple    = 0x00800000,   // True, trust lines allow rippling by default
+    lsfDefaultCall    = 0x00800000,   // True, trust lines allow rippling by default
 
     // ltOFFER
     lsfPassive          = 0x00010000,
@@ -141,8 +141,8 @@ enum LedgerSpecificFlags
     lsfHighReserve      = 0x00020000,
     lsfLowAuth          = 0x00040000,
     lsfHighAuth         = 0x00080000,
-    lsfLowNoRipple      = 0x00100000,
-    lsfHighNoRipple     = 0x00200000,
+    lsfLowNoCall      = 0x00100000,
+    lsfHighNoCall     = 0x00200000,
     lsfLowFreeze        = 0x00400000,   // True, low side has set freeze flag
     lsfHighFreeze       = 0x00800000,   // True, high side has set freeze flag
 };

@@ -2,7 +2,7 @@
 # Default validators.txt
 #
 # A list of domains to bootstrap a nodes UNLs or for clients to indirectly
-# locate IPs to contact the Ripple network.
+# locate IPs to contact the Call network.
 #
 # This file is UTF-8 with Dos, UNIX, or Mac style end of lines.
 # Blank lines and lines starting with a '#' are ignored.
@@ -15,9 +15,9 @@
 #   List of the validation public keys of nodes to always accept as validators.
 #
 #   The latest list of recommended validators can be obtained from
-#   https://ripple.com/ripple.txt
+#   https://call.com/call.txt
 #
-#   See also https://wiki.ripple.com/Ripple.txt
+#   See also https://wiki.call.com/Call.txt
 #
 #   Examples:
 #    n9KorY8QtTdRx7TVDpwnG9NvyxsDwHUKUEeDLY3AkiGncVaSXZi5
@@ -28,7 +28,7 @@
 #   List of URIs serving lists of recommended validators.
 #
 #   Examples:
-#    https://ripple.com/validators
+#    https://call.com/validators
 #    http://127.0.0.1:8000
 #
 # [validator_list_keys]
@@ -45,7 +45,7 @@
 #    02dd8b7075f64d77d9d2bdb88da364f29fcd975f9ea6f21894abcc7564efda8054
 #
 
-# Public keys of the validators that this rippled instance trusts.
+# Public keys of the validators that this calld instance trusts.
 [validators]
 n949f75evCHwgyP4fPVgaHqNHxUVN15PsJEZ3B3HnXPcPjcZAoy7
 n9MD5h24qrQqiyBC8aeqqCWvpiBiYQ3jxSr91uiDvmrkyHRdYLUj

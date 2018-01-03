@@ -1,7 +1,7 @@
 # !!! The official build system is SConstruct !!!
-# This is an experimental cmake build file for rippled
+# This is an experimental cmake build file for calld
 #
-# cmake support in rippled. Currently supports:
+# cmake support in calld. Currently supports:
 #
 #  * unity/nounity debug/release
 #  * running protobuf
@@ -34,9 +34,9 @@
 #
 #  * The Visual Studio solution will be generated with two projects, one
 #    unity, one non-unity. Which is default depends on the nounity flag in
-#    -Dtarget. Unity targets will create `rippled` and `rippled_classic`.
-#    Non-unity targets will create `rippled` and `rippled_unity`. In either
-#    case, only the `rippled` build will be enabled by default. It does
+#    -Dtarget. Unity targets will create `calld` and `calld_classic`.
+#    Non-unity targets will create `calld` and `calld_unity`. In either
+#    case, only the `calld` build will be enabled by default. It does
 #    not appear possible to include both unity and non-unity configs in one
 #    project and disable compilation based on configuration.
 #
@@ -72,7 +72,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/Builds/CMake")
 include(CMakeFuncs)
 set(openssl_min 1.0.2)
 parse_target()
-project(rippled)
+project(calld)
 #########################################################
 
 if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
@@ -178,13 +178,13 @@ set(soci_extra_includes
 
 # Unity sources
 prepend(beast_unity_srcs
-src/ripple/beast/unity/
+src/call/beast/unity/
 beast_insight_unity.cpp
 beast_net_unity.cpp
 beast_utility_unity.cpp)
 
-prepend(ripple_unity_srcs
-src/ripple/unity/
+prepend(call_unity_srcs
+src/call/unity/
 app_consensus.cpp
 app_ledger.cpp
 app_ledger_impl.cpp
@@ -235,32 +235,32 @@ jtx_unity1.cpp
 jtx_unity2.cpp
 csf_unity.cpp)
 
-list(APPEND rippled_src_unity ${beast_unity_srcs} ${ripple_unity_srcs} ${test_unity_srcs})
+list(APPEND calld_src_unity ${beast_unity_srcs} ${call_unity_srcs} ${test_unity_srcs})
 
-add_with_props(rippled_src_unity src/test/unity/nodestore_test_unity.cpp
+add_with_props(calld_src_unity src/test/unity/nodestore_test_unity.cpp
 -I"${CMAKE_SOURCE_DIR}/"src/rocksdb2/include
 -I"${CMAKE_SOURCE_DIR}/"src/snappy/snappy
 -I"${CMAKE_SOURCE_DIR}/"src/snappy/config
 ${rocks_db_system_header})
 
-add_with_props(rippled_src_unity src/ripple/unity/nodestore.cpp
+add_with_props(calld_src_unity src/call/unity/nodestore.cpp
 -I"${CMAKE_SOURCE_DIR}/"src/rocksdb2/include
 -I"${CMAKE_SOURCE_DIR}/"src/snappy/snappy
 -I"${CMAKE_SOURCE_DIR}/"src/snappy/config
 ${rocks_db_system_header})
 
-add_with_props(rippled_src_unity src/ripple/unity/soci_ripple.cpp ${soci_extra_includes})
+add_with_props(calld_src_unity src/call/unity/soci_call.cpp ${soci_extra_includes})
 
-list(APPEND ripple_unity_srcs ${beast_unity_srcs} ${test_unity_srcs}
-src/ripple/unity/nodestore.cpp
-src/ripple/unity/soci_ripple.cpp
+list(APPEND call_unity_srcs ${beast_unity_srcs} ${test_unity_srcs}
+src/call/unity/nodestore.cpp
+src/call/unity/soci_call.cpp
 src/test/unity/nodestore_test_unity.cpp)
 
 ############################################################
 
 # Non-unity sources
-file(GLOB_RECURSE core_srcs src/ripple/core/*.cpp)
-add_with_props(rippled_src_nonunity "${core_srcs}"
+file(GLOB_RECURSE core_srcs src/call/core/*.cpp)
+add_with_props(calld_src_nonunity "${core_srcs}"
     -I"${CMAKE_SOURCE_DIR}/"src/soci/src/core
     -I"${CMAKE_SOURCE_DIR}/"src/sqlite)
 
@@ -287,15 +287,15 @@ foreach(curdir
         rpc
         server
         shamap)
-    file(GLOB_RECURSE cursrcs src/ripple/${curdir}/*.cpp)
-    list(APPEND rippled_src_nonunity "${cursrcs}")
+    file(GLOB_RECURSE cursrcs src/call/${curdir}/*.cpp)
+    list(APPEND calld_src_nonunity "${cursrcs}")
     list(APPEND non_unity_srcs "${cursrcs}")
 endforeach()
 
-file(GLOB_RECURSE nodestore_srcs src/ripple/nodestore/*.cpp
+file(GLOB_RECURSE nodestore_srcs src/call/nodestore/*.cpp
     src/test/nodestore/*.cpp)
 
-add_with_props(rippled_src_nonunity "${nodestore_srcs}"
+add_with_props(calld_src_nonunity "${nodestore_srcs}"
     -I"${CMAKE_SOURCE_DIR}/"src/rocksdb2/include
     -I"${CMAKE_SOURCE_DIR}/"src/snappy/snappy
     -I"${CMAKE_SOURCE_DIR}/"src/snappy/config
@@ -327,7 +327,7 @@ foreach(curdir
     list(APPEND test_srcs "${cursrcs}")
 endforeach()
 
-add_with_props(rippled_src_nonunity "${test_srcs}"
+add_with_props(calld_src_nonunity "${test_srcs}"
     -I"${CMAKE_SOURCE_DIR}/"src/rocksdb2/include
     -I"${CMAKE_SOURCE_DIR}/"src/snappy/snappy
     -I"${CMAKE_SOURCE_DIR}/"src/snappy/config
@@ -336,9 +336,9 @@ add_with_props(rippled_src_nonunity "${test_srcs}"
 list(APPEND non_unity_srcs "${test_srcs}")
 
 if(WIN32 OR is_xcode)
-    # Rippled headers. Only needed for IDEs.
-    file(GLOB_RECURSE rippled_headers src/*.h src/*.hpp *.md)
-    list(APPEND rippled_headers Builds/CMake/CMakeFuncs.cmake)
+    # Calld headers. Only needed for IDEs.
+    file(GLOB_RECURSE calld_headers src/*.h src/*.hpp *.md)
+    list(APPEND calld_headers Builds/CMake/CMakeFuncs.cmake)
     foreach(curdir
             beast/asio
             beast/core
@@ -349,13 +349,13 @@ if(WIN32 OR is_xcode)
             resource
             validators
             websocket)
-        file(GLOB_RECURSE cursrcs src/ripple/${curdir}/*.cpp)
-        list(APPEND rippled_headers "${cursrcs}")
+        file(GLOB_RECURSE cursrcs src/call/${curdir}/*.cpp)
+        list(APPEND calld_headers "${cursrcs}")
     endforeach()
-    list(APPEND rippled_src_nonunity "${rippled_headers}")
+    list(APPEND calld_src_nonunity "${calld_headers}")
 
     set_property(
-        SOURCE ${rippled_headers}
+        SOURCE ${calld_headers}
         APPEND
         PROPERTY HEADER_FILE_ONLY
         true)
@@ -387,7 +387,7 @@ endif()
 
 ############################################################
 
-add_with_props(rippled_src_all src/ripple/unity/soci.cpp
+add_with_props(calld_src_all src/call/unity/soci.cpp
   ${soci_extra_includes})
 
 if (NOT is_msvc)
@@ -396,20 +396,20 @@ else()
   unset(no_unused_w)
 endif()
 
-add_with_props(rippled_src_all src/ripple/unity/secp256k1.cpp
+add_with_props(calld_src_all src/call/unity/secp256k1.cpp
   -I"${CMAKE_SOURCE_DIR}/"src/secp256k1
   ${no_unused_w}
   )
 
 foreach(cursrc
-    src/ripple/beast/unity/beast_hash_unity.cpp
-    src/ripple/unity/beast.cpp
-    src/ripple/unity/lz4.c
-    src/ripple/unity/protobuf.cpp
-    src/ripple/unity/ripple.proto.cpp
-    src/ripple/unity/resource.cpp)
+    src/call/beast/unity/beast_hash_unity.cpp
+    src/call/unity/beast.cpp
+    src/call/unity/lz4.c
+    src/call/unity/protobuf.cpp
+    src/call/unity/call.proto.cpp
+    src/call/unity/resource.cpp)
 
-  add_with_props(rippled_src_all ${cursrc}
+  add_with_props(calld_src_all ${cursrc}
     ${rocks_db_system_header}
     )
 
@@ -421,10 +421,10 @@ else()
   unset(extra_props)
 endif()
 
-add_with_props(rippled_src_all src/sqlite/sqlite_unity.c
+add_with_props(calld_src_all src/sqlite/sqlite_unity.c
   ${extra_props})
 
-add_with_props(rippled_src_all src/ripple/unity/ed25519_donna.c
+add_with_props(calld_src_all src/call/unity/ed25519_donna.c
   -I"${CMAKE_SOURCE_DIR}/"src/ed25519-donna)
 
 if (is_gcc)
@@ -433,7 +433,7 @@ else()
   unset(no_init_w)
 endif()
 
-add_with_props(rippled_src_all src/ripple/unity/rocksdb.cpp
+add_with_props(calld_src_all src/call/unity/rocksdb.cpp
   -I"${CMAKE_SOURCE_DIR}/"src/rocksdb2
   -I"${CMAKE_SOURCE_DIR}/"src/rocksdb2/include
   -I"${CMAKE_SOURCE_DIR}/"src/snappy/snappy
@@ -444,17 +444,17 @@ if (NOT is_msvc)
   set(no_unused_w -Wno-unused-function)
 endif()
 
-add_with_props(rippled_src_all src/ripple/unity/snappy.cpp
+add_with_props(calld_src_all src/call/unity/snappy.cpp
   -I"${CMAKE_SOURCE_DIR}/"src/snappy/snappy
   -I"${CMAKE_SOURCE_DIR}/"src/snappy/config
   ${no_unused_w})
 
 if (APPLE AND is_clang)
-  list(APPEND rippled_src_all src/ripple/unity/beastobjc.mm)
+  list(APPEND calld_src_all src/call/unity/beastobjc.mm)
 endif()
 
-list(APPEND rippled_src_unity "${rippled_src_all}")
-list(APPEND rippled_src_nonunity "${rippled_src_all}")
+list(APPEND calld_src_unity "${calld_src_all}")
+list(APPEND calld_src_nonunity "${calld_src_all}")
 
 ############################################################
 
@@ -465,15 +465,15 @@ if (WIN32 OR is_xcode)
 endif()
 
 if(unity)
-    add_executable(rippled ${rippled_src_unity} ${PROTO_HDRS})
-    add_executable(rippled_classic EXCLUDE_FROM_ALL ${rippled_src_nonunity} ${PROTO_HDRS})
-    set(other_target rippled_classic)
+    add_executable(calld ${calld_src_unity} ${PROTO_HDRS})
+    add_executable(calld_classic EXCLUDE_FROM_ALL ${calld_src_nonunity} ${PROTO_HDRS})
+    set(other_target calld_classic)
 else()
-    add_executable(rippled ${rippled_src_nonunity} ${PROTO_HDRS})
-    add_executable(rippled_unity EXCLUDE_FROM_ALL ${rippled_src_unity} ${PROTO_HDRS})
-    set(other_target rippled_unity)
+    add_executable(calld ${calld_src_nonunity} ${PROTO_HDRS})
+    add_executable(calld_unity EXCLUDE_FROM_ALL ${calld_src_unity} ${PROTO_HDRS})
+    set(other_target calld_unity)
 endif()
-list(APPEND targets "rippled")
+list(APPEND targets "calld")
 list(APPEND targets ${other_target})
 # Not the same as EXCLUDE_FROM_ALL. Prevents Visual Studio from building the
 # other_target when the user builds the solution (default when pressing <F7>)
@@ -526,7 +526,7 @@ add_custom_target(docs
   SOURCES "${doc_srcs}"
   )
 
-set_startup_project(rippled)
+set_startup_project(calld)
 
 foreach(target IN LISTS targets)
     target_link_libraries(${target}
@@ -536,6 +536,6 @@ foreach(target IN LISTS targets)
 endforeach()
 
 if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
-  message(WARNING "Rippled requires a 64 bit target architecture.\n"
-    "The most likely cause of this warning is trying to build rippled with a 32-bit OS.")
+  message(WARNING "Calld requires a 64 bit target architecture.\n"
+    "The most likely cause of this warning is trying to build calld with a 32-bit OS.")
 endif()

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -38,12 +38,12 @@ namespace call {
 static_assert (
     std::is_integral <beast::xor_shift_engine::result_type>::value &&
     std::is_unsigned <beast::xor_shift_engine::result_type>::value,
-        "The Ripple default PRNG engine must return an unsigned integral type.");
+        "The Call default PRNG engine must return an unsigned integral type.");
 
 static_assert (
     std::numeric_limits<beast::xor_shift_engine::result_type>::max() >=
     std::numeric_limits<std::uint64_t>::max(),
-        "The Ripple default PRNG engine return must be at least 64 bits wide.");
+        "The Call default PRNG engine return must be at least 64 bits wide.");
 #endif
 
 namespace detail {

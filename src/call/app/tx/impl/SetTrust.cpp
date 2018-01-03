@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -157,7 +157,7 @@ SetTrust::doApply ()
     // items.
     //
     // We do this because being able to exchange currencies,
-    // which needs trust lines, is a powerful Ripple feature.
+    // which needs trust lines, is a powerful Call feature.
     // So we want to make it easy for a gateway to fund the
     // accounts of its users without fear of being tricked.
     //
@@ -181,8 +181,8 @@ SetTrust::doApply ()
     std::uint32_t const uTxFlags = ctx_.tx.getFlags ();
 
     bool const bSetAuth = (uTxFlags & tfSetfAuth);
-    bool const bSetNoRipple = (uTxFlags & tfSetNoRipple);
-    bool const bClearNoRipple  = (uTxFlags & tfClearNoRipple);
+    bool const bSetNoCall = (uTxFlags & tfSetNoCall);
+    bool const bClearNoCall  = (uTxFlags & tfClearNoCall);
     bool const bSetFreeze = (uTxFlags & tfSetFreeze);
     bool const bClearFreeze = (uTxFlags & tfClearFreeze);
 
@@ -217,10 +217,10 @@ SetTrust::doApply ()
     STAmount saLimitAllow = saLimitAmount;
     saLimitAllow.setIssuer (account_);
 
-    SLE::pointer sleRippleState = view().peek (
+    SLE::pointer sleCallState = view().peek (
         keylet::line(account_, uDstAccountID, currency));
 
-    if (sleRippleState)
+    if (sleCallState)
     {
         STAmount        saLowBalance;
         STAmount        saLowLimit;
@@ -239,17 +239,17 @@ SetTrust::doApply ()
         // Balances
         //
 
-        saLowBalance    = sleRippleState->getFieldAmount (sfBalance);
+        saLowBalance    = sleCallState->getFieldAmount (sfBalance);
         saHighBalance   = -saLowBalance;
 
         //
         // Limits
         //
 
-        sleRippleState->setFieldAmount (!bHigh ? sfLowLimit : sfHighLimit, saLimitAllow);
+        sleCallState->setFieldAmount (!bHigh ? sfLowLimit : sfHighLimit, saLimitAllow);
 
-        saLowLimit  = !bHigh ? saLimitAllow : sleRippleState->getFieldAmount (sfLowLimit);
-        saHighLimit =  bHigh ? saLimitAllow : sleRippleState->getFieldAmount (sfHighLimit);
+        saLowLimit  = !bHigh ? saLimitAllow : sleCallState->getFieldAmount (sfLowLimit);
+        saHighLimit =  bHigh ? saLimitAllow : sleCallState->getFieldAmount (sfHighLimit);
 
         //
         // Quality in
@@ -259,26 +259,26 @@ SetTrust::doApply ()
         {
             // Not setting. Just get it.
 
-            uLowQualityIn   = sleRippleState->getFieldU32 (sfLowQualityIn);
-            uHighQualityIn  = sleRippleState->getFieldU32 (sfHighQualityIn);
+            uLowQualityIn   = sleCallState->getFieldU32 (sfLowQualityIn);
+            uHighQualityIn  = sleCallState->getFieldU32 (sfHighQualityIn);
         }
         else if (uQualityIn)
         {
             // Setting.
 
-            sleRippleState->setFieldU32 (!bHigh ? sfLowQualityIn : sfHighQualityIn, uQualityIn);
+            sleCallState->setFieldU32 (!bHigh ? sfLowQualityIn : sfHighQualityIn, uQualityIn);
 
-            uLowQualityIn   = !bHigh ? uQualityIn : sleRippleState->getFieldU32 (sfLowQualityIn);
-            uHighQualityIn  =  bHigh ? uQualityIn : sleRippleState->getFieldU32 (sfHighQualityIn);
+            uLowQualityIn   = !bHigh ? uQualityIn : sleCallState->getFieldU32 (sfLowQualityIn);
+            uHighQualityIn  =  bHigh ? uQualityIn : sleCallState->getFieldU32 (sfHighQualityIn);
         }
         else
         {
             // Clearing.
 
-            sleRippleState->makeFieldAbsent (!bHigh ? sfLowQualityIn : sfHighQualityIn);
+            sleCallState->makeFieldAbsent (!bHigh ? sfLowQualityIn : sfHighQualityIn);
 
-            uLowQualityIn   = !bHigh ? 0 : sleRippleState->getFieldU32 (sfLowQualityIn);
-            uHighQualityIn  =  bHigh ? 0 : sleRippleState->getFieldU32 (sfHighQualityIn);
+            uLowQualityIn   = !bHigh ? 0 : sleCallState->getFieldU32 (sfLowQualityIn);
+            uHighQualityIn  =  bHigh ? 0 : sleCallState->getFieldU32 (sfHighQualityIn);
         }
 
         if (QUALITY_ONE == uLowQualityIn)   uLowQualityIn   = 0;
@@ -293,38 +293,38 @@ SetTrust::doApply ()
         {
             // Not setting. Just get it.
 
-            uLowQualityOut  = sleRippleState->getFieldU32 (sfLowQualityOut);
-            uHighQualityOut = sleRippleState->getFieldU32 (sfHighQualityOut);
+            uLowQualityOut  = sleCallState->getFieldU32 (sfLowQualityOut);
+            uHighQualityOut = sleCallState->getFieldU32 (sfHighQualityOut);
         }
         else if (uQualityOut)
         {
             // Setting.
 
-            sleRippleState->setFieldU32 (!bHigh ? sfLowQualityOut : sfHighQualityOut, uQualityOut);
+            sleCallState->setFieldU32 (!bHigh ? sfLowQualityOut : sfHighQualityOut, uQualityOut);
 
-            uLowQualityOut  = !bHigh ? uQualityOut : sleRippleState->getFieldU32 (sfLowQualityOut);
-            uHighQualityOut =  bHigh ? uQualityOut : sleRippleState->getFieldU32 (sfHighQualityOut);
+            uLowQualityOut  = !bHigh ? uQualityOut : sleCallState->getFieldU32 (sfLowQualityOut);
+            uHighQualityOut =  bHigh ? uQualityOut : sleCallState->getFieldU32 (sfHighQualityOut);
         }
         else
         {
             // Clearing.
 
-            sleRippleState->makeFieldAbsent (!bHigh ? sfLowQualityOut : sfHighQualityOut);
+            sleCallState->makeFieldAbsent (!bHigh ? sfLowQualityOut : sfHighQualityOut);
 
-            uLowQualityOut  = !bHigh ? 0 : sleRippleState->getFieldU32 (sfLowQualityOut);
-            uHighQualityOut =  bHigh ? 0 : sleRippleState->getFieldU32 (sfHighQualityOut);
+            uLowQualityOut  = !bHigh ? 0 : sleCallState->getFieldU32 (sfLowQualityOut);
+            uHighQualityOut =  bHigh ? 0 : sleCallState->getFieldU32 (sfHighQualityOut);
         }
 
-        std::uint32_t const uFlagsIn (sleRippleState->getFieldU32 (sfFlags));
+        std::uint32_t const uFlagsIn (sleCallState->getFieldU32 (sfFlags));
         std::uint32_t uFlagsOut (uFlagsIn);
 
-        if (bSetNoRipple && !bClearNoRipple && (bHigh ? saHighBalance : saLowBalance) >= zero)
+        if (bSetNoCall && !bClearNoCall && (bHigh ? saHighBalance : saLowBalance) >= zero)
         {
-            uFlagsOut |= (bHigh ? lsfHighNoRipple : lsfLowNoRipple);
+            uFlagsOut |= (bHigh ? lsfHighNoCall : lsfLowNoCall);
         }
-        else if (bClearNoRipple && !bSetNoRipple)
+        else if (bClearNoCall && !bSetNoCall)
         {
-            uFlagsOut &= ~(bHigh ? lsfHighNoRipple : lsfLowNoRipple);
+            uFlagsOut &= ~(bHigh ? lsfHighNoCall : lsfLowNoCall);
         }
 
         if (bSetFreeze && !bClearFreeze && !sle->isFlag  (lsfNoFreeze))
@@ -340,17 +340,17 @@ SetTrust::doApply ()
 
         if (QUALITY_ONE == uHighQualityOut) uHighQualityOut = 0;
 
-        bool const bLowDefRipple        = sleLowAccount->getFlags() & lsfDefaultRipple;
-        bool const bHighDefRipple       = sleHighAccount->getFlags() & lsfDefaultRipple;
+        bool const bLowDefCall        = sleLowAccount->getFlags() & lsfDefaultCall;
+        bool const bHighDefCall       = sleHighAccount->getFlags() & lsfDefaultCall;
 
         bool const  bLowReserveSet      = uLowQualityIn || uLowQualityOut ||
-                                            ((uFlagsOut & lsfLowNoRipple) == 0) != bLowDefRipple ||
+                                            ((uFlagsOut & lsfLowNoCall) == 0) != bLowDefCall ||
                                             (uFlagsOut & lsfLowFreeze) ||
                                             saLowLimit || saLowBalance > zero;
         bool const  bLowReserveClear    = !bLowReserveSet;
 
         bool const  bHighReserveSet     = uHighQualityIn || uHighQualityOut ||
-                                            ((uFlagsOut & lsfHighNoRipple) == 0) != bHighDefRipple ||
+                                            ((uFlagsOut & lsfHighNoCall) == 0) != bHighDefCall ||
                                             (uFlagsOut & lsfHighFreeze) ||
                                             saHighLimit || saHighBalance > zero;
         bool const  bHighReserveClear   = !bHighReserveSet;
@@ -406,14 +406,14 @@ SetTrust::doApply ()
         }
 
         if (uFlagsIn != uFlagsOut)
-            sleRippleState->setFieldU32 (sfFlags, uFlagsOut);
+            sleCallState->setFieldU32 (sfFlags, uFlagsOut);
 
         if (bDefault || badCurrency() == currency)
         {
             // Delete.
 
             terResult = trustDelete (view(),
-                sleRippleState, uLowAccountID, uHighAccountID, viewJ);
+                sleCallState, uLowAccountID, uHighAccountID, viewJ);
         }
         // Reserve is not scaled by load.
         else if (bReserveIncrease && mPriorBalance < reserveCreate)
@@ -427,7 +427,7 @@ SetTrust::doApply ()
         }
         else
         {
-            view().update (sleRippleState);
+            view().update (sleCallState);
 
             JLOG(j_.trace()) << "Modify call line";
         }
@@ -455,7 +455,7 @@ SetTrust::doApply ()
         // Zero balance in currency.
         STAmount saBalance ({currency, noAccount()});
 
-        uint256 index (getRippleStateIndex (
+        uint256 index (getCallStateIndex (
             account_, uDstAccountID, currency));
 
         JLOG(j_.trace()) <<
@@ -470,7 +470,7 @@ SetTrust::doApply ()
             index,
             sle,
             bSetAuth,
-            bSetNoRipple && !bClearNoRipple,
+            bSetNoCall && !bClearNoCall,
             bSetFreeze && !bClearFreeze,
             saBalance,
             saLimitAllow,       // Limit for who is being charged.

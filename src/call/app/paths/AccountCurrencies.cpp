@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -24,7 +24,7 @@ namespace call {
 
 hash_set<Currency> accountSourceCurrencies (
     AccountID const& account,
-    std::shared_ptr<RippleLineCache> const& lrCache,
+    std::shared_ptr<CallLineCache> const& lrCache,
     bool includeXRP)
 {
     hash_set<Currency> currencies;
@@ -34,11 +34,11 @@ hash_set<Currency> accountSourceCurrencies (
         currencies.insert (xrpCurrency());
 
     // List of call lines.
-    auto& callLines = lrCache->getRippleLines (account);
+    auto& callLines = lrCache->getCallLines (account);
 
     for (auto const& item : callLines)
     {
-        auto rspEntry = (RippleState*) item.get ();
+        auto rspEntry = (CallState*) item.get ();
         assert (rspEntry);
         if (!rspEntry)
             continue;
@@ -62,7 +62,7 @@ hash_set<Currency> accountSourceCurrencies (
 
 hash_set<Currency> accountDestCurrencies (
     AccountID const& account,
-    std::shared_ptr<RippleLineCache> const& lrCache,
+    std::shared_ptr<CallLineCache> const& lrCache,
     bool includeXRP)
 {
     hash_set<Currency> currencies;
@@ -72,11 +72,11 @@ hash_set<Currency> accountDestCurrencies (
     // Even if account doesn't exist
 
     // List of call lines.
-    auto& callLines = lrCache->getRippleLines (account);
+    auto& callLines = lrCache->getCallLines (account);
 
     for (auto const& item : callLines)
     {
-        auto rspEntry = (RippleState*) item.get ();
+        auto rspEntry = (CallState*) item.get ();
         assert (rspEntry);
         if (!rspEntry)
             continue;

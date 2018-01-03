@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012-2017 Ripple Labs Inc.
+    Copyright (c) 2012-2017 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -227,7 +227,7 @@ class Invariants_test : public beast::unit_test::suite
             [](Account const& A1, Account const& A2, ApplyContext& ac)
             {
                 // create simple trust SLE with xrp currency
-                auto index = getRippleStateIndex (A1, A2, xrpIssue().currency);
+                auto index = getCallStateIndex (A1, A2, xrpIssue().currency);
                 auto const sleNew = std::make_shared<SLE>(
                     ltCALL_STATE, index);
                 ac.view().insert (sleNew);

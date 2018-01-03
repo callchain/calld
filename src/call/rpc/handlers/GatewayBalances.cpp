@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012-2014 Ripple Labs Inc.
+    Copyright (c) 2012-2014 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -19,7 +19,7 @@
 
 #include <BeastConfig.h>
 #include <call/app/main/Application.h>
-#include <call/app/paths/RippleState.h>
+#include <call/app/paths/CallState.h>
 #include <call/ledger/ReadView.h>
 #include <call/protocol/AccountID.h>
 #include <call/protocol/ErrorCodes.h>
@@ -148,7 +148,7 @@ Json::Value doGatewayBalances (RPC::Context& context)
         forEachItem(*ledger, accountID,
             [&](std::shared_ptr<SLE const> const& sle)
             {
-                auto rs = RippleState::makeItem (accountID, sle);
+                auto rs = CallState::makeItem (accountID, sle);
 
                 if (!rs)
                     return;

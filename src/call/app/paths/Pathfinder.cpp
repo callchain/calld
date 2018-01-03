@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -21,8 +21,8 @@
 #include <call/app/main/Application.h>
 #include <call/app/paths/Tuning.h>
 #include <call/app/paths/Pathfinder.h>
-#include <call/app/paths/RippleCalc.h>
-#include <call/app/paths/RippleLineCache.h>
+#include <call/app/paths/CallCalc.h>
+#include <call/app/paths/CallLineCache.h>
 #include <call/ledger/PaymentSandbox.h>
 #include <call/app/ledger/OrderBookDB.h>
 #include <call/basics/Log.h>
@@ -143,7 +143,7 @@ std::string pathTypeToString (Pathfinder::PathType const& type)
 }  // namespace
 
 Pathfinder::Pathfinder (
-    std::shared_ptr<RippleLineCache> const& cache,
+    std::shared_ptr<CallLineCache> const& cache,
     AccountID const& uSrcAccount,
     AccountID const& uDstAccount,
     Currency const& uSrcCurrency,
@@ -332,7 +332,7 @@ TER Pathfinder::getPathLiquidity (
     STPathSet pathSet;
     pathSet.push_back (path);
 
-    path::RippleCalc::Input rcInput;
+    path::CallCalc::Input rcInput;
     rcInput.defaultPathsAllowed = false;
 
     PaymentSandbox sandbox (&*mLedger, tapNONE);
@@ -343,7 +343,7 @@ TER Pathfinder::getPathLiquidity (
         if (convert_all_)
             rcInput.partialPaymentAllowed = true;
 
-        auto rc = path::RippleCalc::callCalculate (
+        auto rc = path::CallCalc::callCalculate (
             sandbox,
             mSrcAmount,
             minDstAmount,
@@ -363,7 +363,7 @@ TER Pathfinder::getPathLiquidity (
         {
             // Now try to compute the remaining liquidity.
             rcInput.partialPaymentAllowed = true;
-            rc = path::RippleCalc::callCalculate (
+            rc = path::CallCalc::callCalculate (
                 sandbox,
                 mSrcAmount,
                 mDstAmount - amountOut,
@@ -412,9 +412,9 @@ void Pathfinder::computePathRanks (int maxPaths)
     {
         PaymentSandbox sandbox (&*mLedger, tapNONE);
 
-        path::RippleCalc::Input rcInput;
+        path::CallCalc::Input rcInput;
         rcInput.partialPaymentAllowed = true;
-        auto rc = path::RippleCalc::callCalculate (
+        auto rc = path::CallCalc::callCalculate (
             sandbox,
             mSrcAmount,
             mRemainingAmount,
@@ -720,9 +720,9 @@ int Pathfinder::getPathsOut (
     {
         count = app_.getOrderBookDB ().getBookSize (issue);
 
-        for (auto const& item : mRLCache->getRippleLines (account))
+        for (auto const& item : mRLCache->getCallLines (account))
         {
-            RippleState* rspEntry = (RippleState*) item.get ();
+            CallState* rspEntry = (CallState*) item.get ();
 
             if (currency != rspEntry->getLimit ().getCurrency ())
             {
@@ -738,7 +738,7 @@ int Pathfinder::getPathsOut (
             {
                 count += 10000; // count a path to the destination extra
             }
-            else if (rspEntry->getNoRipplePeer ())
+            else if (rspEntry->getNoCallPeer ())
             {
                 // This probably isn't a useful path out
             }
@@ -840,23 +840,23 @@ STPathSet& Pathfinder::addPathsForType (PathType const& pathType)
     return pathsOut;
 }
 
-bool Pathfinder::isNoRipple (
+bool Pathfinder::isNoCall (
     AccountID const& fromAccount,
     AccountID const& toAccount,
     Currency const& currency)
 {
-    auto sleRipple = mLedger->read(keylet::line(
+    auto sleCall = mLedger->read(keylet::line(
         toAccount, fromAccount, currency));
 
     auto const flag ((toAccount > fromAccount)
-                     ? lsfHighNoRipple : lsfLowNoRipple);
+                     ? lsfHighNoCall : lsfLowNoCall);
 
-    return sleRipple && (sleRipple->getFieldU32 (sfFlags) & flag);
+    return sleCall && (sleCall->getFieldU32 (sfFlags) & flag);
 }
 
 // Does this path end on an account-to-account link whose last account has
 // set "no call" on the link?
-bool Pathfinder::isNoRippleOut (STPath const& currentPath)
+bool Pathfinder::isNoCallOut (STPath const& currentPath)
 {
     // Must have at least one link.
     if (currentPath.empty ())
@@ -874,7 +874,7 @@ bool Pathfinder::isNoRippleOut (STPath const& currentPath)
         ? mSrcAccount
         : (currentPath.end () - 2)->getAccountID ();
     auto const& toAccount = endElement.getAccountID ();
-    return isNoRipple (fromAccount, toAccount, endElement.getCurrency ());
+    return isNoCall (fromAccount, toAccount, endElement.getCurrency ());
 }
 
 void addUniquePath (STPathSet& pathSet, STPath const& path)
@@ -932,23 +932,23 @@ void Pathfinder::addLink (
                     sleEnd->getFieldU32 (sfFlags) & lsfRequireAuth);
                 bool const bIsEndCurrency (
                     uEndCurrency == mDstAmount.getCurrency ());
-                bool const bIsNoRippleOut (
-                    isNoRippleOut (currentPath));
+                bool const bIsNoCallOut (
+                    isNoCallOut (currentPath));
                 bool const bDestOnly (
                     addFlags & afAC_LAST);
 
-                auto& callLines (mRLCache->getRippleLines (uEndAccount));
+                auto& callLines (mRLCache->getCallLines (uEndAccount));
 
                 AccountCandidates candidates;
                 candidates.reserve (callLines.size ());
 
                 for (auto const& item : callLines)
                 {
-                    auto* rs = dynamic_cast<RippleState const *> (item.get ());
+                    auto* rs = dynamic_cast<CallState const *> (item.get ());
                     if (!rs)
                     {
                         JLOG (j_.error())
-                                << "Couldn't decipher RippleState";
+                                << "Couldn't decipher CallState";
                         continue;
                     }
                     auto const& acct = rs->getAccountIDPeer ();
@@ -977,7 +977,7 @@ void Pathfinder::addLink (
                         {
                             // path has no credit
                         }
-                        else if (bIsNoRippleOut && rs->getNoRipple ())
+                        else if (bIsNoCallOut && rs->getNoCall ())
                         {
                             // Can't leave on this path
                         }

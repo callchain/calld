@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2016 Ripple Labs Inc.
+    Copyright (c) 2016 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -390,7 +390,7 @@ public:
         auto const jrr = makeRequest(jss::state);
         BEAST_EXPECT( checkArraySize(jrr[jss::state], 1) );
         for (auto const& j : jrr[jss::state])
-            BEAST_EXPECT( j["LedgerEntryType"] == "RippleState" );
+            BEAST_EXPECT( j["LedgerEntryType"] == "CallState" );
         }
 
         {  // jvParams[jss::type] = "ticket";

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -156,25 +156,25 @@ getTicketIndex (AccountID const& account, std::uint32_t uSequence)
 }
 
 uint256
-getRippleStateIndex (AccountID const& a, AccountID const& b, Currency const& currency)
+getCallStateIndex (AccountID const& a, AccountID const& b, Currency const& currency)
 {
     if (a < b)
         return sha512Half(
-            std::uint16_t(spaceRipple),
+            std::uint16_t(spaceCall),
             a,
             b,
             currency);
     return sha512Half(
-        std::uint16_t(spaceRipple),
+        std::uint16_t(spaceCall),
         b,
         a,
         currency);
 }
 
 uint256
-getRippleStateIndex (AccountID const& a, Issue const& issue)
+getCallStateIndex (AccountID const& a, Issue const& issue)
 {
-    return getRippleStateIndex (a, issue.account, issue.currency);
+    return getCallStateIndex (a, issue.account, issue.currency);
 }
 
 uint256
@@ -240,14 +240,14 @@ Keylet line_t::operator()(AccountID const& id0,
     AccountID const& id1, Currency const& currency) const
 {
     return { ltCALL_STATE,
-        getRippleStateIndex(id0, id1, currency) };
+        getCallStateIndex(id0, id1, currency) };
 }
 
 Keylet line_t::operator()(AccountID const& id,
     Issue const& issue) const
 {
     return { ltCALL_STATE,
-        getRippleStateIndex(id, issue) };
+        getCallStateIndex(id, issue) };
 }
 
 Keylet offer_t::operator()(AccountID const& id,

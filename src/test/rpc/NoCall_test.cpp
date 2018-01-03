@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2016 Ripple Labs Inc.
+    Copyright (c) 2016 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -25,7 +25,7 @@ namespace call {
 
 namespace test {
 
-class NoRipple_test : public beast::unit_test::suite
+class NoCall_test : public beast::unit_test::suite
 {
 public:
     void
@@ -51,8 +51,8 @@ public:
         for (auto SetOrClear : {true,false})
         {
             // Create a trust line with no-call flag setting
-            env( trust(gw, USD(100), alice, SetOrClear ? tfSetNoRipple
-                                                       : tfClearNoRipple));
+            env( trust(gw, USD(100), alice, SetOrClear ? tfSetNoCall
+                                                       : tfClearNoCall));
             env.close();
 
             // Check no-call flag on sender 'gateway'
@@ -87,8 +87,8 @@ public:
 
         env(pay(alice, carol, carol["USD"](50)), path(bob));
 
-        env(trust(alice, bob["USD"](100), bob, tfSetNoRipple));
-        env(trust(bob, carol["USD"](100), carol, tfSetNoRipple));
+        env(trust(alice, bob["USD"](100), bob, tfSetNoCall));
+        env(trust(bob, carol["USD"](100), carol, tfSetNoCall));
         env.close();
 
         Json::Value params;
@@ -115,7 +115,7 @@ public:
 
     void testPairwise(std::initializer_list<uint256> fs)
     {
-        testcase("pairwise NoRipple");
+        testcase("pairwise NoCall");
 
         using namespace jtx;
         Env env(*this, with_features(fs));
@@ -129,8 +129,8 @@ public:
         env(trust(bob, alice["USD"](100)));
         env(trust(carol, bob["USD"](100)));
 
-        env(trust(bob, alice["USD"](100), alice, tfSetNoRipple));
-        env(trust(bob, carol["USD"](100), carol, tfSetNoRipple));
+        env(trust(bob, alice["USD"](100), alice, tfSetNoCall));
+        env(trust(bob, carol["USD"](100), carol, tfSetNoCall));
         env.close();
 
         Json::Value params;
@@ -150,7 +150,7 @@ public:
         env(pay(alice, carol, bob["USD"](50)), ter(tecPATH_DRY));
     }
 
-    void testDefaultRipple(std::initializer_list<uint256> fs)
+    void testDefaultCall(std::initializer_list<uint256> fs)
     {
         testcase("Set default call on an account and check new trustlines");
 
@@ -163,7 +163,7 @@ public:
 
         env.fund(XRP(10000), gw, nocall(alice, bob));
 
-        env(fset(bob, asfDefaultRipple));
+        env(fset(bob, asfDefaultCall));
 
         auto const USD = gw["USD"];
 
@@ -215,7 +215,7 @@ public:
         auto withFeatsTests = [this](std::initializer_list<uint256> fs) {
             testNegativeBalance(fs);
             testPairwise(fs);
-            testDefaultRipple(fs);
+            testDefaultCall(fs);
         };
         withFeatsTests({});
         withFeatsTests({featureFlow});
@@ -224,7 +224,7 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(NoRipple,app,call);
+BEAST_DEFINE_TESTSUITE(NoCall,app,call);
 
 } // RPC
 } // call

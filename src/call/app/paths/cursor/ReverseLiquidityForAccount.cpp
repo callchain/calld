@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -19,7 +19,7 @@
 
 #include <BeastConfig.h>
 #include <call/app/paths/Credit.h>
-#include <call/app/paths/cursor/RippleLiquidity.h>
+#include <call/app/paths/cursor/CallLiquidity.h>
 #include <call/basics/Log.h>
 #include <call/protocol/Quality.h>
 
@@ -515,7 +515,7 @@ TER PathCursor::reverseLiquidityForAccount () const
                 << " node.saRevIssue:" << node().saRevIssue;
 
             // deliver -> redeem
-            // TODO(tom): now we have more checking in nodeRipple, these checks
+            // TODO(tom): now we have more checking in nodeCall, these checks
             // might be redundant.
             if (node().saRevRedeem)  // Next wants us to redeem.
             {

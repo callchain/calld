@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -1116,7 +1116,7 @@ trustCreate (ApplyView& view,
     uint256 const&  uIndex,             // --> call state entry
     SLE::ref        sleAccount,         // --> the account being set.
     const bool      bAuth,              // --> authorize account.
-    const bool      bNoRipple,          // --> others cannot call through
+    const bool      bNoCall,          // --> others cannot call through
     const bool      bFreeze,            // --> funds cannot leave
     STAmount const& saBalance,          // --> balance of account being set.
                                         // Issuer should be noAccount()
@@ -1133,18 +1133,18 @@ trustCreate (ApplyView& view,
     auto const& uLowAccountID   = !bSrcHigh ? uSrcAccountID : uDstAccountID;
     auto const& uHighAccountID  =  bSrcHigh ? uSrcAccountID : uDstAccountID;
 
-    auto const sleRippleState = std::make_shared<SLE>(
+    auto const sleCallState = std::make_shared<SLE>(
         ltCALL_STATE, uIndex);
-    view.insert (sleRippleState);
+    view.insert (sleCallState);
 
     auto lowNode = dirAdd (view, keylet::ownerDir (uLowAccountID),
-        sleRippleState->key(), false, describeOwnerDir (uLowAccountID), j);
+        sleCallState->key(), false, describeOwnerDir (uLowAccountID), j);
 
     if (!lowNode)
         return tecDIR_FULL;
 
     auto highNode = dirAdd (view, keylet::ownerDir (uHighAccountID),
-        sleRippleState->key(), false, describeOwnerDir (uHighAccountID), j);
+        sleCallState->key(), false, describeOwnerDir (uHighAccountID), j);
 
     if (!highNode)
         return tecDIR_FULL;
@@ -1159,22 +1159,22 @@ trustCreate (ApplyView& view,
     assert (slePeer);
 
     // Remember deletion hints.
-    sleRippleState->setFieldU64 (sfLowNode, *lowNode);
-    sleRippleState->setFieldU64 (sfHighNode, *highNode);
+    sleCallState->setFieldU64 (sfLowNode, *lowNode);
+    sleCallState->setFieldU64 (sfHighNode, *highNode);
 
-    sleRippleState->setFieldAmount (
+    sleCallState->setFieldAmount (
         bSetHigh ? sfHighLimit : sfLowLimit, saLimit);
-    sleRippleState->setFieldAmount (
+    sleCallState->setFieldAmount (
         bSetHigh ? sfLowLimit : sfHighLimit,
         STAmount ({saBalance.getCurrency (),
                    bSetDst ? uSrcAccountID : uDstAccountID}));
 
     if (uQualityIn)
-        sleRippleState->setFieldU32 (
+        sleCallState->setFieldU32 (
             bSetHigh ? sfHighQualityIn : sfLowQualityIn, uQualityIn);
 
     if (uQualityOut)
-        sleRippleState->setFieldU32 (
+        sleCallState->setFieldU32 (
             bSetHigh ? sfHighQualityOut : sfLowQualityOut, uQualityOut);
 
     std::uint32_t uFlags = bSetHigh ? lsfHighReserve : lsfLowReserve;
@@ -1183,26 +1183,26 @@ trustCreate (ApplyView& view,
     {
         uFlags |= (bSetHigh ? lsfHighAuth : lsfLowAuth);
     }
-    if (bNoRipple)
+    if (bNoCall)
     {
-        uFlags |= (bSetHigh ? lsfHighNoRipple : lsfLowNoRipple);
+        uFlags |= (bSetHigh ? lsfHighNoCall : lsfLowNoCall);
     }
     if (bFreeze)
     {
         uFlags |= (!bSetHigh ? lsfLowFreeze : lsfHighFreeze);
     }
 
-    if ((slePeer->getFlags() & lsfDefaultRipple) == 0)
+    if ((slePeer->getFlags() & lsfDefaultCall) == 0)
     {
         // The other side's default is no rippling
-        uFlags |= (bSetHigh ? lsfLowNoRipple : lsfHighNoRipple);
+        uFlags |= (bSetHigh ? lsfLowNoCall : lsfHighNoCall);
     }
 
-    sleRippleState->setFieldU32 (sfFlags, uFlags);
+    sleCallState->setFieldU32 (sfFlags, uFlags);
     adjustOwnerCount(view, sleAccount, 1, j);
 
     // ONLY: Create call balance.
-    sleRippleState->setFieldAmount (sfBalance, bSetHigh ? -saBalance : saBalance);
+    sleCallState->setFieldAmount (sfBalance, bSetHigh ? -saBalance : saBalance);
 
     view.creditHook (uSrcAccountID,
         uDstAccountID, saBalance, saBalance.zeroed());
@@ -1212,16 +1212,16 @@ trustCreate (ApplyView& view,
 
 TER
 trustDelete (ApplyView& view,
-    std::shared_ptr<SLE> const& sleRippleState,
+    std::shared_ptr<SLE> const& sleCallState,
         AccountID const& uLowAccountID,
             AccountID const& uHighAccountID,
                  beast::Journal j)
 {
     // Detect legacy dirs.
-    bool        bLowNode    = sleRippleState->isFieldPresent (sfLowNode);
-    bool        bHighNode   = sleRippleState->isFieldPresent (sfHighNode);
-    std::uint64_t uLowNode    = sleRippleState->getFieldU64 (sfLowNode);
-    std::uint64_t uHighNode   = sleRippleState->getFieldU64 (sfHighNode);
+    bool        bLowNode    = sleCallState->isFieldPresent (sfLowNode);
+    bool        bHighNode   = sleCallState->isFieldPresent (sfHighNode);
+    std::uint64_t uLowNode    = sleCallState->getFieldU64 (sfLowNode);
+    std::uint64_t uHighNode   = sleCallState->getFieldU64 (sfHighNode);
     TER         terResult;
 
     JLOG (j.trace())
@@ -1230,7 +1230,7 @@ trustDelete (ApplyView& view,
         false,
         uLowNode,
         keylet::ownerDir (uLowAccountID),
-        sleRippleState->key(),
+        sleCallState->key(),
         false,
         !bLowNode,
         j);
@@ -1243,14 +1243,14 @@ trustDelete (ApplyView& view,
             false,
             uHighNode,
             keylet::ownerDir (uHighAccountID),
-            sleRippleState->key(),
+            sleCallState->key(),
             false,
             !bHighNode,
             j);
     }
 
     JLOG (j.trace()) << "trustDelete: Deleting call line: state";
-    view.erase(sleRippleState);
+    view.erase(sleCallState);
 
     return terResult;
 }
@@ -1306,16 +1306,16 @@ callCredit (ApplyView& view,
     assert (uSenderID != uReceiverID);
 
     bool bSenderHigh = uSenderID > uReceiverID;
-    uint256 uIndex = getRippleStateIndex (
+    uint256 uIndex = getCallStateIndex (
         uSenderID, uReceiverID, saAmount.getCurrency ());
-    auto sleRippleState  = view.peek (keylet::line(uIndex));
+    auto sleCallState  = view.peek (keylet::line(uIndex));
 
     TER terResult;
 
     assert (!isXRP (uSenderID) && uSenderID != noAccount());
     assert (!isXRP (uReceiverID) && uReceiverID != noAccount());
 
-    if (!sleRippleState)
+    if (!sleCallState)
     {
         STAmount saReceiverLimit({currency, uReceiverID});
         STAmount saBalance = saAmount;
@@ -1330,7 +1330,7 @@ callCredit (ApplyView& view,
         auto const sleAccount =
             view.peek(keylet::account(uReceiverID));
 
-        bool noRipple = (sleAccount->getFlags() & lsfDefaultRipple) == 0;
+        bool noCall = (sleAccount->getFlags() & lsfDefaultCall) == 0;
 
         terResult = trustCreate (view,
             bSenderHigh,
@@ -1339,7 +1339,7 @@ callCredit (ApplyView& view,
             uIndex,
             sleAccount,
             false,
-            noRipple,
+            noCall,
             false,
             saBalance,
             saReceiverLimit,
@@ -1349,7 +1349,7 @@ callCredit (ApplyView& view,
     }
     else
     {
-        STAmount saBalance   = sleRippleState->getFieldAmount (sfBalance);
+        STAmount saBalance   = sleCallState->getFieldAmount (sfBalance);
 
         if (bSenderHigh)
             saBalance.negate ();    // Put balance in sender terms.
@@ -1368,7 +1368,7 @@ callCredit (ApplyView& view,
             " amount=" << saAmount.getFullText () <<
             " after=" << saBalance.getFullText ();
 
-        std::uint32_t const uFlags (sleRippleState->getFieldU32 (sfFlags));
+        std::uint32_t const uFlags (sleCallState->getFieldU32 (sfFlags));
         bool bDelete = false;
 
         // YYY Could skip this if rippling in reverse.
@@ -1378,16 +1378,16 @@ callCredit (ApplyView& view,
             // Sender is zero or negative.
             && (uFlags & (!bSenderHigh ? lsfLowReserve : lsfHighReserve))
             // Sender reserve is set.
-            && static_cast <bool> (uFlags & (!bSenderHigh ? lsfLowNoRipple : lsfHighNoRipple)) !=
-               static_cast <bool> (view.read (keylet::account(uSenderID))->getFlags() & lsfDefaultRipple)
+            && static_cast <bool> (uFlags & (!bSenderHigh ? lsfLowNoCall : lsfHighNoCall)) !=
+               static_cast <bool> (view.read (keylet::account(uSenderID))->getFlags() & lsfDefaultCall)
             && !(uFlags & (!bSenderHigh ? lsfLowFreeze : lsfHighFreeze))
-            && !sleRippleState->getFieldAmount (
+            && !sleCallState->getFieldAmount (
                 !bSenderHigh ? sfLowLimit : sfHighLimit)
             // Sender trust limit is 0.
-            && !sleRippleState->getFieldU32 (
+            && !sleCallState->getFieldU32 (
                 !bSenderHigh ? sfLowQualityIn : sfHighQualityIn)
             // Sender quality in is 0.
-            && !sleRippleState->getFieldU32 (
+            && !sleCallState->getFieldU32 (
                 !bSenderHigh ? sfLowQualityOut : sfHighQualityOut))
             // Sender quality out is 0.
         {
@@ -1396,7 +1396,7 @@ callCredit (ApplyView& view,
                 view.peek(keylet::account(uSenderID)), -1, j);
 
             // Clear reserve flag.
-            sleRippleState->setFieldU32 (
+            sleCallState->setFieldU32 (
                 sfFlags,
                 uFlags & (!bSenderHigh ? ~lsfLowReserve : ~lsfHighReserve));
 
@@ -1410,19 +1410,19 @@ callCredit (ApplyView& view,
             saBalance.negate ();
 
         // Want to reflect balance to zero even if we are deleting line.
-        sleRippleState->setFieldAmount (sfBalance, saBalance);
+        sleCallState->setFieldAmount (sfBalance, saBalance);
         // ONLY: Adjust call balance.
 
         if (bDelete)
         {
             terResult   = trustDelete (view,
-                sleRippleState,
+                sleCallState,
                 bSenderHigh ? uReceiverID : uSenderID,
                 !bSenderHigh ? uReceiverID : uSenderID, j);
         }
         else
         {
-            view.update (sleRippleState);
+            view.update (sleCallState);
             terResult   = tesSUCCESS;
         }
     }
@@ -1653,8 +1653,8 @@ updateTrustLine (
         // Sender is zero or negative.
         && (flags & (!bSenderHigh ? lsfLowReserve : lsfHighReserve))
         // Sender reserve is set.
-        && static_cast <bool> (flags & (!bSenderHigh ? lsfLowNoRipple : lsfHighNoRipple)) !=
-           static_cast <bool> (sle->getFlags() & lsfDefaultRipple)
+        && static_cast <bool> (flags & (!bSenderHigh ? lsfLowNoCall : lsfHighNoCall)) !=
+           static_cast <bool> (sle->getFlags() & lsfDefaultCall)
         && !(flags & (!bSenderHigh ? lsfLowFreeze : lsfHighFreeze))
         && !state->getFieldAmount (
             !bSenderHigh ? sfLowLimit : sfHighLimit)
@@ -1701,7 +1701,7 @@ issueIOU (ApplyView& view,
         amount.getFullText ();
 
     bool bSenderHigh = issue.account > account;
-    uint256 const index = getRippleStateIndex (
+    uint256 const index = getCallStateIndex (
         issue.account, account, issue.currency);
     auto state = view.peek (keylet::line(index));
 
@@ -1717,10 +1717,10 @@ issueIOU (ApplyView& view,
 
         auto receiverAccount = view.peek (keylet::account(account));
 
-        bool noRipple = (receiverAccount->getFlags() & lsfDefaultRipple) == 0;
+        bool noCall = (receiverAccount->getFlags() & lsfDefaultCall) == 0;
 
         return trustCreate (view, bSenderHigh, issue.account, account, index,
-            receiverAccount, false, noRipple, false, final_balance, limit, 0, 0, j);
+            receiverAccount, false, noCall, false, final_balance, limit, 0, 0, j);
     }
 
     STAmount final_balance = state->getFieldAmount (sfBalance);
@@ -1774,7 +1774,7 @@ redeemIOU (ApplyView& view,
         amount.getFullText ();
 
     bool bSenderHigh = account > issue.account;
-    uint256 const index = getRippleStateIndex (
+    uint256 const index = getCallStateIndex (
         account, issue.account, issue.currency);
     auto state  = view.peek (keylet::line(index));
 

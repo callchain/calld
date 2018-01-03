@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -19,7 +19,7 @@
 
 #include <BeastConfig.h>
 #include <call/app/paths/Flow.h>
-#include <call/app/paths/RippleCalc.h>
+#include <call/app/paths/CallCalc.h>
 #include <call/app/paths/Tuning.h>
 #include <call/app/paths/cursor/PathCursor.h>
 #include <call/app/paths/impl/FlowDebugInfo.h>
@@ -42,7 +42,7 @@ deleteOffers (ApplyView& view,
     return tesSUCCESS;
 }
 
-RippleCalc::Output RippleCalc::callCalculate (
+CallCalc::Output CallCalc::callCalculate (
     PaymentSandbox& view,
 
     // Compute paths using this ledger entry set.  Up to caller to actually
@@ -87,7 +87,7 @@ RippleCalc::Output RippleCalc::callCalculate (
     if (callFlowV1)
     {
         auto const timeIt = flowV1FlowDebugInfo.timeBlock ("main");
-        RippleCalc rc (
+        CallCalc rc (
             flowV1SB,
             saMaxAmountReq,
             saDstAmountReq,
@@ -151,7 +151,7 @@ RippleCalc::Output RippleCalc::callCalculate (
             if (!useFlowV1Output)
             {
                 // return a tec so the tx is stored
-                path::RippleCalc::Output exceptResult;
+                path::CallCalc::Output exceptResult;
                 exceptResult.setResult(tecINTERNAL);
                 return exceptResult;
             }
@@ -167,7 +167,7 @@ RippleCalc::Output RippleCalc::callCalculate (
             boost::optional<BalanceDiffs> const& balanceDiffs,
             bool outputPassInfo,
             bool outputBalanceDiffs) {
-                j.debug () << "RippleCalc Result> " <<
+                j.debug () << "CallCalc Result> " <<
                 " actualIn: " << result.actualAmountIn <<
                 ", actualOut: " << result.actualAmountOut <<
                 ", result: " << result.result () <<
@@ -222,7 +222,7 @@ RippleCalc::Output RippleCalc::callCalculate (
     return flowV1Out;
 }
 
-bool RippleCalc::addPathState(STPath const& path, TER& resultCode)
+bool CallCalc::addPathState(STPath const& path, TER& resultCode)
 {
     auto pathState = std::make_shared<PathState> (
         view, saDstAmountReq_, saMaxAmountReq_, j_);
@@ -239,7 +239,7 @@ bool RippleCalc::addPathState(STPath const& path, TER& resultCode)
         uSrcAccountID_);
 
     if (pathState->status() == tesSUCCESS)
-        pathState->checkNoRipple (uDstAccountID_, uSrcAccountID_);
+        pathState->checkNoCall (uDstAccountID_, uSrcAccountID_);
 
     if (pathState->status() == tesSUCCESS)
         pathState->checkFreeze ();
@@ -274,7 +274,7 @@ bool RippleCalc::addPathState(STPath const& path, TER& resultCode)
 // liquidity. No need to revisit path in the future if all liquidity is used.
 
 // <-- TER: Only returns tepPATH_PARTIAL if partialPaymentAllowed.
-TER RippleCalc::callCalculate (detail::FlowDebugInfo* flowDebugInfo)
+TER CallCalc::callCalculate (detail::FlowDebugInfo* flowDebugInfo)
 {
     JLOG (j_.trace())
         << "callCalc>"

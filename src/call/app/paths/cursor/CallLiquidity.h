@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -17,36 +17,43 @@
 */
 //==============================================================================
 
-#include <BeastConfig.h>
-#include <call/app/paths/RippleLineCache.h>
-#include <call/ledger/OpenView.h>
+#ifndef CALL_APP_PATHS_CURSOR_CALLLIQUIDITY_H_INCLUDED
+#define CALL_APP_PATHS_CURSOR_CALLLIQUIDITY_H_INCLUDED
+
+#include <call/app/paths/cursor/PathCursor.h>
+#include <call/app/paths/CallCalc.h>
+#include <call/app/paths/Tuning.h>
+#include <call/ledger/View.h>
+#include <call/protocol/Rate.h>
 
 namespace call {
+namespace path {
 
-RippleLineCache::RippleLineCache(
-    std::shared_ptr <ReadView const> const& ledger)
-{
-    // We want the caching that OpenView provides
-    // And we need to own a shared_ptr to the input view
-    // VFALCO TODO This should be a CachedLedger
-    mLedger = std::make_shared<OpenView>(&*ledger, ledger);
-}
+void callLiquidity (
+    CallCalc&,
+    Rate const& qualityIn,
+    Rate const& qualityOut,
+    STAmount const& saPrvReq,
+    STAmount const& saCurReq,
+    STAmount& saPrvAct,
+    STAmount& saCurAct,
+    std::uint64_t& uRateMax);
 
-std::vector<RippleState::pointer> const&
-RippleLineCache::getRippleLines (AccountID const& accountID)
-{
-    AccountKey key (accountID, hasher_ (accountID));
+Rate
+quality_in (
+    ReadView const& view,
+    AccountID const& uToAccountID,
+    AccountID const& uFromAccountID,
+    Currency const& currency);
 
-    std::lock_guard <std::mutex> sl (mLock);
+Rate
+quality_out (
+    ReadView const& view,
+    AccountID const& uToAccountID,
+    AccountID const& uFromAccountID,
+    Currency const& currency);
 
-    auto it = lines_.emplace (key,
-        std::vector<RippleState::pointer>());
-
-    if (it.second)
-        it.first->second = getRippleStateItems (
-            accountID, *mLedger);
-
-    return it.first->second;
-}
-
+} // path
 } // call
+
+#endif

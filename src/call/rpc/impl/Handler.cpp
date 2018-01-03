@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -129,7 +129,7 @@ Handler handlerArray[] {
     {   "ledger_request",       byRef (&doLedgerRequest),       Role::ADMIN,   NO_CONDITION     },
     {   "log_level",            byRef (&doLogLevel),            Role::ADMIN,   NO_CONDITION     },
     {   "logrotate",            byRef (&doLogRotate),           Role::ADMIN,   NO_CONDITION     },
-    {   "nocall_check",       byRef (&doNoRippleCheck),       Role::USER,  NO_CONDITION  },
+    {   "nocall_check",       byRef (&doNoCallCheck),       Role::USER,  NO_CONDITION  },
     {   "owner_info",           byRef (&doOwnerInfo),           Role::USER,  NEEDS_CURRENT_LEDGER  },
     {   "peers",                byRef (&doPeers),               Role::ADMIN,   NO_CONDITION     },
     {   "path_find",            byRef (&doPathFind),            Role::USER,  NEEDS_CURRENT_LEDGER  },
@@ -137,7 +137,7 @@ Handler handlerArray[] {
     {   "print",                byRef (&doPrint),               Role::ADMIN,   NO_CONDITION     },
 //      {   "profile",              byRef (&doProfile),             Role::USER,  NEEDS_CURRENT_LEDGER  },
     {   "random",               byRef (&doRandom),              Role::USER,  NO_CONDITION     },
-    {   "call_path_find",     byRef (&doRipplePathFind),      Role::USER,  NO_CONDITION  },
+    {   "call_path_find",     byRef (&doCallPathFind),      Role::USER,  NO_CONDITION  },
     {   "sign",                 byRef (&doSign),                Role::USER,  NO_CONDITION     },
     {   "sign_for",             byRef (&doSignFor),             Role::USER,  NO_CONDITION     },
     {   "submit",               byRef (&doSubmit),              Role::USER,  NEEDS_CURRENT_LEDGER  },

@@ -1,6 +1,6 @@
 # Fee Voting
 
-The Ripple payment protocol enforces a fee schedule expressed in units of the
+The Call payment protocol enforces a fee schedule expressed in units of the
 native currency, XRP. Fees for transactions are paid directly from the account
 owner. There are also reserve requirements for each item that occupies storage
 in the ledger. The reserve fee schedule contains both a per-account reserve,
@@ -20,7 +20,7 @@ subsequent ledgers a new fee schedule is enacted.
 
 ## Consensus
 
-The Ripple consensus algorithm allows distributed participants to arrive at
+The Call consensus algorithm allows distributed participants to arrive at
 the same answer for yes/no questions. The canonical case for consensus is
 whether or not a particular transaction is included in the ledger. Fees
 present a more difficult challenge, since the decision on the new fee is not

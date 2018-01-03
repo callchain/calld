@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -70,13 +70,13 @@ namespace call {
             `CancelAfter` time will close it.
         DestinationTag (optional)
             Destination tags allow the different accounts inside of a Hosted
-            Wallet to be mapped back onto the Ripple ledger. The destination tag
+            Wallet to be mapped back onto the Call ledger. The destination tag
             tells the server to which account in the Hosted Wallet the funds are
             intended to go to. Required if the destination has lsfRequireDestTag
             set.
         SourceTag (optional)
             Source tags allow the different accounts inside of a Hosted Wallet
-            to be mapped back onto the Ripple ledger. Source tags are similar to
+            to be mapped back onto the Call ledger. Source tags are similar to
             destination tags but are for the channel owner to identify their own
             transactions.
 

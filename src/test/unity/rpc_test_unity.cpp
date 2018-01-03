@@ -2,7 +2,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Ripple Labs Inc.
+    Copyright (c) 2012, 2013 Call Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -35,8 +35,8 @@
 #include <test/rpc/LedgerData_test.cpp>
 #include <test/rpc/LedgerRPC_test.cpp>
 #include <test/rpc/LedgerRequestRPC_test.cpp>
-#include <test/rpc/NoRipple_test.cpp>
-#include <test/rpc/NoRippleCheck_test.cpp>
+#include <test/rpc/NoCall_test.cpp>
+#include <test/rpc/NoCallCheck_test.cpp>
 #include <test/rpc/OwnerInfo_test.cpp>
 #include <test/rpc/Peers_test.cpp>
 #include <test/rpc/RobustTransaction_test.cpp>
