@@ -605,7 +605,7 @@ TxQ::apply(Application& app, OpenView& view,
 {
     auto const allowEscalation =
         (view.rules().enabled(featureFeeEscalation));
-    if (!allowEscalation)
+    //if (!allowEscalation)
     {
         return call::apply(app, view, *tx, flags, j);
     }
