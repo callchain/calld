@@ -72,6 +72,8 @@ transResults()
         { tecINTERNAL,               { "tecINTERNAL",              "An internal error has occurred during processing."                             } },
         { tecCRYPTOCONDITION_ERROR,  { "tecCRYPTOCONDITION_ERROR", "Malformed, invalid, or mismatched conditional or fulfillment."                 } },
         { tecINVARIANT_FAILED,       { "tecINVARIANT_FAILED",      "One or more invariants for the transaction were not satisfied."                } },
+	{ tecOVERISSUED_AMOUNT,      { "tecOVERISSUED_AMOUNT",     "the issued amount is beyond to the total amount."                              } },
+        { tecBADTOTAL,               { "tecBADTOTAL",              "the set amount is lower than total amount."                                    } },
 
         { tefALREADY,                { "tefALREADY",               "The exact transaction was already in this ledger."                             } },
         { tefBAD_ADD_AUTH,           { "tefBAD_ADD_AUTH",          "Not authorized to add account."                                                } },

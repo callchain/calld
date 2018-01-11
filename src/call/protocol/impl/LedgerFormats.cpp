@@ -45,6 +45,8 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfTransferRate,        SOE_OPTIONAL)
             << SOElement (sfDomain,              SOE_OPTIONAL)
             << SOElement (sfTickSize,            SOE_OPTIONAL)
+            << SOElement(sfTotal,                SOE_OPTIONAL)
+            << SOElement(sfIssued,               SOE_OPTIONAL)
             ;
 
     add ("DirectoryNode", ltDIR_NODE)

@@ -430,7 +430,8 @@ extern SF_Amount const sfHighLimit;
 extern SF_Amount const sfFee;
 extern SF_Amount const sfSendMax;
 extern SF_Amount const sfDeliverMin;
-
+extern SF_Amount const sfTotal;
+extern SF_Amount const sfIssued;
 // currency amount (uncommon)
 extern SF_Amount const sfMinimumOffer;
 extern SF_Amount const sfCallEscrow;

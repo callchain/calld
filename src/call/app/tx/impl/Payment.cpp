@@ -326,6 +326,35 @@ Payment::doApply ()
         "maxSourceAmount=" << maxSourceAmount.getFullText () <<
         " saDstAmount=" << saDstAmount.getFullText ();
 
+      //check wether update account's issued amounts
+	if (saDstAmount.getCurrency().isNonZero())
+	{
+		if (view().read(
+			keylet::account(account_))->isFieldPresent(sfTotal))
+		{
+			STAmount satotalissue = view().read(
+				keylet::account(account_))->getFieldAmount(sfTotal);
+			Currency issuecurrency = satotalissue.getCurrency();
+			if (saDstAmount.getCurrency() == issuecurrency)
+			{
+				auto saissued = view().read(
+					keylet::account(account_))->getFieldAmount(sfIssued);
+				if (saissued + saDstAmount >= satotalissue)
+				{
+					return tecOVERISSUED_AMOUNT;
+				}
+				else
+				{
+					view().peek(keylet::account(account_))->setFieldAmount(sfIssued,
+						saissued + saDstAmount);
+				}
+			}
+		}
+	}
+	
+	
+
+
     // Open a ledger for editing.
     auto const k = keylet::account(uDstAccountID);
     SLE::pointer sleDst = view().peek (k);

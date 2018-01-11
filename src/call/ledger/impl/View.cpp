@@ -1183,10 +1183,8 @@ trustCreate (ApplyView& view,
     {
         uFlags |= (bSetHigh ? lsfHighAuth : lsfLowAuth);
     }
-        JLOG(j.trace())<< "enertrannocall======================="<<bNoCall;
     if (!bNoCall)
     {
-        JLOG(j.trace())<< "enertrannocall=======================";
         uFlags |= (bSetHigh ? lsfHighNoCall : lsfLowNoCall);
     }
     if (bFreeze)
@@ -1197,7 +1195,6 @@ trustCreate (ApplyView& view,
     if ((slePeer->getFlags() & lsfDefaultCall) == 1)
     {
         // The other side's default is no rippling
-      JLOG(j.trace())<< "enertrannocall=======================++++++++++++";
         uFlags |= (bSetHigh ? lsfLowNoCall : lsfHighNoCall);
     }
 

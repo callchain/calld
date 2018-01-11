@@ -249,9 +249,53 @@ SetAccount::doApply ()
         uFlagsOut &= ~lsfRequireAuth;
     }
 
+
+	//
+	//total issue amount
+	//
+	if (ctx_.tx.isFieldPresent(sfTotal))
+	{
+		STAmount satotal = ctx_.tx.getFieldAmount(sfTotal);
+		if (!satotal)
+		{
+			JLOG(j_.trace()) << "unset total issue amount";
+			sle->makeFieldAbsent(sfTotal);
+		}
+		else
+		{
+			JLOG(j_.trace()) << "set total issue amount";
+			if (!sle->isFieldPresent(sfTotal)) 
+			{
+				sle->setFieldAmount(sfTotal, satotal);
+				if (!sle->isFieldPresent(sfIssued))
+				{
+					JLOG(j_.trace()) << "set  issued amount is 0  at first time";
+					STAmount issued(satotal.issue());
+					sle->setFieldAmount(sfIssued, issued);
+				}
+			}
+			else
+			{
+				if (satotal > sle->getFieldAmount(sfTotal))
+				{
+					JLOG(j_.trace()) << "increase total issue amount ";
+					sle->setFieldAmount(sfTotal, satotal);
+				}
+				else
+					return  tecBADTOTAL;
+			}
+			
+		}
+    
+	}
+
+
+
+
     //
     // RequireDestTag
     //
+
     if (bSetRequireDest && !(uFlagsIn & lsfRequireDestTag))
     {
         JLOG(j_.trace()) << "Set lsfRequireDestTag.";
