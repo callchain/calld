@@ -215,7 +215,7 @@ TER PathCursor::deliverNodeReverseImpl (
             continue;
         }
         // Find out input amount actually available at current rate.
-        else if (!isXRP(previousNode().account_))
+        else if (!isCALL(previousNode().account_))
         {
             // account --> OFFER --> ?
             // Due to node expansion, previous is guaranteed to be the issuer.

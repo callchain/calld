@@ -120,7 +120,7 @@ public:
 
 /** Structure describing the consequences to the account
     of applying a transaction if the transaction consumes
-    the maximum XRP allowed.
+    the maximum CALL allowed.
 
     @see calculateConsequences
 */
@@ -141,13 +141,13 @@ struct TxConsequences
     /// transactions
     ConsequenceCategory const category;
     /// Transaction fee
-    XRPAmount const fee;
+    CALLAmount const fee;
     /// Does NOT include the fee.
-    XRPAmount const potentialSpend;
+    CALLAmount const potentialSpend;
 
     /// Constructor
     TxConsequences(ConsequenceCategory const category_,
-        XRPAmount const fee_, XRPAmount const spend_)
+        CALLAmount const fee_, CALLAmount const spend_)
         : category(category_)
         , fee(fee_)
         , potentialSpend(spend_)
@@ -240,8 +240,8 @@ std::uint64_t
 calculateBaseFee(Application& app, ReadView const& view,
     STTx const& tx, beast::Journal j);
 
-/** Determine the XRP balance consequences if a transaction
-    consumes the maximum XRP allowed.
+/** Determine the CALL balance consequences if a transaction
+    consumes the maximum CALL allowed.
 
     @pre The transaction has been checked
     and validated using `preflight`

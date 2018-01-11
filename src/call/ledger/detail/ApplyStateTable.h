@@ -25,7 +25,7 @@
 #include <call/ledger/ReadView.h>
 #include <call/ledger/TxMeta.h>
 #include <call/protocol/TER.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 #include <call/beast/utility/Journal.h>
 #include <memory>
 
@@ -51,7 +51,7 @@ private:
         std::pair<Action, std::shared_ptr<SLE>>>;
 
     items_t items_;
-    XRPAmount dropsDestroyed_ = 0;
+    CALLAmount dropsDestroyed_ = 0;
 
 public:
     ApplyStateTable() = default;
@@ -119,10 +119,10 @@ public:
         std::shared_ptr<SLE> const& sle);
 
     void
-    destroyXRP (XRPAmount const& fee);
+    destroyCALL (CALLAmount const& fee);
 
     // For debugging
-    XRPAmount const& dropsDestroyed () const
+    CALLAmount const& dropsDestroyed () const
     {
         return dropsDestroyed_;
     }

@@ -90,8 +90,8 @@ public:
         computed from the string "masterpassphrase" and ordinal
         zero.
 
-        The account has an XRP balance equal to the total amount
-        of XRP in the system. No more XRP than the amount which
+        The account has an CALL balance equal to the total amount
+        of CALL in the system. No more CALL than the amount which
         starts in this account can ever exist, with amounts
         used to pay fees being destroyed.
 
@@ -215,7 +215,7 @@ public:
         SLE> const& sle) override;
 
     void
-    rawDestroyXRP (XRPAmount const& fee) override
+    rawDestroyCALL (CALLAmount const& fee) override
     {
         info_.drops -= fee;
     }

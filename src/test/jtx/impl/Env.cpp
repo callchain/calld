@@ -178,7 +178,7 @@ Env::balance (Account const& account) const
 {
     auto const sle = le(account);
     if (! sle)
-        return XRP(0);
+        return CALL(0);
     return {
         sle->getFieldAmount(sfBalance),
             "" };
@@ -188,7 +188,7 @@ PrettyAmount
 Env::balance (Account const& account,
     Issue const& issue) const
 {
-    if (isXRP(issue.currency))
+    if (isCALL(issue.currency))
         return balance(account);
     auto const sle = le(keylet::line(
         account.id(), issue));

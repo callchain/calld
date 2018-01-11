@@ -196,7 +196,7 @@ bool PathRequest::isValid (std::shared_ptr<CallLineCache> const& crCache)
         jvDestCur.append (Json::Value (systemCurrencyCode()));
         if (! saDstAmount.native ())
         {
-            // Only XRP can be send to a non-existent account.
+            // Only CALL can be send to a non-existent account.
             jvStatus = rpcError (rpcACT_NOT_FOUND);
             return false;
         }
@@ -211,11 +211,11 @@ bool PathRequest::isValid (std::shared_ptr<CallLineCache> const& crCache)
     }
     else
     {
-        bool const disallowXRP (
-            sleDest->getFlags() & lsfDisallowXRP);
+        bool const disallowCALL (
+            sleDest->getFlags() & lsfDisallowCALL);
 
         auto usDestCurrID = accountDestCurrencies (
-                *raDstAccount, crCache, ! disallowXRP);
+                *raDstAccount, crCache, ! disallowCALL);
 
         for (auto const& currency : usDestCurrID)
             jvDestCur.append (to_string (currency));
@@ -490,7 +490,7 @@ PathRequest::findPaths (std::shared_ptr<CallLineCache> const& cache,
                 if (sourceCurrencies.size() >= RPC::Tuning::max_auto_src_cur)
                     return false;
                 sourceCurrencies.insert(
-                    {c, c.isZero() ? xrpAccount() : *raSrcAccount});
+                    {c, c.isZero() ? callAccount() : *raSrcAccount});
             }
         }
     }
@@ -520,10 +520,10 @@ PathRequest::findPaths (std::shared_ptr<CallLineCache> const& cache,
             fullLiquidityPath, mContext[issue], issue.account);
         mContext[issue] = ps;
 
-        auto& sourceAccount = ! isXRP(issue.account)
+        auto& sourceAccount = ! isCALL(issue.account)
             ? issue.account
-            : isXRP(issue.currency)
-            ? xrpAccount()
+            : isCALL(issue.currency)
+            ? callAccount()
             : *raSrcAccount;
         STAmount saMaxAmount = saSendMax.value_or(
             STAmount({issue.currency, sourceAccount}, 1u, 0, true));

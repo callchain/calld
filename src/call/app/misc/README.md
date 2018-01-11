@@ -1,7 +1,7 @@
 # Fee Voting
 
 The Call payment protocol enforces a fee schedule expressed in units of the
-native currency, XRP. Fees for transactions are paid directly from the account
+native currency, CALL. Fees for transactions are paid directly from the account
 owner. There are also reserve requirements for each item that occupies storage
 in the ledger. The reserve fee schedule contains both a per-account reserve,
 and a per-owned-item reserve. The items an account may own include active
@@ -10,7 +10,7 @@ offers, trust lines, and tickets.
 Validators may vote to increase fees if they feel that the network is charging
 too little. They may also vote to decrease fees if the fees are too costly
 relative to the value the network provides. One common case where a validator
-may want to change fees is when the value of the native currency XRP fluctuates
+may want to change fees is when the value of the native currency CALL fluctuates
 relative to other currencies.
 
 The fee voting mechanism takes place every 256 ledgers ("voting ledgers"). In

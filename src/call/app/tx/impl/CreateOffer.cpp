@@ -30,13 +30,13 @@
 
 namespace call {
 
-XRPAmount
+CALLAmount
 CreateOffer::calculateMaxSpend(STTx const& tx)
 {
     auto const& saTakerGets = tx[sfTakerGets];
 
     return saTakerGets.native() ?
-        saTakerGets.xrp() : beast::zero;
+        saTakerGets.call() : beast::zero;
 }
 
 TER
@@ -117,7 +117,7 @@ CreateOffer::preflight (PreflightContext const& ctx)
             "Malformed offer: redundant (IOU for IOU)";
         return temREDUNDANT;
     }
-    // We don't allow a non-native currency to use the currency code XRP.
+    // We don't allow a non-native currency to use the currency code CALL.
     if (badCurrency() == uPaysCurrency || badCurrency() == uGetsCurrency)
     {
         JLOG(j.debug()) <<
@@ -218,7 +218,7 @@ CreateOffer::checkAcceptAsset(ReadView const& view,
         beast::Journal const j, Issue const& issue)
 {
     // Only valid for custom currencies
-    assert (!isXRP (issue.currency));
+    assert (!isCALL (issue.currency));
 
     auto const issuerAccount = view.read(
         keylet::account(issue.account));
@@ -336,9 +336,9 @@ CreateOffer::bridged_cross (
 {
     auto const& takerAmount = taker.original_offer ();
 
-    assert (!isXRP (takerAmount.in) && !isXRP (takerAmount.out));
+    assert (!isCALL (takerAmount.in) && !isCALL (takerAmount.out));
 
-    if (isXRP (takerAmount.in) || isXRP (takerAmount.out))
+    if (isCALL (takerAmount.in) || isCALL (takerAmount.out))
         Throw<std::logic_error> ("Bridging with CALL and an endpoint.");
 
     OfferStream offers_direct (view, view_cancel,
@@ -346,11 +346,11 @@ CreateOffer::bridged_cross (
             when, stepCounter_, j_);
 
     OfferStream offers_leg1 (view, view_cancel,
-        Book (taker.issue_in (), xrpIssue ()),
+        Book (taker.issue_in (), callIssue ()),
         when, stepCounter_, j_);
 
     OfferStream offers_leg2 (view, view_cancel,
-        Book (xrpIssue (), taker.issue_out ()),
+        Book (callIssue (), taker.issue_out ()),
         when, stepCounter_, j_);
 
     TER cross_result = tesSUCCESS;
@@ -608,7 +608,7 @@ CreateOffer::takerCross (
     // If the taker is unfunded before we begin crossing
     // there's nothing to do - just return an error.
     //
-    // We check this in preclaim, but when selling XRP
+    // We check this in preclaim, but when selling CALL
     // charged fees can cause a user's available balance
     // to go to 0 (by causing it to dip below the reserve)
     // so we check this case again.
@@ -645,7 +645,7 @@ CreateOffer::flowCross (
         // If the taker is unfunded before we begin crossing there's nothing
         // to do - just return an error.
         //
-        // We check this in preclaim, but when selling XRP charged fees can
+        // We check this in preclaim, but when selling CALL charged fees can
         // cause a user's available balance to go to 0 (by causing it to dip
         // below the reserve) so we check this case again.
         STAmount const inStartBalance = accountFunds (
@@ -688,14 +688,14 @@ CreateOffer::flowCross (
             sendMax = inStartBalance;
 
         // Always invoke flow() with the default path.  However if neither
-        // of the takerAmount currencies are XRP then we cross through an
-        // additional path with XRP as the intermediate between two books.
+        // of the takerAmount currencies are CALL then we cross through an
+        // additional path with CALL as the intermediate between two books.
         // This second path we have to build ourselves.
         STPathSet paths;
         if (!takerAmount.in.native() & !takerAmount.out.native())
         {
             STPath path;
-            path.emplace_back (boost::none, xrpCurrency(), boost::none);
+            path.emplace_back (boost::none, callCurrency(), boost::none);
             paths.emplace_back (std::move(path));
         }
         // Special handling for the tfSell flag.
@@ -1033,13 +1033,13 @@ void
 CreateOffer::preCompute()
 {
     cross_type_ = CrossType::IouToIou;
-    bool const pays_xrp =
+    bool const pays_call =
         ctx_.tx.getFieldAmount (sfTakerPays).native ();
-    bool const gets_xrp =
+    bool const gets_call =
         ctx_.tx.getFieldAmount (sfTakerGets).native ();
-    if (pays_xrp && !gets_xrp)
+    if (pays_call && !gets_call)
         cross_type_ = CrossType::IouToXrp;
-    else if (gets_xrp && !pays_xrp)
+    else if (gets_call && !pays_call)
         cross_type_ = CrossType::XrpToIou;
 
     return Transactor::preCompute();
@@ -1115,7 +1115,7 @@ CreateOffer::applyGuts (Sandbox& sb, Sandbox& sbCancel)
         auto const& uGetsIssuerID = saTakerGets.getIssuer ();
 
         std::uint8_t uTickSize = Quality::maxTickSize;
-        if (!isXRP (uPaysIssuerID))
+        if (!isCALL (uPaysIssuerID))
         {
             auto const sle =
                 sb.read(keylet::account(uPaysIssuerID));
@@ -1123,7 +1123,7 @@ CreateOffer::applyGuts (Sandbox& sb, Sandbox& sbCancel)
                 uTickSize = std::min (uTickSize,
                     (*sle)[sfTickSize]);
         }
-        if (!isXRP (uGetsIssuerID))
+        if (!isCALL (uGetsIssuerID))
         {
             auto const sle =
                 sb.read(keylet::account(uGetsIssuerID));
@@ -1267,7 +1267,7 @@ CreateOffer::applyGuts (Sandbox& sb, Sandbox& sbCancel)
 
     auto const sleCreator = sb.peek (keylet::account(account_));
     {
-        XRPAmount reserve = ctx_.view().fees().accountReserve(
+        CALLAmount reserve = ctx_.view().fees().accountReserve(
             sleCreator->getFieldU32 (sfOwnerCount) + 1);
 
         if (mPriorBalance < reserve)

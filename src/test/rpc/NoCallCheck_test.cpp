@@ -40,7 +40,7 @@ class NoCallCheck_test : public beast::unit_test::suite
         Env env {*this};
 
         auto const alice = Account {"alice"};
-        env.fund (XRP(10000), alice);
+        env.fund (CALL(10000), alice);
         env.close ();
 
         { // missing account field
@@ -136,7 +136,7 @@ class NoCallCheck_test : public beast::unit_test::suite
         auto const gw = Account {"gw"};
         auto const alice = Account {"alice"};
 
-        env.fund (XRP(10000), gw, alice);
+        env.fund (CALL(10000), gw, alice);
         if ((user && problems) || (!user && !problems))
         {
             env (fset (alice, asfDefaultCall));
@@ -248,7 +248,7 @@ class NoCallCheckLimits_test : public beast::unit_test::suite
         Env env {*this, admin ? envconfig () : envconfig(no_admin)};
 
         auto const alice = Account {"alice"};
-        env.fund (XRP (100000), alice);
+        env.fund (CALL (100000), alice);
         env (fset (alice, asfDefaultCall));
         env.close ();
 
@@ -274,7 +274,7 @@ class NoCallCheckLimits_test : public beast::unit_test::suite
                 }
             }
             auto const gw = Account {"gw" + std::to_string(i)};
-            env.fund (XRP (1000), gw);
+            env.fund (CALL (1000), gw);
             env (trust (alice, gw["USD"](10)));
             env.close();
         }

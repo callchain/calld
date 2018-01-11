@@ -29,13 +29,13 @@ hash_set<Currency>
 accountDestCurrencies(
     AccountID const& account,
         std::shared_ptr<CallLineCache> const& cache,
-            bool includeXRP);
+            bool includeCALL);
 
 hash_set<Currency>
 accountSourceCurrencies(
     AccountID const& account,
         std::shared_ptr<CallLineCache> const& lrLedger,
-             bool includeXRP);
+             bool includeCALL);
 
 } // call
 

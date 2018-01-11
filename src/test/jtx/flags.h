@@ -66,7 +66,7 @@ private:
         {
         case asfRequireDest:    mask_ |= lsfRequireDestTag; break;
         case asfRequireAuth:    mask_ |= lsfRequireAuth; break;
-        case asfDisallowXRP:    mask_ |= lsfDisallowXRP; break;
+        case asfDisallowCALL:    mask_ |= lsfDisallowCALL; break;
         case asfDisableMaster:  mask_ |= lsfDisableMaster; break;
         //case asfAccountTxnID: // ???
         case asfNoFreeze:       mask_ |= lsfNoFreeze; break;

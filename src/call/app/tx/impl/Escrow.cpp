@@ -29,7 +29,7 @@
 #include <call/protocol/Feature.h>
 #include <call/protocol/Indexes.h>
 #include <call/protocol/TxFlags.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 #include <call/ledger/View.h>
 
 // During an EscrowFinish, the transaction must specify both
@@ -42,14 +42,14 @@ namespace call {
 
 /*
     Escrow allows an account holder to sequester any amount
-    of XRP in its own ledger entry, until the escrow process
+    of CALL in its own ledger entry, until the escrow process
     either finishes or is canceled.
 
     If the escrow process finishes successfully, then the
     destination account (which must exist) will receives the
-    sequestered XRP. If the escrow is, instead, canceled,
+    sequestered CALL. If the escrow is, instead, canceled,
     the account which created the escrow will receive the
-    sequestered XRP back instead.
+    sequestered CALL back instead.
 
     EscrowCreate
 
@@ -128,16 +128,16 @@ namespace call {
     By careful selection of fields in each transaction,
     these operations may be achieved:
 
-        * Lock up XRP for a time period
+        * Lock up CALL for a time period
         * Execute a payment conditionally
 */
 
 //------------------------------------------------------------------------------
 
-XRPAmount
+CALLAmount
 EscrowCreate::calculateMaxSpend(STTx const& tx)
 {
-    return tx[sfAmount].xrp();
+    return tx[sfAmount].call();
 }
 
 TER
@@ -150,7 +150,7 @@ EscrowCreate::preflight (PreflightContext const& ctx)
     if (!isTesSuccess (ret))
         return ret;
 
-    if (! isXRP(ctx.tx[sfAmount]))
+    if (! isCALL(ctx.tx[sfAmount]))
         return temBAD_AMOUNT;
 
     if (ctx.tx[sfAmount] <= beast::zero)
@@ -215,14 +215,14 @@ EscrowCreate::doApply()
 
     // Check reserve and funds availability
     {
-        auto const balance = STAmount((*sle)[sfBalance]).xrp();
+        auto const balance = STAmount((*sle)[sfBalance]).call();
         auto const reserve = ctx_.view().fees().accountReserve(
             (*sle)[sfOwnerCount] + 1);
 
         if (balance < reserve)
             return tecINSUFFICIENT_RESERVE;
 
-        if (balance < reserve + STAmount(ctx_.tx[sfAmount]).xrp())
+        if (balance < reserve + STAmount(ctx_.tx[sfAmount]).call())
             return tecUNFUNDED;
     }
 
@@ -235,7 +235,7 @@ EscrowCreate::doApply()
         if (((*sled)[sfFlags] & lsfRequireDestTag) &&
                 ! ctx_.tx[~sfDestinationTag])
             return tecDST_TAG_NEEDED;
-        if ((*sled)[sfFlags] & lsfDisallowXRP)
+        if ((*sled)[sfFlags] & lsfDisallowCALL)
             return tecNO_TARGET;
     }
 

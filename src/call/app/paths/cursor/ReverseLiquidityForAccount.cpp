@@ -34,7 +34,7 @@ namespace path {
 // Reedems are limited based on IOUs previous has on hand.
 // Issues are limited based on credit limits and amount owed.
 //
-// Currency cannot be XRP because we are rippling.
+// Currency cannot be CALL because we are rippling.
 //
 // No permanent account balance adjustments as we don't know how much is going
 // to actually be pushed through yet - changes are only in the scratch pad

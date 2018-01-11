@@ -475,7 +475,7 @@ public:
     lookup (std::string const& base58ID) const;
     /** @} */
 
-    /** Returns the XRP balance on an account.
+    /** Returns the CALL balance on an account.
         Returns 0 if the account does not exist.
     */
     PrettyAmount
@@ -658,11 +658,11 @@ private:
     }
 public:
 
-    /** Create a new account with some XRP.
+    /** Create a new account with some CALL.
 
         These convenience functions are for easy set-up
         of the environment, they bypass fee, seq, and sig
-        settings. The XRP is transferred from the master
+        settings. The CALL is transferred from the master
         account.
 
         Preconditions:
@@ -673,11 +673,11 @@ public:
             and the sequence number is incremented, unless
             the account is wrapped with a call to nocall.
 
-            The account's XRP balance is set to amount.
+            The account's CALL balance is set to amount.
 
             Generates a test that the balance is set.
 
-        @param amount The amount of XRP to transfer to
+        @param amount The amount of CALL to transfer to
                       each account.
 
         @param args A heterogeneous list of accounts to fund

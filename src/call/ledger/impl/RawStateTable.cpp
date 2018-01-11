@@ -157,7 +157,7 @@ private:
 void
 RawStateTable::apply (RawView& to) const
 {
-    to.rawDestroyXRP(dropsDestroyed_);
+    to.rawDestroyCALL(dropsDestroyed_);
     for (auto const& elem : items_)
     {
         auto const& item = elem.second;
@@ -333,7 +333,7 @@ RawStateTable::read (ReadView const& base,
 }
 
 void
-RawStateTable::destroyXRP(XRPAmount const& fee)
+RawStateTable::destroyCALL(CALLAmount const& fee)
 {
     dropsDestroyed_ += fee;
 }

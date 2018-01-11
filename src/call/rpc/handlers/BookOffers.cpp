@@ -110,15 +110,15 @@ Json::Value doBookOffers (RPC::Context& context)
     }
     else
     {
-        pay_issuer = xrpAccount ();
+        pay_issuer = callAccount ();
     }
 
-    if (isXRP (pay_currency) && ! isXRP (pay_issuer))
+    if (isCALL (pay_currency) && ! isCALL (pay_issuer))
         return RPC::make_error (
             rpcSRC_ISR_MALFORMED, "Unneeded field 'taker_pays.issuer' for "
             "CALL currency specification.");
 
-    if (!isXRP (pay_currency) && isXRP (pay_issuer))
+    if (!isCALL (pay_currency) && isCALL (pay_issuer))
         return RPC::make_error (rpcSRC_ISR_MALFORMED,
             "Invalid field 'taker_pays.issuer', expected non-CALL issuer.");
 
@@ -140,16 +140,16 @@ Json::Value doBookOffers (RPC::Context& context)
     }
     else
     {
-        get_issuer = xrpAccount ();
+        get_issuer = callAccount ();
     }
 
 
-    if (isXRP (get_currency) && ! isXRP (get_issuer))
+    if (isCALL (get_currency) && ! isCALL (get_issuer))
         return RPC::make_error (rpcDST_ISR_MALFORMED,
             "Unneeded field 'taker_gets.issuer' for "
                                "CALL currency specification.");
 
-    if (!isXRP (get_currency) && isXRP (get_issuer))
+    if (!isCALL (get_currency) && isCALL (get_issuer))
         return RPC::make_error (rpcDST_ISR_MALFORMED,
             "Invalid field 'taker_gets.issuer', expected non-CALL issuer.");
 

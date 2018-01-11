@@ -95,9 +95,9 @@ parseHexOrBase58 (std::string const& s);
 //AccountID
 //calcAccountID (PublicKey const& pk);
 
-/** A special account that's used as the "issuer" for XRP. */
+/** A special account that's used as the "issuer" for CALL. */
 AccountID const&
-xrpAccount();
+callAccount();
 
 /** A placeholder for empty accounts. */
 AccountID const&
@@ -114,7 +114,7 @@ to_issuer (AccountID&, std::string const&);
 // DEPRECATED Should be checking the currency or native flag
 inline
 bool
-isXRP(AccountID const& c)
+isCALL(AccountID const& c)
 {
     return c == zero;
 }

@@ -33,7 +33,7 @@ struct CashSummary
 {
     // Sorted vectors.  All of the vectors fill in for std::maps.
     std::vector<std::pair<
-        AccountID, XRPAmount>> xrpChanges;
+        AccountID, CALLAmount>> callChanges;
 
     std::vector<std::pair<
         std::tuple<AccountID, AccountID, Currency>, STAmount>> trustChanges;
@@ -52,7 +52,7 @@ struct CashSummary
 
     bool hasDiff () const
     {
-        return !xrpChanges.empty()
+        return !callChanges.empty()
             || !trustChanges.empty()
             || !trustDeletions.empty()
             || !offerChanges.empty()
@@ -61,7 +61,7 @@ struct CashSummary
 
     void reserve (size_t newCap)
     {
-        xrpChanges.reserve (newCap);
+        callChanges.reserve (newCap);
         trustChanges.reserve (newCap);
         trustDeletions.reserve (newCap);
         offerChanges.reserve (newCap);
@@ -70,7 +70,7 @@ struct CashSummary
 
     void shrink_to_fit()
     {
-        xrpChanges.shrink_to_fit();
+        callChanges.shrink_to_fit();
         trustChanges.shrink_to_fit();
         trustDeletions.shrink_to_fit();
         offerChanges.shrink_to_fit();
@@ -79,7 +79,7 @@ struct CashSummary
 
     void sort()
     {
-        std::sort (xrpChanges.begin(), xrpChanges.end());
+        std::sort (callChanges.begin(), callChanges.end());
         std::sort (trustChanges.begin(), trustChanges.end());
         std::sort (trustDeletions.begin(), trustDeletions.end());
         std::sort (offerChanges.begin(), offerChanges.end());
@@ -161,8 +161,8 @@ static bool getBasicCashFlow (CashSummary& result, bool isDelete,
         switch(prev.getType())
         {
         case ltACCOUNT_ROOT:
-            result.xrpChanges.push_back (
-                std::make_pair (prev[sfAccount], XRPAmount {0}));
+            result.callChanges.push_back (
+                std::make_pair (prev[sfAccount], CALLAmount {0}));
             return true;
 
         case ltCALL_STATE:
@@ -201,9 +201,9 @@ static bool getBasicCashFlow (CashSummary& result, bool isDelete,
         {
         case ltACCOUNT_ROOT:
         {
-            auto const curXrp = cur[sfBalance].xrp();
-            if (!before || (*before)[sfBalance].xrp() != curXrp)
-                result.xrpChanges.push_back (
+            auto const curXrp = cur[sfBalance].call();
+            if (!before || (*before)[sfBalance].call() != curXrp)
+                result.callChanges.push_back (
                     std::make_pair (cur[sfAccount], curXrp));
             return true;
         }
@@ -281,11 +281,11 @@ getCashFlow (ReadView const& view, CashFilter f, ApplyStateTable const& table)
 class CashDiff::Impl
 {
 private:
-    // Note differences in destroyed XRP between two ApplyStateTables.
+    // Note differences in destroyed CALL between two ApplyStateTables.
     struct DropsGone
     {
-        XRPAmount lhs;
-        XRPAmount rhs;
+        CALLAmount lhs;
+        CALLAmount rhs;
     };
 
     ReadView const& view_;
@@ -415,7 +415,7 @@ countKeys (detail::CashSummary const& lhs, detail::CashSummary const& rhs)
         std::transform (a.cbegin(), a.cend(),
             ret.cbegin(), ret.begin(), std::plus<std::size_t>());
     };
-    addIn (countKeys(lhs.xrpChanges,     rhs.xrpChanges));
+    addIn (countKeys(lhs.callChanges,     rhs.callChanges));
     addIn (countKeys(lhs.trustChanges,   rhs.trustChanges));
     addIn (countKeys(lhs.trustDeletions, rhs.trustDeletions));
     addIn (countKeys(lhs.offerChanges,   rhs.offerChanges));
@@ -483,13 +483,13 @@ bool CashDiff::Impl::rmDust ()
     bool removedDust = false;
 
     // Four of the containers can have small (floating point style)
-    // amount differences: xrpChanges, trustChanges, offerChanges, and
+    // amount differences: callChanges, trustChanges, offerChanges, and
     // offerDeletions.  Rifle through those containers and remove any
     // entries that are _almost_ the same between lhs and rhs.
 
-    // xrpChanges.  We call a difference of 2 drops or less dust.
-    removedDust |= rmVecDust (lhsDiffs_.xrpChanges, rhsDiffs_.xrpChanges,
-        [](XRPAmount const& lhs, XRPAmount const& rhs)
+    // callChanges.  We call a difference of 2 drops or less dust.
+    removedDust |= rmVecDust (lhsDiffs_.callChanges, rhsDiffs_.callChanges,
+        [](CALLAmount const& lhs, CALLAmount const& rhs)
         {
             return diffIsDust (lhs, rhs);
         });
@@ -566,9 +566,9 @@ void CashDiff::Impl::findDiffs (
     rhsKeys_    = counts[2];
 
     // Save only the differences between the results.
-    // xrpChanges:
-    setDiff (lhsDiffs.xrpChanges, rhsDiffs.xrpChanges, lhsDiffs_.xrpChanges);
-    setDiff (rhsDiffs.xrpChanges, lhsDiffs.xrpChanges, rhsDiffs_.xrpChanges);
+    // callChanges:
+    setDiff (lhsDiffs.callChanges, rhsDiffs.callChanges, lhsDiffs_.callChanges);
+    setDiff (rhsDiffs.callChanges, lhsDiffs.callChanges, rhsDiffs_.callChanges);
 
     // trustChanges:
     setDiff (lhsDiffs.trustChanges, rhsDiffs.trustChanges, lhsDiffs_.trustChanges);
@@ -666,7 +666,7 @@ bool diffIsDust (STAmount const& v1, STAmount const& v2, std::uint8_t e10)
     STAmount const& small = v1 < v2 ? v1 : v2;
     STAmount const& large = v1 < v2 ? v2 : v1;
 
-    // Handling XRP is different from IOU.
+    // Handling CALL is different from IOU.
     if (v1.native())
     {
         std::uint64_t const s = small.mantissa();

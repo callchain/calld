@@ -32,7 +32,7 @@ trust (Account const& account,
     STAmount const& amount,
         std::uint32_t flags)
 {
-    if (isXRP(amount))
+    if (isCALL(amount))
         Throw<std::runtime_error> (
             "trust() requires IOU");
     Json::Value jv;
@@ -49,7 +49,7 @@ trust (Account const& account,
     Account const& peer,
     std::uint32_t flags)
 {
-    if (isXRP(amount))
+    if (isCALL(amount))
         Throw<std::runtime_error> (
             "trust() requires IOU");
     Json::Value jv;

@@ -38,14 +38,14 @@ public:
 
         // Gateway account and assets
         Account const alice {"alice"};
-        env.fund(XRP(10000), "alice");
+        env.fund(CALL(10000), "alice");
         auto USD = alice["USD"];
         auto CNY = alice["CNY"];
         auto JPY = alice["JPY"];
 
         // Create a hotwallet
         Account const hw {"hw"};
-        env.fund(XRP(10000), "hw");
+        env.fund(CALL(10000), "hw");
         env(trust(hw, USD(10000)));
         env(trust(hw, JPY(10000)));
         env(pay(alice, hw, USD(5000)));
@@ -53,20 +53,20 @@ public:
 
         // Create some clients
         Account const bob {"bob"};
-        env.fund(XRP(10000), "bob");
+        env.fund(CALL(10000), "bob");
         env(trust(bob, USD(100)));
         env(trust(bob, CNY(100)));
         env(pay(alice, bob, USD(50)));
 
         Account const charley {"charley"};
-        env.fund(XRP(10000), "charley");
+        env.fund(CALL(10000), "charley");
         env(trust(charley, CNY(500)));
         env(trust(charley, JPY(500)));
         env(pay(alice, charley, CNY(250)));
         env(pay(alice, charley, JPY(250)));
 
         Account const dave {"dave"};
-        env.fund(XRP(10000), "dave");
+        env.fund(CALL(10000), "dave");
         env(trust(dave, CNY(100)));
         env(pay(alice, dave, CNY(30)));
 

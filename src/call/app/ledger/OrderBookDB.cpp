@@ -84,7 +84,7 @@ void OrderBookDB::update(
     hash_set< uint256 > seen;
     OrderBookDB::IssueToOrderBook destMap;
     OrderBookDB::IssueToOrderBook sourceMap;
-    hash_set< Issue > XRPBooks;
+    hash_set< Issue > CALLBooks;
 
     JLOG (j_.debug()) << "OrderBookDB::update>";
 
@@ -130,8 +130,8 @@ void OrderBookDB::update(
                     auto orderBook = std::make_shared<OrderBook> (index, book);
                     sourceMap[book.in].push_back (orderBook);
                     destMap[book.out].push_back (orderBook);
-                    if (isXRP(book.out))
-                        XRPBooks.insert(book.in);
+                    if (isCALL(book.out))
+                        CALLBooks.insert(book.in);
                     ++books;
                 }
             }
@@ -151,7 +151,7 @@ void OrderBookDB::update(
     {
         std::lock_guard <std::recursive_mutex> sl (mLock);
 
-        mXRPBooks.swap(XRPBooks);
+        mCALLBooks.swap(CALLBooks);
         mSourceMap.swap(sourceMap);
         mDestMap.swap(destMap);
     }
@@ -160,16 +160,16 @@ void OrderBookDB::update(
 
 void OrderBookDB::addOrderBook(Book const& book)
 {
-    bool toXRP = isXRP (book.out);
+    bool toCALL = isCALL (book.out);
     std::lock_guard <std::recursive_mutex> sl (mLock);
 
-    if (toXRP)
+    if (toCALL)
     {
-        // We don't want to search through all the to-XRP or from-XRP order
+        // We don't want to search through all the to-CALL or from-CALL order
         // books!
         for (auto ob: mSourceMap[book.in])
         {
-            if (isXRP (ob->getCurrencyOut ())) // also to XRP
+            if (isCALL (ob->getCurrencyOut ())) // also to CALL
                 return;
         }
     }
@@ -189,8 +189,8 @@ void OrderBookDB::addOrderBook(Book const& book)
 
     mSourceMap[book.in].push_back (orderBook);
     mDestMap[book.out].push_back (orderBook);
-    if (toXRP)
-        mXRPBooks.insert(book.in);
+    if (toCALL)
+        mCALLBooks.insert(book.in);
 }
 
 // return list of all orderbooks that want this issuerID and currencyID
@@ -207,10 +207,10 @@ int OrderBookDB::getBookSize(Issue const& issue) {
     return it == mSourceMap.end () ? 0 : it->second.size();
 }
 
-bool OrderBookDB::isBookToXRP(Issue const& issue)
+bool OrderBookDB::isBookToCALL(Issue const& issue)
 {
     std::lock_guard <std::recursive_mutex> sl (mLock);
-    return mXRPBooks.count(issue) > 0;
+    return mCALLBooks.count(issue) > 0;
 }
 
 BookListeners::pointer OrderBookDB::makeBookListeners (Book const& book)

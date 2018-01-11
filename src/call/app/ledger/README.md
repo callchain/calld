@@ -357,7 +357,7 @@ Lists all of the offers and trust lines that are associated with an account.
 Lists one or more offers that have the same quality.
 
 If a pair of Currency and Issuer fields are all zeros, then that pair is
-dealing in XRP.
+dealing in CALL.
 
 The code, at the moment, does not recognize that the Currency and Issuer
 fields are currencies and issuers.  So those values are presented in hex,

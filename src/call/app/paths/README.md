@@ -22,8 +22,8 @@ This is the **calld** implementation; there are many other possible implementati
 2. Six degrees of separation.
  * If sending value through individual's account, expect no path to have more than six hops.
  * According to [Facebook studies](https://www.facebook.com/notes/facebook-data-team/anatomy-of-facebook/10150388519243859) as of late 2011, its users are separated by fewer than five steps.
- * By using XRP for bridging the most complicated path expected is usually:
- * source -> gateway -> XRP -> gateway -> destination
+ * By using CALL for bridging the most complicated path expected is usually:
+ * source -> gateway -> CALL -> gateway -> destination
 3. Pareto principle.
  * Good liquidity is often reusable.
  * Concentrate on the most liquid gateways to serve almost everybody.
@@ -89,7 +89,7 @@ High level of a payment
  * valid means "not malformed" and "can claim a fee" - the sending account has enough to cover the transaction fee.
 7. At ledger closing time, the transaction is applied by the transaction engine and the result is stored by changing the ledger and storing the tx metadata in that ledger.
 
-If you're sending and receiving XRP you don't need a path.
+If you're sending and receiving CALL you don't need a path.
 If the union of the default paths are sufficient, you don't need a path set (see below about default paths).
 The idea behind path sets is to provide sufficient liquidity in the face of a changing ledger.
 
@@ -112,14 +112,14 @@ If you can compute a path already yourself or know one, you don't need to do ste
     * the destination account
     * destination amount
       * contains an amount and a currency
-      * if currency not XRP, must have a specified issuer.
+      * if currency not CALL, must have a specified issuer.
       * If you specify an issuer then you MUST deliver that issuance to the destination.
       * If you specify the issuer as the destination account, then they will receive any of the issuances they trust.
     * maximum source amount - maximum amount to debit the sender.
       * This field is optional.
       * if not specified, defaults to the destination amount with the sender as issuer.
       * contains an amount and a currency
-      * if currency not XRP, must have a specified issuer.
+      * if currency not CALL, must have a specified issuer.
       * specifying the sender as issuer allows any of the sender's issuance to be spent.
       * specifying a specific issuer allows only that specific issuance to be sent.
   * path set.

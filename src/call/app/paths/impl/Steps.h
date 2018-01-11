@@ -40,9 +40,9 @@ class ApplyView;
    There are five concrete step classes:
      DirectStepI is an IOU step between accounts
      BookStepII is an IOU/IOU offer book
-     BookStepIX is an IOU/XRP offer book
-     BookStepXI is an XRP/IOU offer book
-     XRPEndpointStep is the source or destination account for XRP
+     BookStepIX is an IOU/CALL offer book
+     BookStepXI is an CALL/IOU offer book
+     CALLEndpointStep is the source or destination account for CALL
 
    Amounts may be transformed through a step in either the forward or the
    reverse direction. In the forward direction, the function `fwd` is used to
@@ -131,7 +131,7 @@ public:
     }
 
     // for debugging. Return the src and dst accounts for a direct step
-    // For XRP endpoints, one of src or dst will be the root account
+    // For CALL endpoints, one of src or dst will be the root account
     virtual boost::optional<std::pair<AccountID,AccountID>>
     directStepAccts () const
     {
@@ -447,7 +447,7 @@ public:
 /// @cond INTERNAL
 // Check equal with tolerance
 bool checkNear (IOUAmount const& expected, IOUAmount const& actual);
-bool checkNear (XRPAmount const& expected, XRPAmount const& actual);
+bool checkNear (CALLAmount const& expected, CALLAmount const& actual);
 /// @endcond
 
 /**
@@ -509,7 +509,7 @@ bool directStepEqual (Step const& step,
     AccountID const& dst,
     Currency const& currency);
 
-bool xrpEndpointStepEqual (Step const& step, AccountID const& acc);
+bool callEndpointStepEqual (Step const& step, AccountID const& acc);
 
 bool bookStepEqual (Step const& step, call::Book const& book);
 }
@@ -538,7 +538,7 @@ make_BookStepXI (
     Issue const& out);
 
 std::pair<TER, std::unique_ptr<Step>>
-make_XRPEndpointStep (
+make_CALLEndpointStep (
     StrandContext const& ctx,
     AccountID const& acc);
 

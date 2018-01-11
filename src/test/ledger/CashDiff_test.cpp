@@ -67,7 +67,7 @@ class CashDiff_test : public beast::unit_test::suite
             } while (newProbe > oldProbe);
         }
         {
-            // Test XRP.
+            // Test CALL.
             // A delta of 2 or less is always dust.
             expect (diffIsDust (STAmount{2}, STAmount{0}));
 

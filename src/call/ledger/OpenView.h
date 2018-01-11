@@ -24,7 +24,7 @@
 #include <call/ledger/ReadView.h>
 #include <call/ledger/detail/RawStateTable.h>
 #include <call/basics/qalloc.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 #include <functional>
 #include <utility>
 
@@ -211,8 +211,8 @@ public:
         SLE> const& sle) override;
 
     void
-    rawDestroyXRP(
-        XRPAmount const& fee) override;
+    rawDestroyCALL(
+        CALLAmount const& fee) override;
 
     // TxsRawView
 

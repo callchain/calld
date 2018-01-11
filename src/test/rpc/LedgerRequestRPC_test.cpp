@@ -154,19 +154,19 @@ public:
                                      //no amendments
         Account const gw { "gateway" };
         auto const USD = gw["USD"];
-        env.fund(XRP(100000), gw);
+        env.fund(CALL(100000), gw);
         env.close();
 
         env.memoize("bob");
-        env.fund(XRP(1000), "bob");
+        env.fund(CALL(1000), "bob");
         env.close();
 
         env.memoize("alice");
-        env.fund(XRP(1000), "alice");
+        env.fund(CALL(1000), "alice");
         env.close();
 
         env.memoize("carol");
-        env.fund(XRP(1000), "carol");
+        env.fund(CALL(1000), "carol");
         env.close();
 
         auto result = env.rpc ( "ledger_request", "1" ) [jss::result];
@@ -226,7 +226,7 @@ public:
         Env env { *this };
         Account const gw { "gateway" };
         auto const USD = gw["USD"];
-        env.fund(XRP(100000), gw);
+        env.fund(CALL(100000), gw);
         env.close();
 
         Json::Value jvParams;
@@ -254,14 +254,14 @@ public:
         Account const gw {"gateway"};
         env.app().getLedgerMaster().tune(0, 3600);
         auto const USD = gw["USD"];
-        env.fund(XRP(100000), gw);
+        env.fund(CALL(100000), gw);
 
         int const max_limit = 256;
 
         for (auto i = 0; i < max_limit + 10; i++)
         {
             Account const bob {std::string("bob") + std::to_string(i)};
-            env.fund(XRP(1000), bob);
+            env.fund(CALL(1000), bob);
             env.close();
         }
 
@@ -281,7 +281,7 @@ public:
         Env env { *this, envconfig(no_admin) };
         Account const gw { "gateway" };
         auto const USD = gw["USD"];
-        env.fund(XRP(100000), gw);
+        env.fund(CALL(100000), gw);
         env.close();
 
         auto const result = env.rpc ( "ledger_request", "1" )  [jss::result];

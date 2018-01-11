@@ -29,7 +29,7 @@
 #include <call/protocol/PayChan.h>
 #include <call/protocol/PublicKey.h>
 #include <call/protocol/TxFlags.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 #include <call/ledger/View.h>
 
 namespace call {
@@ -37,8 +37,8 @@ namespace call {
 /*
     PaymentChannel
 
-        Payment channels permit off-ledger checkpoints of XRP payments flowing
-        in a single direction. A channel sequesters the owner's XRP in its own
+        Payment channels permit off-ledger checkpoints of CALL payments flowing
+        in a single direction. A channel sequesters the owner's CALL in its own
         ledger entry. The owner can authorize the recipient to claim up to a
         given balance by giving the receiver a signed message (off-ledger). The
         recipient can use this signed message to claim any unpaid balance while
@@ -59,7 +59,7 @@ namespace call {
         Destination
             The recipient at the end of the channel.
         Amount
-            The amount of XRP to deposit in the channel immediately.
+            The amount of CALL to deposit in the channel immediately.
         SettleDelay
             The amount of time everyone but the recipient must wait for a
             superior claim.
@@ -87,7 +87,7 @@ namespace call {
         Channel
             The 256-bit ID of the channel.
         Amount
-            The amount of XRP to add.
+            The amount of CALL to add.
         Expiration (optional)
             Time the channel closes. The transaction will fail if the expiration
             times does not satisfy the SettleDelay constraints.
@@ -98,10 +98,10 @@ namespace call {
         Channel
             The 256-bit ID of the channel.
         Balance (optional)
-            The total amount of XRP delivered after this claim is processed (optional, not
+            The total amount of CALL delivered after this claim is processed (optional, not
             needed if just closing).
         Amount (optional)
-            The amount of XRP the signature is for (not needed if equal to Balance or just
+            The amount of CALL the signature is for (not needed if equal to Balance or just
             closing the line).
         Signature (optional)
             Authorization for the balance above, signed by the owner (optional,
@@ -165,7 +165,7 @@ PayChanCreate::preflight (PreflightContext const& ctx)
     if (!isTesSuccess (ret))
         return ret;
 
-    if (!isXRP (ctx.tx[sfAmount]) || (ctx.tx[sfAmount] <= beast::zero))
+    if (!isCALL (ctx.tx[sfAmount]) || (ctx.tx[sfAmount] <= beast::zero))
         return temBAD_AMOUNT;
 
     if (ctx.tx[sfAccount] == ctx.tx[sfDestination])
@@ -206,7 +206,7 @@ PayChanCreate::preclaim(PreclaimContext const &ctx)
         if (((*sled)[sfFlags] & lsfRequireDestTag) &&
             !ctx.tx[~sfDestinationTag])
             return tecDST_TAG_NEEDED;
-        if ((*sled)[sfFlags] & lsfDisallowXRP)
+        if ((*sled)[sfFlags] & lsfDisallowCALL)
             return tecNO_TARGET;
     }
 
@@ -266,7 +266,7 @@ PayChanFund::preflight (PreflightContext const& ctx)
     if (!isTesSuccess (ret))
         return ret;
 
-    if (!isXRP (ctx.tx[sfAmount]) || (ctx.tx[sfAmount] <= beast::zero))
+    if (!isCALL (ctx.tx[sfAmount]) || (ctx.tx[sfAmount] <= beast::zero))
         return temBAD_AMOUNT;
 
     return preflight2 (ctx);
@@ -352,11 +352,11 @@ PayChanClaim::preflight (PreflightContext const& ctx)
         return ret;
 
     auto const bal = ctx.tx[~sfBalance];
-    if (bal && (!isXRP (*bal) || *bal <= beast::zero))
+    if (bal && (!isCALL (*bal) || *bal <= beast::zero))
         return temBAD_AMOUNT;
 
     auto const amt = ctx.tx[~sfAmount];
-    if (amt && (!isXRP (*amt) || *amt <= beast::zero))
+    if (amt && (!isCALL (*amt) || *amt <= beast::zero))
         return temBAD_AMOUNT;
 
     if (bal && amt && *bal > *amt)
@@ -380,8 +380,8 @@ PayChanClaim::preflight (PreflightContext const& ctx)
         // The signature isn't needed if txAccount == src, but if it's
         // present, check it
 
-        auto const reqBalance = bal->xrp ();
-        auto const authAmt = amt ? amt->xrp() : reqBalance;
+        auto const reqBalance = bal->call ();
+        auto const authAmt = amt ? amt->call() : reqBalance;
 
         if (reqBalance > authAmt)
         {
@@ -432,9 +432,9 @@ PayChanClaim::doApply()
 
     if (ctx_.tx[~sfBalance])
     {
-        auto const chanBalance = slep->getFieldAmount (sfBalance).xrp ();
-        auto const chanFunds = slep->getFieldAmount (sfAmount).xrp ();
-        auto const reqBalance = ctx_.tx[sfBalance].xrp ();
+        auto const chanBalance = slep->getFieldAmount (sfBalance).call ();
+        auto const chanFunds = slep->getFieldAmount (sfAmount).call ();
+        auto const reqBalance = ctx_.tx[sfBalance].call ();
 
         if (txAccount == dst && !ctx_.tx[~sfSignature])
             return temBAD_SIGNATURE;
@@ -457,11 +457,11 @@ PayChanClaim::doApply()
         if (!sled)
             return terNO_ACCOUNT;
 
-        if (txAccount == src && ((*sled)[sfFlags] & lsfDisallowXRP))
+        if (txAccount == src && ((*sled)[sfFlags] & lsfDisallowCALL))
             return tecNO_TARGET;
 
         (*slep)[sfBalance] = ctx_.tx[sfBalance];
-        XRPAmount const reqDelta = reqBalance - chanBalance;
+        CALLAmount const reqDelta = reqBalance - chanBalance;
         assert (reqDelta >= beast::zero);
         (*sled)[sfBalance] = (*sled)[sfBalance] + reqDelta;
         ctx_.view ().update (sled);

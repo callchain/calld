@@ -24,7 +24,7 @@
 #include <call/ledger/ApplyViewImpl.h>
 #include <call/core/Config.h>
 #include <call/protocol/STTx.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 #include <call/beast/utility/Journal.h>
 #include <boost/optional.hpp>
 #include <utility>
@@ -96,9 +96,9 @@ public:
         std::shared_ptr <SLE const> const& after)> const& func);
 
     void
-    destroyXRP (XRPAmount const& fee)
+    destroyCALL (CALLAmount const& fee)
     {
-        view_->rawDestroyXRP(fee);
+        view_->rawDestroyCALL(fee);
     }
 
     TER

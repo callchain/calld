@@ -48,14 +48,14 @@ public:
         Env env {*this, asAdmin ? envconfig() : envconfig(no_admin)};
         Account const gw {"gateway"};
         auto const USD = gw["USD"];
-        env.fund(XRP(100000), gw);
+        env.fund(CALL(100000), gw);
 
         int const max_limit = 256; //would be 2048 for binary requests, no need to test that here
 
         for (auto i = 0; i < max_limit + 10; i++)
         {
             Account const bob {std::string("bob") + std::to_string(i)};
-            env.fund(XRP(1000), bob);
+            env.fund(CALL(1000), bob);
         }
         env.close();
 
@@ -90,14 +90,14 @@ public:
         Env env { *this, envconfig(no_admin) };
         Account const gw { "gateway" };
         auto const USD = gw["USD"];
-        env.fund(XRP(100000), gw);
+        env.fund(CALL(100000), gw);
 
         int const num_accounts = 10;
 
         for (auto i = 0; i < num_accounts; i++)
         {
             Account const bob { std::string("bob") + std::to_string(i) };
-            env.fund(XRP(1000), bob);
+            env.fund(CALL(1000), bob);
         }
         env.close();
 
@@ -123,7 +123,7 @@ public:
         auto const USD = gw["USD"];
         Account const bob { "bob" };
 
-        env.fund(XRP(10000), gw, bob);
+        env.fund(CALL(10000), gw, bob);
         env.trust(USD(1000), bob);
 
         {
@@ -177,14 +177,14 @@ public:
         Env env { *this, envconfig(no_admin) };
         Account const gw { "gateway" };
         auto const USD = gw["USD"];
-        env.fund(XRP(100000), gw);
+        env.fund(CALL(100000), gw);
 
         int const num_accounts = 20;
 
         for (auto i = 0; i < num_accounts; i++)
         {
             Account const bob { std::string("bob") + std::to_string(i) };
-            env.fund(XRP(1000), bob);
+            env.fund(CALL(1000), bob);
         }
         env.close();
 
@@ -217,7 +217,7 @@ public:
     {
         using namespace test::jtx;
         Env env { *this };
-        env.fund(XRP(100000), "alice");
+        env.fund(CALL(100000), "alice");
         env.close();
 
         // Ledger header should be present in the first query
@@ -272,16 +272,16 @@ public:
                            featureEscrow, featurePayChan) };
         Account const gw { "gateway" };
         auto const USD = gw["USD"];
-        env.fund(XRP(100000), gw);
+        env.fund(CALL(100000), gw);
 
         int const num_accounts = 10;
 
         for (auto i = 0; i < num_accounts; i++)
         {
             Account const bob { std::string("bob") + std::to_string(i) };
-            env.fund(XRP(1000), bob);
+            env.fund(CALL(1000), bob);
         }
-        env(offer(Account{"bob0"}, USD(100), XRP(100)));
+        env(offer(Account{"bob0"}, USD(100), CALL(100)));
         env.trust(Account{"bob2"}["USD"](100), Account{"bob3"});
 
         auto majorities = getMajorityAmendments(*env.closed());
@@ -302,7 +302,7 @@ public:
             jv[jss::Flags] = tfUniversal;
             jv[jss::Account] = Account{"bob5"}.human();
             jv[jss::Destination] = Account{"bob6"}.human();
-            jv[jss::Amount] = XRP(50).value().getJson(0);
+            jv[jss::Amount] = CALL(50).value().getJson(0);
             jv[sfFinishAfter.fieldName] =
                 NetClock::time_point{env.now() + 10s}
                     .time_since_epoch().count();
@@ -315,7 +315,7 @@ public:
             jv[jss::Flags] = tfUniversal;
             jv[jss::Account] = Account{"bob6"}.human ();
             jv[jss::Destination] = Account{"bob7"}.human ();
-            jv[jss::Amount] = XRP(100).value().getJson (0);
+            jv[jss::Amount] = CALL(100).value().getJson (0);
             jv[jss::SettleDelay] = NetClock::duration{10s}.count();
             jv[sfPublicKey.fieldName] = strHex (Account{"bob6"}.pk().slice ());
             jv[sfCancelAfter.fieldName] =

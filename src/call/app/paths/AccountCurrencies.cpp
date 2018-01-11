@@ -25,13 +25,13 @@ namespace call {
 hash_set<Currency> accountSourceCurrencies (
     AccountID const& account,
     std::shared_ptr<CallLineCache> const& lrCache,
-    bool includeXRP)
+    bool includeCALL)
 {
     hash_set<Currency> currencies;
 
     // YYY Only bother if they are above reserve
-    if (includeXRP)
-        currencies.insert (xrpCurrency());
+    if (includeCALL)
+        currencies.insert (callCurrency());
 
     // List of call lines.
     auto& callLines = lrCache->getCallLines (account);
@@ -63,12 +63,12 @@ hash_set<Currency> accountSourceCurrencies (
 hash_set<Currency> accountDestCurrencies (
     AccountID const& account,
     std::shared_ptr<CallLineCache> const& lrCache,
-    bool includeXRP)
+    bool includeCALL)
 {
     hash_set<Currency> currencies;
 
-    if (includeXRP)
-        currencies.insert (xrpCurrency());
+    if (includeCALL)
+        currencies.insert (callCurrency());
     // Even if account doesn't exist
 
     // List of call lines.

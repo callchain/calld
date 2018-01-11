@@ -30,18 +30,18 @@ namespace call {
 
 // See https://call.com/wiki/Transaction_Format#Payment_.280.29
 
-XRPAmount
+CALLAmount
 Payment::calculateMaxSpend(STTx const& tx)
 {
     if (tx.isFieldPresent(sfSendMax))
     {
         auto const& sendMax = tx[sfSendMax];
-        return sendMax.native() ? sendMax.xrp() : beast::zero;
+        return sendMax.native() ? sendMax.call() : beast::zero;
     }
-    /* If there's no sfSendMax in XRP, and the sfAmount isn't
-    in XRP, then the transaction can not send XRP. */
+    /* If there's no sfSendMax in CALL, and the sfAmount isn't
+    in CALL, then the transaction can not send CALL. */
     auto const& saDstAmount = tx.getFieldAmount(sfAmount);
-    return saDstAmount.native() ? saDstAmount.xrp() : beast::zero;
+    return saDstAmount.native() ? saDstAmount.call() : beast::zero;
 }
 
 TER
@@ -87,8 +87,8 @@ Payment::preflight (PreflightContext const& ctx)
     auto const& uSrcCurrency = maxSourceAmount.getCurrency ();
     auto const& uDstCurrency = saDstAmount.getCurrency ();
 
-    // isZero() is XRP.  FIX!
-    bool const bXRPDirect = uSrcCurrency.isZero () && uDstCurrency.isZero ();
+    // isZero() is CALL.  FIX!
+    bool const bCALLDirect = uSrcCurrency.isZero () && uDstCurrency.isZero ();
 
     if (!isLegalNet (saDstAmount) || !isLegalNet (maxSourceAmount))
         return temBAD_AMOUNT;
@@ -128,40 +128,40 @@ Payment::preflight (PreflightContext const& ctx)
             " to self without path for " << to_string (uDstCurrency);
         return temREDUNDANT;
     }
-    if (bXRPDirect && bMax)
+    if (bCALLDirect && bMax)
     {
         // Consistent but redundant transaction.
         JLOG(j.trace()) << "Malformed transaction: " <<
             "SendMax specified for CALL to CALL.";
-        return temBAD_SEND_XRP_MAX;
+        return temBAD_SEND_CALL_MAX;
     }
-    if (bXRPDirect && bPaths)
+    if (bCALLDirect && bPaths)
     {
-        // XRP is sent without paths.
+        // CALL is sent without paths.
         JLOG(j.trace()) << "Malformed transaction: " <<
             "Paths specified for CALL to CALL.";
-        return temBAD_SEND_XRP_PATHS;
+        return temBAD_SEND_CALL_PATHS;
     }
-    if (bXRPDirect && partialPaymentAllowed)
+    if (bCALLDirect && partialPaymentAllowed)
     {
         // Consistent but redundant transaction.
         JLOG(j.trace()) << "Malformed transaction: " <<
             "Partial payment specified for CALL to CALL.";
-        return temBAD_SEND_XRP_PARTIAL;
+        return temBAD_SEND_CALL_PARTIAL;
     }
-    if (bXRPDirect && limitQuality)
+    if (bCALLDirect && limitQuality)
     {
         // Consistent but redundant transaction.
         JLOG(j.trace()) << "Malformed transaction: " <<
             "Limit quality specified for CALL to CALL.";
-        return temBAD_SEND_XRP_LIMIT;
+        return temBAD_SEND_CALL_LIMIT;
     }
-    if (bXRPDirect && !defaultPathsAllowed)
+    if (bCALLDirect && !defaultPathsAllowed)
     {
         // Consistent but redundant transaction.
         JLOG(j.trace()) << "Malformed transaction: " <<
             "No call direct specified for CALL to CALL.";
-        return temBAD_SEND_XRP_NO_DIRECT;
+        return temBAD_SEND_CALL_NO_DIRECT;
     }
 
     auto const deliverMin = tx[~sfDeliverMin];
@@ -252,7 +252,7 @@ Payment::preclaim(PreclaimContext const& ctx)
             // TODO: dedupe
             // Another transaction could create the account and then this
             // transaction would succeed.
-            return tecNO_DST_INSUF_XRP;
+            return tecNO_DST_INSUF_CALL;
         }
     }
     else if ((sleDst->getFlags() & lsfRequireDestTag) &&
@@ -439,7 +439,7 @@ Payment::doApply ()
     {
         assert (saDstAmount.native ());
 
-        // Direct XRP payment.
+        // Direct CALL payment.
 
         // uOwnerCount is the number of entries in this legder for this
         // account that require a reserve.
@@ -453,15 +453,15 @@ Payment::doApply ()
         // fees were charged. We want to make sure we have enough reserve
         // to send. Allow final spend to use reserve for fee.
         auto const mmm = std::max(reserve,
-            ctx_.tx.getFieldAmount (sfFee).xrp ());
+            ctx_.tx.getFieldAmount (sfFee).call ());
 
-        if (mPriorBalance < saDstAmount.xrp () + mmm)
+        if (mPriorBalance < saDstAmount.call () + mmm)
         {
             // Vote no. However the transaction might succeed, if applied in
             // a different order.
             JLOG(j_.trace()) << "Delay transaction: Insufficient funds: " <<
                 " " << to_string (mPriorBalance) <<
-                " / " << to_string (saDstAmount.xrp () + mmm) <<
+                " / " << to_string (saDstAmount.call () + mmm) <<
                 " (" << to_string (reserve) << ")";
 
             terResult = tecUNFUNDED_PAYMENT;

@@ -254,10 +254,10 @@ OpenView::rawReplace(
 }
 
 void
-OpenView::rawDestroyXRP(
-    XRPAmount const& fee)
+OpenView::rawDestroyCALL(
+    CALLAmount const& fee)
 {
-    items_.destroyXRP(fee);
+    items_.destroyCALL(fee);
     // VFALCO Deduct from info_.totalDrops ?
     //        What about child views?
 }

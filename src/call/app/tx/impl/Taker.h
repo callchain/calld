@@ -78,7 +78,7 @@ protected:
 
         bool sanity_check () const
         {
-            if (isXRP (order.in) && isXRP (order.out))
+            if (isCALL (order.in) && isCALL (order.out))
                 return false;
 
             return order.in >= zero &&
@@ -93,12 +93,12 @@ private:
     log_flow (char const* description, Flow const& flow);
 
     Flow
-    flow_xrp_to_iou (Amounts const& offer, Quality quality,
+    flow_call_to_iou (Amounts const& offer, Quality quality,
         STAmount const& owner_funds, STAmount const& taker_funds,
         Rate const& rate_out);
 
     Flow
-    flow_iou_to_xrp (Amounts const& offer, Quality quality,
+    flow_iou_to_call (Amounts const& offer, Quality quality,
         STAmount const& owner_funds, STAmount const& taker_funds,
         Rate const& rate_in);
 
@@ -239,9 +239,9 @@ public:
     get_funds (AccountID const& account, STAmount const& funds) const;
 
     STAmount const&
-    get_xrp_flow () const
+    get_call_flow () const
     {
-        return xrp_flow_;
+        return call_flow_;
     }
 
     std::uint32_t
@@ -284,7 +284,7 @@ private:
         BasicTaker::Flow const& flow2, Offer& leg2);
 
     TER
-    transferXRP (AccountID const& from, AccountID const& to, STAmount const& amount);
+    transferCALL (AccountID const& from, AccountID const& to, STAmount const& amount);
 
     TER
     redeemIOU (AccountID const& account, STAmount const& amount, Issue const& issue);
@@ -296,8 +296,8 @@ private:
     // The underlying ledger entry we are dealing with
     ApplyView& view_;
 
-    // The amount of XRP that flowed if we were autobridging
-    STAmount xrp_flow_;
+    // The amount of CALL that flowed if we were autobridging
+    STAmount call_flow_;
 
     // The number direct crossings that we performed
     std::uint32_t direct_crossings_;

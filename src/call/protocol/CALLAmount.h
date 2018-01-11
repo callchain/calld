@@ -17,8 +17,8 @@
 */
 //==============================================================================
 
-#ifndef CALL_PROTOCOL_XRPAMOUNT_H_INCLUDED
-#define CALL_PROTOCOL_XRPAMOUNT_H_INCLUDED
+#ifndef CALL_PROTOCOL_CALLAMOUNT_H_INCLUDED
+#define CALL_PROTOCOL_CALLAMOUNT_H_INCLUDED
 
 #include <call/basics/contract.h>
 #include <call/protocol/SystemParameters.h>
@@ -33,24 +33,24 @@ using beast::zero;
 
 namespace call {
 
-class XRPAmount
-    : private boost::totally_ordered <XRPAmount>
-    , private boost::additive <XRPAmount>
+class CALLAmount
+    : private boost::totally_ordered <CALLAmount>
+    , private boost::additive <CALLAmount>
 {
 private:
     std::int64_t drops_;
 
 public:
-    XRPAmount () = default;
-    XRPAmount (XRPAmount const& other) = default;
-    XRPAmount& operator= (XRPAmount const& other) = default;
+    CALLAmount () = default;
+    CALLAmount (CALLAmount const& other) = default;
+    CALLAmount& operator= (CALLAmount const& other) = default;
 
-    XRPAmount (beast::Zero)
+    CALLAmount (beast::Zero)
         : drops_ (0)
     {
     }
 
-    XRPAmount&
+    CALLAmount&
     operator= (beast::Zero)
     {
         drops_ = 0;
@@ -60,7 +60,7 @@ public:
     template <class Integer,
         class = typename std::enable_if_t <
             std::is_integral<Integer>::value>>
-    XRPAmount (Integer drops)
+    CALLAmount (Integer drops)
         : drops_ (static_cast<std::int64_t> (drops))
     {
     }
@@ -68,41 +68,41 @@ public:
     template <class Integer,
         class = typename std::enable_if_t <
             std::is_integral<Integer>::value>>
-    XRPAmount&
+    CALLAmount&
     operator= (Integer drops)
     {
         drops_ = static_cast<std::int64_t> (drops);
         return *this;
     }
 
-    XRPAmount&
-    operator+= (XRPAmount const& other)
+    CALLAmount&
+    operator+= (CALLAmount const& other)
     {
         drops_ += other.drops_;
         return *this;
     }
 
-    XRPAmount&
-    operator-= (XRPAmount const& other)
+    CALLAmount&
+    operator-= (CALLAmount const& other)
     {
         drops_ -= other.drops_;
         return *this;
     }
 
-    XRPAmount
+    CALLAmount
     operator- () const
     {
         return { -drops_ };
     }
 
     bool
-    operator==(XRPAmount const& other) const
+    operator==(CALLAmount const& other) const
     {
         return drops_ == other.drops_;
     }
 
     bool
-    operator<(XRPAmount const& other) const
+    operator<(CALLAmount const& other) const
     {
         return drops_ < other.drops_;
     }
@@ -131,15 +131,15 @@ public:
 
 inline
 std::string
-to_string (XRPAmount const& amount)
+to_string (CALLAmount const& amount)
 {
     return std::to_string (amount.drops ());
 }
 
 inline
-XRPAmount
+CALLAmount
 mulRatio (
-    XRPAmount const& amt,
+    CALLAmount const& amt,
     std::uint32_t num,
     std::uint32_t den,
     bool roundUp)
@@ -161,13 +161,13 @@ mulRatio (
             r -= 1;
     }
     if (r > std::numeric_limits<std::int64_t>::max ())
-        Throw<std::overflow_error> ("XRP mulRatio overflow");
-    return XRPAmount (r.convert_to<std::int64_t> ());
+        Throw<std::overflow_error> ("CALL mulRatio overflow");
+    return CALLAmount (r.convert_to<std::int64_t> ());
 }
 
-/** Returns true if the amount does not exceed the initial XRP in existence. */
+/** Returns true if the amount does not exceed the initial CALL in existence. */
 inline
-bool isLegalAmount (XRPAmount const& amount)
+bool isLegalAmount (CALLAmount const& amount)
 {
     return amount.drops () <= SYSTEM_CURRENCY_START;
 }

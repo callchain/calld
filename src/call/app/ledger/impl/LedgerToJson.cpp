@@ -233,7 +233,7 @@ void fillJson (Object& json, LedgerFill const& fill)
     else
         fillJson(json, ! fill.ledger.open(), fill.ledger.info(), bFull);
 
-    if (bFull || fill.options & LedgerFill::dumpTxrp)
+    if (bFull || fill.options & LedgerFill::dumpTcall)
         fillJsonTx(json, fill);
 
     if (bFull || fill.options & LedgerFill::dumpState)

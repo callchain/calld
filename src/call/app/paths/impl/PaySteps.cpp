@@ -24,7 +24,7 @@
 #include <call/ledger/ReadView.h>
 #include <call/protocol/Feature.h>
 #include <call/protocol/IOUAmount.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 
 #include <boost/range/adaptors.hpp>
 #include <boost/range/algorithm.hpp>
@@ -58,17 +58,17 @@ bool checkNear (IOUAmount const& expected, IOUAmount const& actual)
     return r <= ratTol;
 };
 
-bool checkNear (XRPAmount const& expected, XRPAmount const& actual)
+bool checkNear (CALLAmount const& expected, CALLAmount const& actual)
 {
     return expected == actual;
 };
 
 static
-bool isXRPAccount (STPathElement const& pe)
+bool isCALLAccount (STPathElement const& pe)
 {
     if (pe.getNodeType () != STPathElement::typeAccount)
         return false;
-    return isXRP (pe.getAccountID ());
+    return isCALL (pe.getAccountID ());
 };
 
 
@@ -84,13 +84,13 @@ toStep (
 
     if (ctx.isFirst && e1->isAccount () &&
         (e1->getNodeType () & STPathElement::typeCurrency) &&
-        isXRP (e1->getCurrency ()))
+        isCALL (e1->getCurrency ()))
     {
-        return make_XRPEndpointStep (ctx, e1->getAccountID ());
+        return make_CALLEndpointStep (ctx, e1->getAccountID ());
     }
 
-    if (ctx.isLast && isXRPAccount (*e1) && e2->isAccount())
-        return make_XRPEndpointStep (ctx, e2->getAccountID());
+    if (ctx.isLast && isCALLAccount (*e1) && e2->isAccount())
+        return make_CALLEndpointStep (ctx, e2->getAccountID());
 
     if (e1->isAccount() && e2->isAccount())
     {
@@ -118,18 +118,18 @@ toStep (
         ? e2->getIssuerID ()
         : curIssue.account;
 
-    if (isXRP (curIssue.currency) && isXRP (outCurrency))
+    if (isCALL (curIssue.currency) && isCALL (outCurrency))
     {
-        JLOG (j.warn()) << "Found xrp/xrp offer payment step";
+        JLOG (j.warn()) << "Found call/call offer payment step";
         return {temBAD_PATH, std::unique_ptr<Step>{}};
     }
 
     assert (e2->isOffer ());
 
-    if (isXRP (outCurrency))
+    if (isCALL (outCurrency))
         return make_BookStepIX (ctx, curIssue);
 
-    if (isXRP (curIssue.currency))
+    if (isCALL (curIssue.currency))
         return make_BookStepXI (ctx, {outCurrency, outIssuer});
 
     return make_BookStepII (ctx, curIssue, {outCurrency, outIssuer});
@@ -148,14 +148,14 @@ toStrandV1 (
     bool offerCrossing,
     beast::Journal j)
 {
-    if (isXRP (src))
+    if (isCALL (src))
     {
-        JLOG (j.debug()) << "toStrand with xrpAccount as src";
+        JLOG (j.debug()) << "toStrand with callAccount as src";
         return {temBAD_PATH, Strand{}};
     }
-    if (isXRP (dst))
+    if (isCALL (dst))
     {
-        JLOG (j.debug()) << "toStrand with xrpAccount as dst";
+        JLOG (j.debug()) << "toStrand with callAccount as dst";
         return {temBAD_PATH, Strand{}};
     }
     if (!isConsistent (deliver))
@@ -173,8 +173,8 @@ toStrandV1 (
     {
         auto& currency =
             sendMaxIssue ? sendMaxIssue->currency : deliver.currency;
-        if (isXRP (currency))
-            return xrpIssue ();
+        if (isCALL (currency))
+            return callIssue ();
         return Issue{currency, src};
     }();
 
@@ -281,7 +281,7 @@ toStrandV1 (
 
         if (cur->isAccount() && next->isAccount())
         {
-            if (!isXRP (curIssue.currency) &&
+            if (!isCALL (curIssue.currency) &&
                 curIssue.account != cur->getAccountID () &&
                 curIssue.account != next->getAccountID ())
             {
@@ -316,7 +316,7 @@ toStrandV1 (
         else if (cur->isOffer() && next->isAccount())
         {
             if (curIssue.account != next->getAccountID () &&
-                !isXRP (next->getAccountID ()))
+                !isCALL (next->getAccountID ()))
             {
                 JLOG (j.trace()) << "Inserting implied account after offer";
                 auto msr = make_DirectStepI (ctx(), curIssue.account,
@@ -335,7 +335,7 @@ toStrandV1 (
             auto const& nextIssuer =
                 next->hasIssuer () ? next->getIssuerID () : curIssue.account;
 
-            if (isXRP (curIssue.currency))
+            if (isCALL (curIssue.currency))
             {
                 JLOG (j.trace()) << "Inserting implied XI offer";
                 auto msr = make_BookStepXI (
@@ -344,7 +344,7 @@ toStrandV1 (
                     return {msr.first, Strand{}};
                 result.push_back (std::move (msr.second));
             }
-            else if (isXRP (nextCurrency))
+            else if (isCALL (nextCurrency))
             {
                 JLOG (j.trace()) << "Inserting implied IX offer";
                 auto msr = make_BookStepIX (ctx(), curIssue);
@@ -396,7 +396,7 @@ toStrandV2 (
     bool offerCrossing,
     beast::Journal j)
 {
-    if (isXRP(src) || isXRP(dst) ||
+    if (isCALL(src) || isCALL(dst) ||
         !isConsistent(deliver) || (sendMaxIssue && !isConsistent(*sendMaxIssue)))
         return {temBAD_PATH, Strand{}};
 
@@ -420,14 +420,14 @@ toStrandV2 (
         if (hasAccount && (hasIssuer || hasCurrency))
             return {temBAD_PATH, Strand{}};
 
-        if (hasIssuer && isXRP(pe.getIssuerID()))
+        if (hasIssuer && isCALL(pe.getIssuerID()))
             return {temBAD_PATH, Strand{}};
 
-        if (hasAccount && isXRP(pe.getAccountID()))
+        if (hasAccount && isCALL(pe.getAccountID()))
             return {temBAD_PATH, Strand{}};
 
         if (hasCurrency && hasIssuer &&
-            isXRP(pe.getCurrency()) != isXRP(pe.getIssuerID()))
+            isCALL(pe.getCurrency()) != isCALL(pe.getIssuerID()))
             return {temBAD_PATH, Strand{}};
 
         if (hasIssuer && (pe.getIssuerID() == noAccount()))
@@ -441,8 +441,8 @@ toStrandV2 (
     {
         auto const& currency =
             sendMaxIssue ? sendMaxIssue->currency : deliver.currency;
-        if (isXRP (currency))
-            return xrpIssue ();
+        if (isCALL (currency))
+            return callIssue ();
         return Issue{currency, src};
     }();
 
@@ -547,13 +547,13 @@ toStrandV2 (
         if (cur->hasCurrency())
         {
             curIssue.currency = cur->getCurrency ();
-            if (isXRP(curIssue.currency))
-                curIssue.account = xrpAccount();
+            if (isCALL(curIssue.currency))
+                curIssue.account = callAccount();
         }
 
         if (cur->isAccount() && next->isAccount())
         {
-            if (!isXRP (curIssue.currency) &&
+            if (!isCALL (curIssue.currency) &&
                 curIssue.account != cur->getAccountID () &&
                 curIssue.account != next->getAccountID ())
             {
@@ -564,7 +564,7 @@ toStrandV2 (
                     return {msr.first, Strand{}};
                 result.push_back (std::move (msr.second));
                 impliedPE.emplace(STPathElement::typeAccount,
-                    curIssue.account, xrpCurrency(), xrpAccount());
+                    curIssue.account, callCurrency(), callAccount());
                 cur = &*impliedPE;
             }
         }
@@ -579,23 +579,23 @@ toStrandV2 (
                     return {msr.first, Strand{}};
                 result.push_back (std::move (msr.second));
                 impliedPE.emplace(STPathElement::typeAccount,
-                    curIssue.account, xrpCurrency(), xrpAccount());
+                    curIssue.account, callCurrency(), callAccount());
                 cur = &*impliedPE;
             }
         }
         else if (cur->isOffer() && next->isAccount())
         {
             if (curIssue.account != next->getAccountID () &&
-                !isXRP (next->getAccountID ()))
+                !isCALL (next->getAccountID ()))
             {
-                if (isXRP(curIssue))
+                if (isCALL(curIssue))
                 {
                     if (i != normPath.size() - 2)
                         return {temBAD_PATH, Strand{}};
                     else
                     {
-                        // Last step. insert xrp endpoint step
-                        auto msr = make_XRPEndpointStep (ctx(), next->getAccountID());
+                        // Last step. insert call endpoint step
+                        auto msr = make_CALLEndpointStep (ctx(), next->getAccountID());
                         if (msr.first != tesSUCCESS)
                             return {msr.first, Strand{}};
                         result.push_back(std::move(msr.second));
@@ -641,15 +641,15 @@ toStrandV2 (
                 return std::make_pair(r->in.account, r->out.account);
             Throw<FlowException>(
                 tefEXCEPTION, "Step should be either a direct or book step");
-            return std::make_pair(xrpAccount(), xrpAccount());
+            return std::make_pair(callAccount(), callAccount());
         };
 
         auto curAccount = src;
         auto curIssue = [&] {
             auto& currency =
                 sendMaxIssue ? sendMaxIssue->currency : deliver.currency;
-            if (isXRP(currency))
-                return xrpIssue();
+            if (isCALL(currency))
+                return callIssue();
             return Issue{currency, src};
         }();
 
@@ -846,17 +846,17 @@ isDirectXrpToXrp(Strand const& strand)
 
 template<>
 bool
-isDirectXrpToXrp<XRPAmount, XRPAmount> (Strand const& strand)
+isDirectXrpToXrp<CALLAmount, CALLAmount> (Strand const& strand)
 {
     return (strand.size () == 2);
 }
 
 template
 bool
-isDirectXrpToXrp<XRPAmount, IOUAmount> (Strand const& strand);
+isDirectXrpToXrp<CALLAmount, IOUAmount> (Strand const& strand);
 template
 bool
-isDirectXrpToXrp<IOUAmount, XRPAmount> (Strand const& strand);
+isDirectXrpToXrp<IOUAmount, CALLAmount> (Strand const& strand);
 template
 bool
 isDirectXrpToXrp<IOUAmount, IOUAmount> (Strand const& strand);

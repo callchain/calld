@@ -24,13 +24,13 @@ namespace call {
 bool
 isConsistent (Issue const& ac)
 {
-    return isXRP (ac.currency) == isXRP (ac.account);
+    return isCALL (ac.currency) == isCALL (ac.account);
 }
 
 std::string
 to_string (Issue const& ac)
 {
-    if (isXRP (ac.account))
+    if (isCALL (ac.account))
         return to_string (ac.currency);
 
     return to_string(ac.account) + "/" + to_string(ac.currency);
@@ -45,7 +45,7 @@ operator<< (std::ostream& os, Issue const& x)
 
 /** Ordered comparison.
     The assets are ordered first by currency and then by account,
-    if the currency is not XRP.
+    if the currency is not CALL.
 */
 int
 compare (Issue const& lhs, Issue const& rhs)
@@ -53,7 +53,7 @@ compare (Issue const& lhs, Issue const& rhs)
     int diff = compare (lhs.currency, rhs.currency);
     if (diff != 0)
         return diff;
-    if (isXRP (lhs.currency))
+    if (isCALL (lhs.currency))
         return 0;
     return compare (lhs.account, rhs.account);
 }

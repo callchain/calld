@@ -62,7 +62,7 @@ TER PathCursor::reverseLiquidity () const
         return reverseLiquidityForAccount ();
 
     // Otherwise the node is an Offer.
-    if (isXRP (nextNode().account_))
+    if (isCALL (nextNode().account_))
     {
         JLOG (j_.trace())
             << "reverseLiquidityForOffer: "

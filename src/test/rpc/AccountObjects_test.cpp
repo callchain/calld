@@ -150,7 +150,7 @@ public:
             BEAST_EXPECT( resp[jss::result][jss::error_message] == "ledgerNotFound");
         }
 
-        env.fund(XRP(1000), bob);
+        env.fund(CALL(1000), bob);
         // test error on type param not a string
         {
             Json::Value params;
@@ -180,11 +180,11 @@ public:
        // test errors on marker
         {
             Account const gw{ "G" };
-            env.fund(XRP(1000), gw);
+            env.fund(CALL(1000), gw);
             auto const USD = gw["USD"];
             env.trust(USD(1000), bob);
-            env(pay(gw, bob, XRP(1)));
-            env(offer(bob, XRP(100), bob["USD"](1)), txflags(tfPassive));
+            env(pay(gw, bob, CALL(1)));
+            env(offer(bob, CALL(100), bob["USD"](1)), txflags(tfPassive));
 
             Json::Value params;
             params[jss::account] = bob.human();
@@ -240,15 +240,15 @@ public:
         auto const USD1 = gw1["USD"];
         auto const USD2 = gw2["USD"];
 
-        env.fund(XRP(1000), gw1, gw2, bob);
+        env.fund(CALL(1000), gw1, gw2, bob);
         env.trust(USD1(1000), bob);
         env.trust(USD2(1000), bob);
 
         env(pay(gw1, bob, USD1(1000)));
         env(pay(gw2, bob, USD2(1000)));
 
-        env(offer(bob, XRP(100), bob["USD"](1)),txflags(tfPassive));
-        env(offer(bob, XRP(100), USD1(1)), txflags(tfPassive));
+        env(offer(bob, CALL(100), bob["USD"](1)),txflags(tfPassive));
+        env(offer(bob, CALL(100), USD1(1)), txflags(tfPassive));
 
         Json::Value bobj[4];
         for (int i = 0; i < 4; ++i)

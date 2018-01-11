@@ -66,7 +66,7 @@ class AccountTxPaging_test : public beast::unit_test::suite
         Account A2 {"A2"};
         Account A3 {"A3"};
 
-        env.fund(XRP(10000), A1, A2, A3);
+        env.fund(CALL(10000), A1, A2, A3);
         env.close();
 
         env.trust(A3["USD"](1000), A1);
@@ -78,9 +78,9 @@ class AccountTxPaging_test : public beast::unit_test::suite
         {
             env(pay(A2, A1, A2["USD"](2)));
             env(pay(A3, A1, A3["USD"](2)));
-            env(offer(A1, XRP(11), A1["USD"](1)));
-            env(offer(A2, XRP(10), A2["USD"](1)));
-            env(offer(A3, XRP(9),  A3["USD"](1)));
+            env(offer(A1, CALL(11), A1["USD"](1)));
+            env(offer(A2, CALL(10), A2["USD"](1)));
+            env(offer(A3, CALL(9),  A3["USD"](1)));
             env.close();
         }
 

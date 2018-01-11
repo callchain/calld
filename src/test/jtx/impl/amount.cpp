@@ -78,7 +78,7 @@ operator<< (std::ostream& os,
     {
         // measure in hundredths
         auto const c =
-            dropsPerXRP<int>::value / 100;
+            dropsPerCALL<int>::value / 100;
         auto const n = amount.value().mantissa();
         if(n < c)
         {
@@ -89,11 +89,11 @@ operator<< (std::ostream& os,
             return os;
         }
         auto const d = double(n) /
-            dropsPerXRP<int>::value;
+            dropsPerCALL<int>::value;
         if (amount.value().negative())
             os << "-";
 
-        os << to_places(d, 6) << " XRP";
+        os << to_places(d, 6) << " CALL";
     }
     else
     {
@@ -107,7 +107,7 @@ operator<< (std::ostream& os,
 
 //------------------------------------------------------------------------------
 
-XRP_t const XRP {};
+CALL_t const CALL {};
 
 PrettyAmount
 IOU::operator()(epsilon_t) const

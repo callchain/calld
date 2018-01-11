@@ -33,7 +33,7 @@
 #include <call/app/paths/impl/PaySteps.cpp>
 #include <call/app/paths/impl/DirectStep.cpp>
 #include <call/app/paths/impl/BookStep.cpp>
-#include <call/app/paths/impl/XRPEndpointStep.cpp>
+#include <call/app/paths/impl/CALLEndpointStep.cpp>
 
 #include <call/app/paths/cursor/AdvanceNode.cpp>
 #include <call/app/paths/cursor/DeliverNodeForward.cpp>

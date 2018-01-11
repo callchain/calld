@@ -177,11 +177,11 @@ TER PathCursor::deliverNodeForward (
                 continue;
             }
 
-            if (!isXRP(nextNode().account_))
+            if (!isCALL(nextNode().account_))
             {
                 // ? --> OFFER --> account
                 // Input fees: vary based upon the consumed offer's owner.
-                // Output fees: none as XRP or the destination account is the
+                // Output fees: none as CALL or the destination account is the
                 // issuer.
 
                 saOutPassAct = saOutPassMax;
@@ -196,7 +196,7 @@ TER PathCursor::deliverNodeForward (
                     << " saOutPassAct=" << saOutPassAct
                     << " saOutFunded=" << saOutFunded;
 
-                // Output: Debit offer owner, send XRP or non-XPR to next
+                // Output: Debit offer owner, send CALL or non-XPR to next
                 // account.
                 resultCode = accountSend(view(),
                     node().offerOwnerAccount_,
@@ -253,8 +253,8 @@ TER PathCursor::deliverNodeForward (
                 // Do outbound debiting.
                 // Send to issuer/limbo total amount including fees (issuer gets
                 // fees).
-                auto const& id = isXRP(node().issue_) ?
-                        xrpAccount() : node().issue_.account;
+                auto const& id = isCALL(node().issue_) ?
+                        callAccount() : node().issue_.account;
                 auto outPassTotal = saOutPassAct + saOutPassFees;
                 accountSend(view(),
                     node().offerOwnerAccount_,
@@ -286,11 +286,11 @@ TER PathCursor::deliverNodeForward (
             // Credit offer owner from in issuer/limbo (input transfer fees left
             // with owner).  Don't attempt to have someone credit themselves, it
             // is redundant.
-            if (isXRP (previousNode().issue_.currency)
+            if (isCALL (previousNode().issue_.currency)
                 || uInAccountID != node().offerOwnerAccount_)
             {
-                auto id = !isXRP(previousNode().issue_.currency) ?
-                        uInAccountID : xrpAccount();
+                auto id = !isCALL(previousNode().issue_.currency) ?
+                        uInAccountID : callAccount();
                 resultCode = accountSend(view(),
                     id,
                     node().offerOwnerAccount_,

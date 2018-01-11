@@ -153,7 +153,7 @@ calcAccountID (PublicKey const& pk)
 }
 
 AccountID const&
-xrpAccount()
+callAccount()
 {
     static AccountID const account(0);
     return account;

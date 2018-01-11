@@ -45,7 +45,7 @@ public:
     }
 
     static
-    XRPAmount
+    CALLAmount
     calculateMaxSpend(STTx const& tx);
 
     static

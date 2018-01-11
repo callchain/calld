@@ -127,7 +127,7 @@ isGlobalFrozen (ReadView const& view,
     AccountID const& issuer)
 {
     // VFALCO Perhaps this should assert
-    if (isXRP (issuer))
+    if (isCALL (issuer))
         return false;
     auto const sle =
         view.read(keylet::account(issuer));
@@ -143,7 +143,7 @@ bool
 isFrozen (ReadView const& view, AccountID const& account,
     Currency const& currency, AccountID const& issuer)
 {
-    if (isXRP (currency))
+    if (isCALL (currency))
         return false;
     auto sle =
         view.read(keylet::account(issuer));
@@ -169,9 +169,9 @@ accountHolds (ReadView const& view,
               beast::Journal j)
 {
     STAmount amount;
-    if (isXRP(currency))
+    if (isCALL(currency))
     {
-        return {xrpLiquid (view, account, 0, j)};
+        return {callLiquid (view, account, 0, j)};
     }
 
     // IOU: Return balance on trust line modulo freeze
@@ -278,8 +278,8 @@ confineOwnerCount (std::uint32_t current, std::int32_t adjustment,
     return adjusted;
 }
 
-XRPAmount
-xrpLiquid (ReadView const& view, AccountID const& id,
+CALLAmount
+callLiquid (ReadView const& view, AccountID const& id,
     std::int32_t ownerCountAdj, beast::Journal j)
 {
     auto const sle = view.read(keylet::account(id));
@@ -299,7 +299,7 @@ xrpLiquid (ReadView const& view, AccountID const& id,
         auto const fullBalance =
             sle->getFieldAmount(sfBalance);
 
-        auto const balance = view.balanceHook(id, xrpAccount(), fullBalance);
+        auto const balance = view.balanceHook(id, callAccount(), fullBalance);
 
         STAmount amount = balance - reserve;
         if (balance < reserve)
@@ -314,12 +314,12 @@ xrpLiquid (ReadView const& view, AccountID const& id,
             " ownerCount=" << to_string (ownerCount) <<
             " ownerCountAdj=" << to_string (ownerCountAdj);
 
-        return amount.xrp();
+        return amount.call();
     }
     else
     {
         // pre-switchover
-        // XRP: return balance minus reserve
+        // CALL: return balance minus reserve
         std::uint32_t const ownerCount =
             confineOwnerCount (sle->getFieldU32 (sfOwnerCount), ownerCountAdj);
         auto const reserve =
@@ -338,7 +338,7 @@ xrpLiquid (ReadView const& view, AccountID const& id,
             " ownerCount=" << to_string (ownerCount) <<
             " ownerCountAdj=" << to_string (ownerCountAdj);
 
-        return view.balanceHook(id, xrpAccount(), amount).xrp();
+        return view.balanceHook(id, callAccount(), amount).call();
     }
 }
 
@@ -1312,8 +1312,8 @@ callCredit (ApplyView& view,
 
     TER terResult;
 
-    assert (!isXRP (uSenderID) && uSenderID != noAccount());
-    assert (!isXRP (uReceiverID) && uReceiverID != noAccount());
+    assert (!isCALL (uSenderID) && uSenderID != noAccount());
+    assert (!isCALL (uReceiverID) && uReceiverID != noAccount());
 
     if (!sleCallState)
     {
@@ -1470,7 +1470,7 @@ callSend (ApplyView& view,
 {
     auto const issuer   = saAmount.getIssuer ();
 
-    assert (!isXRP (uSenderID) && !isXRP (uReceiverID));
+    assert (!isCALL (uSenderID) && !isCALL (uReceiverID));
     assert (uSenderID != uReceiverID);
 
     if (uSenderID == issuer || uReceiverID == issuer || issuer == noAccount())
@@ -1544,7 +1544,7 @@ accountSend (ApplyView& view,
         view.creditHook (uSenderID, uReceiverID, saAmount, dummyBalance);
     }
 
-    /* XRP send which does not check reserve and can do pure adjustment.
+    /* CALL send which does not check reserve and can do pure adjustment.
      * Note that sender or receiver may be null and this not a mistake; this
      * setup is used during pathfinding and it is carefully controlled to
      * ensure that transfers are balanced.
@@ -1590,9 +1590,9 @@ accountSend (ApplyView& view,
         {
             auto const sndBal = sender->getFieldAmount (sfBalance);
             if (fv2Switch)
-                view.creditHook (uSenderID, xrpAccount (), saAmount, sndBal);
+                view.creditHook (uSenderID, callAccount (), saAmount, sndBal);
 
-            // Decrement XRP balance.
+            // Decrement CALL balance.
             sender->setFieldAmount (sfBalance, sndBal - saAmount);
             view.update (sender);
         }
@@ -1600,12 +1600,12 @@ accountSend (ApplyView& view,
 
     if (tesSUCCESS == terResult && receiver)
     {
-        // Increment XRP balance.
+        // Increment CALL balance.
         auto const rcvBal = receiver->getFieldAmount (sfBalance);
         receiver->setFieldAmount (sfBalance, rcvBal + saAmount);
 
         if (fv2Switch)
-            view.creditHook (xrpAccount (), uReceiverID, saAmount, -rcvBal);
+            view.creditHook (callAccount (), uReceiverID, saAmount, -rcvBal);
 
         view.update (receiver);
     }
@@ -1688,7 +1688,7 @@ issueIOU (ApplyView& view,
     AccountID const& account,
         STAmount const& amount, Issue const& issue, beast::Journal j)
 {
-    assert (!isXRP (account) && !isXRP (issue.account));
+    assert (!isCALL (account) && !isCALL (issue.account));
 
     // Consistency check
     assert (issue == amount.issue ());
@@ -1761,7 +1761,7 @@ redeemIOU (ApplyView& view,
     Issue const& issue,
     beast::Journal j)
 {
-    assert (!isXRP (account) && !isXRP (issue.account));
+    assert (!isCALL (account) && !isCALL (issue.account));
 
     // Consistency check
     assert (issue == amount.issue ());
@@ -1825,7 +1825,7 @@ redeemIOU (ApplyView& view,
 }
 
 TER
-transferXRP (ApplyView& view,
+transferCALL (ApplyView& view,
     AccountID const& from,
     AccountID const& to,
     STAmount const& amount,
@@ -1839,7 +1839,7 @@ transferXRP (ApplyView& view,
     SLE::pointer sender = view.peek (keylet::account(from));
     SLE::pointer receiver = view.peek (keylet::account(to));
 
-    JLOG (j.trace()) << "transferXRP: " <<
+    JLOG (j.trace()) << "transferCALL: " <<
         to_string (from) <<  " -> " << to_string (to) <<
         ") : " << amount.getFullText ();
 
@@ -1853,7 +1853,7 @@ transferXRP (ApplyView& view,
             : tecFAILED_PROCESSING;
     }
 
-    // Decrement XRP balance.
+    // Decrement CALL balance.
     sender->setFieldAmount (sfBalance,
         sender->getFieldAmount (sfBalance) - amount);
     view.update (sender);

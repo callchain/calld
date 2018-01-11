@@ -34,7 +34,7 @@ class AccountCurrencies_test : public beast::unit_test::suite
         Env env {*this};
 
         auto const alice = Account {"alice"};
-        env.fund (XRP(10000), alice);
+        env.fund (CALL(10000), alice);
         env.close ();
 
         { // invalid ledger (hash)
@@ -99,7 +99,7 @@ class AccountCurrencies_test : public beast::unit_test::suite
 
         auto const alice = Account {"alice"};
         auto const gw = Account {"gateway"};
-        env.fund (XRP(10000), alice, gw);
+        env.fund (CALL(10000), alice, gw);
         char currencySuffix {'A'};
         std::vector<boost::optional<IOU>> gwCurrencies (26); // A - Z
         std::generate (gwCurrencies.begin(), gwCurrencies.end(),

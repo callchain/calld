@@ -186,10 +186,10 @@ ApplyViewBase::rawReplace(
 }
 
 void
-ApplyViewBase::rawDestroyXRP(
-    XRPAmount const& fee)
+ApplyViewBase::rawDestroyCALL(
+    CALLAmount const& fee)
 {
-    items_.destroyXRP(fee);
+    items_.destroyCALL(fee);
 }
 
 //---

@@ -126,10 +126,10 @@ for the queue if it meets these additional criteria:
   * it pays a [fee level](#fee-level) that is greater than 10% of the
   fee level for the transaction with the previous sequence number,
   * all other queued transactions for that account, in the case where
-  they spend the maximum possible XRP, leave enough XRP balance to pay
+  they spend the maximum possible CALL, leave enough CALL balance to pay
   the fee,
   * the total fees for the other queued transactions are less than both
-  the network's minimum reserve and the account's XRP balance, and
+  the network's minimum reserve and the account's CALL balance, and
   * none of the prior queued transactions affect the ability of subsequent
   transactions to claim a fee.
 
@@ -164,9 +164,9 @@ have a fee level of
 `90 drop fee * 256 fee level / ((1tx + 5sigs) * 15 drop base fee) = 256
 fee level`.
 
-This demonstrates that a simpler transaction paying less XRP can be more
+This demonstrates that a simpler transaction paying less CALL can be more
 likely to get into the open ledger, or be sorted earlier in the queue
-than a more complex transaction paying more XRP.
+than a more complex transaction paying more CALL.
 
 ### Reference Transaction
 

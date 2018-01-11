@@ -137,8 +137,8 @@ class Ticket_test : public beast::unit_test::suite
         using namespace test::jtx;
         Env env {*this, with_features (featureTickets)};
 
-        env (ticket::create (env.master), fee (XRP (-1)), ter (temBAD_FEE));
-        env (ticket::cancel (env.master, idOne), fee (XRP (-1)), ter (temBAD_FEE));
+        env (ticket::create (env.master), fee (CALL (-1)), ter (temBAD_FEE));
+        env (ticket::cancel (env.master, idOne), fee (CALL (-1)), ter (temBAD_FEE));
     }
 
     void testTicketCreateNonexistent ()
@@ -232,7 +232,7 @@ class Ticket_test : public beast::unit_test::suite
         Env env {*this, with_features (featureTickets)};
         Account alice {"alice"};
 
-        env.fund (XRP (10000), alice);
+        env.fund (CALL (10000), alice);
         env.close ();
 
         // create and verify
@@ -360,7 +360,7 @@ class Ticket_test : public beast::unit_test::suite
             "7F58A0AE17775BA3404D55D406DD1C2E91EADD7AF3F03A26877BCE764CCB75E3");
 
         Account alice {"alice"};
-        env.fund (XRP (10000), alice);
+        env.fund (CALL (10000), alice);
         env.close ();
 
         // now try to cancel with alice account, which should not work

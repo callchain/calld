@@ -105,7 +105,7 @@ bool PathState::lessPriority (PathState const& lhs, PathState const& rhs)
 //   account.
 // - Offers can only go directly to another offer if the currency and issuer are
 //   an exact match.
-// - Real issuers must be specified for non-XRP.
+// - Real issuers must be specified for non-CALL.
 TER PathState::pushImpliedNodes (
     AccountID const& account,    // --> Delivering to this account.
     Currency const& currency,  // --> Delivering this currency.
@@ -121,25 +121,25 @@ TER PathState::pushImpliedNodes (
     if (nodes_.back ().issue_.currency != currency)
     {
         // Currency is different, need to convert via an offer from an order
-        // book.  xrpAccount() does double duty as signaling "this is an order
+        // book.  callAccount() does double duty as signaling "this is an order
         // book".
 
         // Corresponds to "Implies an offer directory" in the diagram, currently
         // at http://goo.gl/Uj3HAB.
 
-        auto type = isXRP(currency) ? STPathElement::typeCurrency
+        auto type = isCALL(currency) ? STPathElement::typeCurrency
             : STPathElement::typeCurrency | STPathElement::typeIssuer;
 
         // The offer's output is what is now wanted.
-        // xrpAccount() is a placeholder for offers.
-        resultCode = pushNode (type, xrpAccount(), currency, issuer);
+        // callAccount() is a placeholder for offers.
+        resultCode = pushNode (type, callAccount(), currency, issuer);
     }
 
 
-    // For call, non-XRP, ensure the issuer is on at least one side of the
+    // For call, non-CALL, ensure the issuer is on at least one side of the
     // transaction.
     if (resultCode == tesSUCCESS
-        && !isXRP(currency)
+        && !isCALL(currency)
         && nodes_.back ().account_ != issuer
         // Previous is not issuing own IOUs.
         && account != issuer)
@@ -209,9 +209,9 @@ TER PathState::pushNode (
         JLOG (j_.debug()) << "pushNode: bad bits.";
         resultCode = temBAD_PATH;
     }
-    else if (hasIssuer && isXRP (node.issue_))
+    else if (hasIssuer && isCALL (node.issue_))
     {
-        JLOG (j_.debug()) << "pushNode: issuer specified for XRP.";
+        JLOG (j_.debug()) << "pushNode: issuer specified for CALL.";
 
         resultCode = temBAD_PATH;
     }
@@ -234,7 +234,7 @@ TER PathState::pushNode (
         // Account link
         node.account_ = account;
         node.issue_.account = hasIssuer ? issuer :
-                (isXRP (node.issue_) ? xrpAccount() : account);
+                (isCALL (node.issue_) ? callAccount() : account);
         // Zero value - for accounts.
         node.saRevRedeem = STAmount ({node.issue_.currency, account});
         node.saRevIssue = node.saRevRedeem;
@@ -262,7 +262,7 @@ TER PathState::pushNode (
             resultCode = pushImpliedNodes (
                 node.account_,
                 node.issue_.currency,
-                isXRP(node.issue_.currency) ? xrpAccount() : account);
+                isCALL(node.issue_.currency) ? callAccount() : account);
 
             // Note: backNode may no longer be the immediately previous node.
         }
@@ -359,9 +359,9 @@ TER PathState::pushNode (
         // issuer.
         if (hasIssuer)
             node.issue_.account = issuer;
-        else if (isXRP (node.issue_.currency))
-            node.issue_.account = xrpAccount();
-        else if (isXRP (backNode.issue_.account))
+        else if (isCALL (node.issue_.currency))
+            node.issue_.account = callAccount();
+        else if (isCALL (backNode.issue_.account))
             node.issue_.account = backNode.account_;
         else
             node.issue_.account = backNode.issue_.account;
@@ -387,7 +387,7 @@ TER PathState::pushNode (
 
             // Insert intermediary issuer account if needed.
             resultCode   = pushImpliedNodes (
-                xrpAccount(), // Rippling, but offers don't have an account.
+                callAccount(), // Rippling, but offers don't have an account.
                 backNode.issue_.currency,
                 backNode.issue_.account);
         }
@@ -429,31 +429,31 @@ TER PathState::expandPath (
     Currency const& currencyOutID = saOutReq.getCurrency ();
     AccountID const& issuerOutID = saOutReq.getIssuer ();
     AccountID const& uSenderIssuerID
-        = isXRP(uMaxCurrencyID) ? xrpAccount() : uSenderID;
-    // Sender is always issuer for non-XRP.
+        = isCALL(uMaxCurrencyID) ? callAccount() : uSenderID;
+    // Sender is always issuer for non-CALL.
 
     JLOG (j_.trace())
         << "expandPath> " << spSourcePath.getJson (0);
 
     terStatus = tesSUCCESS;
 
-    // XRP with issuer is malformed.
-    if ((isXRP (uMaxCurrencyID) && !isXRP (uMaxIssuerID))
-        || (isXRP (currencyOutID) && !isXRP (issuerOutID)))
+    // CALL with issuer is malformed.
+    if ((isCALL (uMaxCurrencyID) && !isCALL (uMaxIssuerID))
+        || (isCALL (currencyOutID) && !isCALL (issuerOutID)))
     {
         JLOG (j_.debug())
-            << "expandPath> issuer with XRP";
+            << "expandPath> issuer with CALL";
         terStatus   = temBAD_PATH;
     }
 
     // Push sending node.
-    // For non-XRP, issuer is always sending account.
+    // For non-CALL, issuer is always sending account.
     // - Trying to expand, not-compact.
     // - Every issuer will be traversed through.
     if (terStatus == tesSUCCESS)
     {
         terStatus   = pushNode (
-            !isXRP(uMaxCurrencyID)
+            !isCALL(uMaxCurrencyID)
             ? STPathElement::typeAccount | STPathElement::typeCurrency |
               STPathElement::typeIssuer
             : STPathElement::typeAccount | STPathElement::typeCurrency,
@@ -472,7 +472,7 @@ TER PathState::expandPath (
     if (tesSUCCESS == terStatus && uMaxIssuerID != uSenderIssuerID)
     {
         // May have an implied account node.
-        // - If it was XRP, then issuers would have matched.
+        // - If it was CALL, then issuers would have matched.
 
         // Figure out next node properties for implied node.
         const auto uNxtCurrencyID  = spSourcePath.size ()
@@ -485,11 +485,11 @@ TER PathState::expandPath (
         // understands it.
         const auto nextAccountID   = spSourcePath.size ()
                 ? AccountID(spSourcePath. front ().getAccountID ())
-                : !isXRP(currencyOutID)
+                : !isCALL(currencyOutID)
                 ? (issuerOutID == uReceiverID)
                 ? AccountID(uReceiverID)
                 : AccountID(issuerOutID)                      // Use implied node.
-                : xrpAccount();
+                : callAccount();
 
         JLOG (j_.debug())
             << "expandPath: implied check:"
@@ -501,7 +501,7 @@ TER PathState::expandPath (
         // Can't just use push implied, because it can't compensate for next
         // account.
         if (!uNxtCurrencyID
-            // Next is XRP, offer next. Must go through issuer.
+            // Next is CALL, offer next. Must go through issuer.
             || uMaxCurrencyID != uNxtCurrencyID
             // Next is different currency, offer next...
             || uMaxIssuerID != nextAccountID)
@@ -515,7 +515,7 @@ TER PathState::expandPath (
 
             // Add account implied by SendMax.
             terStatus = pushNode (
-                !isXRP(uMaxCurrencyID)
+                !isCALL(uMaxCurrencyID)
                     ? STPathElement::typeAccount | STPathElement::typeCurrency |
                       STPathElement::typeIssuer
                     : STPathElement::typeAccount | STPathElement::typeCurrency,
@@ -537,7 +537,7 @@ TER PathState::expandPath (
     }
 
     if (terStatus == tesSUCCESS
-        && !isXRP(currencyOutID)               // Next is not XRP
+        && !isCALL(currencyOutID)               // Next is not CALL
         && issuerOutID != uReceiverID)         // Out issuer is not receiver
     {
         assert (!nodes_.empty ());
@@ -555,7 +555,7 @@ TER PathState::expandPath (
                 << " issuer=" << issuerOutID;
 
             terStatus   = pushNode (
-                !isXRP(currencyOutID)
+                !isCALL(currencyOutID)
                     ? STPathElement::typeAccount | STPathElement::typeCurrency |
                       STPathElement::typeIssuer
                     : STPathElement::typeAccount | STPathElement::typeCurrency,
@@ -571,7 +571,7 @@ TER PathState::expandPath (
         // Last node is always an account.
 
         terStatus   = pushNode (
-            !isXRP(currencyOutID)
+            !isCALL(currencyOutID)
                 ? STPathElement::typeAccount | STPathElement::typeCurrency |
                    STPathElement::typeIssuer
                : STPathElement::typeAccount | STPathElement::typeCurrency,

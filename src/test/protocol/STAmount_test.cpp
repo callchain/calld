@@ -141,34 +141,34 @@ public:
         {
             testcase ("set value (native)");
 
-            Issue const xrp (xrpIssue ());
+            Issue const call (callIssue ());
 
-            // fractional XRP (i.e. drops)
-            testSetValue ("1", xrp);
-            testSetValue ("22", xrp);
-            testSetValue ("333", xrp);
-            testSetValue ("4444", xrp);
-            testSetValue ("55555", xrp);
-            testSetValue ("666666", xrp);
+            // fractional CALL (i.e. drops)
+            testSetValue ("1", call);
+            testSetValue ("22", call);
+            testSetValue ("333", call);
+            testSetValue ("4444", call);
+            testSetValue ("55555", call);
+            testSetValue ("666666", call);
 
-            // 1 XRP up to 100 billion, in powers of 10 (in drops)
-            testSetValue ("1000000", xrp);
-            testSetValue ("10000000", xrp);
-            testSetValue ("100000000", xrp);
-            testSetValue ("1000000000", xrp);
-            testSetValue ("10000000000", xrp);
-            testSetValue ("100000000000", xrp);
-            testSetValue ("1000000000000", xrp);
-            testSetValue ("10000000000000", xrp);
-            testSetValue ("100000000000000", xrp);
-            testSetValue ("1000000000000000", xrp);
-            testSetValue ("10000000000000000", xrp);
-            testSetValue ("100000000000000000", xrp);
+            // 1 CALL up to 100 billion, in powers of 10 (in drops)
+            testSetValue ("1000000", call);
+            testSetValue ("10000000", call);
+            testSetValue ("100000000", call);
+            testSetValue ("1000000000", call);
+            testSetValue ("10000000000", call);
+            testSetValue ("100000000000", call);
+            testSetValue ("1000000000000", call);
+            testSetValue ("10000000000000", call);
+            testSetValue ("100000000000000", call);
+            testSetValue ("1000000000000000", call);
+            testSetValue ("10000000000000000", call);
+            testSetValue ("100000000000000000", call);
 
             // Invalid native values:
-            testSetValue ("1.1", xrp, false);
-            testSetValue ("100000000000000001", xrp, false);
-            testSetValue ("1000000000000000000", xrp, false);
+            testSetValue ("1.1", call, false);
+            testSetValue ("100000000000000001", call, false);
+            testSetValue ("1000000000000000000", call, false);
         }
 
         {
@@ -272,7 +272,7 @@ public:
         unexpected (STAmount ().getText () != "0", "STAmount fail");
         unexpected (STAmount (31).getText () != "31", "STAmount fail");
         unexpected (STAmount (310).getText () != "310", "STAmount fail");
-        unexpected (to_string (Currency ()) != "XRP", "cHC(XRP)");
+        unexpected (to_string (Currency ()) != "CALL", "cHC(CALL)");
         Currency c;
         unexpected (!to_currency (c, "USD"), "create USD currency");
         unexpected (to_string (c) != "USD", "check USD currency");
@@ -359,11 +359,11 @@ public:
         unexpected (STAmount (noIssue(), 31, -2).getText () != "0.31", "STAmount fail");
         unexpected (multiply (STAmount (noIssue(), 20), STAmount (3), noIssue()).getText () != "60",
             "STAmount multiply fail 1");
-        unexpected (multiply (STAmount (noIssue(), 20), STAmount (3), xrpIssue ()).getText () != "60",
+        unexpected (multiply (STAmount (noIssue(), 20), STAmount (3), callIssue ()).getText () != "60",
             "STAmount multiply fail 2");
         unexpected (multiply (STAmount (20), STAmount (3), noIssue()).getText () != "60",
             "STAmount multiply fail 3");
-        unexpected (multiply (STAmount (20), STAmount (3), xrpIssue ()).getText () != "60",
+        unexpected (multiply (STAmount (20), STAmount (3), callIssue ()).getText () != "60",
             "STAmount multiply fail 4");
 
         if (divide (STAmount (noIssue(), 60), STAmount (3), noIssue()).getText () != "20")
@@ -378,13 +378,13 @@ public:
             pass ();
         }
 
-        unexpected (divide (STAmount (noIssue(), 60), STAmount (3), xrpIssue ()).getText () != "20",
+        unexpected (divide (STAmount (noIssue(), 60), STAmount (3), callIssue ()).getText () != "20",
             "STAmount divide fail");
 
         unexpected (divide (STAmount (noIssue(), 60), STAmount (noIssue(), 3), noIssue()).getText () != "20",
             "STAmount divide fail");
 
-        unexpected (divide (STAmount (noIssue(), 60), STAmount (noIssue(), 3), xrpIssue ()).getText () != "20",
+        unexpected (divide (STAmount (noIssue(), 60), STAmount (noIssue(), 3), callIssue ()).getText () != "20",
             "STAmount divide fail");
 
         STAmount a1 (noIssue(), 60), a2 (noIssue(), 10, -1);
@@ -469,11 +469,11 @@ public:
 
         BEAST_EXPECT(bigDsmall == zero);
 
-        bigDsmall = divide (smallValue, bigValue, xrpIssue ());
+        bigDsmall = divide (smallValue, bigValue, callIssue ());
 
         BEAST_EXPECT(bigDsmall == zero);
 
-        bigDsmall = divide (smallValue, bigNative, xrpIssue ());
+        bigDsmall = divide (smallValue, bigNative, callIssue ());
 
         BEAST_EXPECT(bigDsmall == zero);
 
@@ -532,9 +532,9 @@ public:
         log << fourThirdsB;
         log << fourThirdsC;
 
-        STAmount dripTest1 = mulRound (twoThird2, two, xrpIssue (), false);
-        STAmount dripTest2 = multiply (twoThird2, two, xrpIssue ());
-        STAmount dripTest3 = mulRound (twoThird2, two, xrpIssue (), true);
+        STAmount dripTest1 = mulRound (twoThird2, two, callIssue (), false);
+        STAmount dripTest2 = multiply (twoThird2, two, callIssue ());
+        STAmount dripTest3 = mulRound (twoThird2, two, callIssue (), true);
         log << dripTest1;
         log << dripTest2;
         log << dripTest3;
@@ -542,26 +542,26 @@ public:
     }
 
     void
-    testConvertXRP ()
+    testConvertCALL ()
     {
-        testcase ("STAmount to XRPAmount conversions");
+        testcase ("STAmount to CALLAmount conversions");
 
         Issue const usd { Currency (0x5553440000000000), AccountID (0x4985601) };
-        Issue const xrp { xrpIssue () };
+        Issue const call { callIssue () };
 
         for (std::uint64_t drops = 100000000000000000; drops != 1; drops = drops / 10)
         {
-            auto const t = amountFromString (xrp, std::to_string (drops));
-            auto const s = t.xrp ();
+            auto const t = amountFromString (call, std::to_string (drops));
+            auto const s = t.call ();
             BEAST_EXPECT(s.drops() == drops);
-            BEAST_EXPECT(t == STAmount (XRPAmount (drops)));
-            BEAST_EXPECT(s == XRPAmount (drops));
+            BEAST_EXPECT(t == STAmount (CALLAmount (drops)));
+            BEAST_EXPECT(s == CALLAmount (drops));
         }
 
         try
         {
             auto const t = amountFromString (usd, "136500");
-            fail (to_string (t.xrp ()));
+            fail (to_string (t.call ()));
         }
         catch (std::logic_error const&)
         {
@@ -579,7 +579,7 @@ public:
         testcase ("STAmount to IOUAmount conversions");
 
         Issue const usd { Currency (0x5553440000000000), AccountID (0x4985601) };
-        Issue const xrp { xrpIssue () };
+        Issue const call { callIssue () };
 
         for (std::uint64_t dollars = 10000000000; dollars != 1; dollars = dollars / 10)
         {
@@ -592,7 +592,7 @@ public:
 
         try
         {
-            auto const t = amountFromString (xrp, "136500");
+            auto const t = amountFromString (call, "136500");
             fail (to_string (t.iou ()));
         }
         catch (std::logic_error const&)
@@ -615,7 +615,7 @@ public:
         testArithmetic ();
         testUnderflow ();
         testRounding ();
-        testConvertXRP ();
+        testConvertCALL ();
         testConvertIOU ();
     }
 };

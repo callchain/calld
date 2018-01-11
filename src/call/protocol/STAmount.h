@@ -27,7 +27,7 @@
 #include <call/protocol/STBase.h>
 #include <call/protocol/Issue.h>
 #include <call/protocol/IOUAmount.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 #include <memory>
 
 namespace call {
@@ -54,7 +54,7 @@ private:
     Issue mIssue;
     mantissa_type mValue;
     exponent_type mOffset;
-    bool mIsNative;      // A shorthand for isXRP(mIssue).
+    bool mIsNative;      // A shorthand for isCALL(mIssue).
     bool mIsNegative;
 
 public:
@@ -117,7 +117,7 @@ public:
 
     // Legacy support for new-style amounts
     STAmount (IOUAmount const& amount, Issue const& issue);
-    STAmount (XRPAmount const& amount);
+    STAmount (CALLAmount const& amount);
 
     STBase*
     copy (std::size_t n, void* buf) const override
@@ -200,7 +200,7 @@ public:
         return *this;
     }
 
-    STAmount& operator= (XRPAmount const& amount)
+    STAmount& operator= (CALLAmount const& amount)
     {
         *this = STAmount (amount);
         return *this;
@@ -281,7 +281,7 @@ public:
         return (mValue == 0) && mIsNative;
     }
 
-    XRPAmount xrp () const;
+    CALLAmount call () const;
     IOUAmount iou () const;
 };
 
@@ -304,7 +304,7 @@ amountFromJson (SField const& name, Json::Value const& v);
 bool
 amountFromJsonNoThrow (STAmount& result, Json::Value const& jvSource);
 
-// IOUAmount and XRPAmount define toSTAmount, defining this
+// IOUAmount and CALLAmount define toSTAmount, defining this
 // trivial conversion here makes writing generic code easier
 inline
 STAmount const&
@@ -397,9 +397,9 @@ getRate (STAmount const& offerOut, STAmount const& offerIn);
 
 //------------------------------------------------------------------------------
 
-inline bool isXRP(STAmount const& amount)
+inline bool isCALL(STAmount const& amount)
 {
-    return isXRP (amount.issue().currency);
+    return isCALL (amount.issue().currency);
 }
 
 extern LocalValue<bool> stAmountCalcSwitchover;

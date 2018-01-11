@@ -31,7 +31,7 @@ struct Transaction_ordering_test : public beast::unit_test::suite
 
         Env env(*this);
         auto const alice = Account("alice");
-        env.fund(XRP(1000), nocall(alice));
+        env.fund(CALL(1000), nocall(alice));
 
         auto const aliceSequence = env.seq(alice);
 
@@ -65,7 +65,7 @@ struct Transaction_ordering_test : public beast::unit_test::suite
         Env env(*this);
         env.app().getJobQueue().setThreadCount(0, false);
         auto const alice = Account("alice");
-        env.fund(XRP(1000), nocall(alice));
+        env.fund(CALL(1000), nocall(alice));
 
         auto const aliceSequence = env.seq(alice);
 
@@ -98,7 +98,7 @@ struct Transaction_ordering_test : public beast::unit_test::suite
         Env env(*this);
         env.app().getJobQueue().setThreadCount(0, false);
         auto const alice = Account("alice");
-        env.fund(XRP(1000), nocall(alice));
+        env.fund(CALL(1000), nocall(alice));
 
         auto const aliceSequence = env.seq(alice);
 

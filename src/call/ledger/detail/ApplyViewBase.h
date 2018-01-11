@@ -25,7 +25,7 @@
 #include <call/ledger/OpenView.h>
 #include <call/ledger/ReadView.h>
 #include <call/ledger/detail/ApplyStateTable.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 
 namespace call {
 namespace detail {
@@ -125,8 +125,8 @@ public:
         SLE> const& sle) override;
 
     void
-    rawDestroyXRP (
-        XRPAmount const& feeDrops) override;
+    rawDestroyCALL (
+        CALLAmount const& feeDrops) override;
 
     friend
     CashDiff cashFlowDiff (

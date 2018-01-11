@@ -23,7 +23,7 @@
 namespace call {
 
 void
-XRPNotCreated::visitEntry(
+CALLNotCreated::visitEntry(
     uint256 const&,
     bool isDelete,
     std::shared_ptr <SLE const> const& before,
@@ -34,13 +34,13 @@ XRPNotCreated::visitEntry(
         switch (before->getType())
         {
         case ltACCOUNT_ROOT:
-            drops_ -= (*before)[sfBalance].xrp().drops();
+            drops_ -= (*before)[sfBalance].call().drops();
             break;
         case ltPAYCHAN:
-            drops_ -= ((*before)[sfAmount] - (*before)[sfBalance]).xrp().drops();
+            drops_ -= ((*before)[sfAmount] - (*before)[sfBalance]).call().drops();
             break;
         case ltESCROW:
-            drops_ -= (*before)[sfAmount].xrp().drops();
+            drops_ -= (*before)[sfAmount].call().drops();
             break;
         default:
             break;
@@ -52,15 +52,15 @@ XRPNotCreated::visitEntry(
         switch (after->getType())
         {
         case ltACCOUNT_ROOT:
-            drops_ += (*after)[sfBalance].xrp().drops();
+            drops_ += (*after)[sfBalance].call().drops();
             break;
         case ltPAYCHAN:
             if (! isDelete)
-                drops_ += ((*after)[sfAmount] - (*after)[sfBalance]).xrp().drops();
+                drops_ += ((*after)[sfAmount] - (*after)[sfBalance]).call().drops();
             break;
         case ltESCROW:
             if (! isDelete)
-                drops_ += (*after)[sfAmount].xrp().drops();
+                drops_ += (*after)[sfAmount].call().drops();
             break;
         default:
             break;
@@ -69,13 +69,13 @@ XRPNotCreated::visitEntry(
 }
 
 bool
-XRPNotCreated::finalize(STTx const& tx, TER /*tec*/, beast::Journal const& j)
+CALLNotCreated::finalize(STTx const& tx, TER /*tec*/, beast::Journal const& j)
 {
-    auto fee = tx.getFieldAmount(sfFee).xrp().drops();
+    auto fee = tx.getFieldAmount(sfFee).call().drops();
     if(-1*fee <= drops_ && drops_ <= 0)
         return true;
 
-    JLOG(j.fatal()) << "Invariant failed: XRP net change was " << drops_ <<
+    JLOG(j.fatal()) << "Invariant failed: CALL net change was " << drops_ <<
         " on a fee of " << fee;
     return false;
 }
@@ -83,7 +83,7 @@ XRPNotCreated::finalize(STTx const& tx, TER /*tec*/, beast::Journal const& j)
 //------------------------------------------------------------------------------
 
 void
-XRPBalanceChecks::visitEntry(
+CALLBalanceChecks::visitEntry(
     uint256 const&,
     bool,
     std::shared_ptr <SLE const> const& before,
@@ -94,7 +94,7 @@ XRPBalanceChecks::visitEntry(
         if (!balance.native())
             return true;
 
-        auto const drops = balance.xrp().drops();
+        auto const drops = balance.call().drops();
 
         // Can't have more than the number of drops instantiated
         // in the genesis ledger.
@@ -116,11 +116,11 @@ XRPBalanceChecks::visitEntry(
 }
 
 bool
-XRPBalanceChecks::finalize(STTx const&, TER, beast::Journal const& j)
+CALLBalanceChecks::finalize(STTx const&, TER, beast::Journal const& j)
 {
     if (bad_)
     {
-        JLOG(j.fatal()) << "Invariant failed: incorrect account XRP balance";
+        JLOG(j.fatal()) << "Invariant failed: incorrect account CALL balance";
         return false;
     }
 
@@ -145,7 +145,7 @@ NoBadOffers::visitEntry(
         if (gets < beast::zero)
             return true;
 
-        // Can't have an XRP to XRP offer:
+        // Can't have an CALL to CALL offer:
         return pays.native() && gets.native();
     };
 
@@ -182,10 +182,10 @@ NoZeroEscrow::visitEntry(
         if (!amount.native())
             return true;
 
-        if (amount.xrp().drops() <= 0)
+        if (amount.call().drops() <= 0)
             return true;
 
-        if (amount.xrp().drops() >= SYSTEM_CURRENCY_START)
+        if (amount.call().drops() >= SYSTEM_CURRENCY_START)
             return true;
 
         return false;
@@ -290,7 +290,7 @@ LedgerEntryTypesMatch::finalize(STTx const&, TER, beast::Journal const& j)
 //------------------------------------------------------------------------------
 
 void
-NoXRPTrustLines::visitEntry(
+NoCALLTrustLines::visitEntry(
     uint256 const&,
     bool,
     std::shared_ptr <SLE const> const&,
@@ -301,19 +301,19 @@ NoXRPTrustLines::visitEntry(
         // checking the issue directly here instead of
         // relying on .native() just in case native somehow
         // were systematically incorrect
-        xrpTrustLine_ =
-            after->getFieldAmount (sfLowLimit).issue() == xrpIssue() ||
-            after->getFieldAmount (sfHighLimit).issue() == xrpIssue();
+        callTrustLine_ =
+            after->getFieldAmount (sfLowLimit).issue() == callIssue() ||
+            after->getFieldAmount (sfHighLimit).issue() == callIssue();
     }
 }
 
 bool
-NoXRPTrustLines::finalize(STTx const&, TER, beast::Journal const& j)
+NoCALLTrustLines::finalize(STTx const&, TER, beast::Journal const& j)
 {
-    if (! xrpTrustLine_)
+    if (! callTrustLine_)
         return true;
 
-    JLOG(j.fatal()) << "Invariant failed: an XRP trust line was created";
+    JLOG(j.fatal()) << "Invariant failed: an CALL trust line was created";
     return false;
 }
 

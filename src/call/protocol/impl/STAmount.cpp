@@ -106,12 +106,12 @@ STAmount::STAmount(SerialIter& sit, SField const& name)
     Issue issue;
     issue.currency.copyFrom (sit.get160 ());
 
-    if (isXRP (issue.currency))
+    if (isCALL (issue.currency))
         Throw<std::runtime_error> ("invalid native currency");
 
     issue.account.copyFrom (sit.get160 ());
 
-    if (isXRP (issue.account))
+    if (isCALL (issue.account))
         Throw<std::runtime_error> ("invalid native account");
 
     // 10 bits for the offset, sign and "not native" flag
@@ -272,7 +272,7 @@ STAmount::STAmount (IOUAmount const& amount, Issue const& issue)
     canonicalize ();
 }
 
-STAmount::STAmount (XRPAmount const& amount)
+STAmount::STAmount (CALLAmount const& amount)
     : mOffset (0)
     , mIsNative (true)
     , mIsNegative (amount < zero)
@@ -296,10 +296,10 @@ STAmount::construct (SerialIter& sit, SField const& name)
 // Conversion
 //
 //------------------------------------------------------------------------------
-XRPAmount STAmount::xrp () const
+CALLAmount STAmount::call () const
 {
     if (!mIsNative)
-        Throw<std::logic_error> ("Cannot return non-native STAmount as XRPAmount");
+        Throw<std::logic_error> ("Cannot return non-native STAmount as CALLAmount");
 
     auto drops = static_cast<std::int64_t> (mValue);
 
@@ -410,7 +410,7 @@ void
 STAmount::setIssue (Issue const& issue)
 {
     mIssue = std::move(issue);
-    mIsNative = isXRP (*this);
+    mIsNative = isCALL (*this);
 }
 
 // Convert an offer into an index amount so they sort by rate.
@@ -480,7 +480,7 @@ STAmount::getFullText () const
     {
         ret += "/";
 
-        if (isXRP (*this))
+        if (isCALL (*this))
             ret += "0";
         else if (mIssue.account == noAccount())
             ret += "1";
@@ -632,7 +632,7 @@ STAmount::isEquivalent (const STBase& t) const
 // inclusive.
 void STAmount::canonicalize ()
 {
-    if (isXRP (*this))
+    if (isCALL (*this))
     {
         // native currency amounts should always have an offset of zero
         mIsNative = true;
@@ -763,9 +763,9 @@ amountFromString (Issue const& issue, std::string const& amount)
 
     bool negative = (match[1].matched && (match[1] == "-"));
 
-    // Can't specify XRP using fractional representation
-    if (isXRP(issue) && match[3].matched)
-        Throw<std::runtime_error> ("XRP must be specified in integral drops.");
+    // Can't specify CALL using fractional representation
+    if (isCALL(issue) && match[3].matched)
+        Throw<std::runtime_error> ("CALL must be specified in integral drops.");
 
     std::uint64_t mantissa;
     int exponent;
@@ -847,12 +847,12 @@ amountFromJson (SField const& name, Json::Value const& v)
     if (native)
     {
         if (v.isObject ())
-            Throw<std::runtime_error> ("XRP may not be specified as an object");
-        issue = xrpIssue ();
+            Throw<std::runtime_error> ("CALL may not be specified as an object");
+        issue = callIssue ();
     }
     else
     {
-        // non-XRP
+        // non-CALL
         if (! to_currency (issue.currency, currency.asString ()))
             Throw<std::runtime_error> ("invalid currency");
 
@@ -860,7 +860,7 @@ amountFromJson (SField const& name, Json::Value const& v)
                 || !to_issuer (issue.account, issuer.asString ()))
             Throw<std::runtime_error> ("invalid issuer");
 
-        if (isXRP (issue.currency))
+        if (isCALL (issue.currency))
             Throw<std::runtime_error> ("invalid issuer");
     }
 
@@ -1073,7 +1073,7 @@ multiply (STAmount const& v1, STAmount const& v2, Issue const& issue)
     if (v1 == zero || v2 == zero)
         return STAmount (issue);
 
-    if (v1.native() && v2.native() && isXRP (issue))
+    if (v1.native() && v2.native() && isCALL (issue))
     {
         std::uint64_t const minV = getSNValue (v1) < getSNValue (v2)
                 ? getSNValue (v1) : getSNValue (v2);
@@ -1165,9 +1165,9 @@ mulRound (STAmount const& v1, STAmount const& v2, Issue const& issue,
     if (v1 == zero || v2 == zero)
         return {issue};
 
-    bool const xrp = isXRP (issue);
+    bool const call = isCALL (issue);
 
-    if (v1.native() && v2.native() && xrp)
+    if (v1.native() && v2.native() && call)
     {
         std::uint64_t minV = (getSNValue (v1) < getSNValue (v2)) ?
                 getSNValue (v1) : getSNValue (v2);
@@ -1220,13 +1220,13 @@ mulRound (STAmount const& v1, STAmount const& v2, Issue const& issue,
 
     int offset = offset1 + offset2 + 14;
     if (resultNegative != roundUp)
-        canonicalizeRound (xrp, amount, offset);
+        canonicalizeRound (call, amount, offset);
     STAmount result (issue, amount, offset, resultNegative);
 
     // Control when bugfixes that require switchover dates are enabled
     if (roundUp && !resultNegative && !result && *stAmountCalcSwitchover)
     {
-        if (xrp && *stAmountCalcSwitchover2)
+        if (call && *stAmountCalcSwitchover2)
         {
             // return the smallest value above zero
             amount = 1;
@@ -1292,13 +1292,13 @@ divRound (STAmount const& num, STAmount const& den,
     int offset = numOffset - denOffset - 17;
 
     if (resultNegative != roundUp)
-        canonicalizeRound (isXRP (issue), amount, offset);
+        canonicalizeRound (isCALL (issue), amount, offset);
 
     STAmount result (issue, amount, offset, resultNegative);
     // Control when bugfixes that require switchover dates are enabled
     if (roundUp && !resultNegative && !result && *stAmountCalcSwitchover)
     {
-        if (isXRP(issue) && *stAmountCalcSwitchover2)
+        if (isCALL(issue) && *stAmountCalcSwitchover2)
         {
             // return the smallest value above zero
             amount = 1;

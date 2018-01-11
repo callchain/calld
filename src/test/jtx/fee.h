@@ -53,9 +53,9 @@ public:
     fee (STAmount const& amount)
         : amount_(amount)
     {
-        if (! isXRP(*amount_))
+        if (! isCALL(*amount_))
             Throw<std::runtime_error> (
-                "fee: not XRP");
+                "fee: not CALL");
     }
 
     void

@@ -23,7 +23,7 @@
 #include <call/protocol/AmountConversions.h>
 #include <call/protocol/IOUAmount.h>
 #include <call/protocol/STAmount.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 
 #include <cstdint>
 #include <ostream>
@@ -194,7 +194,7 @@ public:
             return amount;
 
         // Use the existing STAmount implementation for now, but consider
-        // replacing with code specific to IOUAMount and XRPAmount
+        // replacing with code specific to IOUAMount and CALLAmount
         Amounts stAmt (toSTAmount (amount.in), toSTAmount (amount.out));
         STAmount stLim (toSTAmount (limit));
         auto const stRes = ceil_in (stAmt, stLim);
@@ -216,7 +216,7 @@ public:
             return amount;
 
         // Use the existing STAmount implementation for now, but consider
-        // replacing with code specific to IOUAMount and XRPAmount
+        // replacing with code specific to IOUAMount and CALLAmount
         Amounts stAmt (toSTAmount (amount.in), toSTAmount (amount.out));
         STAmount stLim (toSTAmount (limit));
         auto const stRes = ceil_out (stAmt, stLim);

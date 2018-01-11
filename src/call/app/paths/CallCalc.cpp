@@ -49,14 +49,14 @@ CallCalc::Output CallCalc::callCalculate (
     // apply to ledger.
 
     // Issuer:
-    //      XRP: xrpAccount()
-    //  non-XRP: uSrcAccountID (for any issuer) or another account with
+    //      CALL: callAccount()
+    //  non-CALL: uSrcAccountID (for any issuer) or another account with
     //           trust node.
     STAmount const& saMaxAmountReq,             // --> -1 = no limit.
 
     // Issuer:
-    //      XRP: xrpAccount()
-    //  non-XRP: uDstAccountID (for any issuer) or another account with
+    //      CALL: callAccount()
+    //  non-CALL: uDstAccountID (for any issuer) or another account with
     //           trust node.
     STAmount const& saDstAmountReq,
 
@@ -304,7 +304,7 @@ TER CallCalc::callCalculate (detail::FlowDebugInfo* flowDebugInfo)
 
     // Build a default path.  Use saDstAmountReq_ and saMaxAmountReq_ to imply
     // nodes.
-    // XXX Might also make a XRP bridge by default.
+    // XXX Might also make a CALL bridge by default.
 
     JLOG (j_.trace())
         << "callCalc: Paths in set: " << spsPaths_.size ();

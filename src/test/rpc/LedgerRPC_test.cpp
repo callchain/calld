@@ -86,7 +86,7 @@ class LedgerRPC_test : public beast::unit_test::suite
         auto const USD = gw["USD"];
         Account const bob { "bob" };
 
-        env.fund(XRP(10000), gw, bob);
+        env.fund(CALL(10000), gw, bob);
         env.close();
         env.trust(USD(1000), bob);
         env.close();
@@ -145,7 +145,7 @@ class LedgerRPC_test : public beast::unit_test::suite
         using namespace test::jtx;
         Env env {*this};
         Account const alice {"alice"};
-        env.fund(XRP(10000), alice);
+        env.fund(CALL(10000), alice);
         env.close();
 
         auto jrr = env.rpc("ledger_closed") [jss::result];
@@ -158,7 +158,7 @@ class LedgerRPC_test : public beast::unit_test::suite
         jrr = env.rpc ( "json", "ledger_entry", to_string(jvParams) ) [jss::result];
         BEAST_EXPECT(jrr.isMember(jss::node));
         BEAST_EXPECT(jrr[jss::node][jss::Account] == alice.human());
-        BEAST_EXPECT(jrr[jss::node][sfBalance.fieldName] == XRP(10000).value().getText());
+        BEAST_EXPECT(jrr[jss::node][sfBalance.fieldName] == CALL(10000).value().getText());
     }
 
     void testLedgerFull()
@@ -218,7 +218,7 @@ class LedgerRPC_test : public beast::unit_test::suite
         using namespace test::jtx;
         Env env {*this};
         Account const alice {"alice"};
-        env.fund(XRP(10000), alice);
+        env.fund(CALL(10000), alice);
         env.close();
 
         auto jrr = env.rpc("ledger_closed") [jss::result];
@@ -236,7 +236,7 @@ class LedgerRPC_test : public beast::unit_test::suite
         using namespace test::jtx;
         Env env {*this};
         Account const alice {"alice"};
-        env.fund(XRP(10000), alice);
+        env.fund(CALL(10000), alice);
         env.close();
 
         auto jrr = env.rpc("ledger_closed") [jss::result];
@@ -254,7 +254,7 @@ class LedgerRPC_test : public beast::unit_test::suite
         using namespace test::jtx;
         Env env {*this};
         Account const alice {"alice"};
-        env.fund(XRP(10000), alice);
+        env.fund(CALL(10000), alice);
         env.close();
 
         auto jrr = env.rpc("ledger_closed") [jss::result];
@@ -288,13 +288,13 @@ class LedgerRPC_test : public beast::unit_test::suite
         using namespace test::jtx;
         Env env {*this, no_features}; // hashes requested below assume
                                      //no amendments
-        env.fund(XRP(10000), "alice");
+        env.fund(CALL(10000), "alice");
         env.close();
-        env.fund(XRP(10000), "bob");
+        env.fund(CALL(10000), "bob");
         env.close();
-        env.fund(XRP(10000), "jim");
+        env.fund(CALL(10000), "jim");
         env.close();
-        env.fund(XRP(10000), "jill");
+        env.fund(CALL(10000), "jill");
 
         // closed ledger hashes are:
         //1 - AB868A6CFEEC779C2FF845C0AF00A642259986AF40C01976A7F842B6918936C7
@@ -488,11 +488,11 @@ class LedgerRPC_test : public beast::unit_test::suite
         Account const bob{ "bob" };
         Account const charlie{ "charlie" };
         Account const daria{ "daria" };
-        env.fund(XRP(10000), alice);
-        env.fund(XRP(10000), bob);
+        env.fund(CALL(10000), alice);
+        env.fund(CALL(10000), bob);
         env.close();
-        env.fund(XRP(10000), charlie);
-        env.fund(XRP(10000), daria);
+        env.fund(CALL(10000), charlie);
+        env.fund(CALL(10000), daria);
         env.close();
 
         auto jrr = env.rpc("json", "ledger", to_string(jv))[jss::result];
@@ -513,9 +513,9 @@ class LedgerRPC_test : public beast::unit_test::suite
         // Put some txs in the queue
         // Alice
         auto aliceSeq = env.seq(alice);
-        env(pay(alice, "george", XRP(1000)), json(R"({"LastLedgerSequence":7})"),
+        env(pay(alice, "george", CALL(1000)), json(R"({"LastLedgerSequence":7})"),
             ter(terQUEUED));
-        env(offer(alice, XRP(50000), alice["USD"](5000)), seq(aliceSeq + 1),
+        env(offer(alice, CALL(50000), alice["USD"](5000)), seq(aliceSeq + 1),
             ter(terQUEUED));
         env(noop(alice), seq(aliceSeq + 2), ter(terQUEUED));
         // Bob

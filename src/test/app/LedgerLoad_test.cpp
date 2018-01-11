@@ -68,14 +68,14 @@ class LedgerLoad_test : public beast::unit_test::suite
         for(auto i = 0; i < 20; ++i)
         {
             Account acct {"A" + std::to_string(i)};
-            env.fund(XRP(10000), acct);
+            env.fund(CALL(10000), acct);
             env.close();
             if(i > 0)
             {
                 env.trust(acct["USD"](1000), prev);
                 env(pay(acct, prev, acct["USD"](5)));
             }
-            env(offer(acct, XRP(100), acct["USD"](1)));
+            env(offer(acct, CALL(100), acct["USD"](1)));
             env.close();
             prev = std::move(acct);
         }

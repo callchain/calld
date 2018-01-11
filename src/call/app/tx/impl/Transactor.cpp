@@ -68,7 +68,7 @@ preflight1 (PreflightContext const& ctx)
 
     // No point in going any further if the transaction fee is malformed.
     auto const fee = ctx.tx.getFieldAmount (sfFee);
-    if (!fee.native () || fee.negative () || !isLegalAmount (fee.xrp ()))
+    if (!fee.native () || fee.negative () || !isLegalAmount (fee.call ()))
     {
         JLOG(ctx.j.debug()) << "preflight1: invalid fee";
         return temBAD_FEE;
@@ -104,7 +104,7 @@ preflight2 (PreflightContext const& ctx)
 }
 
 static
-XRPAmount
+CALLAmount
 calculateFee(Application& app, std::uint64_t const baseFee,
     Fees const& fees, ApplyFlags flags)
 {
@@ -153,13 +153,13 @@ std::uint64_t Transactor::calculateBaseFee (
     return baseFee + (signerCount * baseFee);
 }
 
-XRPAmount
+CALLAmount
 Transactor::calculateFeePaid(STTx const& tx)
 {
-    return tx[sfFee].xrp();
+    return tx[sfFee].call();
 }
 
-XRPAmount
+CALLAmount
 Transactor::calculateMaxSpend(STTx const& tx)
 {
     return beast::zero;
@@ -189,7 +189,7 @@ Transactor::checkFee (PreclaimContext const& ctx, std::uint64_t baseFee)
     auto const id = ctx.tx.getAccountID(sfAccount);
     auto const sle = ctx.view.read(
         keylet::account(id));
-    auto const balance = (*sle)[sfBalance].xrp();
+    auto const balance = (*sle)[sfBalance].call();
 
     if (balance < feePaid)
     {
@@ -222,7 +222,7 @@ TER Transactor::payFee ()
     mSourceBalance -= feePaid;
     sle->setFieldAmount (sfBalance, mSourceBalance);
 
-    // VFALCO Should we call view().rawDestroyXRP() here as well?
+    // VFALCO Should we call view().rawDestroyCALL() here as well?
 
     return tesSUCCESS;
 }
@@ -313,7 +313,7 @@ TER Transactor::apply ()
 
     if (sle)
     {
-        mPriorBalance   = STAmount ((*sle)[sfBalance]).xrp ();
+        mPriorBalance   = STAmount ((*sle)[sfBalance]).call ();
         mSourceBalance  = mPriorBalance;
 
         setSeq();
@@ -569,14 +569,14 @@ void removeUnfundedOffers (ApplyView& view, std::vector<uint256> const& offers, 
 }
 
 void
-Transactor::claimFee (XRPAmount& fee, TER terResult, std::vector<uint256> const& removedOffers)
+Transactor::claimFee (CALLAmount& fee, TER terResult, std::vector<uint256> const& removedOffers)
 {
     ctx_.discard();
 
     auto const txnAcct = view().peek(
         keylet::account(ctx_.tx.getAccountID(sfAccount)));
 
-    auto const balance = txnAcct->getFieldAmount (sfBalance).xrp ();
+    auto const balance = txnAcct->getFieldAmount (sfBalance).call ();
 
     // balance should have already been
     // checked in checkFee / preFlight.
@@ -646,7 +646,7 @@ Transactor::operator()()
     }
 
     bool didApply = isTesSuccess (terResult);
-    auto fee = ctx_.tx.getFieldAmount(sfFee).xrp ();
+    auto fee = ctx_.tx.getFieldAmount(sfFee).call ();
 
     if (ctx_.size() > oversizeMetaDataCap)
         terResult = tecOVERSIZE;
@@ -720,7 +720,7 @@ Transactor::operator()()
             }
 
             if (fee != zero)
-                ctx_.destroyXRP (fee);
+                ctx_.destroyCALL (fee);
         }
 
         ctx_.apply(terResult);

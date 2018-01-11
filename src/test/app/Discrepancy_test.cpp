@@ -37,9 +37,9 @@ class Discrepancy_test : public beast::unit_test::suite
     // A payment with path and sendmax is made and the transaction is queried
     // to verify that the net of balance changes match the fee charged.
     void
-    testXRPDiscrepancy (std::initializer_list<uint256> fs)
+    testCALLDiscrepancy (std::initializer_list<uint256> fs)
     {
-        testcase ("Discrepancy test : XRP Discrepancy");
+        testcase ("Discrepancy test : CALL Discrepancy");
         using namespace test::jtx;
         Env env {*this, with_features(fs)};
 
@@ -51,11 +51,11 @@ class Discrepancy_test : public beast::unit_test::suite
         Account A6 {"A6"};
         Account A7 {"A7"};
 
-        env.fund(XRP(2000), A1);
-        env.fund(XRP(1000), A2, A6, A7);
-        env.fund(XRP(5000), A3);
-        env.fund(XRP(1000000), A4);
-        env.fund(XRP(600000), A5);
+        env.fund(CALL(2000), A1);
+        env.fund(CALL(1000), A2, A6, A7);
+        env.fund(CALL(5000), A3);
+        env.fund(CALL(1000000), A4);
+        env.fund(CALL(600000), A5);
         env.close();
 
         env(trust(A1, A3["CNY"](200000)));
@@ -82,15 +82,15 @@ class Discrepancy_test : public beast::unit_test::suite
         env(pay(A6, A7, A6["CNY"](261)));
         env.close();
 
-        env(offer(A4, XRP(49147), A2["JPY"](34501)));
-        env(offer(A5, A3["CNY"](3150), XRP(80086)));
-        env(offer(A7, XRP(1233), A6["CNY"](25)));
+        env(offer(A4, CALL(49147), A2["JPY"](34501)));
+        env(offer(A5, A3["CNY"](3150), CALL(80086)));
+        env(offer(A7, CALL(1233), A6["CNY"](25)));
         env.close();
 
         test::PathSet payPaths {
             test::Path {A2["JPY"], A2},
-            test::Path {XRP, A2["JPY"], A2},
-            test::Path {A6, XRP, A2["JPY"], A2} };
+            test::Path {CALL, A2["JPY"], A2},
+            test::Path {A6, CALL, A2["JPY"], A2} };
 
         env(pay(A1, A1, A2["JPY"](1000)),
             json(payPaths.json()),
@@ -144,10 +144,10 @@ class Discrepancy_test : public beast::unit_test::suite
 public:
     void run ()
     {
-        testXRPDiscrepancy ({});
-        testXRPDiscrepancy ({featureFlow});
-        testXRPDiscrepancy ({featureFlow, fix1373});
-        testXRPDiscrepancy ({featureFlow, fix1373, featureFlowCross});
+        testCALLDiscrepancy ({});
+        testCALLDiscrepancy ({featureFlow});
+        testCALLDiscrepancy ({featureFlow, fix1373});
+        testCALLDiscrepancy ({featureFlow, fix1373, featureFlowCross});
     }
 };
 

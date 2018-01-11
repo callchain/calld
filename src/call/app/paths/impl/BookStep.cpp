@@ -30,7 +30,7 @@
 #include <call/protocol/Feature.h>
 #include <call/protocol/IOUAmount.h>
 #include <call/protocol/Quality.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 
 #include <boost/container/flat_set.hpp>
 
@@ -239,7 +239,7 @@ public:
         // Calculate amount that goes to the taker and the amount charged the
         // offer owner
         auto rate = [&](AccountID const& id) {
-            if (isXRP(id) || id == this->strandDst_)
+            if (isCALL(id) || id == this->strandDst_)
                 return parityRate;
             return transferRate(v, id);
         };
@@ -485,7 +485,7 @@ BookStep<TIn, TOut, TDerived>::forEachOffer (
     // Calculate amount that goes to the taker and the amount charged the offer owner
     auto rate = [this, &sb](AccountID const& id)->std::uint32_t
     {
-        if (isXRP (id) || id == this->strandDst_)
+        if (isCALL (id) || id == this->strandDst_)
             return QUALITY_ONE;
         return transferRate (sb, id).value;
     };
@@ -523,9 +523,9 @@ BookStep<TIn, TOut, TDerived>::forEachOffer (
                 continue;
 
         // Make sure offer owner has authorization to own IOUs from issuer.
-        // An account can always own XRP or their own IOUs.
+        // An account can always own CALL or their own IOUs.
         if (flowCross &&
-            (!isXRP (offer.issueIn().currency)) &&
+            (!isCALL (offer.issueIn().currency)) &&
             (offer.owner() != offer.issueIn().account))
         {
             auto const& issuerID = offer.issueIn().account;
@@ -1011,18 +1011,18 @@ bool equalHelper (Step const& step, call::Book const& book)
 
 bool bookStepEqual (Step const& step, call::Book const& book)
 {
-    bool const inXRP = isXRP (book.in.currency);
-    bool const outXRP = isXRP (book.out.currency);
-    if (inXRP && outXRP)
-        return equalHelper<XRPAmount, XRPAmount,
-            BookPaymentStep<XRPAmount, XRPAmount>> (step, book);
-    if (inXRP && !outXRP)
-        return equalHelper<XRPAmount, IOUAmount,
-            BookPaymentStep<XRPAmount, IOUAmount>> (step, book);
-    if (!inXRP && outXRP)
-        return equalHelper<IOUAmount, XRPAmount,
-            BookPaymentStep<IOUAmount, XRPAmount>> (step, book);
-    if (!inXRP && !outXRP)
+    bool const inCALL = isCALL (book.in.currency);
+    bool const outCALL = isCALL (book.out.currency);
+    if (inCALL && outCALL)
+        return equalHelper<CALLAmount, CALLAmount,
+            BookPaymentStep<CALLAmount, CALLAmount>> (step, book);
+    if (inCALL && !outCALL)
+        return equalHelper<CALLAmount, IOUAmount,
+            BookPaymentStep<CALLAmount, IOUAmount>> (step, book);
+    if (!inCALL && outCALL)
+        return equalHelper<IOUAmount, CALLAmount,
+            BookPaymentStep<IOUAmount, CALLAmount>> (step, book);
+    if (!inCALL && !outCALL)
         return equalHelper<IOUAmount, IOUAmount,
             BookPaymentStep<IOUAmount, IOUAmount>> (step, book);
     return false;
@@ -1075,7 +1075,7 @@ make_BookStepIX (
     StrandContext const& ctx,
     Issue const& in)
 {
-    return make_BookStepHelper<IOUAmount, XRPAmount> (ctx, in, xrpIssue());
+    return make_BookStepHelper<IOUAmount, CALLAmount> (ctx, in, callIssue());
 }
 
 std::pair<TER, std::unique_ptr<Step>>
@@ -1083,7 +1083,7 @@ make_BookStepXI (
     StrandContext const& ctx,
     Issue const& out)
 {
-    return make_BookStepHelper<XRPAmount, IOUAmount> (ctx, xrpIssue(), out);
+    return make_BookStepHelper<CALLAmount, IOUAmount> (ctx, callIssue(), out);
 }
 
 } // call

@@ -21,7 +21,7 @@
 #define CALL_APP_TX_TRANSACTOR_H_INCLUDED
 
 #include <call/app/tx/impl/ApplyContext.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 #include <call/beast/utility/Journal.h>
 #include <boost/optional.hpp>
 
@@ -80,9 +80,9 @@ protected:
     beast::Journal j_;
 
     AccountID     account_;
-    XRPAmount     mFeeDue;
-    XRPAmount     mPriorBalance;  // Balance before fees.
-    XRPAmount     mSourceBalance; // Balance after fees.
+    CALLAmount     mFeeDue;
+    CALLAmount     mPriorBalance;  // Balance before fees.
+    CALLAmount     mSourceBalance; // Balance after fees.
 
 public:
     /** Process the transaction. */
@@ -137,11 +137,11 @@ public:
     }
 
     static
-    XRPAmount
+    CALLAmount
     calculateFeePaid(STTx const& tx);
 
     static
-    XRPAmount
+    CALLAmount
     calculateMaxSpend(STTx const& tx);
 
     static
@@ -168,7 +168,7 @@ protected:
 private:
     void setSeq ();
     TER payFee ();
-    void claimFee (XRPAmount& fee, TER terResult, std::vector<uint256> const& removedOffers);
+    void claimFee (CALLAmount& fee, TER terResult, std::vector<uint256> const& removedOffers);
     static TER checkSingleSign (PreclaimContext const& ctx);
     static TER checkMultiSign (PreclaimContext const& ctx);
 };

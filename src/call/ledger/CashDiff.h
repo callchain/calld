@@ -123,7 +123,7 @@ private:
 // If v1 and v2 have different issues, then their difference is never dust.
 // If v1 < v2, smallness is computed as v1 / (v2 - v1).
 // The e10 argument says at least how big that ratio must be.  Default is 10^6.
-// If both v1 and v2 are XRP, any difference of 2 or smaller is considered dust.
+// If both v1 and v2 are CALL, any difference of 2 or smaller is considered dust.
 bool diffIsDust (STAmount const& v1, STAmount const& v2, std::uint8_t e10 = 6);
 
 } // call

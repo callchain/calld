@@ -18,12 +18,12 @@
 //==============================================================================
 
 #include <BeastConfig.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 #include <call/beast/unit_test.h>
 
 namespace call {
 
-class XRPAmount_test : public beast::unit_test::suite
+class CALLAmount_test : public beast::unit_test::suite
 {
 public:
     void testSigNum ()
@@ -32,7 +32,7 @@ public:
 
         for (auto i : { -1, 0, 1})
         {
-            XRPAmount const x(i);
+            CALLAmount const x(i);
 
             if (i < 0)
                 BEAST_EXPECT(x.signum () < 0);
@@ -49,7 +49,7 @@ public:
 
         for (auto i : { -1, 0, 1})
         {
-            XRPAmount const x (i);
+            CALLAmount const x (i);
 
             BEAST_EXPECT((i == 0) == (x == zero));
             BEAST_EXPECT((i != 0) == (x != zero));
@@ -69,15 +69,15 @@ public:
 
     void testComparisons ()
     {
-        testcase ("XRP Comparisons");
+        testcase ("CALL Comparisons");
 
         for (auto i : { -1, 0, 1})
         {
-            XRPAmount const x (i);
+            CALLAmount const x (i);
 
             for (auto j : { -1, 0, 1})
             {
-                XRPAmount const y (j);
+                CALLAmount const y (j);
 
                 BEAST_EXPECT((i == j) == (x == y));
                 BEAST_EXPECT((i != j) == (x != y));
@@ -95,14 +95,14 @@ public:
 
         for (auto i : { -1, 0, 1})
         {
-            XRPAmount const x (i);
+            CALLAmount const x (i);
 
             for (auto j : { -1, 0, 1})
             {
-                XRPAmount const y (j);
+                CALLAmount const y (j);
 
-                BEAST_EXPECT(XRPAmount(i + j) == (x + y));
-                BEAST_EXPECT(XRPAmount(i - j) == (x - y));
+                BEAST_EXPECT(CALLAmount(i + j) == (x + y));
+                BEAST_EXPECT(CALLAmount(i - j) == (x - y));
 
                 BEAST_EXPECT((x + y) == (y + x));   // addition is commutative
             }
@@ -119,7 +119,7 @@ public:
         {
             // multiply by a number that would overflow then divide by the same
             // number, and check we didn't lose any value
-            XRPAmount big (maxUInt64);
+            CALLAmount big (maxUInt64);
             BEAST_EXPECT(big == mulRatio (big, maxUInt32, maxUInt32, true));
             // rounding mode shouldn't matter as the result is exact
             BEAST_EXPECT(big == mulRatio (big, maxUInt32, maxUInt32, false));
@@ -127,7 +127,7 @@ public:
 
         {
             // Similar test as above, but for neative values
-            XRPAmount big (maxUInt64);
+            CALLAmount big (maxUInt64);
             BEAST_EXPECT(big == mulRatio (big, maxUInt32, maxUInt32, true));
             // rounding mode shouldn't matter as the result is exact
             BEAST_EXPECT(big == mulRatio (big, maxUInt32, maxUInt32, false));
@@ -135,7 +135,7 @@ public:
 
         {
             // small amounts
-            XRPAmount tiny (1);
+            CALLAmount tiny (1);
             // Round up should give the smallest allowable number
             BEAST_EXPECT(tiny == mulRatio (tiny, 1, maxUInt32, true));
             // rounding down should be zero
@@ -144,7 +144,7 @@ public:
                 mulRatio (tiny, maxUInt32 - 1, maxUInt32, false));
 
             // tiny negative numbers
-            XRPAmount tinyNeg (-1);
+            CALLAmount tinyNeg (-1);
             // Round up should give zero
             BEAST_EXPECT(zero == mulRatio (tinyNeg, 1, maxUInt32, true));
             BEAST_EXPECT(zero == mulRatio (tinyNeg, maxUInt32 - 1, maxUInt32, true));
@@ -155,21 +155,21 @@ public:
         {
             // rounding
             {
-                XRPAmount one (1);
+                CALLAmount one (1);
                 auto const rup = mulRatio (one, maxUInt32 - 1, maxUInt32, true);
                 auto const rdown = mulRatio (one, maxUInt32 - 1, maxUInt32, false);
                 BEAST_EXPECT(rup.drops () - rdown.drops () == 1);
             }
 
             {
-                XRPAmount big (maxUInt64);
+                CALLAmount big (maxUInt64);
                 auto const rup = mulRatio (big, maxUInt32 - 1, maxUInt32, true);
                 auto const rdown = mulRatio (big, maxUInt32 - 1, maxUInt32, false);
                 BEAST_EXPECT(rup.drops () - rdown.drops () == 1);
             }
 
             {
-                XRPAmount negOne (-1);
+                CALLAmount negOne (-1);
                 auto const rup = mulRatio (negOne, maxUInt32 - 1, maxUInt32, true);
                 auto const rdown = mulRatio (negOne, maxUInt32 - 1, maxUInt32, false);
                 BEAST_EXPECT(rup.drops () - rdown.drops () == 1);
@@ -178,13 +178,13 @@ public:
 
         {
             // division by zero
-            XRPAmount one (1);
+            CALLAmount one (1);
             except ([&] {mulRatio (one, 1, 0, true);});
         }
 
         {
             // overflow
-            XRPAmount big (maxUInt64);
+            CALLAmount big (maxUInt64);
             except ([&] {mulRatio (big, 2, 0, true);});
         }
     }
@@ -201,6 +201,6 @@ public:
     }
 };
 
-BEAST_DEFINE_TESTSUITE(XRPAmount,protocol,call);
+BEAST_DEFINE_TESTSUITE(CALLAmount,protocol,call);
 
 } // call

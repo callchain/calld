@@ -33,4 +33,4 @@
 #include <test/protocol/STTx_test.cpp>
 #include <test/protocol/TER_test.cpp>
 #include <test/protocol/types_test.cpp>
-#include <test/protocol/XRPAmount_test.cpp>
+#include <test/protocol/CALLAmount_test.cpp>

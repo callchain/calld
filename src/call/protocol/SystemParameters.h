@@ -45,7 +45,7 @@ static
 std::uint64_t const
 SYSTEM_CURRENCY_USERS = 100000000;
 
-/** Number of drops per 1 XRP */
+/** Number of drops per 1 CALL */
 static
 std::uint64_t const
 SYSTEM_CURRENCY_PARTS = 1000000;

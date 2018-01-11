@@ -31,8 +31,8 @@ effectiveRate(
     AccountID const& account2,
     boost::optional<Rate> const& rate)
 {
-    // 1:1 transfer rate for XRP
-    if (isXRP (issue))
+    // 1:1 transfer rate for CALL
+    if (isCALL (issue))
         return parityRate;
 
     if (!rate)

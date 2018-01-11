@@ -199,7 +199,7 @@ Currency to_currency(std::string const& code)
     return currency;
 }
 
-Currency const& xrpCurrency()
+Currency const& callCurrency()
 {
     static Currency const currency(0);
     return currency;

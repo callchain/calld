@@ -75,7 +75,7 @@ class Invariants_test : public beast::unit_test::suite
 
         Account A1 {"A1"};
         Account A2 {"A2"};
-        env.fund (XRP (1000), A1, A2);
+        env.fund (CALL (1000), A1, A2);
         env.close();
 
         // dummy/empty tx to setup the AccountContext
@@ -138,16 +138,16 @@ class Invariants_test : public beast::unit_test::suite
     }
 
     void
-    testXRPNotCreated (bool enabled)
+    testCALLNotCreated (bool enabled)
     {
         using namespace test::jtx;
         testcase << "checks " << (enabled ? "enabled" : "disabled") <<
-            " - XRP created";
+            " - CALL created";
         doInvariantCheck (enabled,
-            {{ "XRP net change was 500 on a fee of 0" }},
+            {{ "CALL net change was 500 on a fee of 0" }},
             [](Account const& A1, Account const&, ApplyContext& ac)
             {
-                // put a single account in the view and "manufacture" some XRP
+                // put a single account in the view and "manufacture" some CALL
                 auto const sle = ac.view().peek (keylet::account(A1.id()));
                 if(! sle)
                     return false;
@@ -185,7 +185,7 @@ class Invariants_test : public beast::unit_test::suite
             " - LE types don't match";
         doInvariantCheck (enabled,
             {{ "ledger entry type mismatch" },
-             { "XRP net change was -1000000000 on a fee of 0" }},
+             { "CALL net change was -1000000000 on a fee of 0" }},
             [](Account const& A1, Account const&, ApplyContext& ac)
             {
                 // replace an entry in the table with an SLE of a different type
@@ -217,17 +217,17 @@ class Invariants_test : public beast::unit_test::suite
     }
 
     void
-    testNoXRPTrustLine(bool enabled)
+    testNoCALLTrustLine(bool enabled)
     {
         using namespace test::jtx;
         testcase << "checks " << (enabled ? "enabled" : "disabled") <<
-            " - trust lines with XRP not allowed";
+            " - trust lines with CALL not allowed";
         doInvariantCheck (enabled,
-            {{ "an XRP trust line was created" }},
+            {{ "an CALL trust line was created" }},
             [](Account const& A1, Account const& A2, ApplyContext& ac)
             {
-                // create simple trust SLE with xrp currency
-                auto index = getCallStateIndex (A1, A2, xrpIssue().currency);
+                // create simple trust SLE with call currency
+                auto index = getCallStateIndex (A1, A2, callIssue().currency);
                 auto const sleNew = std::make_shared<SLE>(
                     ltCALL_STATE, index);
                 ac.view().insert (sleNew);
@@ -236,14 +236,14 @@ class Invariants_test : public beast::unit_test::suite
     }
 
     void
-    testXRPBalanceCheck(bool enabled)
+    testCALLBalanceCheck(bool enabled)
     {
         using namespace test::jtx;
         testcase << "checks " << (enabled ? "enabled" : "disabled") <<
-            " - XRP balance checks";
+            " - CALL balance checks";
 
         doInvariantCheck (enabled,
-            {{ "Cannot return non-native STAmount as XRPAmount" }},
+            {{ "Cannot return non-native STAmount as CALLAmount" }},
             [](Account const& A1, Account const& A2, ApplyContext& ac)
             {
                 //non-native balance
@@ -257,8 +257,8 @@ class Invariants_test : public beast::unit_test::suite
             });
 
         doInvariantCheck (enabled,
-            {{ "incorrect account XRP balance" },
-             {  "XRP net change was 99999999000000001 on a fee of 0" }},
+            {{ "incorrect account CALL balance" },
+             {  "CALL net change was 99999999000000001 on a fee of 0" }},
             [](Account const& A1, Account const&, ApplyContext& ac)
             {
                 // balance exceeds genesis amount
@@ -271,8 +271,8 @@ class Invariants_test : public beast::unit_test::suite
             });
 
         doInvariantCheck (enabled,
-            {{ "incorrect account XRP balance" },
-             { "XRP net change was -1000000001 on a fee of 0" }},
+            {{ "incorrect account CALL balance" },
+             { "CALL net change was -1000000001 on a fee of 0" }},
             [](Account const& A1, Account const&, ApplyContext& ac)
             {
                 // balance is negative
@@ -305,7 +305,7 @@ class Invariants_test : public beast::unit_test::suite
                 auto sleNew = std::make_shared<SLE> (ltOFFER, offer_index);
                 sleNew->setAccountID (sfAccount, A1.id());
                 sleNew->setFieldU32 (sfSequence, (*sle)[sfSequence]);
-                sleNew->setFieldAmount (sfTakerPays, XRP(-1));
+                sleNew->setFieldAmount (sfTakerPays, CALL(-1));
                 ac.view().insert (sleNew);
                 return true;
             });
@@ -324,7 +324,7 @@ class Invariants_test : public beast::unit_test::suite
                 sleNew->setAccountID (sfAccount, A1.id());
                 sleNew->setFieldU32 (sfSequence, (*sle)[sfSequence]);
                 sleNew->setFieldAmount (sfTakerPays, A1["USD"](10));
-                sleNew->setFieldAmount (sfTakerGets, XRP(-1));
+                sleNew->setFieldAmount (sfTakerGets, CALL(-1));
                 ac.view().insert (sleNew);
                 return true;
             });
@@ -333,7 +333,7 @@ class Invariants_test : public beast::unit_test::suite
             {{ "offer with a bad amount" }},
             [](Account const& A1, Account const&, ApplyContext& ac)
             {
-                // offer XRP to XRP
+                // offer CALL to CALL
                 auto const sle = ac.view().peek (keylet::account(A1.id()));
                 if(! sle)
                     return false;
@@ -342,8 +342,8 @@ class Invariants_test : public beast::unit_test::suite
                 auto sleNew = std::make_shared<SLE> (ltOFFER, offer_index);
                 sleNew->setAccountID (sfAccount, A1.id());
                 sleNew->setFieldU32 (sfSequence, (*sle)[sfSequence]);
-                sleNew->setFieldAmount (sfTakerPays, XRP(10));
-                sleNew->setFieldAmount (sfTakerGets, XRP(11));
+                sleNew->setFieldAmount (sfTakerPays, CALL(10));
+                sleNew->setFieldAmount (sfTakerGets, CALL(11));
                 ac.view().insert (sleNew);
                 return true;
             });
@@ -357,7 +357,7 @@ class Invariants_test : public beast::unit_test::suite
             " - no zero escrow";
 
         doInvariantCheck (enabled,
-            {{ "Cannot return non-native STAmount as XRPAmount" }},
+            {{ "Cannot return non-native STAmount as CALLAmount" }},
             [](Account const& A1, Account const& A2, ApplyContext& ac)
             {
                 // escrow with nonnative amount
@@ -373,7 +373,7 @@ class Invariants_test : public beast::unit_test::suite
             });
 
         doInvariantCheck (enabled,
-            {{ "XRP net change was -1000000 on a fee of 0"},
+            {{ "CALL net change was -1000000 on a fee of 0"},
              {  "escrow specifies invalid amount" }},
             [](Account const& A1, Account const&, ApplyContext& ac)
             {
@@ -383,13 +383,13 @@ class Invariants_test : public beast::unit_test::suite
                     return false;
                 auto sleNew = std::make_shared<SLE> (
                     keylet::escrow(A1, (*sle)[sfSequence] + 2));
-                sleNew->setFieldAmount (sfAmount, XRP(-1));
+                sleNew->setFieldAmount (sfAmount, CALL(-1));
                 ac.view().insert (sleNew);
                 return true;
             });
 
         doInvariantCheck (enabled,
-            {{ "XRP net change was 100000000000000001 on a fee of 0" },
+            {{ "CALL net change was 100000000000000001 on a fee of 0" },
              {  "escrow specifies invalid amount" }},
             [](Account const& A1, Account const&, ApplyContext& ac)
             {
@@ -414,11 +414,11 @@ public:
         // the feature enabled and disabled
         for(auto const& b : {false, true})
         {
-            testXRPNotCreated (b);
+            testCALLNotCreated (b);
             testAccountsNotRemoved (b);
             testTypesMatch (b);
-            testNoXRPTrustLine (b);
-            testXRPBalanceCheck (b);
+            testNoCALLTrustLine (b);
+            testCALLBalanceCheck (b);
             testNoBadOffers (b);
             testNoZeroEscrow (b);
         }

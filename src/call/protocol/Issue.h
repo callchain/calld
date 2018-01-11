@@ -66,7 +66,7 @@ hash_append(Hasher& h, Issue const& r)
 
 /** Ordered comparison.
     The assets are ordered first by currency and then by account,
-    if the currency is not XRP.
+    if the currency is not CALL.
 */
 int
 compare (Issue const& lhs, Issue const& rhs);
@@ -93,10 +93,10 @@ operator<= (Issue const& lhs, Issue const& rhs);
 
 //------------------------------------------------------------------------------
 
-/** Returns an asset specifier that represents XRP. */
-inline Issue const& xrpIssue ()
+/** Returns an asset specifier that represents CALL. */
+inline Issue const& callIssue ()
 {
-    static Issue issue {xrpCurrency(), xrpAccount()};
+    static Issue issue {callCurrency(), callAccount()};
     return issue;
 }
 

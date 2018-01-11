@@ -23,7 +23,7 @@
 #include <call/basics/base_uint.h>
 #include <call/protocol/HashPrefix.h>
 #include <call/protocol/Serializer.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 
 namespace call {
 
@@ -32,7 +32,7 @@ void
 serializePayChanAuthorization (
     Serializer& msg,
     uint256 const& key,
-    XRPAmount const& amt)
+    CALLAmount const& amt)
 {
     msg.add32 (HashPrefix::paymentChannelClaim);
     msg.add256 (key);

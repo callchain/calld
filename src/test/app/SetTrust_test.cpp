@@ -51,7 +51,7 @@ public:
         auto const baseReserve = env.current()->fees().accountReserve(0);
         auto const threelineReserve = env.current()->fees().accountReserve(3);
 
-        env.fund(XRP(10000), gwA, gwB, assistor);
+        env.fund(CALL(10000), gwA, gwB, assistor);
 
         // Fund creator with ...
         env.fund(baseReserve /* enough to hold an account */
@@ -119,7 +119,7 @@ public:
 
         auto const gw = Account{ "gateway" };
         auto const alice = Account{ "alice" };
-        env.fund(XRP(10000), gw, alice);
+        env.fund(CALL(10000), gw, alice);
 
         // Require valid tf flags
         for (std::uint64_t badFlag = 1u ;
@@ -130,7 +130,7 @@ public:
                     static_cast<std::uint32_t>(badFlag)), ter(temINVALID_FLAG));
         }
 
-        // trust amount can't be XRP
+        // trust amount can't be CALL
         env(trust_explicit_amt(alice, drops(10000)), ter(temBAD_LIMIT));
 
         // trust amount can't be badCurrency IOU
@@ -167,7 +167,7 @@ public:
         auto const & fromAcct = createOnHighAcct ? alice : bob;
         auto const & toAcct = createOnHighAcct ? bob : alice;
 
-        env.fund(XRP(10000), fromAcct, toAcct);
+        env.fund(CALL(10000), fromAcct, toAcct);
 
 
         auto txWithoutQuality = trust(toAcct, fromAcct["USD"](100));

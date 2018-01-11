@@ -2242,7 +2242,7 @@ Json::Value NetworkOPsImp::getServerInfo (bool human, bool admin)
 
             /* Json::Value doesn't support uint64, so clamp to max
                 uint32 value. This is mostly theoretical, since there
-                probably isn't enough extant XRP to drive the factor
+                probably isn't enough extant CALL to drive the factor
                 that high.
             */
             info[jss::load_factor_fee_escalation] =

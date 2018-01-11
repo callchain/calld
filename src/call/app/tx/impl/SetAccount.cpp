@@ -101,12 +101,12 @@ SetAccount::preflight (PreflightContext const& ctx)
     }
 
     //
-    // DisallowXRP
+    // DisallowCALL
     //
-    bool bSetDisallowXRP   = (uTxFlags & tfDisallowXRP) || (uSetFlag == asfDisallowXRP);
-    bool bClearDisallowXRP = (uTxFlags & tfAllowXRP) || (uClearFlag == asfDisallowXRP);
+    bool bSetDisallowCALL   = (uTxFlags & tfDisallowCALL) || (uSetFlag == asfDisallowCALL);
+    bool bClearDisallowCALL = (uTxFlags & tfAllowCALL) || (uClearFlag == asfDisallowCALL);
 
-    if (bSetDisallowXRP && bClearDisallowXRP)
+    if (bSetDisallowCALL && bClearDisallowCALL)
     {
         JLOG(j.trace()) << "Malformed transaction: Contradictory flags set.";
         return temINVALID_FLAG;
@@ -217,8 +217,8 @@ SetAccount::doApply ()
     bool bClearRequireDest = (uTxFlags & tfOptionalDestTag) || (uClearFlag == asfRequireDest);
     bool bSetRequireAuth   = (uTxFlags & tfRequireAuth) || (uSetFlag == asfRequireAuth);
     bool bClearRequireAuth = (uTxFlags & tfOptionalAuth) || (uClearFlag == asfRequireAuth);
-    bool bSetDisallowXRP   = (uTxFlags & tfDisallowXRP) || (uSetFlag == asfDisallowXRP);
-    bool bClearDisallowXRP = (uTxFlags & tfAllowXRP) || (uClearFlag == asfDisallowXRP);
+    bool bSetDisallowCALL   = (uTxFlags & tfDisallowCALL) || (uSetFlag == asfDisallowCALL);
+    bool bClearDisallowCALL = (uTxFlags & tfAllowCALL) || (uClearFlag == asfDisallowCALL);
 
     bool sigWithMaster = false;
 
@@ -309,18 +309,18 @@ SetAccount::doApply ()
     }
 
     //
-    // DisallowXRP
+    // DisallowCALL
     //
-    if (bSetDisallowXRP && !(uFlagsIn & lsfDisallowXRP))
+    if (bSetDisallowCALL && !(uFlagsIn & lsfDisallowCALL))
     {
-        JLOG(j_.trace()) << "Set lsfDisallowXRP.";
-        uFlagsOut |= lsfDisallowXRP;
+        JLOG(j_.trace()) << "Set lsfDisallowCALL.";
+        uFlagsOut |= lsfDisallowCALL;
     }
 
-    if (bClearDisallowXRP && (uFlagsIn & lsfDisallowXRP))
+    if (bClearDisallowCALL && (uFlagsIn & lsfDisallowCALL))
     {
-        JLOG(j_.trace()) << "Clear lsfDisallowXRP.";
-        uFlagsOut &= ~lsfDisallowXRP;
+        JLOG(j_.trace()) << "Clear lsfDisallowCALL.";
+        uFlagsOut &= ~lsfDisallowCALL;
     }
 
     //

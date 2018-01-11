@@ -28,7 +28,7 @@
 #include <call/app/paths/impl/Steps.h>
 #include <call/basics/Log.h>
 #include <call/protocol/IOUAmount.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 
 #include <boost/container/flat_set.hpp>
 
@@ -101,7 +101,7 @@ flow (
 
     if (isDirectXrpToXrp<TInAmt, TOutAmt> (strand))
     {
-        // The current implementation returns NO_LINE for XRP->XRP transfers.
+        // The current implementation returns NO_LINE for CALL->CALL transfers.
         // Keep this behavior
         return {tecNO_LINE, std::move (ofrsToRm)};
     }

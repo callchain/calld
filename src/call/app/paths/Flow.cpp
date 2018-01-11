@@ -25,7 +25,7 @@
 #include <call/app/paths/impl/Steps.h>
 #include <call/basics/Log.h>
 #include <call/protocol/IOUAmount.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 
 #include <boost/container/flat_set.hpp>
 
@@ -72,9 +72,9 @@ flow (
     Issue const srcIssue = [&] {
         if (sendMax)
             return sendMax->issue ();
-        if (!isXRP (deliver.issue ().currency))
+        if (!isCALL (deliver.issue ().currency))
             return Issue (deliver.issue ().currency, src);
-        return xrpIssue ();
+        return callIssue ();
     }();
 
     Issue const dstIssue = deliver.issue ();
@@ -112,39 +112,39 @@ flow (
         }
     }
 
-    const bool srcIsXRP = isXRP (srcIssue.currency);
-    const bool dstIsXRP = isXRP (dstIssue.currency);
+    const bool srcIsCALL = isCALL (srcIssue.currency);
+    const bool dstIsCALL = isCALL (dstIssue.currency);
 
     auto const asDeliver = toAmountSpec (deliver);
 
-    // The src account may send either xrp or iou. The dst account may receive
-    // either xrp or iou. Since XRP and IOU amounts are represented by different
+    // The src account may send either call or iou. The dst account may receive
+    // either call or iou. Since CALL and IOU amounts are represented by different
     // types, use templates to tell `flow` about the amount types.
-    if (srcIsXRP && dstIsXRP)
+    if (srcIsCALL && dstIsCALL)
     {
         return finishFlow (sb, srcIssue, dstIssue,
-            flow<XRPAmount, XRPAmount> (
-                sb, strands, asDeliver.xrp, partialPayment, offerCrossing,
+            flow<CALLAmount, CALLAmount> (
+                sb, strands, asDeliver.call, partialPayment, offerCrossing,
                 limitQuality, sendMax, j, flowDebugInfo));
     }
 
-    if (srcIsXRP && !dstIsXRP)
+    if (srcIsCALL && !dstIsCALL)
     {
         return finishFlow (sb, srcIssue, dstIssue,
-            flow<XRPAmount, IOUAmount> (
+            flow<CALLAmount, IOUAmount> (
                 sb, strands, asDeliver.iou, partialPayment, offerCrossing,
                 limitQuality, sendMax, j, flowDebugInfo));
     }
 
-    if (!srcIsXRP && dstIsXRP)
+    if (!srcIsCALL && dstIsCALL)
     {
         return finishFlow (sb, srcIssue, dstIssue,
-            flow<IOUAmount, XRPAmount> (
-                sb, strands, asDeliver.xrp, partialPayment, offerCrossing,
+            flow<IOUAmount, CALLAmount> (
+                sb, strands, asDeliver.call, partialPayment, offerCrossing,
                 limitQuality, sendMax, j, flowDebugInfo));
     }
 
-    assert (!srcIsXRP && !dstIsXRP);
+    assert (!srcIsCALL && !dstIsCALL);
     return finishFlow (sb, srcIssue, dstIssue,
         flow<IOUAmount, IOUAmount> (
             sb, strands, asDeliver.iou, partialPayment, offerCrossing,

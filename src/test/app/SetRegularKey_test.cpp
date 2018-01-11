@@ -33,7 +33,7 @@ public:
         Env env(*this);
         Account const alice("alice");
         Account const bob("bob");
-        env.fund(XRP(10000), alice, bob);
+        env.fund(CALL(10000), alice, bob);
 
         // Master and Regular key
         env(regkey(alice, bob));
@@ -60,7 +60,7 @@ public:
         Env env(*this);
         Account const alice("alice");
         Account const bob("bob");
-        env.fund(XRP(10000), alice, bob);
+        env.fund(CALL(10000), alice, bob);
 
         auto ar = env.le(alice);
         BEAST_EXPECT(ar->isFieldPresent(sfFlags) && ((ar->getFieldU32(sfFlags) & lsfPasswordSpent) == 0));
@@ -85,7 +85,7 @@ public:
         Env env(*this);
         Account const alice("alice");
         Account const bob("bob");
-        env.fund(XRP(10000), alice, bob);
+        env.fund(CALL(10000), alice, bob);
 
         auto jv = regkey(alice, bob);
         jv[sfFlags.fieldName] = tfUniversalMask;

@@ -131,7 +131,7 @@ STTx::getMentionedAccounts () const
         else if (auto sa = dynamic_cast<STAmount const*> (&it))
         {
             auto const& issuer = sa->getIssuer ();
-            if (! isXRP (issuer))
+            if (! isCALL (issuer))
                 list.insert(issuer);
         }
     }

@@ -21,7 +21,7 @@
 #define CALL_PROTOCOL_AMOUNTCONVERSION_H_INCLUDED
 
 #include <call/protocol/IOUAmount.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 #include <call/protocol/STAmount.h>
 
 namespace call {
@@ -45,19 +45,19 @@ toSTAmount (IOUAmount const& iou)
 
 inline
 STAmount
-toSTAmount (XRPAmount const& xrp)
+toSTAmount (CALLAmount const& call)
 {
-    bool const isNeg = xrp.signum() < 0;
-    std::uint64_t const umant = isNeg ? - xrp.drops () : xrp.drops ();
+    bool const isNeg = call.signum() < 0;
+    std::uint64_t const umant = isNeg ? - call.drops () : call.drops ();
     return STAmount (umant, isNeg);
 }
 
 inline
 STAmount
-toSTAmount (XRPAmount const& xrp, Issue const& iss)
+toSTAmount (CALLAmount const& call, Issue const& iss)
 {
-    assert (isXRP(iss.account) && isXRP(iss.currency));
-    return toSTAmount (xrp);
+    assert (isCALL(iss.account) && isCALL(iss.currency));
+    return toSTAmount (call);
 }
 
 template <class T>
@@ -86,22 +86,22 @@ toAmount<IOUAmount> (STAmount const& amt)
     std::int64_t const sMant =
             isNeg ? - std::int64_t (amt.mantissa ()) : amt.mantissa ();
 
-    assert (! isXRP (amt));
+    assert (! isCALL (amt));
     return IOUAmount (sMant, amt.exponent ());
 }
 
 template <>
 inline
-XRPAmount
-toAmount<XRPAmount> (STAmount const& amt)
+CALLAmount
+toAmount<CALLAmount> (STAmount const& amt)
 {
     assert (amt.mantissa () < std::numeric_limits<std::int64_t>::max ());
     bool const isNeg = amt.negative ();
     std::int64_t const sMant =
             isNeg ? - std::int64_t (amt.mantissa ()) : amt.mantissa ();
 
-    assert (isXRP (amt));
-    return XRPAmount (sMant);
+    assert (isCALL (amt));
+    return CALLAmount (sMant);
 }
 
 

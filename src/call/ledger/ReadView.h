@@ -27,7 +27,7 @@
 #include <call/protocol/Protocol.h>
 #include <call/protocol/STLedgerEntry.h>
 #include <call/protocol/STTx.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 #include <call/beast/hash/uhash.h>
 #include <call/beast/utility/Journal.h>
 #include <boost/optional.hpp>
@@ -59,7 +59,7 @@ struct Fees
         The reserve is calculated as the reserve base plus
         the reserve increment times the number of increments.
     */
-    XRPAmount
+    CALLAmount
     accountReserve (std::size_t ownerCount) const
     {
         return { reserve + ownerCount * increment };
@@ -88,7 +88,7 @@ struct LedgerInfo
     uint256 accountHash = zero;
     uint256 parentHash = zero;
 
-    XRPAmount drops = zero;
+    CALLAmount drops = zero;
 
     // If validated is false, it means "not yet validated."
     // Once validated is true, it will never be set false at a later time.

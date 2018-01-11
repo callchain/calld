@@ -30,7 +30,7 @@ namespace detail {
 void
 ApplyStateTable::apply (RawView& to) const
 {
-    to.rawDestroyXRP(dropsDestroyed_);
+    to.rawDestroyCALL(dropsDestroyed_);
     for (auto const& item : items_)
     {
         auto const& sle =
@@ -520,7 +520,7 @@ ApplyStateTable::update (ReadView const& base,
 }
 
 void
-ApplyStateTable::destroyXRP(XRPAmount const& fee)
+ApplyStateTable::destroyCALL(CALLAmount const& fee)
 {
     dropsDestroyed_ += fee;
 }

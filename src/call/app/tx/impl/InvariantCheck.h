@@ -77,13 +77,13 @@ public:
 #endif
 
 /**
- * @brief Invariant: A transaction must not create XRP and should only destroy
- * XRP, up to the transaction fee.
+ * @brief Invariant: A transaction must not create CALL and should only destroy
+ * CALL, up to the transaction fee.
  *
  * For this check, we start with a signed 64-bit integer set to zero. As we go
  * through the ledger entries, look only at account roots, escrow payments,
- * and payment channels.  Remove from the total any previous XRP values and add
- * to the total any new XRP values. The net balance of a payment channel is
+ * and payment channels.  Remove from the total any previous CALL values and add
+ * to the total any new CALL values. The net balance of a payment channel is
  * computed from two fields (amount and balance) and deletions are ignored
  * for paychan and escrow because the amount fields have not been adjusted for
  * those in the case of deletion.
@@ -92,7 +92,7 @@ public:
  * to the negative of the tx fee.
  *
  */
-class XRPNotCreated
+class CALLNotCreated
 {
     std::int64_t drops_ = 0;
 
@@ -132,10 +132,10 @@ public:
 };
 
 /**
- * @brief Invariant: An account XRP balance must be in XRP and take a value
+ * @brief Invariant: An account CALL balance must be in CALL and take a value
                      between 0 and SYSTEM_CURRENCY_START drops, inclusive.
  */
-class XRPBalanceChecks
+class CALLBalanceChecks
 {
     bool bad_ = false;
 
@@ -174,11 +174,11 @@ public:
 };
 
 /**
- * @brief Invariant: Trust lines using XRP are not allowed.
+ * @brief Invariant: Trust lines using CALL are not allowed.
  */
-class NoXRPTrustLines
+class NoCALLTrustLines
 {
-    bool xrpTrustLine_ = false;
+    bool callTrustLine_ = false;
 
 public:
 
@@ -195,7 +195,7 @@ public:
 
 /**
  * @brief Invariant: offers should be for non-negative amounts and must not
- *                   be XRP to XRP.
+ *                   be CALL to CALL.
  */
 class NoBadOffers
 {
@@ -242,9 +242,9 @@ public:
 using InvariantChecks = std::tuple<
     AccountRootsNotDeleted,
     LedgerEntryTypesMatch,
-    XRPBalanceChecks,
-    XRPNotCreated,
-    NoXRPTrustLines,
+    CALLBalanceChecks,
+    CALLNotCreated,
+    NoCALLTrustLines,
     NoBadOffers,
     NoZeroEscrow
 >;

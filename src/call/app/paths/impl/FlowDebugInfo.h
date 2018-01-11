@@ -23,7 +23,7 @@
 #include <call/app/paths/impl/AmountSpec.h>
 #include <call/ledger/PaymentSandbox.h>
 #include <call/protocol/IOUAmount.h>
-#include <call/protocol/XRPAmount.h>
+#include <call/protocol/CALLAmount.h>
 
 #include <boost/container/flat_map.hpp>
 #include <boost/optional.hpp>
@@ -232,7 +232,7 @@ struct FlowDebugInfo
             auto writeXrpAmtList = [&write_list](
                 std::vector<EitherAmount> const& amts, char delim=';') {
                 auto get_val = [](EitherAmount const& a) -> std::string {
-                    return call::to_string (a.xrp);
+                    return call::to_string (a.call);
                 };
                 write_list (amts, get_val, delim);
             };
@@ -342,13 +342,13 @@ writeDiffs (std::ostringstream& ostr, Iter begin, Iter end)
 
 using BalanceDiffs = std::pair<
     std::map<std::tuple<AccountID, AccountID, Currency>, STAmount>,
-    XRPAmount>;
+    CALLAmount>;
 
 inline
 BalanceDiffs
 balanceDiffs(PaymentSandbox const& sb, ReadView const& rv)
 {
-    return {sb.balanceChanges (rv), sb.xrpDestroyed ()};
+    return {sb.balanceChanges (rv), sb.callDestroyed ()};
 }
 
 inline
@@ -358,9 +358,9 @@ balanceDiffsToString (boost::optional<BalanceDiffs> const& bd)
     if (!bd)
         return std::string{};
     auto const& diffs = bd->first;
-    auto const& xrpDestroyed = bd->second;
+    auto const& callDestroyed = bd->second;
     std::ostringstream ostr;
-    ostr << ", xrpDestroyed: " << to_string (xrpDestroyed);
+    ostr << ", callDestroyed: " << to_string (callDestroyed);
     ostr << ", balanceDiffs: ";
     writeDiffs (ostr, diffs.begin (), diffs.end ());
     return ostr.str ();
