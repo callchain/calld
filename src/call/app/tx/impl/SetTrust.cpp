@@ -135,13 +135,24 @@ SetTrust::doApply ()
 {
     TER terResult = tesSUCCESS;
 
-    STAmount const saLimitAmount (ctx_.tx.getFieldAmount (sfLimitAmount));
+    STAmount   saLimitAmount (ctx_.tx.getFieldAmount (sfLimitAmount));
     bool const bQualityIn (ctx_.tx.isFieldPresent (sfQualityIn));
     bool const bQualityOut (ctx_.tx.isFieldPresent (sfQualityOut));
 
     Currency const currency (saLimitAmount.getCurrency ());
     AccountID uDstAccountID (saLimitAmount.getIssuer ());
 
+    //check the limit 
+    auto Dessle = view().read(keylet::account(uDstAccountID));
+    if (Dessle->isFieldPresent(sfTotal))
+	{
+		STAmount saTotallimt = Dessle->getFieldAmount(sfTotal);
+		if (saLimitAmount.getCurrency() == saTotallimt.getCurrency())
+		{
+			if (saLimitAmount > saTotallimt)
+				saLimitAmount = saTotallimt;
+		}
+	}
     // true, iff current is high account.
     bool const bHigh = account_ > uDstAccountID;
 
