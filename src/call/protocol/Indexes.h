@@ -90,6 +90,8 @@ getCallStateIndex (AccountID const& a, Issue const& issue);
 uint256
 getSignerListIndex (AccountID const& account);
 
+uint256
+getNicknameIndex(Blob const & nickname);
 //------------------------------------------------------------------------------
 
 /* VFALCO TODO
@@ -160,6 +162,12 @@ struct line_t
 };
 static line_t const line {};
 
+struct nickname_t
+{
+	Keylet operator()(Blob const & nickname) const;
+	
+};
+static nickname_t const nick{};
 /** An offer from an account */
 struct offer_t
 {

@@ -47,6 +47,7 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfTickSize,            SOE_OPTIONAL)
             << SOElement(sfTotal,                SOE_OPTIONAL)
             << SOElement(sfIssued,               SOE_OPTIONAL)
+            << SOElement(sfNickName,             SOE_OPTIONAL)
             ;
 
     add ("DirectoryNode", ltDIR_NODE)
@@ -155,6 +156,8 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfPreviousTxnID,     SOE_REQUIRED)
             << SOElement (sfPreviousTxnLgrSeq, SOE_REQUIRED)
             ;
+      add("NickName", ltNICKNAME)
+		    << SOElement(sfAccount, SOE_REQUIRED);
 }
 
 void LedgerFormats::addCommonFields (Item& item)

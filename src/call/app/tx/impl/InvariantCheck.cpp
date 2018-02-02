@@ -260,6 +260,7 @@ LedgerEntryTypesMatch::visitEntry(
         case ltFEE_SETTINGS:
         case ltESCROW:
         case ltPAYCHAN:
+        case ltNICKNAME:
             break;
         default:
             invalidTypeAdded_ = true;

@@ -70,6 +70,7 @@ JSS ( account_id );                 // out: WalletPropose
 JSS ( account_objects );            // out: AccountObjects
 JSS ( account_root );               // in: LedgerEntry
 JSS ( accounts );                   // in: LedgerEntry, Subscribe,
+JSS ( NickName);
                                     //     handlers/Ledger, Unsubscribe
                                     // out: WalletAccounts
 JSS ( accounts_proposed );          // in: Subscribe, Unsubscribe

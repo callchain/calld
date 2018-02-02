@@ -120,6 +120,7 @@ public:
         add (rpcUNKNOWN_COMMAND,       "unknownCmd",        "Unknown method.");
         add (rpcWRONG_SEED,            "wrongSeed",         "The regular key does not point as the master key.");
         add (rpcSENDMAX_MALFORMED,     "sendMaxMalformed",  "SendMax amount malformed.");
+        add(rpcNICKACCOUNT_NOT_FOUND, "nonickaccountnot", "nick account is not existed.");
     }
 
     ErrorInfo const& get (error_code_i code) const

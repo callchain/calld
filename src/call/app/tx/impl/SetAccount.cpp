@@ -27,7 +27,7 @@
 #include <call/protocol/Quality.h>
 #include <call/protocol/st.h>
 #include <call/ledger/View.h>
-
+#include <call/basics/StringUtilities.h>
 namespace call {
 
 bool
@@ -251,15 +251,75 @@ SetAccount::doApply ()
 
 
 	//
+	//nickname set
+	//
+	if (ctx_.tx.isFieldPresent(sfNickName))
+	{
+		Blob nick = ctx_.tx.getFieldVL(sfNickName);
+                 std::string tmp3=strHex(nick);
+                 Blob nick3= strCopy(tmp3);
+
+		auto const nickname = view().peek(
+			keylet::nick(nick3));
+		if (nickname)
+		{
+			return temNICKNAMEEXISTED;
+		}
+		else
+		{
+			if (sle->isFieldPresent(sfNickName))
+			{
+				Blob oldname = sle->getFieldVL(sfNickName);
+				//auto oldindex = getNicknameIndex(oldname);
+                                std::string tmp=strHex(oldname);
+				Blob oldname1= strCopy(tmp);
+				auto oldnicksle = view().peek(keylet::nick(oldname1));
+                                if(oldnicksle)
+                                {
+                                    JLOG(j_.trace()) <<"nick name account: "<<toBase58(oldnicksle->getAccountID(sfAccount));
+                                    view().erase(oldnicksle);
+                                }
+                                std::string tmp1=strHex(nick);
+				Blob nick1= strCopy(tmp1);
+
+				auto newindex = getNicknameIndex(nick1);
+				auto const newslenick = std::make_shared<SLE>(
+					ltNICKNAME, newindex);
+				newslenick->setAccountID(sfAccount, sle->getAccountID(sfAccount));
+				sle->setFieldVL(sfNickName, nick);
+				view().insert(newslenick);
+				
+			}
+			else
+			{
+
+                                std::string tmp2=strHex(nick);
+				Blob nick2= strCopy(tmp2);
+				auto index = getNicknameIndex(nick2);
+				auto const slenick = std::make_shared<SLE>(
+					ltNICKNAME, index);
+				slenick->setAccountID(sfAccount,sle->getAccountID(sfAccount));
+				sle->setFieldVL(sfNickName, nick);
+				view().insert(slenick);
+			}
+		}
+	}
+	//
 	//total issue amount
 	//
 	if (ctx_.tx.isFieldPresent(sfTotal))
 	{
 		STAmount satotal = ctx_.tx.getFieldAmount(sfTotal);
+                        if(satotal.native())
+			return tecBADTOTAL;
 		if (!satotal)
 		{
 			JLOG(j_.trace()) << "unset total issue amount";
 			sle->makeFieldAbsent(sfTotal);
+		}
+                 else if (satotal.native())
+		{
+			return temBAD_CURRENCY;
 		}
 		else
 		{
@@ -276,13 +336,19 @@ SetAccount::doApply ()
 			}
 			else
 			{
-				if (satotal > sle->getFieldAmount(sfTotal))
+                          if(satotal.getCurrency() == sle->getFieldAmount(sfTotal).getCurrency())
 				{
-					JLOG(j_.trace()) << "increase total issue amount ";
-					sle->setFieldAmount(sfTotal, satotal);
+					if (satotal > sle->getFieldAmount(sfTotal))
+					{
+						JLOG(j_.trace()) << "increase total issue amount ";
+						sle->setFieldAmount(sfTotal, satotal);
+					}
+					else
+						return  tecBADTOTAL;
 				}
-				else
-					return  tecBADTOTAL;
+                              else
+				return temBAD_CURRENCY;
+				
 			}
 			
 		}

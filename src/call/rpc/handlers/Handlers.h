@@ -87,6 +87,7 @@ Json::Value doWalletUnlock          (RPC::Context&);
 Json::Value doWalletVerify          (RPC::Context&);
 Json::Value doValidators            (RPC::Context&);
 Json::Value doValidatorListSites    (RPC::Context&);
+Json::Value doNickSearch            (RPC::Context&);
 } // call
 
 #endif

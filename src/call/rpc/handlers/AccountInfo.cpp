@@ -29,7 +29,7 @@
 #include <call/protocol/types.h>
 #include <call/rpc/Context.h>
 #include <call/rpc/impl/RPCHelpers.h>
-
+#include <call/basics/StringUtilities.h>
 namespace call {
 
 // {
@@ -48,6 +48,44 @@ namespace call {
 // }
 
 // TODO(tom): what is that "default"?
+Json::Value	doNickSearch(RPC::Context& context)
+{
+	std::string nick;
+	Json::Value result;
+	auto& params = context.params;
+	if (params.isMember(jss::NickName))
+	{
+		nick = params[jss::NickName].asString();
+	}
+	else
+	{
+		RPC::inject_error(rpcINVALID_PARAMS, result);
+		return result;
+	}
+	std::shared_ptr<ReadView const> ledger;
+	result = RPC::lookupLedger(ledger, context);
+
+	if (!ledger)
+		return result;
+	
+	Blob blobname = strCopy(nick);
+     std::shared_ptr<SLE const> slenick = cachedRead(*ledger,
+		getNicknameIndex(blobname),ltNICKNAME);
+//	auto const slenick = ledger->read(keylet::nick(blobname));
+
+	if (!slenick)
+	{
+		RPC::inject_error(rpcNICKACCOUNT_NOT_FOUND, result);
+		return result;
+	}
+		
+	auto nickaccount = toBase58(slenick->getAccountID(sfAccount));
+        context.params[jss::account]= nickaccount;
+	result=doAccountInfo(context);
+	//result[jss::Account] = nickaccount;
+	return result;
+
+}
 Json::Value doAccountInfo (RPC::Context& context)
 {
     auto& params = context.params;

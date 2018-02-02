@@ -190,6 +190,14 @@ getSignerListIndex (AccountID const& account)
         std::uint32_t (0));  // 0 == default SignerList ID.
 }
 
+uint256
+getNicknameIndex(Blob const& nickname)
+{
+	return sha512Half(
+		std::uint16_t(spaceNickname),
+		nickname,
+		std::uint32_t(1));
+}
 //------------------------------------------------------------------------------
 
 namespace keylet {
@@ -285,6 +293,10 @@ Keylet signers_t::operator()(AccountID const& id) const
         getSignerListIndex(id) };
 }
 
+Keylet nickname_t::operator()(Blob const & nickname) const
+{
+	return{ ltNICKNAME, getNicknameIndex(nickname) };
+}
 //------------------------------------------------------------------------------
 
 Keylet unchecked (uint256 const& key)

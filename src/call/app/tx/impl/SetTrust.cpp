@@ -144,6 +144,10 @@ SetTrust::doApply ()
 
     //check the limit 
     auto Dessle = view().read(keylet::account(uDstAccountID));
+	if (!Dessle)
+	{
+		return  temBAD_ISSUER;
+	}
     if (Dessle->isFieldPresent(sfTotal))
 	{
 		STAmount saTotallimt = Dessle->getFieldAmount(sfTotal);

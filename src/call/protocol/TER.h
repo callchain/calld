@@ -96,7 +96,7 @@ enum TER
     // An intermediate result used internally, should never be returned.
     temUNCERTAIN,
     temUNKNOWN,
-
+    temNICKNAMEEXISTED,
     // -199 .. -100: F
     //    Failure (sequence number previously used)
     //

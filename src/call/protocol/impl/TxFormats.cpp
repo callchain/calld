@@ -36,6 +36,7 @@ TxFormats::TxFormats ()
         << SOElement (sfTickSize,            SOE_OPTIONAL)
         << SOElement(sfTotal,                SOE_OPTIONAL)
 	<< SOElement(sfIssued,               SOE_OPTIONAL)
+        << SOElement(sfNickName,             SOE_OPTIONAL)
         ;
 
     add ("TrustSet", ttTRUST_SET)
