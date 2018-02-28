@@ -467,6 +467,20 @@ SetTrust::doApply ()
     }
     else
     {
+       //update the Issuer fans
+	SLE::pointer sleIssueRoot = view().peek(
+		keylet::issuet(uDstAccountID, currency));
+	JLOG(j_.trace()) <<
+		"==================================================";
+	if (sleIssueRoot)
+	{
+		view().update(sleIssueRoot);
+		JLOG(j_.trace()) <<
+			"=================================================="<< sleIssueRoot->getFieldU64(sfFans);
+		sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
+		JLOG(j_.trace()) <<
+			"==================================================" << sleIssueRoot->getFieldU64(sfFans);
+	}
         // Zero balance in currency.
         STAmount saBalance ({currency, noAccount()});
 

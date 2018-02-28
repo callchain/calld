@@ -136,6 +136,8 @@ TxFormats::TxFormats ()
             SOElement (sfBalance,           SOE_OPTIONAL) <<
             SOElement (sfSignature,         SOE_OPTIONAL) <<
             SOElement (sfPublicKey,         SOE_OPTIONAL);
+    add("IssueSet", ttISSUE_SET) <<
+		SOElement(sfTotal, SOE_REQUIRED);
 }
 
 void TxFormats::addCommonFields (Item& item)

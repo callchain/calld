@@ -246,6 +246,20 @@ dirDelete (ApplyView& view,
 // VFALCO NOTE Both STAmount parameters should just
 //             be "Amount", a unit-less number.
 //
+
+
+/*
+create and delete an AccountIssue currency
+*/
+TER 
+AccountIssuerCreate( ApplyView& view,
+	AccountID const&  uSrcAccountID,
+	STAmount const& saBalance,
+	uint256 const&  uIndex,
+	beast::Journal j
+);
+
+
 /** Create a trust line
 
     This can set an initial balance.

@@ -88,6 +88,8 @@ enum LedgerEntryType
     ltNICKNAME          = 'n',
 
     ltNotUsed01         = 'c',
+    
+    ltISSUEROOT         ='i',
 };
 
 /**
@@ -115,6 +117,7 @@ enum LedgerNameSpace
     // No longer used or supported. Left here to reserve the space and
     // avoid accidental reuse of the space.
     spaceNickname       = 'n',
+    spaceIssue          = 'i',
 };
 
 /**

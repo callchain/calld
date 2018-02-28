@@ -92,6 +92,9 @@ getSignerListIndex (AccountID const& account);
 
 uint256
 getNicknameIndex(Blob const & nickname);
+
+uint256
+getIssueIndex(AccountID const& a, Currency const& currency);
 //------------------------------------------------------------------------------
 
 /* VFALCO TODO
@@ -105,6 +108,17 @@ getNicknameIndex(Blob const & nickname);
 /** Keylet computation funclets. */
 namespace keylet {
 
+
+/** An issueroot for an account*/
+struct issue_t
+{
+	Keylet operator()(AccountID const& a, Currency const& currency) const;
+	Keylet operator()(uint256 const& key) const
+	{
+		return{ltISSUEROOT,key};
+	}
+};
+static issue_t const issuet{};
 /** AccountID root */
 struct account_t
 {

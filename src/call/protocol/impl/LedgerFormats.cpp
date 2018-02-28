@@ -158,6 +158,12 @@ LedgerFormats::LedgerFormats ()
             ;
       add("NickName", ltNICKNAME)
 		    << SOElement(sfAccount, SOE_REQUIRED);
+      add("IssueRoot", ltISSUEROOT)
+		<< SOElement(sfTotal, SOE_OPTIONAL)
+		<< SOElement(sfIssued, SOE_OPTIONAL)
+		<< SOElement(sfFans, SOE_OPTIONAL)
+		<< SOElement(sfLowNode, SOE_OPTIONAL)
+		;
 }
 
 void LedgerFormats::addCommonFields (Item& item)

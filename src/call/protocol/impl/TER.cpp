@@ -59,7 +59,7 @@ transResults()
         { tecUNFUNDED_PAYMENT,       { "tecUNFUNDED_PAYMENT",      "Insufficient CALL balance to send."                                             } },
         { tecOWNERS,                 { "tecOWNERS",                "Non-zero owner count."                                                         } },
         { tecNO_ISSUER,              { "tecNO_ISSUER",             "Issuer account does not exist."                                                } },
-        { tecNO_AUTH,                { "tecNO_AUTH",               "Not authorized to hold asset."                                                 } },
+        { tecNO_AUTH,                { "tecNO_AUTH",               "Not authorized to hold or issue aditional asset ."                                                 } },
         { tecNO_LINE,                { "tecNO_LINE",               "No such line."                                                                 } },
         { tecINSUFF_FEE,             { "tecINSUFF_FEE",            "Insufficient balance to pay fee."                                              } },
         { tecFROZEN,                 { "tecFROZEN",                "Asset is frozen."                                                              } },

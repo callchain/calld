@@ -99,6 +99,9 @@ const std::uint32_t tfLostMajority         = 0x00020000;
 const std::uint32_t tfRenew                = 0x00010000;
 const std::uint32_t tfClose                = 0x00020000;
 
+//IssueSet flags:
+const std::uint32_t tfEnaddition  = 0x00010000;
+const std::uint32_t tfIssueSetMask = ~tfEnaddition;
 } // call
 
 #endif

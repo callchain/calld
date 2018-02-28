@@ -88,6 +88,8 @@ Json::Value doWalletVerify          (RPC::Context&);
 Json::Value doValidators            (RPC::Context&);
 Json::Value doValidatorListSites    (RPC::Context&);
 Json::Value doNickSearch            (RPC::Context&);
+Json::Value doAccountIssues         (RPC::Context&);
+
 } // call
 
 #endif

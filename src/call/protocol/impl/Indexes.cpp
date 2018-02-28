@@ -198,9 +198,23 @@ getNicknameIndex(Blob const& nickname)
 		nickname,
 		std::uint32_t(1));
 }
+
+uint256
+getIssueIndex(AccountID const& a, Currency const& currency)
+{
+	return sha512Half(std::uint16_t(spaceIssue),
+		a, currency, std::uint32_t(1));
+}
 //------------------------------------------------------------------------------
 
 namespace keylet {
+
+Keylet issue_t::operator()(AccountID const& a, Currency const& currency) const
+{
+	return{ ltISSUEROOT,getIssueIndex(a,currency) };
+}
+
+
 
 Keylet account_t::operator()(
     AccountID const& id) const

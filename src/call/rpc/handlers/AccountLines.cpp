@@ -38,6 +38,27 @@ struct VisitData
     bool hasPeer;
     AccountID const& raPeerAccount;
 };
+struct VisitData1
+{
+	std::vector<IssueRoot::pointer> items;
+	AccountID const & accountID;
+
+};
+
+void addIssue(Json::Value& jsonIssued,IssueRoot& issued)
+{
+	STAmount saTotal(issued.getTotal());
+	STAmount saIssued(issued.getissued());
+	std::uint64_t fans = issued.getFans();
+	Json::Value& jPeer(jsonIssued.append(Json::objectValue));
+
+	jPeer["Total"] = saTotal.getJson(0);
+
+	jPeer["Issued"] = saIssued.getJson(0);
+
+	jPeer["Fans"] = boost::lexical_cast< std::string >(fans);
+	
+}
 
 void addLine (Json::Value& jsonLines, CallState const& line)
 {
@@ -205,5 +226,114 @@ Json::Value doAccountLines (RPC::Context& context)
     context.loadType = Resource::feeMediumBurdenRPC;
     return result;
 }
+
+
+//============================================
+Json::Value doAccountIssues(RPC::Context& context)
+{
+	auto const& params(context.params);
+	if (!params.isMember(jss::account))
+		return RPC::missing_field_error(jss::account);
+
+	std::shared_ptr<ReadView const> ledger;
+	auto result = RPC::lookupLedger(ledger, context);
+	if (!ledger)
+		return result;
+
+	std::string strIdent(params[jss::account].asString());
+	AccountID accountID;
+
+	if (auto jv = RPC::accountFromString(accountID, strIdent))
+	{
+		for (auto it = jv.begin(); it != jv.end(); ++it)
+			result[it.memberName()] = *it;
+		return result;
+	}
+
+	if (!ledger->exists(keylet::account(accountID)))
+		return rpcError(rpcACT_NOT_FOUND);
+		
+	unsigned int limit;
+	if (auto err = readLimitField(limit, RPC::Tuning::accountLines, context))
+		return *err;
+
+	Json::Value& jsonIssues(result[jss::lines] = Json::arrayValue);
+	VisitData1 visitData = { {}, accountID };
+	unsigned int reserve(limit);
+	uint256 startAfter;
+	std::uint64_t startHint;
+
+	if (params.isMember(jss::marker))
+	{
+		// We have a start point. Use limit - 1 from the result and use the
+		// very last one for the resume.
+		Json::Value const& marker(params[jss::marker]);
+
+		if (!marker.isString())
+			return RPC::expected_field_error(jss::marker, "string");
+
+		startAfter.SetHex(marker.asString());
+		auto const sleIssue = ledger->read({ ltISSUEROOT, startAfter });
+
+		if (!sleIssue)
+			return rpcError(rpcINVALID_PARAMS);
+
+			startHint = sleIssue->getFieldU64(sfLowNode);
+		
+		
+
+		// Caller provided the first line (startAfter), add it as first result
+		auto const Issue = IssueRoot::makeItem(accountID, sleIssue);
+		if (Issue == nullptr)
+			return rpcError(rpcINVALID_PARAMS);
+
+		addIssue(jsonIssues, *Issue);
+		visitData.items.reserve(reserve);
+	}
+	else
+	{
+		startHint = 0;
+		// We have no start point, limit should be one higher than requested.
+		visitData.items.reserve(++reserve);
+	}
+
+	{
+		if (!forEachItemAfter(*ledger, accountID,
+			startAfter, startHint, reserve,
+			[&visitData](std::shared_ptr<SLE const> const& sleCur)
+		{
+			auto const line =
+				IssueRoot::makeItem(visitData.accountID, sleCur);
+			if (line != nullptr)
+			{
+				visitData.items.emplace_back(line);
+				return true;
+			}
+
+			return false;
+		}))
+		{
+			return rpcError(rpcINVALID_PARAMS);
+		}
+	}
+
+	if (visitData.items.size() == reserve)
+	{
+		result[jss::limit] = limit;
+
+		IssueRoot::pointer Issue(visitData.items.back());
+		result[jss::marker] = to_string(Issue->key());
+		visitData.items.pop_back();
+	}
+
+	result[jss::account] = context.app.accountIDCache().toBase58(accountID);
+
+	for (auto const& item : visitData.items)
+		addIssue(jsonIssues, *item.get());
+
+	context.loadType = Resource::feeMediumBurdenRPC;
+	return result;
+}
+
 
 } // call

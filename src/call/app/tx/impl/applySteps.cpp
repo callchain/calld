@@ -32,7 +32,7 @@
 #include <call/app/tx/impl/SetSignerList.h>
 #include <call/app/tx/impl/SetTrust.h>
 #include <call/app/tx/impl/PayChan.h>
-
+#include <call/app/tx/impl/IssueSet.h>
 namespace call {
 
 static
@@ -58,6 +58,8 @@ invoke_preflight (PreflightContext const& ctx)
     case ttPAYCHAN_CREATE:  return PayChanCreate    ::preflight(ctx);
     case ttPAYCHAN_FUND:    return PayChanFund      ::preflight(ctx);
     case ttPAYCHAN_CLAIM:   return PayChanClaim     ::preflight(ctx);
+    case ttISSUE_SET:       return IssueSet         ::preflight(ctx);
+
     default:
         assert(false);
         return temUNKNOWN;
@@ -123,6 +125,8 @@ invoke_preclaim (PreclaimContext const& ctx)
     case ttPAYCHAN_CREATE:  return invoke_preclaim<PayChanCreate>(ctx);
     case ttPAYCHAN_FUND:    return invoke_preclaim<PayChanFund>(ctx);
     case ttPAYCHAN_CLAIM:   return invoke_preclaim<PayChanClaim>(ctx);
+    case ttISSUE_SET:       return invoke_preclaim<IssueSet>(ctx);
+
     default:
         assert(false);
         return { temUNKNOWN, 0 };
@@ -192,6 +196,7 @@ invoke_calculateConsequences(STTx const& tx)
     case ttPAYCHAN_CREATE:  return invoke_calculateConsequences<PayChanCreate>(tx);
     case ttPAYCHAN_FUND:    return invoke_calculateConsequences<PayChanFund>(tx);
     case ttPAYCHAN_CLAIM:   return invoke_calculateConsequences<PayChanClaim>(tx);
+    case ttISSUE_SET:       return invoke_calculateConsequences<IssueSet>(tx);
     case ttAMENDMENT:
     case ttFEE:
         // fall through to default
@@ -225,6 +230,7 @@ invoke_apply (ApplyContext& ctx)
     case ttPAYCHAN_CREATE:  { PayChanCreate p(ctx); return p(); }
     case ttPAYCHAN_FUND:    { PayChanFund   p(ctx); return p(); }
     case ttPAYCHAN_CLAIM:   { PayChanClaim  p(ctx); return p(); }
+    case ttISSUE_SET:       {IssueSet p(ctx); return p(); }
     default:
         assert(false);
         return { temUNKNOWN, false };

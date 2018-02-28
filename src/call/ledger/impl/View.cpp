@@ -1210,6 +1210,37 @@ trustCreate (ApplyView& view,
     return tesSUCCESS;
 }
 
+
+//create accountissue 
+TER
+AccountIssuerCreate(ApplyView& view,
+	AccountID const&  uSrcAccountID,
+	STAmount const& saBalance,
+	uint256 const&  uIndex,
+	beast::Journal j
+) {
+
+	auto const sleIssueRoot = std::make_shared<SLE>(
+		ltISSUEROOT, uIndex);
+	view.insert(sleIssueRoot);
+
+	auto lowNode = dirAdd(view, keylet::ownerDir(uSrcAccountID),
+		sleIssueRoot->key(), false, describeOwnerDir(uSrcAccountID), j);
+
+	if (!lowNode)
+		return tecDIR_FULL;
+	STAmount total = saBalance;
+	STAmount issued(total.issue());
+	sleIssueRoot->setFieldAmount(sfTotal, total);
+	sleIssueRoot->setFieldAmount(sfIssued,issued);
+	sleIssueRoot->setFieldU64(sfFans, 0);
+	sleIssueRoot->setFieldU64(sfLowNode, *lowNode);
+	return tesSUCCESS;
+}
+
+
+
+
 TER
 trustDelete (ApplyView& view,
     std::shared_ptr<SLE> const& sleCallState,

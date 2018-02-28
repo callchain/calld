@@ -327,7 +327,7 @@ Payment::doApply ()
         " saDstAmount=" << saDstAmount.getFullText ();
 
       //check wether update account's issued amounts
-	if (saDstAmount.getCurrency().isNonZero())
+/*	if (saDstAmount.getCurrency().isNonZero())
 	{
 		if (view().read(
 			keylet::account(account_))->isFieldPresent(sfTotal))
@@ -352,7 +352,7 @@ Payment::doApply ()
 		}
 	}
 	
-	
+*/	
 
 
     // Open a ledger for editing.
@@ -384,6 +384,23 @@ Payment::doApply ()
     {
         // Call payment with at least one intermediate step and uses
         // transitive balances.
+                Currency currency = saDstAmount.getCurrency();
+		SLE::pointer sleIssueRoot = view().peek(
+			keylet::issuet(account_, currency));
+		if (sleIssueRoot)
+		{
+			STAmount issued = sleIssueRoot->getFieldAmount(sfIssued)+saDstAmount;
+			
+				if(issued <= sleIssueRoot->getFieldAmount(sfTotal))
+				{
+					view().update(sleIssueRoot);
+					sleIssueRoot->setFieldAmount(sfIssued,issued);
+				}
+				else
+				{
+					return tecOVERISSUED_AMOUNT;
+				}
+		} 
 
         // Copy paths into an editable class.
         STPathSet spsPaths = ctx_.tx.getFieldPathSet (sfPaths);
