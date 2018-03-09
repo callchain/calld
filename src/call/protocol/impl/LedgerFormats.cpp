@@ -164,6 +164,9 @@ LedgerFormats::LedgerFormats ()
 		<< SOElement(sfFans, SOE_OPTIONAL)
 		<< SOElement(sfLowNode, SOE_OPTIONAL)
 		;
+     add("FeeRoot", ltFeeRoot)
+		<< SOElement(sfBalance, SOE_REQUIRED)
+		;
 }
 
 void LedgerFormats::addCommonFields (Item& item)

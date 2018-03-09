@@ -217,7 +217,7 @@ public:
     void
     rawDestroyCALL (CALLAmount const& fee) override
     {
-        info_.drops -= fee;
+        info_.fees += fee;
     }
 
     //

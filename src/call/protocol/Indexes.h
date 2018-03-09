@@ -95,6 +95,9 @@ getNicknameIndex(Blob const & nickname);
 
 uint256
 getIssueIndex(AccountID const& a, Currency const& currency);
+
+uint256
+getFeesIndex();
 //------------------------------------------------------------------------------
 
 /* VFALCO TODO
@@ -152,6 +155,13 @@ struct fees_t
     Keylet operator()() const;
 };
 static fees_t const fees {};
+
+/*transaction fees */
+struct txfee_t
+{
+	Keylet operator()() const;
+};
+static txfee_t const txfee {};
 
 /** The beginning of an order book */
 struct book_t

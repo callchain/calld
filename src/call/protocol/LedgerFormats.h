@@ -90,6 +90,7 @@ enum LedgerEntryType
     ltNotUsed01         = 'c',
     
     ltISSUEROOT         ='i',
+    ltFeeRoot           ='F'
 };
 
 /**
@@ -118,6 +119,7 @@ enum LedgerNameSpace
     // avoid accidental reuse of the space.
     spaceNickname       = 'n',
     spaceIssue          = 'i',
+    spaceFees           ='F'
 };
 
 /**

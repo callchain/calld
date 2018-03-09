@@ -61,6 +61,7 @@ void fillJson(Object& json, bool closed, LedgerInfo const& info, bool bFull)
     json[jss::transaction_hash] = to_string (info.txHash);
     json[jss::account_hash] = to_string (info.accountHash);
     json[jss::total_coins] = to_string (info.drops);
+    json[jss::txFees] = to_string(info.fees);
 
     // These next three are DEPRECATED.
     json[jss::hash] = to_string (info.hash);

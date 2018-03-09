@@ -219,6 +219,27 @@ TER Transactor::payFee ()
     // Deduct the fee, so it's not available during the transaction.
     // Will only write the account back if the transaction succeeds.
 
+    auto feesle = view().peek(keylet::txfee());
+	if (!feesle)
+	{
+		auto feeindex = getFeesIndex();
+		auto const feesle = std::make_shared<SLE>(
+		ltFeeRoot,feeindex);
+		feesle->setFieldAmount(sfBalance, feePaid);
+		view().insert(feesle);
+		auto after = view().read(keylet::txfee());
+		JLOG(ctx_.journal.trace()) << "==create===after=================:" << after->getFieldAmount(sfBalance).getFullText();
+	}
+	else
+	{
+		JLOG(ctx_.journal.trace()) << "=====before=================:" << feesle->getFieldAmount(sfBalance).getFullText();
+		view().update(feesle);
+		auto fee = feesle->getFieldAmount(sfBalance)+feePaid;
+		feesle->setFieldAmount(sfBalance, fee);
+		
+		auto after = view().read(keylet::txfee());
+		JLOG(ctx_.journal.trace()) << "=====after=================:" << after->getFieldAmount(sfBalance).getFullText();
+	}
     mSourceBalance -= feePaid;
     sle->setFieldAmount (sfBalance, mSourceBalance);
 

@@ -205,6 +205,12 @@ getIssueIndex(AccountID const& a, Currency const& currency)
 	return sha512Half(std::uint16_t(spaceIssue),
 		a, currency, std::uint32_t(1));
 }
+
+uint256
+getFeesIndex()
+{
+	return sha512Half(std::uint16_t(spaceFees));
+}
 //------------------------------------------------------------------------------
 
 namespace keylet {
@@ -252,6 +258,11 @@ Keylet fees_t::operator()() const
         getLedgerFeeIndex() };
 }
 
+
+Keylet txfee_t::operator()() const
+{
+	return{ ltFeeRoot,getFeesIndex() };
+}
 Keylet book_t::operator()(Book const& b) const
 {
     return { ltDIR_NODE,

@@ -90,6 +90,7 @@ struct LedgerInfo
 
     CALLAmount drops = zero;
 
+    CALLAmount fees = zero;
     // If validated is false, it means "not yet validated."
     // Once validated is true, it will never be set false at a later time.
     // VFALCO TODO Make this not mutable
