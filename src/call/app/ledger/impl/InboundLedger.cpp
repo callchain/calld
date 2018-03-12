@@ -221,6 +221,7 @@ InboundLedger::deserializeHeader (
 
     info.seq = sit.get32 ();
     info.drops = sit.get64 ();
+    info.fees = sit.get64();
     info.parentHash = sit.get256 ();
     info.txHash = sit.get256 ();
     info.accountHash = sit.get256 ();

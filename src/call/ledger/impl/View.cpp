@@ -113,6 +113,7 @@ void addRaw (LedgerInfo const& info, Serializer& s)
 {
     s.add32 (info.seq);
     s.add64 (info.drops.drops ());
+    s.add64 (info.fees.drops());
     s.add256 (info.parentHash);
     s.add256 (info.txHash);
     s.add256 (info.accountHash);

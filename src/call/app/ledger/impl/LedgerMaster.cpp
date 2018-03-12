@@ -1292,7 +1292,7 @@ LedgerMaster::getCloseTimeByHash (LedgerHash const& ledgerHash)
         if (it.get32() == HashPrefix::ledgerMaster)
         {
             it.skip (
-                4+8+32+    // seq drops parentHash
+                4+8+8+32+    // seq drops,fees, parentHash
                 32+32+4);  // txHash acctHash parentClose
             return NetClock::time_point{NetClock::duration{it.get32()}};
         }

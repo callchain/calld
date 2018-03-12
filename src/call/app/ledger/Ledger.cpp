@@ -1008,8 +1008,6 @@ static bool saveValidatedLedger (
 
         tr.commit();
     }
-    JLOG (j.warn())
-                    << "++++++++++++++++++++++fee+++++++++++:" <<to_string(ledger->info().fees);
     // Clients can now trust the database for
     // information about this ledger sequence.
     app.pendingSaves().finishWork(seq);
@@ -1172,6 +1170,7 @@ loadLedgerHelper(std::string const& sqlSuffix, Application& app)
     info.txHash = transHash;
     info.accountHash = accountHash;
     info.drops = totDrops.value_or(0);
+    info.fees = toFees.value_or(0);
     info.closeTime = time_point{duration{closingTime.value_or(0)}};
     info.parentCloseTime = time_point{duration{prevClosingTime.value_or(0)}};
     info.closeFlags = closeFlags.value_or(0);
