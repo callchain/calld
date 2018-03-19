@@ -156,7 +156,7 @@ enum TER
     terLAST,             // Process after all other transactions
     terNO_CALL,        // Rippling not allowed
     terQUEUED,           // Transaction is being held in TxQ until fee drops
-
+    terBADTRUST,
     // 0: S Success (success)
     // Causes:
     // - Success.

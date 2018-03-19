@@ -152,6 +152,7 @@ transResults()
         { terPRE_SEQ,                { "terPRE_SEQ",               "Missing/inapplicable prior transaction."                                       } },
         { terOWNERS,                 { "terOWNERS",                "Non-zero owner count."                                                         } },
         { terQUEUED,                 { "terQUEUED",                "Held until escalated fee drops."                                               } },
+        { terBADTRUST,               { "terBADTRUST",                "Trusted Account does not issuer this funds" } },
 
         { tesSUCCESS,                { "tesSUCCESS",               "The transaction was applied. Only final in a validated ledger."                } },
     };

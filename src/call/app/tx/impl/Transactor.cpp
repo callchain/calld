@@ -228,17 +228,14 @@ TER Transactor::payFee ()
 		feesle->setFieldAmount(sfBalance, feePaid);
 		view().insert(feesle);
 		auto after = view().read(keylet::txfee());
-		JLOG(ctx_.journal.trace()) << "==create===after=================:" << after->getFieldAmount(sfBalance).getFullText();
 	}
 	else
 	{
-		JLOG(ctx_.journal.trace()) << "=====before=================:" << feesle->getFieldAmount(sfBalance).getFullText();
 		view().update(feesle);
 		auto fee = feesle->getFieldAmount(sfBalance)+feePaid;
 		feesle->setFieldAmount(sfBalance, fee);
 		
 		auto after = view().read(keylet::txfee());
-		JLOG(ctx_.journal.trace()) << "=====after=================:" << after->getFieldAmount(sfBalance).getFullText();
 	}
     mSourceBalance -= feePaid;
     sle->setFieldAmount (sfBalance, mSourceBalance);
