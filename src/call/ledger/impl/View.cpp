@@ -215,7 +215,19 @@ accountFunds (ReadView const& view, AccountID const& id,
     if (!saDefault.native () &&
         saDefault.getIssuer () == id)
     {
-        saFunds = saDefault;
+       auto sleIssueRoot = view.read(
+			keylet::issuet(id,saDefault.getCurrency()));
+		if (!sleIssueRoot)
+		{
+			saFunds = zero;
+
+		}else{
+			
+			auto issued = sleIssueRoot->getFieldAmount(sfIssued);
+			auto total = sleIssueRoot->getFieldAmount(sfTotal);
+			saFunds = total - issued;      
+		}
+       // saFunds = saDefault;
         JLOG (j.trace()) << "accountFunds:" <<
             " account=" << to_string (id) <<
             " saDefault=" << saDefault.getFullText () <<
@@ -1353,6 +1365,26 @@ callCredit (ApplyView& view,
         STAmount saBalance = saAmount;
 
         saBalance.setIssuer (noAccount());
+        SLE::pointer sleIssueRoot = view.peek(keylet::issuet(uSenderID, currency));
+	STAmount satmplimit;
+	if (sleIssueRoot)
+	   {
+		JLOG(j.debug()) << "update the sleIssueRoot";
+		satmplimit = sleIssueRoot->getFieldAmount(sfTotal);
+		if (satmplimit.issue() == saAmount.issue())
+		   {
+			JLOG(j.debug()) << "update Issued and fans";
+			saReceiverLimit = satmplimit;
+			saReceiverLimit.setIssuer(uReceiverID);
+			auto issued = sleIssueRoot->getFieldAmount(sfIssued);
+			auto fans = sleIssueRoot->getFieldU64(sfFans);
+			view.update(sleIssueRoot);
+			sleIssueRoot->setFieldAmount(sfIssued,issued + saAmount);
+			sleIssueRoot->setFieldU64(sfFans,fans + 1);
+
+		}
+				
+        }
 
         JLOG (j.debug()) << "callCredit: "
             "create line: " << to_string (uSenderID) <<
@@ -1385,6 +1417,51 @@ callCredit (ApplyView& view,
 
         if (bSenderHigh)
             saBalance.negate ();    // Put balance in sender terms.
+		if (saBalance >zero)
+		{
+			SLE::pointer sleIssueRoot = view.peek(
+				keylet::issuet(uReceiverID, currency));
+			if (sleIssueRoot)
+			{
+				JLOG(j.debug()) << "trustline:update sleIssueRoot,redeem funds";
+				 view.update(sleIssueRoot);
+				 auto issued = sleIssueRoot->getFieldAmount(sfIssued);
+				 if (saAmount.issue() == issued.issue())
+				 {
+					 JLOG(j.debug()) << "update issued";
+					 sleIssueRoot->setFieldAmount(sfIssued, issued - saAmount);
+				 }
+			    
+			
+			}
+		}else{
+		
+                	JLOG(j.debug()) << "update trustlines issue funds";
+      			SLE::pointer sleIssueRoot = view.peek(
+				keylet::issuet(uSenderID, currency));
+			if (sleIssueRoot)
+			{
+				JLOG(j.debug()) << "update sleIssueRoot";
+				view.update(sleIssueRoot);
+				auto issued = sleIssueRoot->getFieldAmount(sfIssued);
+                                auto total = sleIssueRoot->getFieldAmount(sfTotal);
+				if (saAmount.issue() == issued.issue())
+				{
+					JLOG(j.debug()) << "update issued";
+					//sleIssueRoot->setFieldAmount(sfIssued, issued + saAmount);
+                                        if (issued + saAmount <= total)
+					{
+						sleIssueRoot->setFieldAmount(sfIssued, issued + saAmount);
+					} else	{
+
+						return tecOVERISSUED_AMOUNT;
+					}
+				}
+				
+
+			}
+
+		}
 
         view.creditHook (uSenderID,
             uReceiverID, saAmount, saBalance);

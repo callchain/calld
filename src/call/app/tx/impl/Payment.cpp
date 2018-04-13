@@ -353,8 +353,22 @@ Payment::doApply ()
 	}
 	
 */	
+                AccountID AIssuer = saDstAmount.getIssuer();
+		Currency currency = saDstAmount.getCurrency();
+		SLE::pointer sleIssueRoot = view().peek(
+			keylet::issuet(AIssuer, currency));
+	     if (sleIssueRoot)
+		{
+                    STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
+			if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
+			{
+				if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
+				{
+					return tecOVERISSUED_AMOUNT;
+				} 
 
-
+			}
+               }
     // Open a ledger for editing.
     auto const k = keylet::account(uDstAccountID);
     SLE::pointer sleDst = view().peek (k);
@@ -384,23 +398,23 @@ Payment::doApply ()
     {
         // Call payment with at least one intermediate step and uses
         // transitive balances.
-                Currency currency = saDstAmount.getCurrency();
-		SLE::pointer sleIssueRoot = view().peek(
-			keylet::issuet(account_, currency));
-		if (sleIssueRoot)
-		{
-			STAmount issued = sleIssueRoot->getFieldAmount(sfIssued)+saDstAmount;
+//                Currency currency = saDstAmount.getCurrency();
+//		SLE::pointer sleIssueRoot = view().peek(
+//			keylet::issuet(account_, currency));
+//		if (sleIssueRoot)
+//		{
+//			STAmount issued = sleIssueRoot->getFieldAmount(sfIssued)+saDstAmount;
 			
-				if(issued <= sleIssueRoot->getFieldAmount(sfTotal))
-				{
-					view().update(sleIssueRoot);
-					sleIssueRoot->setFieldAmount(sfIssued,issued);
-				}
-				else
-				{
-					return tecOVERISSUED_AMOUNT;
-				}
-		} 
+//				if(issued <= sleIssueRoot->getFieldAmount(sfTotal))
+//				{
+//					view().update(sleIssueRoot);
+//					sleIssueRoot->setFieldAmount(sfIssued,issued);
+//				}
+//				else
+//				{
+//					return tecOVERISSUED_AMOUNT;
+//				}
+//		} 
 
         // Copy paths into an editable class.
         STPathSet spsPaths = ctx_.tx.getFieldPathSet (sfPaths);
