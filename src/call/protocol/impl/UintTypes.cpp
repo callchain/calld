@@ -173,7 +173,7 @@ bool to_currency(Currency& currency, std::string const& code)
     {
      //   Blob codeBlob (code.size());
           Blob codeBlob = strCopy(code);
-       // std::transform (code.begin (), code.end (), codeBlob.begin (), ::toupper);
+        std::transform (code.begin (), code.end (), codeBlob.begin (), ::toupper);
 
         Serializer  s;
 

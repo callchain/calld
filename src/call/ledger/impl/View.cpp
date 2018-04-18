@@ -1224,6 +1224,54 @@ trustCreate (ApplyView& view,
 }
 
 
+//auto issue
+	
+TER auto_trust(ApplyView& view, AccountID const&  account, STAmount const &amount, beast::Journal j)
+{
+	TER terResult =tesSUCCESS;
+	AccountID srcAccount = account;
+	AccountID desAccount = amount.getIssuer();
+	Currency currency = amount.getCurrency();
+	STAmount saLimitAllow = amount;
+	saLimitAllow.setIssuer(srcAccount);
+	STAmount saBalance({ currency,noAccount() });
+	auto const sle = view.peek(
+		keylet::account(srcAccount));
+	if (!sle)
+	{
+		return tecNO_DST;
+	}
+	SLE::pointer sleCallState = view.peek(
+		keylet::line(srcAccount,desAccount, currency));
+	if (!sleCallState)
+	{  
+		bool const bHigh = srcAccount >desAccount;
+		uint256 index(getCallStateIndex(
+			srcAccount, desAccount, currency));
+
+		JLOG(j.trace()) <<
+			"doTrustSet: Creating call line: " <<
+			to_string(index);
+
+		// Create a new call line.
+		terResult = trustCreate(view,
+			bHigh,
+			srcAccount,
+			desAccount,
+			index,
+			sle,
+			false,
+			false,
+			false,
+			saBalance,
+			saLimitAllow,       // Limit for who is being charged.
+			0,
+			0, j);
+		
+	}
+	return terResult;
+}
+
 //create accountissue 
 TER
 AccountIssuerCreate(ApplyView& view,

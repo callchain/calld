@@ -79,10 +79,11 @@ protected:
     ApplyContext& ctx_;
     beast::Journal j_;
 
-    AccountID     account_;
+    AccountID      account_;
     CALLAmount     mFeeDue;
     CALLAmount     mPriorBalance;  // Balance before fees.
     CALLAmount     mSourceBalance; // Balance after fees.
+    CALLAmount     mActivation;
 
 public:
     /** Process the transaction. */

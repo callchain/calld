@@ -282,6 +282,9 @@ trustCreate (ApplyView& view,
     std::uint32_t uSrcQualityOut,
     beast::Journal j);
 
+//issuer auto trust fans
+TER auto_trust(ApplyView& view, AccountID const&  account, STAmount const &amount, beast::Journal j);
+
 TER
 trustDelete (ApplyView& view,
     std::shared_ptr<SLE> const& sleCallState,

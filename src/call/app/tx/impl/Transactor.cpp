@@ -211,11 +211,33 @@ Transactor::checkFee (PreclaimContext const& ctx, std::uint64_t baseFee)
 
 TER Transactor::payFee ()
 {
-    auto const feePaid = calculateFeePaid(ctx_.tx);
+JLOG(ctx_.journal.trace()) << "==enter payfee================:";
+    auto  feePaid = calculateFeePaid(ctx_.tx);
 
     auto const sle = view().peek(
         keylet::account(account_));
 
+   
+    auto txtype = ctx_.tx.getTxnType();
+    
+    if (txtype == ttPAYMENT)
+	{		
+		STAmount const saDstAmount(ctx_.tx.getFieldAmount(sfAmount));
+		AccountID const uDstAccountID(ctx_.tx.getAccountID(sfDestination));
+		if (!saDstAmount.native())
+		{
+			
+			auto const uDstsle = view().peek(
+				keylet::account(uDstAccountID));
+			if (!uDstsle)
+			{
+				mActivation = 1;
+				feePaid = feePaid - 1;
+
+			}
+
+		}
+	}
     // Deduct the fee, so it's not available during the transaction.
     // Will only write the account back if the transaction succeeds.
 
@@ -312,6 +334,7 @@ void Transactor::preCompute ()
 {
     account_ = ctx_.tx.getAccountID(sfAccount);
     assert(account_ != zero);
+    mActivation = 0;
 }
 
 TER Transactor::apply ()

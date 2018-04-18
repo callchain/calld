@@ -204,6 +204,7 @@ Payment::preflight (PreflightContext const& ctx)
 TER
 Payment::preclaim(PreclaimContext const& ctx)
 {
+
     // Call if source or destination is non-native or if there are paths.
     std::uint32_t const uTxFlags = ctx.tx.getFlags();
     bool const partialPaymentAllowed = uTxFlags & tfPartialPayment;
@@ -216,7 +217,7 @@ Payment::preclaim(PreclaimContext const& ctx)
     auto const k = keylet::account(uDstAccountID);
     auto const sleDst = ctx.view.read(k);
 
-    if (!sleDst)
+/*    if (!sleDst)
     {
         // Destination account does not exist.
         if (!saDstAmount.native())
@@ -255,7 +256,7 @@ Payment::preclaim(PreclaimContext const& ctx)
             return tecNO_DST_INSUF_CALL;
         }
     }
-    else if ((sleDst->getFlags() & lsfRequireDestTag) &&
+    if ((sleDst->getFlags() & lsfRequireDestTag) &&
         !ctx.tx.isFieldPresent(sfDestinationTag))
     {
         // The tag is basically account-specific information we don't
@@ -266,7 +267,7 @@ Payment::preclaim(PreclaimContext const& ctx)
         JLOG(ctx.j.trace()) << "Malformed transaction: DestinationTag required.";
 
         return tecDST_TAG_NEEDED;
-    }
+    }*/
 
     if (paths || sendMax || !saDstAmount.native())
     {
@@ -368,7 +369,9 @@ Payment::doApply ()
 				} 
 
 			}
-               }
+               }else {
+                     return tecOVERISSUED_AMOUNT;
+          }
     // Open a ledger for editing.
     auto const k = keylet::account(uDstAccountID);
     SLE::pointer sleDst = view().peek (k);
@@ -416,6 +419,22 @@ Payment::doApply ()
 //				}
 //		} 
 
+
+               //  update uDst balance
+               if (mActivation != 0)
+		{
+		    sleDst->setFieldAmount(sfBalance,mActivation);
+		}
+
+	        STAmount total = sleIssueRoot->getFieldAmount(sfTotal);
+		SLE::pointer sleCallState = view().peek(
+			keylet::line(account_, uDstAccountID, currency));
+		if (!sleCallState)
+		{
+			auto result = auto_trust(view(),uDstAccountID,total, j_);
+			if (result != tesSUCCESS)
+				return result;
+		}
         // Copy paths into an editable class.
         STPathSet spsPaths = ctx_.tx.getFieldPathSet (sfPaths);
 
