@@ -97,6 +97,7 @@ enum TER
     temUNCERTAIN,
     temUNKNOWN,
     temNICKNAMEEXISTED,
+    temBAD_FUNDS,
     // -199 .. -100: F
     //    Failure (sequence number previously used)
     //

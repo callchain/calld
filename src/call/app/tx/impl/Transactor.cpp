@@ -211,14 +211,13 @@ Transactor::checkFee (PreclaimContext const& ctx, std::uint64_t baseFee)
 
 TER Transactor::payFee ()
 {
-JLOG(ctx_.journal.trace()) << "==enter payfee================:";
     auto  feePaid = calculateFeePaid(ctx_.tx);
 
     auto const sle = view().peek(
         keylet::account(account_));
 
    
-    auto txtype = ctx_.tx.getTxnType();
+    /*auto txtype = ctx_.tx.getTxnType();
     
     if (txtype == ttPAYMENT)
 	{		
@@ -232,12 +231,20 @@ JLOG(ctx_.journal.trace()) << "==enter payfee================:";
 			if (!uDstsle)
 			{
 				mActivation = 1;
-				feePaid = feePaid - 1;
+			//	feePaid = feePaid - 1;
 
+			} else {
+				SLE::pointer sleCallState = view().peek(
+					keylet::line(uDstAccountID, saDstAmount.getIssuer(), saDstAmount.getCurrency()));
+				if (!sleCallState)
+				{
+					mActivation = 1;
+					//feePaid = feePaid - 1;
+				}
 			}
 
 		}
-	}
+	}*/
     // Deduct the fee, so it's not available during the transaction.
     // Will only write the account back if the transaction succeeds.
 
@@ -247,14 +254,14 @@ JLOG(ctx_.journal.trace()) << "==enter payfee================:";
 		auto feeindex = getFeesIndex();
 		auto const feesle = std::make_shared<SLE>(
 		ltFeeRoot,feeindex);
-		feesle->setFieldAmount(sfBalance, feePaid);
+		feesle->setFieldAmount(sfBalance, feePaid - mActivation);
 		view().insert(feesle);
 		auto after = view().read(keylet::txfee());
 	}
 	else
 	{
 		view().update(feesle);
-		auto fee = feesle->getFieldAmount(sfBalance)+feePaid;
+		auto fee = feesle->getFieldAmount(sfBalance) + feePaid - mActivation;
 		feesle->setFieldAmount(sfBalance, fee);
 		
 		auto after = view().read(keylet::txfee());
@@ -334,11 +341,12 @@ void Transactor::preCompute ()
 {
     account_ = ctx_.tx.getAccountID(sfAccount);
     assert(account_ != zero);
-    mActivation = 0;
+   // mActivation = 0;
 }
 
 TER Transactor::apply ()
 {
+
     preCompute();
 
     // If the transactor requires a valid account and the transaction doesn't
@@ -646,6 +654,39 @@ Transactor::operator()()
     auto const txID = ctx_.tx.getTransactionID ();
 
     JLOG(j_.debug()) << "Transactor for id: " << txID;
+        mActivation = 0;
+	auto txtype = ctx_.tx.getTxnType();
+
+	if (txtype == ttPAYMENT)
+	{
+		STAmount const saDstAmount(ctx_.tx.getFieldAmount(sfAmount));
+		AccountID const uDstAccountID(ctx_.tx.getAccountID(sfDestination));
+		if (!saDstAmount.native())
+		{
+
+			auto const uDstsle = view().peek(
+				keylet::account(uDstAccountID));
+
+			if (!uDstsle)
+			{
+				mActivation = 1;
+
+                         }else {
+                                 if (uDstAccountID != saDstAmount.getIssuer())
+                                    {
+			        	SLE::pointer sleCallState = view().peek(
+					     keylet::line(uDstAccountID, saDstAmount.getIssuer(), saDstAmount.getCurrency()));
+                 			if (!sleCallState)
+ 		        		{
+			         		mActivation = 1;
+
+				       }
+                                   }
+		        }
+
+		 }
+	}
+
 
 #ifdef BEAST_DEBUG
     {
@@ -761,7 +802,7 @@ Transactor::operator()()
             }
 
             if (fee != zero)
-                ctx_.destroyCALL (fee);
+                ctx_.destroyCALL (fee - mActivation);
         }
 
         ctx_.apply(terResult);

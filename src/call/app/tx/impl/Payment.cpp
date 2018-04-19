@@ -354,24 +354,24 @@ Payment::doApply ()
 	}
 	
 */	
-                AccountID AIssuer = saDstAmount.getIssuer();
-		Currency currency = saDstAmount.getCurrency();
-		SLE::pointer sleIssueRoot = view().peek(
-			keylet::issuet(AIssuer, currency));
-	     if (sleIssueRoot)
-		{
-                    STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
-			if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
-			{
-				if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
-				{
-					return tecOVERISSUED_AMOUNT;
-				} 
-
-			}
-               }else {
-                     return tecOVERISSUED_AMOUNT;
-          }
+                //AccountID AIssuer = saDstAmount.getIssuer();
+		//Currency currency = saDstAmount.getCurrency();
+		//SLE::pointer sleIssueRoot = view().peek(
+		//	keylet::issuet(AIssuer, currency));
+//	     if (sleIssueRoot)
+//		{
+  //                  STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
+//			if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
+//			{
+//				if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
+//				{
+//					return tecOVERISSUED_AMOUNT;
+//				} 
+//
+//			}
+  //             }else {
+    //                 return tecOVERISSUED_AMOUNT;
+      //    }
     // Open a ledger for editing.
     auto const k = keylet::account(uDstAccountID);
     SLE::pointer sleDst = view().peek (k);
@@ -381,6 +381,7 @@ Payment::doApply ()
         // Create the account.
         sleDst = std::make_shared<SLE>(k);
         sleDst->setAccountID(sfAccount, uDstAccountID);
+        sleDst->setFieldAmount(sfBalance,0);
         sleDst->setFieldU32(sfSequence, 1);
         view().insert(sleDst);
     }
@@ -400,41 +401,48 @@ Payment::doApply ()
     if (bCall)
     {
         // Call payment with at least one intermediate step and uses
-        // transitive balances.
-//                Currency currency = saDstAmount.getCurrency();
-//		SLE::pointer sleIssueRoot = view().peek(
-//			keylet::issuet(account_, currency));
-//		if (sleIssueRoot)
-//		{
-//			STAmount issued = sleIssueRoot->getFieldAmount(sfIssued)+saDstAmount;
-			
-//				if(issued <= sleIssueRoot->getFieldAmount(sfTotal))
-//				{
-//					view().update(sleIssueRoot);
-//					sleIssueRoot->setFieldAmount(sfIssued,issued);
-//				}
-//				else
-//				{
-//					return tecOVERISSUED_AMOUNT;
-//				}
-//		} 
+                AccountID AIssuer = saDstAmount.getIssuer();
+                Currency currency = saDstAmount.getCurrency();
+                SLE::pointer sleIssueRoot = view().peek(
+                        keylet::issuet(AIssuer, currency));
+             if (sleIssueRoot)
+                {
+                    STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
+                        if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
+                        {
+                                if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
+                                {
+                                        return tecOVERISSUED_AMOUNT;
+                                }
+
+                        }
+               }else {
+                     return temBAD_FUNDS;
+               }
 
 
                //  update uDst balance
                if (mActivation != 0)
 		{
-		    sleDst->setFieldAmount(sfBalance,mActivation);
+		    sleDst->setFieldAmount(sfBalance,sleDst->getFieldAmount(sfBalance) + mActivation);
 		}
 
 	        STAmount total = sleIssueRoot->getFieldAmount(sfTotal);
-		SLE::pointer sleCallState = view().peek(
-			keylet::line(account_, uDstAccountID, currency));
+              if (saDstAmount.getIssuer() != uDstAccountID)
+               {
+		  SLE::pointer sleCallState = view().peek(
+			keylet::line(saDstAmount.getIssuer(), uDstAccountID, currency));
 		if (!sleCallState)
 		{
 			auto result = auto_trust(view(),uDstAccountID,total, j_);
 			if (result != tesSUCCESS)
 				return result;
-		}
+
+                        view().update(sleIssueRoot);
+                        
+			sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
+		 }
+               }
         // Copy paths into an editable class.
         STPathSet spsPaths = ctx_.tx.getFieldPathSet (sfPaths);
 
