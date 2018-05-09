@@ -2440,7 +2440,7 @@ void NetworkOPsImp::pubLedger (
             jvObj[jss::ledger_hash] = to_string (lpAccepted->info().hash);
             jvObj[jss::ledger_time]
                     = Json::Value::UInt (lpAccepted->info().closeTime.time_since_epoch().count());
-
+	    jvObj[jss::Fee] = Json::Value::UInt(lpAccepted->info().fees.drops());
             jvObj[jss::fee_ref]
                     = Json::UInt (lpAccepted->fees().units);
             jvObj[jss::fee_base] = Json::UInt (lpAccepted->fees().base);
@@ -2795,6 +2795,7 @@ bool NetworkOPsImp::subLedger (InfoSub::ref isrListener, Json::Value& jvResult)
     {
         jvResult[jss::ledger_index]    = lpClosed->info().seq;
         jvResult[jss::ledger_hash]     = to_string (lpClosed->info().hash);
+        jvResult[jss::Fee]             = Json::UInt (lpClosed->info().fees.drops());
         jvResult[jss::ledger_time]
             = Json::Value::UInt(lpClosed->info().closeTime.time_since_epoch().count());
         jvResult[jss::fee_ref]

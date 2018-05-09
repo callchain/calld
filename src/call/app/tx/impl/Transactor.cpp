@@ -669,7 +669,7 @@ Transactor::operator()()
 
 			if (!uDstsle)
 			{
-				mActivation = 1;
+				mActivation = 2;
 
                          }else {
                                  if (uDstAccountID != saDstAmount.getIssuer())
