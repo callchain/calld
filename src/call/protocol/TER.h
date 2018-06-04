@@ -216,7 +216,8 @@ enum TER
     tecCRYPTOCONDITION_ERROR    = 146,
     tecINVARIANT_FAILED         = 147,
     tecOVERISSUED_AMOUNT        = 148, 
-    tecBADTOTAL                 = 149
+    tecBADTOTAL                 = 149,
+    tecINSUFFICINET_FUND        = 150
 };
 
 inline bool isTelLocal(TER x)

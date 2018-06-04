@@ -74,6 +74,8 @@ transResults()
         { tecINVARIANT_FAILED,       { "tecINVARIANT_FAILED",      "One or more invariants for the transaction were not satisfied."                } },
 	{ tecOVERISSUED_AMOUNT,      { "tecOVERISSUED_AMOUNT",     "the issued amount is beyond to the total amount."                              } },
         { tecBADTOTAL,               { "tecBADTOTAL",              "the set amount is lower than total amount."                                    } },
+        { tecINSUFFICINET_FUND,      { "tecINSUFFICINET_FUND",     "the account fund is insufficient to create transactions."                      } },
+        
 
         { tefALREADY,                { "tefALREADY",               "The exact transaction was already in this ledger."                             } },
         { tefBAD_ADD_AUTH,           { "tefBAD_ADD_AUTH",          "Not authorized to add account."                                                } },

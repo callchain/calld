@@ -243,7 +243,29 @@ accountFunds (ReadView const& view, AccountID const& id,
             " saDefault=" << saDefault.getFullText () <<
             " saFunds=" << saFunds.getFullText ();
     }
-    return saFunds;
+    
+ /*    std::vector <std::shared_ptr<SLE const>> offers;
+     STAmount saTakerGetFunded(saDefault);
+	forEachItem(view, id,
+		[&offers](std::shared_ptr<SLE const> const& sle)
+	{
+		if (sle->getType() == ltOFFER)
+			offers.emplace_back(sle);
+	});
+	for (auto const & offer : offers)
+	{
+
+		STAmount takergets = offer->getFieldAmount(sfTakerGets);
+		if ((saDefault.getCurrency() == takergets.getCurrency()) && (saDefault.getIssuer() == takergets.getIssuer()))
+		{
+			saTakerGetFunded += takergets;
+		}
+	}
+		
+JLOG(j.debug())  << "====================saFunds-saTakerGetFunded:" << saFunds - saTakerGetFunded;
+     return saFunds - saTakerGetFunded;
+*/
+     return saFunds;
 }
 
 // Prevent ownerCount from wrapping under error conditions.
@@ -447,6 +469,35 @@ forEachItemAfter (ReadView const& view, AccountID const& id,
             currentIndex = keylet::page(rootIndex, uNodeNext);
         }
     }
+}
+
+TER accountFundCheck(ReadView const & view, AccountID const& id, STAmount const &satakerget, beast::Journal j)
+{
+	std::vector <std::shared_ptr<SLE const>> offers;
+	STAmount saTakerGetFunded(satakerget);
+	forEachItem(view, id,
+		[&offers](std::shared_ptr<SLE const> const& sle)
+	{
+		if (sle->getType() == ltOFFER)
+			offers.emplace_back(sle);
+	});
+	for (auto const & offer : offers)
+	{
+		
+		STAmount takergets = offer->getFieldAmount(sfTakerGets);
+		if ((satakerget.getCurrency() == takergets.getCurrency()) && (satakerget.getIssuer() == takergets.getIssuer()))
+		{
+			saTakerGetFunded += takergets;
+		}
+	}
+
+	auto const ownerFunds(accountFunds(view, id, satakerget, fhZERO_IF_FROZEN, j));
+	if(!ownerFunds ||ownerFunds <saTakerGetFunded)
+	{
+		return tecINSUFFICINET_FUND;
+	}
+
+	return tesSUCCESS;
 }
 
 Rate

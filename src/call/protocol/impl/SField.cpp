@@ -186,6 +186,7 @@ SF_Amount const sfSendMax     = make::one<SF_Amount::type>(&sfSendMax,     STI_A
 SF_Amount const sfDeliverMin  = make::one<SF_Amount::type>(&sfDeliverMin,  STI_AMOUNT, 10, "DeliverMin");
 SF_Amount const sfTotal = make::one<SF_Amount::type>(&sfTotal, STI_AMOUNT, 11, "Total");
 SF_Amount const sfIssued = make::one<SF_Amount::type>(&sfIssued, STI_AMOUNT, 12, "Issued");
+SF_Amount const sfFreezed = make::one<SF_Amount::type>(&sfFreezed, STI_AMOUNT, 13, "Freezed");
 
 // currency amount (uncommon)
 SF_Amount const sfMinimumOffer    = make::one<SF_Amount::type>(&sfMinimumOffer,    STI_AMOUNT, 16, "MinimumOffer");

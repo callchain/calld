@@ -184,6 +184,11 @@ CreateOffer::preclaim(PreclaimContext const& ctx)
         return temBAD_SEQUENCE;
     }
 
+    auto res = accountFundCheck(ctx.view,id, saTakerGets, viewJ);
+	if (res != tesSUCCESS)
+	{
+		return tecUNFUNDED_OFFER;
+	}
     using d = NetClock::duration;
     using tp = NetClock::time_point;
     auto const expiration = ctx.tx[~sfExpiration];

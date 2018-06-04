@@ -48,6 +48,7 @@ LedgerFormats::LedgerFormats ()
             << SOElement(sfTotal,                SOE_OPTIONAL)
             << SOElement(sfIssued,               SOE_OPTIONAL)
             << SOElement(sfNickName,             SOE_OPTIONAL)
+            << SOElement(sfFreezed,             SOE_OPTIONAL)
             ;
 
     add ("DirectoryNode", ltDIR_NODE)
@@ -88,6 +89,7 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfHighNode,            SOE_OPTIONAL)
             << SOElement (sfHighQualityIn,       SOE_OPTIONAL)
             << SOElement (sfHighQualityOut,      SOE_OPTIONAL)
+            << SOElement (sfFreezed,             SOE_OPTIONAL)
             ;
 
     add ("Escrow", ltESCROW) <<

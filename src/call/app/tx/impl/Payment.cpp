@@ -210,11 +210,29 @@ Payment::preclaim(PreclaimContext const& ctx)
     auto const paths = ctx.tx.isFieldPresent(sfPaths);
     auto const sendMax = ctx.tx[~sfSendMax];
 
+    AccountID const srcAccountID(ctx.tx[sfAccount]);
     AccountID const uDstAccountID(ctx.tx[sfDestination]);
     STAmount const saDstAmount(ctx.tx[sfAmount]);
 
+    auto const srck = keylet::account(srcAccountID);
+    auto const sleSrc = ctx.view.read(srck);
+
     auto const k = keylet::account(uDstAccountID);
     auto const sleDst = ctx.view.read(k);
+
+    auto viewJ = ctx.app.journal("View");
+
+    if (!sleSrc)
+     {
+	return terNO_ACCOUNT;
+     }
+   
+    TER res = accountFundCheck(ctx.view, srcAccountID, saDstAmount, viewJ);
+	
+   if(res != tesSUCCESS)
+    {
+	 return tecUNFUNDED_PAYMENT;
+    }
 
     if (!sleDst)
     {
