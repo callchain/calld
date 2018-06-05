@@ -165,11 +165,12 @@ Json::Value doAccountLines (RPC::Context& context)
 	});
 	
 
-    Json::Value& jsonLines (result[jss::lines] = Json::arrayValue);
+        Json::Value& jsonLines (result[jss::lines] = Json::arrayValue);
+        Json::Value& callBalance(result["call_info"] = Json::objectValue);
         auto const sleAccepted = ledger->read(keylet::account(accountID));
 	if (sleAccepted)
 	{
-                Json::Value& jPeer(jsonLines.append(Json::objectValue));
+//                Json::Value& jPeer(jsonLines.append(Json::objectValue));
 		
 		//RPC::injectSLE(jvAccepted, *sleAccepted);
 		STAmount freeze;
@@ -190,26 +191,23 @@ Json::Value doAccountLines (RPC::Context& context)
 		}
 		
 
-                jPeer[jss::account] = "";
-		jPeer[jss::balance] = callbalance.getText();
-		jPeer[jss::currency] = to_string(callbalance.issue().currency);
-		jPeer[jss::limit] = "0";
-		jPeer[jss::limit_peer] = "0";
-		jPeer["freeze"] = freeze.getText();
+              //  jPeer[jss::account] = "";
+		callBalance[jss::balance] = callbalance.getText();
+		callBalance[jss::currency] = to_string(callbalance.issue().currency);
+	//	jPeer[jss::limit] = "0";
+	//	jPeer[jss::limit_peer] = "0";
+		callBalance["freeze"] = freeze.getText();
                
-           /*    if (sleAccepted->isFieldPresent(sfNickName))
-		{
-			Blob nick = sleAccepted->getFieldVL(sfNickName);
-			std::string strnick = strCopy(nick);
-			jPeer["NickName"] = strnick;
-		}
-            */
-		//result["CALLBalance"] = callbalance.getText();
-		//result["CallFreeze"] = freeze.getText();
  		
+               if (sleAccepted->isFieldPresent(sfNickName))
+                  {
+                    Json::Value jvAccepted;
+		    RPC::injectSLE(jvAccepted, *sleAccepted);
+                    result[jss::NickName] = jvAccepted[jss::NickName];
+                  }
 	}
 
-    if(sleAccepted)
+    /*if(sleAccepted)
     {
         if (sleAccepted->isFieldPresent(sfNickName))
             {
@@ -220,7 +218,7 @@ Json::Value doAccountLines (RPC::Context& context)
                 result[jss::NickName] = jvAccepted[jss::NickName];
             }
  
-    }
+    }*/
     unsigned int limit;
     if (auto err = readLimitField(limit, RPC::Tuning::accountLines, context))
         return *err;
