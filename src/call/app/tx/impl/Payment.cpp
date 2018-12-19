@@ -211,8 +211,12 @@ Payment::preclaim(PreclaimContext const& ctx)
     auto const paths = ctx.tx.isFieldPresent(sfPaths);
     auto const sendMax = ctx.tx[~sfSendMax];
 
+    AccountID const srcAccountID(ctx.tx[sfAccount]);
     AccountID const uDstAccountID(ctx.tx[sfDestination]);
     STAmount const saDstAmount(ctx.tx[sfAmount]);
+
+    auto const srck = keylet::account(srcAccountID);
+    auto const sleSrc = ctx.view.read(srck);
 
     auto const k = keylet::account(uDstAccountID);
     auto const sleDst = ctx.view.read(k);
@@ -328,50 +332,48 @@ Payment::doApply ()
         " saDstAmount=" << saDstAmount.getFullText ();
 
       //check wether update account's issued amounts
-/*	if (saDstAmount.getCurrency().isNonZero())
-	{
-		if (view().read(
-			keylet::account(account_))->isFieldPresent(sfTotal))
-		{
-			STAmount satotalissue = view().read(
-				keylet::account(account_))->getFieldAmount(sfTotal);
-			Currency issuecurrency = satotalissue.getCurrency();
-			if (saDstAmount.getCurrency() == issuecurrency)
-			{
-				auto saissued = view().read(
-					keylet::account(account_))->getFieldAmount(sfIssued);
-				if (saissued + saDstAmount >= satotalissue)
-				{
-					return tecOVERISSUED_AMOUNT;
-				}
-				else
-				{
-					view().peek(keylet::account(account_))->setFieldAmount(sfIssued,
-						saissued + saDstAmount);
-				}
-			}
-		}
-	}
-	
-*/	
-                //AccountID AIssuer = saDstAmount.getIssuer();
-		//Currency currency = saDstAmount.getCurrency();
-		//SLE::pointer sleIssueRoot = view().peek(
-		//	keylet::issuet(AIssuer, currency));
-//	     if (sleIssueRoot)
-//		{
-  //                  STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
-//			if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
-//			{
-//				if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
-//				{
-//					return tecOVERISSUED_AMOUNT;
-//				} 
-//
-//			}
-  //             }else {
-    //                 return tecOVERISSUED_AMOUNT;
-      //    }
+	// if (saDstAmount.getCurrency().isNonZero())
+	// {
+	// 	if (view().read(
+	// 		keylet::account(account_))->isFieldPresent(sfTotal))
+	// 	{
+	// 		STAmount satotalissue = view().read(
+	// 			keylet::account(account_))->getFieldAmount(sfTotal);
+	// 		Currency issuecurrency = satotalissue.getCurrency();
+	// 		if (saDstAmount.getCurrency() == issuecurrency)
+	// 		{
+	// 			auto saissued = view().read(
+	// 				keylet::account(account_))->getFieldAmount(sfIssued);
+	// 			if (saissued + saDstAmount >= satotalissue)
+	// 			{
+	// 				return tecOVERISSUED_AMOUNT;
+	// 			}
+	// 			else
+	// 			{
+	// 				view().peek(keylet::account(account_))->setFieldAmount(sfIssued,
+	// 					saissued + saDstAmount);
+	// 			}
+	// 		}
+	// 	}
+	// }
+
+    // AccountID AIssuer = saDstAmount.getIssuer();
+	// Currency currency = saDstAmount.getCurrency();
+	// SLE::pointer sleIssueRoot = view().peek(keylet::issuet(AIssuer, currency));
+	// if (sleIssueRoot)
+	// {
+    //     STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
+	// 	if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
+	// 	{
+	// 		if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
+	// 		{
+	// 			return tecOVERISSUED_AMOUNT;
+	// 		} 
+	// 	}
+    // } else {
+    //     return tecOVERISSUED_AMOUNT;
+    // }
+
     // Open a ledger for editing.
     auto const k = keylet::account(uDstAccountID);
     SLE::pointer sleDst = view().peek (k);

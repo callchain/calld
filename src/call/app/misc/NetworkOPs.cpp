@@ -2446,7 +2446,7 @@ void NetworkOPsImp::pubLedger (
             jvObj[jss::fee_base] = Json::UInt (lpAccepted->fees().base);
             jvObj[jss::reserve_base] = Json::UInt (lpAccepted->fees().accountReserve(0).drops());
             jvObj[jss::reserve_inc] = Json::UInt (lpAccepted->fees().increment);
-
+            jvObj[jss::Fee] = Json::Value::UInt(lpAccepted->info().fees.drops());
             jvObj[jss::txn_count] = Json::UInt (alpAccepted->getTxnCount ());
 
             if (mMode >= omSYNCING)
@@ -2803,6 +2803,7 @@ bool NetworkOPsImp::subLedger (InfoSub::ref isrListener, Json::Value& jvResult)
         jvResult[jss::fee_base]        = Json::UInt (lpClosed->fees().base);
         jvResult[jss::reserve_base]    = Json::UInt (lpClosed->fees().accountReserve(0).drops());
         jvResult[jss::reserve_inc]     = Json::UInt (lpClosed->fees().increment);
+        jvResult[jss::Fee]             = Json::UInt (lpClosed->info().fees.drops());
     }
 
     if ((mMode >= omSYNCING) && !isNeedNetworkLedger ())

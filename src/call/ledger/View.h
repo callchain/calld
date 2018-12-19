@@ -101,6 +101,7 @@ forEachItemAfter (ReadView const& view, AccountID const& id,
         unsigned int limit, std::function<
             bool (std::shared_ptr<SLE const> const&)> f);
 
+TER accountFundCheck(ReadView const & view,AccountID const& id,STAmount const &satakerget, beast::Journal j);
 Rate
 transferRate (ReadView const& view,
     AccountID const& issuer);
