@@ -5,22 +5,20 @@
 #include <call/app/tx/impl/Transactor.h>
 #include <call/basics/Log.h>
 #include <call/protocol/TxFlags.h>
-namespace call {
-	class IssueSet :public Transactor
-	{
-	public:
-		static
-			TER
-			preflight(PreflightContext const& ctx);
+namespace call
+{
+class IssueSet : public Transactor
+{
+  public:
+	static TER preflight(PreflightContext const &ctx);
 
-		static
-			TER
-			preclaim(PreclaimContext const& ctx);
-		IssueSet(ApplyContext& ctx)
-			: Transactor(ctx)
-		{
-		}
-		TER doApply() override;
-	};
-}
+	static TER preclaim(PreclaimContext const &ctx);
+
+	IssueSet(ApplyContext &ctx) : Transactor(ctx)
+	{
+	}
+
+	TER doApply() override;
+};
+} // namespace call
 #endif

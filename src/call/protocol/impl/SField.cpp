@@ -141,7 +141,7 @@ SF_U64 const sfExchangeRate     = make::one<SF_U64::type>(&sfExchangeRate,     S
 SF_U64 const sfLowNode          = make::one<SF_U64::type>(&sfLowNode,          STI_UINT64, 7, "LowNode");
 SF_U64 const sfHighNode         = make::one<SF_U64::type>(&sfHighNode,         STI_UINT64, 8, "HighNode");
 SF_U64 const sfDestinationNode  = make::one<SF_U64::type>(&sfDestinationNode,  STI_UINT64, 9, "DestinationNode");
-SF_U64 const sfFans             = make::one<SF_U64::type>(&sfFans,              STI_UINT64, 10, "Fans");
+SF_U64 const sfFans             = make::one<SF_U64::type>(&sfFans,             STI_UINT64, 10, "Fans");
 
 // 128-bit
 SF_U128 const sfEmailHash = make::one<SF_U128::type>(&sfEmailHash, STI_HASH128, 1, "EmailHash");
@@ -183,14 +183,14 @@ SF_Amount const sfLowLimit    = make::one<SF_Amount::type>(&sfLowLimit,    STI_A
 SF_Amount const sfHighLimit   = make::one<SF_Amount::type>(&sfHighLimit,   STI_AMOUNT,  7, "HighLimit");
 SF_Amount const sfFee         = make::one<SF_Amount::type>(&sfFee,         STI_AMOUNT,  8, "Fee");
 SF_Amount const sfSendMax     = make::one<SF_Amount::type>(&sfSendMax,     STI_AMOUNT,  9, "SendMax");
-SF_Amount const sfDeliverMin  = make::one<SF_Amount::type>(&sfDeliverMin,  STI_AMOUNT, 10, "DeliverMin");
-SF_Amount const sfTotal = make::one<SF_Amount::type>(&sfTotal, STI_AMOUNT, 11, "Total");
-SF_Amount const sfIssued = make::one<SF_Amount::type>(&sfIssued, STI_AMOUNT, 12, "Issued");
-SF_Amount const sfFreezed = make::one<SF_Amount::type>(&sfFreezed, STI_AMOUNT, 13, "Freezed");
+SF_Amount const sfDeliverMin  = make::one<SF_Amount::type>(&sfDeliverMin,  STI_AMOUNT,  10, "DeliverMin");
+SF_Amount const sfTotal       = make::one<SF_Amount::type>(&sfTotal,       STI_AMOUNT,  11, "Total");
+SF_Amount const sfIssued      = make::one<SF_Amount::type>(&sfIssued,      STI_AMOUNT,  12, "Issued");
+SF_Amount const sfFreezed     = make::one<SF_Amount::type>(&sfFreezed,     STI_AMOUNT,  13, "Freezed");
 
 // currency amount (uncommon)
 SF_Amount const sfMinimumOffer    = make::one<SF_Amount::type>(&sfMinimumOffer,    STI_AMOUNT, 16, "MinimumOffer");
-SF_Amount const sfCallEscrow    = make::one<SF_Amount::type>(&sfCallEscrow,    STI_AMOUNT, 17, "CallEscrow");
+SF_Amount const sfCallEscrow      = make::one<SF_Amount::type>(&sfCallEscrow,      STI_AMOUNT, 17, "CallEscrow");
 SF_Amount const sfDeliveredAmount = make::one<SF_Amount::type>(&sfDeliveredAmount, STI_AMOUNT, 18, "DeliveredAmount");
 
 // variable length (common)

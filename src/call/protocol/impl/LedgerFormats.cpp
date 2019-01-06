@@ -45,10 +45,10 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfTransferRate,        SOE_OPTIONAL)
             << SOElement (sfDomain,              SOE_OPTIONAL)
             << SOElement (sfTickSize,            SOE_OPTIONAL)
-            << SOElement(sfTotal,                SOE_OPTIONAL)
-            << SOElement(sfIssued,               SOE_OPTIONAL)
-            << SOElement(sfNickName,             SOE_OPTIONAL)
-            << SOElement(sfFreezed,             SOE_OPTIONAL)
+            << SOElement (sfTotal,               SOE_OPTIONAL) // not used
+            << SOElement (sfIssued,              SOE_OPTIONAL) // not used
+            << SOElement (sfNickName,            SOE_OPTIONAL) // not used
+            << SOElement (sfFreezed,             SOE_OPTIONAL)
             ;
 
     add ("DirectoryNode", ltDIR_NODE)
@@ -92,19 +92,20 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfFreezed,             SOE_OPTIONAL)
             ;
 
-    add ("Escrow", ltESCROW) <<
-        SOElement (sfAccount,           SOE_REQUIRED) <<
-        SOElement (sfDestination,       SOE_REQUIRED) <<
-        SOElement (sfAmount,            SOE_REQUIRED) <<
-        SOElement (sfCondition,         SOE_OPTIONAL) <<
-        SOElement (sfCancelAfter,       SOE_OPTIONAL) <<
-        SOElement (sfFinishAfter,       SOE_OPTIONAL) <<
-        SOElement (sfSourceTag,         SOE_OPTIONAL) <<
-        SOElement (sfDestinationTag,    SOE_OPTIONAL) <<
-        SOElement (sfOwnerNode,         SOE_REQUIRED) <<
-        SOElement (sfPreviousTxnID,     SOE_REQUIRED) <<
-        SOElement (sfPreviousTxnLgrSeq, SOE_REQUIRED) <<
-        SOElement (sfDestinationNode,   SOE_OPTIONAL);
+    add ("Escrow", ltESCROW) 
+            << SOElement (sfAccount,             SOE_REQUIRED) 
+            << SOElement (sfDestination,         SOE_REQUIRED) 
+            << SOElement (sfAmount,              SOE_REQUIRED) 
+            << SOElement (sfCondition,           SOE_OPTIONAL) 
+            << SOElement (sfCancelAfter,         SOE_OPTIONAL) 
+            << SOElement (sfFinishAfter,         SOE_OPTIONAL) 
+            << SOElement (sfSourceTag,           SOE_OPTIONAL) 
+            << SOElement (sfDestinationTag,      SOE_OPTIONAL) 
+            << SOElement (sfOwnerNode,           SOE_REQUIRED) 
+            << SOElement (sfPreviousTxnID,       SOE_REQUIRED) 
+            << SOElement (sfPreviousTxnLgrSeq,   SOE_REQUIRED) 
+            << SOElement (sfDestinationNode,     SOE_OPTIONAL)
+            ;
 
     add ("LedgerHashes", ltLEDGER_HASHES)
             << SOElement (sfFirstLedgerSequence, SOE_OPTIONAL) // Remove if we do a ledger restart
@@ -158,17 +159,21 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfPreviousTxnID,     SOE_REQUIRED)
             << SOElement (sfPreviousTxnLgrSeq, SOE_REQUIRED)
             ;
-      add("NickName", ltNICKNAME)
-		    << SOElement(sfAccount, SOE_REQUIRED);
-      add("IssueRoot", ltISSUEROOT)
-		<< SOElement(sfTotal, SOE_OPTIONAL)
-		<< SOElement(sfIssued, SOE_OPTIONAL)
-		<< SOElement(sfFans, SOE_OPTIONAL)
-		<< SOElement(sfLowNode, SOE_OPTIONAL)
-		;
-     add("FeeRoot", ltFeeRoot)
-		<< SOElement(sfBalance, SOE_REQUIRED)
-		;
+
+    add ("NickName", ltNICKNAME)
+	    << SOElement (sfAccount,           SOE_REQUIRED)
+            ;
+
+    add ("IssueRoot", ltISSUEROOT)
+	    << SOElement (sfTotal,             SOE_OPTIONAL)
+	    << SOElement (sfIssued,            SOE_OPTIONAL)
+	    << SOElement (sfFans,              SOE_OPTIONAL)
+	    << SOElement (sfLowNode,           SOE_OPTIONAL)
+	    ;
+
+    add ("FeeRoot", ltFeeRoot)
+	    << SOElement(sfBalance,            SOE_REQUIRED)
+	    ;
 }
 
 void LedgerFormats::addCommonFields (Item& item)

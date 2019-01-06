@@ -39,7 +39,7 @@ systemName ()
 /** Configure the native currency. */
 static
 std::uint64_t const
-SYSTEM_CURRENCY_GIFT = 5000;
+SYSTEM_CURRENCY_GIFT = 5;
 
 static
 std::uint64_t const
@@ -53,7 +53,7 @@ SYSTEM_CURRENCY_PARTS = 1000000;
 /** Number of drops in the genesis account. */
 static
 std::uint64_t const
-SYSTEM_CURRENCY_START = SYSTEM_CURRENCY_GIFT * SYSTEM_CURRENCY_USERS * SYSTEM_CURRENCY_PARTS*0.001;
+SYSTEM_CURRENCY_START = SYSTEM_CURRENCY_GIFT * SYSTEM_CURRENCY_USERS * SYSTEM_CURRENCY_PARTS;
 
 /* The currency code for the native currency. */
 static inline
