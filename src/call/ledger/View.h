@@ -270,7 +270,8 @@ create and delete an AccountIssue currency
 TER 
 AccountIssuerCreate( ApplyView& view,
 	AccountID const&  uSrcAccountID,
-	STAmount const& saBalance,
+	STAmount const& saTotal,
+    std::uint32_t const flags,
 	uint256 const&  uIndex,
 	beast::Journal j
 );

@@ -1237,6 +1237,7 @@ TER auto_trust(ApplyView &view, AccountID const &account, STAmount const &amount
 TER AccountIssuerCreate(ApplyView &view,
                         AccountID const &uSrcAccountID,
                         STAmount const &saTotal,
+                        std::uint32_t const flags,
                         uint256 const &uCIndex,
                         beast::Journal j)
 {
@@ -1254,6 +1255,7 @@ TER AccountIssuerCreate(ApplyView &view,
     sleIssueRoot->setFieldAmount(sfTotal, total);
     sleIssueRoot->setFieldAmount(sfIssued, issued);
     sleIssueRoot->setFieldU64(sfFans, 0);
+    sleIssueRoot->setFieldU32(sfFlags, flags);
     sleIssueRoot->setFieldU64(sfLowNode, *lowNode);
     return tesSUCCESS;
 }
