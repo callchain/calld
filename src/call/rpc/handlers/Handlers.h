@@ -55,14 +55,14 @@ Json::Value doLedgerHeader          (RPC::Context&);
 Json::Value doLedgerRequest         (RPC::Context&);
 Json::Value doLogLevel              (RPC::Context&);
 Json::Value doLogRotate             (RPC::Context&);
-Json::Value doNoCallCheck         (RPC::Context&);
+Json::Value doNoCallCheck           (RPC::Context&);
 Json::Value doOwnerInfo             (RPC::Context&);
 Json::Value doPathFind              (RPC::Context&);
 Json::Value doPeers                 (RPC::Context&);
 Json::Value doPing                  (RPC::Context&);
 Json::Value doPrint                 (RPC::Context&);
 Json::Value doRandom                (RPC::Context&);
-Json::Value doCallPathFind        (RPC::Context&);
+Json::Value doCallPathFind          (RPC::Context&);
 Json::Value doServerInfo            (RPC::Context&); // for humans
 Json::Value doServerState           (RPC::Context&); // for machines
 Json::Value doSessionClose          (RPC::Context&);

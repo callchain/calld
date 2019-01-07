@@ -1003,7 +1003,7 @@ public:
             // - To modify the method, provide a new method in the request.
             {   "account_currencies",   &RPCParser::parseAccountCurrencies,     1,  2   },
             {   "account_info",         &RPCParser::parseAccountItems,          1,  2   },
-            {  "account_issues",         &RPCParser::parseAccountItems,          1,  2   },
+            {  "account_issues",        &RPCParser::parseAccountItems,          1,  2   },
             {   "account_lines",        &RPCParser::parseAccountLines,          1,  5   },
             {   "account_channels",     &RPCParser::parseAccountChannels,       1,  3   },
             {   "account_objects",      &RPCParser::parseAccountItems,          1,  5   },
@@ -1036,7 +1036,7 @@ public:
             {   "print",                &RPCParser::parseAsIs,                  0,  1   },
     //      {   "profile",              &RPCParser::parseProfile,               1,  9   },
             {   "random",               &RPCParser::parseAsIs,                  0,  0   },
-            {   "call_path_find",     &RPCParser::parseCallPathFind,        1,  2   },
+            {   "call_path_find",       &RPCParser::parseCallPathFind,          1,  2   },
             {   "sign",                 &RPCParser::parseSignSubmit,            2,  3   },
             {   "sign_for",             &RPCParser::parseSignFor,               3,  4   },
             {   "submit",               &RPCParser::parseSignSubmit,            1,  3   },

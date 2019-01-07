@@ -89,8 +89,8 @@ enum LedgerEntryType
 
     ltNotUsed01         = 'c',
     
-    ltISSUEROOT         ='i',
-    ltFeeRoot           ='F'
+    ltISSUEROOT         = 'i',
+    ltFeeRoot           = 'F'
 };
 
 /**
@@ -102,7 +102,7 @@ enum LedgerNameSpace
     spaceAccount        = 'a',
     spaceDirNode        = 'd',
     spaceGenerator      = 'g',
-    spaceCall         = 'r',
+    spaceCall           = 'r',
     spaceOffer          = 'o',  // Entry for an offer.
     spaceOwnerDir       = 'O',  // Directory of things owned by an account.
     spaceBookDir        = 'B',  // Directory of order books.
@@ -113,13 +113,13 @@ enum LedgerNameSpace
     spaceFee            = 'e',
     spaceTicket         = 'T',
     spaceSignerList     = 'S',
-    spaceCALLUChannel    = 'x',
+    spaceCALLUChannel   = 'x',
 
     // No longer used or supported. Left here to reserve the space and
     // avoid accidental reuse of the space.
     spaceNickname       = 'n',
     spaceIssue          = 'i',
-    spaceFees           ='F'
+    spaceFees           = 'F'
 };
 
 /**
@@ -131,11 +131,11 @@ enum LedgerSpecificFlags
     lsfPasswordSpent    = 0x00010000,   // True, if password set fee is spent.
     lsfRequireDestTag   = 0x00020000,   // True, to require a DestinationTag for payments.
     lsfRequireAuth      = 0x00040000,   // True, to require a authorization to hold IOUs.
-    lsfDisallowCALL      = 0x00080000,   // True, to disallow sending CALL.
+    lsfDisallowCALL     = 0x00080000,   // True, to disallow sending CALL.
     lsfDisableMaster    = 0x00100000,   // True, force regular key
     lsfNoFreeze         = 0x00200000,   // True, cannot freeze call states
     lsfGlobalFreeze     = 0x00400000,   // True, all assets frozen
-    lsfDefaultCall    = 0x00800000,   // True, trust lines allow rippling by default
+    lsfDefaultCall      = 0x00800000,   // True, trust lines allow rippling by default
 
     // ltOFFER
     lsfPassive          = 0x00010000,
@@ -146,8 +146,8 @@ enum LedgerSpecificFlags
     lsfHighReserve      = 0x00020000,
     lsfLowAuth          = 0x00040000,
     lsfHighAuth         = 0x00080000,
-    lsfLowNoCall      = 0x00100000,
-    lsfHighNoCall     = 0x00200000,
+    lsfLowNoCall        = 0x00100000,
+    lsfHighNoCall       = 0x00200000,
     lsfLowFreeze        = 0x00400000,   // True, low side has set freeze flag
     lsfHighFreeze       = 0x00800000,   // True, high side has set freeze flag
 };

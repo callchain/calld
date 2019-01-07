@@ -87,7 +87,6 @@ Json::Value doGatewayBalances (RPC::Context& context)
 
     if (params.isMember (jss::hotwallet))
     {
-
         auto addHotWallet = [&hotWallets](Json::Value const& j)
         {
             if (j.isString())

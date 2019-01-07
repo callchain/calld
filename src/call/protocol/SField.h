@@ -331,6 +331,7 @@ extern SF_U8 const sfCloseResolution;
 extern SF_U8 const sfMethod;
 extern SF_U8 const sfTransactionResult;
 extern SF_U8 const sfTickSize;
+extern SF_U8 const sfDecimal;
 
 // 16-bit integers
 extern SF_U16 const sfLedgerEntryType;

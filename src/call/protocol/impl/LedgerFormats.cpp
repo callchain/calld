@@ -169,6 +169,7 @@ LedgerFormats::LedgerFormats ()
 	    << SOElement (sfIssued,            SOE_OPTIONAL)
 	    << SOElement (sfFans,              SOE_OPTIONAL)
 	    << SOElement (sfLowNode,           SOE_OPTIONAL)
+            << SOElement (sfDecimal,           SOE_OPTIONAL)
 	    ;
 
     add ("FeeRoot", ltFeeRoot)

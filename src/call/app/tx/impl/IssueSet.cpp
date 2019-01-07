@@ -30,10 +30,8 @@ TER IssueSet::preclaim(PreclaimContext const &ctx)
 TER IssueSet::doApply()
 {
 	TER terResult = tesSUCCESS;
-	//account_;
 	std::uint32_t const uTxFlags = ctx_.tx.getFlags();
 	bool enaddtion = uTxFlags & tfEnaddition;
-	//auto srcAccount= ctx_.tx.getAccountID(sfAccount);
 	STAmount satotal = ctx_.tx.getFieldAmount(sfTotal);
 	Currency currency = satotal.getCurrency();
 	auto viewJ = ctx_.app.journal("View");
@@ -45,9 +43,9 @@ TER IssueSet::doApply()
 	SLE::pointer sleIssueRoot = view().peek(keylet::issuet(account_, currency));
 	if (!sleIssueRoot)
 	{
-		uint256 index(getIssueIndex(account_, currency));
-		JLOG(j_.trace()) << "doTrustSet: Creating IssueRoot: " << to_string(index);
-		terResult = AccountIssuerCreate(view(), account_, satotal, index, viewJ);
+		uint256 currency_index(getIssueIndex(account_, currency));
+		JLOG(j_.trace()) << "doTrustSet: Creating IssueRoot: " << to_string(currency_index);
+		terResult = AccountIssuerCreate(view(), account_, satotal, currency_index, viewJ);
 	}
 	else
 	{
