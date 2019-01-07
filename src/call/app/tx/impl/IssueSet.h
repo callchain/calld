@@ -1,5 +1,5 @@
-#ifndef CALL_TX_ISSUESET_H_INCLUDED
-#define CALL_TX_ISSUESET_H_INCLUDED
+//------------------------------------------------------------------------------
+/*
     This file is part of calld: https://github.com/callchain/calld
     Copyright (c) 2018, 2019 Callchain Fundation.
 
@@ -14,7 +14,11 @@
     WHATSOEVER  RESULTING  FROM  LOSS  OF USE, DATA OR PROFITS, WHETHER IN AN
     ACTION  OF  CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*/
+//==============================================================================
 
+#ifndef CALL_TX_ISSUESET_H_INCLUDED
+#define CALL_TX_ISSUESET_H_INCLUDED
 
 #include <call/app/paths/CallCalc.h>
 #include <call/app/tx/impl/Transactor.h>
