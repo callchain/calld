@@ -38,6 +38,18 @@ TER IssueSet::preflight(PreflightContext const &ctx)
 	auto const ret = preflight1(ctx);
 	if (!isTesSuccess(ret))
 		return ret;
+
+	auto& tx = ctx.tx;
+	auto& j = ctx.j;
+
+	std::uint32_t const uTxFlags = tx.getFlags ();
+	if (uTxFlags & tfIssueSetMask)
+    {
+        JLOG(j.trace()) <<
+            "Malformed transaction: Invalid flags set.";
+        return temINVALID_FLAG;
+    }
+
 	return tesSUCCESS;
 }
 
@@ -50,7 +62,6 @@ TER IssueSet::doApply()
 {
 	TER terResult = tesSUCCESS;
 	std::uint32_t const uTxFlags = ctx_.tx.getFlags();
-	bool enaddtion = uTxFlags & tfEnaddition;
 	STAmount satotal = ctx_.tx.getFieldAmount(sfTotal);
 	Currency currency = satotal.getCurrency();
 	auto viewJ = ctx_.app.journal("View");
@@ -59,30 +70,36 @@ TER IssueSet::doApply()
 		return temBAD_CURRENCY;
 	}
 
+	// account only allowed to issue self currency
+	if (satotal.getIssuer() != account_) {
+		return tecNO_AUTH;
+	}
+
 	SLE::pointer sleIssueRoot = view().peek(keylet::issuet(account_, currency));
 	if (!sleIssueRoot)
 	{
-		uint256 currency_index(getIssueIndex(account_, currency));
-		JLOG(j_.trace()) << "doTrustSet: Creating IssueRoot: " << to_string(currency_index);
-		terResult = AccountIssuerCreate(view(), account_, satotal, currency_index, viewJ);
+		uint256 uCIndex(getIssueIndex(account_, currency));
+		JLOG(j_.trace()) << "doTrustSet: Creating IssueRoot: " << to_string(uCIndex);
+		terResult = AccountIssuerCreate(view(), account_, satotal, uTxFlags, uCIndex, viewJ);
 	}
 	else
 	{
 		auto oldtotal = sleIssueRoot->getFieldAmount(sfTotal);
-		if (!enaddtion)
-		{
+		std::uint32_t const flags = sleIssueRoot->getFieldU32(sfFlags);
+		// not allow to edit
+		if ((flags & tfEnaddition) == 0)  {
 			return tecNO_AUTH;
 		}
-		else if (satotal <= oldtotal)
+
+		// not allow to update total amount of issue smaller than current amount
+		if (satotal <= oldtotal)
 		{
 			return tecBADTOTAL;
 		}
-		else
-		{
-			sleIssueRoot->setFieldAmount(sfTotal, satotal);
-			view().update(sleIssueRoot);
-			JLOG(j_.trace()) << "apendent the total";
-		}
+
+		sleIssueRoot->setFieldAmount(sfTotal, satotal);
+		view().update(sleIssueRoot);
+		JLOG(j_.trace()) << "apendent the total";
 	}
 	return terResult;
 }
