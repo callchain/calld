@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of calld: https://github.com/call/calld
+    This file is part of rippled: https://github.com/ripple/rippled
     Copyright 2014, Nikolaos D. Bougalis <nikb@bougalis.net>
 
     Permission to use, copy, modify, and/or distribute this software for any

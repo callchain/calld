@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Call Labs Inc.
+    This file is part of rippled: https://github.com/ripple/rippled
+    Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Portions of this file are from JUCE.
     Copyright (c) 2013 - Raw Material Software Ltd.
