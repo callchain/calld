@@ -210,7 +210,7 @@ Payment::preclaim(PreclaimContext const& ctx)
 
     // Call if source or destination is non-native or if there are paths.
     std::uint32_t const uTxFlags = ctx.tx.getFlags();
-    bool const partialPaymentAllowed = uTxFlags & tfPartialPayment;
+    // bool const partialPaymentAllowed = uTxFlags & tfPartialPayment;
     auto const paths = ctx.tx.isFieldPresent(sfPaths);
     auto const sendMax = ctx.tx[~sfSendMax];
 
@@ -224,52 +224,50 @@ Payment::preclaim(PreclaimContext const& ctx)
     auto const k = keylet::account(uDstAccountID);
     auto const sleDst = ctx.view.read(k);
 
-/*    if (!sleDst)
-    {
-        // Destination account does not exist.
-        if (!saDstAmount.native())
-        {
-            JLOG(ctx.j.trace()) <<
-                "Delay transaction: Destination account does not exist.";
+    // if (!sleDst)
+    // {
+    //     // Destination account does not exist.
+    //     if (!saDstAmount.native())
+    //     {
+    //         JLOG(ctx.j.trace()) <<
+    //             "Delay transaction: Destination account does not exist.";
 
-            // Another transaction could create the account and then this
-            // transaction would succeed.
-            return tecNO_DST;
-        }
-        else if (ctx.view.open()
-            && partialPaymentAllowed)
-        {
-            // You cannot fund an account with a partial payment.
-            // Make retry work smaller, by rejecting this.
-            JLOG(ctx.j.trace()) <<
-                "Delay transaction: Partial payment not allowed to create account.";
+    //         // Another transaction could create the account and then this
+    //         // transaction would succeed.
+    //         return tecNO_DST;
+    //     }
+    //     else if (ctx.view.open()
+    //         && partialPaymentAllowed)
+    //     {
+    //         // You cannot fund an account with a partial payment.
+    //         // Make retry work smaller, by rejecting this.
+    //         JLOG(ctx.j.trace()) <<
+    //             "Delay transaction: Partial payment not allowed to create account.";
 
 
-            // Another transaction could create the account and then this
-            // transaction would succeed.
-            return telNO_DST_PARTIAL;
-        }
-        else if (saDstAmount < STAmount(ctx.view.fees().accountReserve(0)))
-        {
-            // accountReserve is the minimum amount that an account can have.
-            // Reserve is not scaled by load.
-            JLOG(ctx.j.trace()) <<
-                "Delay transaction: Destination account does not exist. " <<
-                "Insufficent payment to create account.";
+    //         // Another transaction could create the account and then this
+    //         // transaction would succeed.
+    //         return telNO_DST_PARTIAL;
+    //     }
+    //     else if (saDstAmount < STAmount(ctx.view.fees().accountReserve(0)))
+    //     {
+    //         // accountReserve is the minimum amount that an account can have.
+    //         // Reserve is not scaled by load.
+    //         JLOG(ctx.j.trace()) <<
+    //             "Delay transaction: Destination account does not exist. " <<
+    //             "Insufficent payment to create account.";
 
-            // TODO: dedupe
-            // Another transaction could create the account and then this
-            // transaction would succeed.
-            return tecNO_DST_INSUF_CALL;
-        }
-    }
-    */
+    //         // TODO: dedupe
+    //         // Another transaction could create the account and then this
+    //         // transaction would succeed.
+    //         return tecNO_DST_INSUF_CALL;
+    //     }
+    // }
 
     if ((sleDst->getFlags() & lsfRequireDestTag) && !ctx.tx.isFieldPresent(sfDestinationTag))
     {
         // The tag is basically account-specific information we don't
         // understand, but we can require someone to fill it in.
-
         // We didn't make this test for a newly-formed account because there's
         // no way for this field to be set.
         JLOG(ctx.j.trace()) << "Malformed transaction: DestinationTag required.";
@@ -373,15 +371,16 @@ Payment::doApply ()
         if (sleIssueRoot)
         {
             STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
+            // source account is issue account
             if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
             {
                 if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
                 {
                     return tecOVERISSUED_AMOUNT;
                 }
+                // else add issused
+                sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
             }
-            // add issused
-            sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
         } else {
             return temBAD_FUNDS;
         }
@@ -389,7 +388,7 @@ Payment::doApply ()
         //  update uDst balance
         if (mActivation != 0)
 		{
-		    sleDst->setFieldAmount(sfBalance,sleDst->getFieldAmount(sfBalance) + mActivation);
+		    sleDst->setFieldAmount(sfBalance, sleDst->getFieldAmount(sfBalance) + mActivation);
 		}
 
 	    STAmount total = sleIssueRoot->getFieldAmount(sfTotal);
@@ -400,7 +399,9 @@ Payment::doApply ()
 		    {
 			    auto result = auto_trust(view(), uDstAccountID, total, j_);
 			    if (result != tesSUCCESS)
-				    return result;
+                {
+                    return result;
+                }
 
                 view().update(sleIssueRoot);
 			    sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);

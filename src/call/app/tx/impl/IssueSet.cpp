@@ -77,12 +77,14 @@ TER IssueSet::doApply()
 	}
 
 	SLE::pointer sleIssueRoot = view().peek(keylet::issuet(account_, currency));
+	// not isused yet
 	if (!sleIssueRoot)
 	{
 		uint256 uCIndex(getIssueIndex(account_, currency));
 		JLOG(j_.trace()) << "doTrustSet: Creating IssueRoot: " << to_string(uCIndex);
 		terResult = AccountIssuerCreate(view(), account_, satotal, uTxFlags, uCIndex, viewJ);
 	}
+	// old issue setting
 	else
 	{
 		auto oldtotal = sleIssueRoot->getFieldAmount(sfTotal);

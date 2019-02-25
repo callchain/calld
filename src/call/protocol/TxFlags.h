@@ -113,8 +113,9 @@ const std::uint32_t tfRenew = 0x00010000;
 const std::uint32_t tfClose = 0x00020000;
 
 //IssueSet flags:
-const std::uint32_t tfEnaddition = 0x00010000;
-const std::uint32_t tfIssueSetMask = ~tfEnaddition;
+const std::uint32_t tfEnaddition =  0x00010000;
+const std::uint32_t tfNonFungible = 0x00001000;
+const std::uint32_t tfIssueSetMask = ~(tfEnaddition | tfNonFungible);
 } // namespace call
 
 #endif

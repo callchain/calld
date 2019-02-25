@@ -142,8 +142,7 @@ public:
     // Returns the fee in fee units, not scaled for load.
     static
     std::uint64_t
-    calculateBaseFee (
-        PreclaimContext const& ctx);
+    calculateBaseFee (PreclaimContext const& ctx);
 
     static
     bool
