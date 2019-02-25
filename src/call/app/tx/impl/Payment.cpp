@@ -112,26 +112,22 @@ Payment::preflight (PreflightContext const& ctx)
 
     if (!uDstAccountID)
     {
-        JLOG(j.trace()) << "Malformed transaction: " <<
-            "Payment destination account not specified.";
+        JLOG(j.trace()) << "Malformed transaction: " << "Payment destination account not specified.";
         return temDST_NEEDED;
     }
     if (bMax && maxSourceAmount <= zero)
     {
-        JLOG(j.trace()) << "Malformed transaction: " <<
-            "bad max amount: " << maxSourceAmount.getFullText ();
+        JLOG(j.trace()) << "Malformed transaction: " << "bad max amount: " << maxSourceAmount.getFullText ();
         return temBAD_AMOUNT;
     }
     if (saDstAmount <= zero)
     {
-        JLOG(j.trace()) << "Malformed transaction: "<<
-            "bad dst amount: " << saDstAmount.getFullText ();
+        JLOG(j.trace()) << "Malformed transaction: " << "bad dst amount: " << saDstAmount.getFullText ();
         return temBAD_AMOUNT;
     }
     if (badCurrency() == uSrcCurrency || badCurrency() == uDstCurrency)
     {
-        JLOG(j.trace()) <<"Malformed transaction: " <<
-            "Bad currency.";
+        JLOG(j.trace()) <<"Malformed transaction: " << "Bad currency.";
         return temBAD_CURRENCY;
     }
     if (account == uDstAccountID && uSrcCurrency == uDstCurrency && !bPaths)
@@ -146,36 +142,31 @@ Payment::preflight (PreflightContext const& ctx)
     if (bCALLDirect && bMax)
     {
         // Consistent but redundant transaction.
-        JLOG(j.trace()) << "Malformed transaction: " <<
-            "SendMax specified for CALL to CALL.";
+        JLOG(j.trace()) << "Malformed transaction: " << "SendMax specified for CALL to CALL.";
         return temBAD_SEND_CALL_MAX;
     }
     if (bCALLDirect && bPaths)
     {
         // CALL is sent without paths.
-        JLOG(j.trace()) << "Malformed transaction: " <<
-            "Paths specified for CALL to CALL.";
+        JLOG(j.trace()) << "Malformed transaction: " << "Paths specified for CALL to CALL.";
         return temBAD_SEND_CALL_PATHS;
     }
     if (bCALLDirect && partialPaymentAllowed)
     {
         // Consistent but redundant transaction.
-        JLOG(j.trace()) << "Malformed transaction: " <<
-            "Partial payment specified for CALL to CALL.";
+        JLOG(j.trace()) << "Malformed transaction: " << "Partial payment specified for CALL to CALL.";
         return temBAD_SEND_CALL_PARTIAL;
     }
     if (bCALLDirect && limitQuality)
     {
         // Consistent but redundant transaction.
-        JLOG(j.trace()) << "Malformed transaction: " <<
-            "Limit quality specified for CALL to CALL.";
+        JLOG(j.trace()) << "Malformed transaction: " << "Limit quality specified for CALL to CALL.";
         return temBAD_SEND_CALL_LIMIT;
     }
     if (bCALLDirect && !defaultPathsAllowed)
     {
         // Consistent but redundant transaction.
-        JLOG(j.trace()) << "Malformed transaction: " <<
-            "No call direct specified for CALL to CALL.";
+        JLOG(j.trace()) << "Malformed transaction: " << "No call direct specified for CALL to CALL.";
         return temBAD_SEND_CALL_NO_DIRECT;
     }
 
@@ -184,31 +175,28 @@ Payment::preflight (PreflightContext const& ctx)
     {
         if (! partialPaymentAllowed)
         {
-            JLOG(j.trace()) << "Malformed transaction: Partial payment not "
-                "specified for " << jss::DeliverMin.c_str() << ".";
+            JLOG(j.trace()) << "Malformed transaction: Partial payment not specified for " 
+                << jss::DeliverMin.c_str() << ".";
             return temBAD_AMOUNT;
         }
 
         auto const dMin = *deliverMin;
         if (!isLegalNet(dMin) || dMin <= zero)
         {
-            JLOG(j.trace()) << "Malformed transaction: Invalid " <<
-                jss::DeliverMin.c_str() << " amount. " <<
-                    dMin.getFullText();
+            JLOG(j.trace()) << "Malformed transaction: Invalid " << jss::DeliverMin.c_str() 
+                << " amount. " << dMin.getFullText();
             return temBAD_AMOUNT;
         }
         if (dMin.issue() != saDstAmount.issue())
         {
             JLOG(j.trace()) <<  "Malformed transaction: Dst issue differs "
-                "from " << jss::DeliverMin.c_str() << ". " <<
-                    dMin.getFullText();
+                "from " << jss::DeliverMin.c_str() << ". " << dMin.getFullText();
             return temBAD_AMOUNT;
         }
         if (dMin > saDstAmount)
         {
             JLOG(j.trace()) << "Malformed transaction: Dst amount less than " <<
-                jss::DeliverMin.c_str() << ". " <<
-                    dMin.getFullText();
+                jss::DeliverMin.c_str() << ". " << dMin.getFullText();
             return temBAD_AMOUNT;
         }
     }
@@ -275,8 +263,9 @@ Payment::preclaim(PreclaimContext const& ctx)
             return tecNO_DST_INSUF_CALL;
         }
     }
-    if ((sleDst->getFlags() & lsfRequireDestTag) &&
-        !ctx.tx.isFieldPresent(sfDestinationTag))
+    */
+
+    if ((sleDst->getFlags() & lsfRequireDestTag) && !ctx.tx.isFieldPresent(sfDestinationTag))
     {
         // The tag is basically account-specific information we don't
         // understand, but we can require someone to fill it in.
@@ -286,7 +275,7 @@ Payment::preclaim(PreclaimContext const& ctx)
         JLOG(ctx.j.trace()) << "Malformed transaction: DestinationTag required.";
 
         return tecDST_TAG_NEEDED;
-    }*/
+    }
 
     if (paths || sendMax || !saDstAmount.native())
     {
@@ -298,13 +287,15 @@ Payment::preclaim(PreclaimContext const& ctx)
 
         auto pathTooBig = spsPaths.size() > MaxPathSize;
 
-        if(!pathTooBig)
-            for (auto const& path : spsPaths)
+        if (!pathTooBig) {
+            for (auto const& path : spsPaths) {
                 if (path.size() > MaxPathLength)
                 {
                     pathTooBig = true;
                     break;
                 }
+            }
+        }
 
         if (ctx.view.open() && pathTooBig)
         {
@@ -332,6 +323,7 @@ Payment::doApply ()
     AccountID const uDstAccountID (ctx_.tx.getAccountID (sfDestination));
     STAmount const saDstAmount (ctx_.tx.getFieldAmount (sfAmount));
     STAmount maxSourceAmount;
+
     if (sendMax)
         maxSourceAmount = *sendMax;
     else if (saDstAmount.native ())
@@ -342,52 +334,8 @@ Payment::doApply ()
             saDstAmount.mantissa(), saDstAmount.exponent (),
             saDstAmount < zero);
 
-    JLOG(j_.trace()) <<
-        "maxSourceAmount=" << maxSourceAmount.getFullText () <<
-        " saDstAmount=" << saDstAmount.getFullText ();
-
-      //check wether update account's issued amounts
-	// if (saDstAmount.getCurrency().isNonZero())
-	// {
-	// 	if (view().read(
-	// 		keylet::account(account_))->isFieldPresent(sfTotal))
-	// 	{
-	// 		STAmount satotalissue = view().read(
-	// 			keylet::account(account_))->getFieldAmount(sfTotal);
-	// 		Currency issuecurrency = satotalissue.getCurrency();
-	// 		if (saDstAmount.getCurrency() == issuecurrency)
-	// 		{
-	// 			auto saissued = view().read(
-	// 				keylet::account(account_))->getFieldAmount(sfIssued);
-	// 			if (saissued + saDstAmount >= satotalissue)
-	// 			{
-	// 				return tecOVERISSUED_AMOUNT;
-	// 			}
-	// 			else
-	// 			{
-	// 				view().peek(keylet::account(account_))->setFieldAmount(sfIssued,
-	// 					saissued + saDstAmount);
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-    // AccountID AIssuer = saDstAmount.getIssuer();
-	// Currency currency = saDstAmount.getCurrency();
-	// SLE::pointer sleIssueRoot = view().peek(keylet::issuet(AIssuer, currency));
-	// if (sleIssueRoot)
-	// {
-    //     STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
-	// 	if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
-	// 	{
-	// 		if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
-	// 		{
-	// 			return tecOVERISSUED_AMOUNT;
-	// 		} 
-	// 	}
-    // } else {
-    //     return tecOVERISSUED_AMOUNT;
-    // }
+    JLOG(j_.trace()) << "maxSourceAmount=" << maxSourceAmount.getFullText () 
+        << " saDstAmount=" << saDstAmount.getFullText ();
 
     // Open a ledger for editing.
     auto const k = keylet::account(uDstAccountID);
@@ -418,48 +366,46 @@ Payment::doApply ()
     if (bCall)
     {
         // Call payment with at least one intermediate step and uses
-                AccountID AIssuer = saDstAmount.getIssuer();
-                Currency currency = saDstAmount.getCurrency();
-                SLE::pointer sleIssueRoot = view().peek(
-                        keylet::issuet(AIssuer, currency));
-             if (sleIssueRoot)
+        AccountID AIssuer = saDstAmount.getIssuer();
+        Currency currency = saDstAmount.getCurrency();
+        SLE::pointer sleIssueRoot = view().peek(keylet::issuet(AIssuer, currency));
+        
+        if (sleIssueRoot)
+        {
+            STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
+            if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
+            {
+                if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
                 {
-                    STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
-                        if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
-                        {
-                                if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
-                                {
-                                        return tecOVERISSUED_AMOUNT;
-                                }
+                    return tecOVERISSUED_AMOUNT;
+                }
+            }
+            // add issused
+            sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
+        } else {
+            return temBAD_FUNDS;
+        }
 
-                        }
-               }else {
-                     return temBAD_FUNDS;
-               }
-
-
-               //  update uDst balance
-               if (mActivation != 0)
+        //  update uDst balance
+        if (mActivation != 0)
 		{
 		    sleDst->setFieldAmount(sfBalance,sleDst->getFieldAmount(sfBalance) + mActivation);
 		}
 
-	        STAmount total = sleIssueRoot->getFieldAmount(sfTotal);
-              if (saDstAmount.getIssuer() != uDstAccountID)
-               {
-		  SLE::pointer sleCallState = view().peek(
-			keylet::line(saDstAmount.getIssuer(), uDstAccountID, currency));
-		if (!sleCallState)
-		{
-			auto result = auto_trust(view(),uDstAccountID,total, j_);
-			if (result != tesSUCCESS)
-				return result;
+	    STAmount total = sleIssueRoot->getFieldAmount(sfTotal);
+        if (saDstAmount.getIssuer() != uDstAccountID)
+        {
+		    SLE::pointer sleCallState = view().peek(keylet::line(saDstAmount.getIssuer(), uDstAccountID, currency));
+		    if (!sleCallState)
+		    {
+			    auto result = auto_trust(view(), uDstAccountID, total, j_);
+			    if (result != tesSUCCESS)
+				    return result;
 
-                        view().update(sleIssueRoot);
-                        
-			sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
-		 }
-               }
+                view().update(sleIssueRoot);
+			    sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
+		    }
+        }
         // Copy paths into an editable class.
         STPathSet spsPaths = ctx_.tx.getFieldPathSet (sfPaths);
 
@@ -472,8 +418,7 @@ Payment::doApply ()
         path::CallCalc::Output rc;
         {
             PaymentSandbox pv(&view());
-            JLOG(j_.debug())
-                << "Entering CallCalc in payment: " << ctx_.tx.getTransactionID();
+            JLOG(j_.debug()) << "Entering CallCalc in payment: " << ctx_.tx.getTransactionID();
             rc = path::CallCalc::callCalculate (
                 pv,
                 maxSourceAmount,
@@ -483,19 +428,16 @@ Payment::doApply ()
                 spsPaths,
                 ctx_.app.logs(),
                 &rcInput);
-            // VFALCO NOTE We might not need to apply, depending
-            //             on the TER. But always applying *should*
-            //             be safe.
+            // VFALCO NOTE We might not need to apply, depending on the TER. 
+            // But always applying *should* be safe.
             pv.apply(ctx_.rawView());
         }
 
         // TODO: is this right?  If the amount is the correct amount, was
         // the delivered amount previously set?
-        if (rc.result () == tesSUCCESS &&
-            rc.actualAmountOut != saDstAmount)
+        if (rc.result () == tesSUCCESS && rc.actualAmountOut != saDstAmount)
         {
-            if (deliverMin && rc.actualAmountOut <
-                *deliverMin)
+            if (deliverMin && rc.actualAmountOut < *deliverMin)
                 rc.setResult (tecPATH_PARTIAL);
             else
                 ctx_.deliver (rc.actualAmountOut);
@@ -507,8 +449,10 @@ Payment::doApply ()
         // fails with a retry code, claim a fee
         // instead. Maybe the user will be more
         // careful with their path spec next time.
-        if (isTerRetry (terResult))
+        if (isTerRetry (terResult)) 
+        {
             terResult = tecPATH_DRY;
+        }
     }
     else
     {
@@ -518,8 +462,7 @@ Payment::doApply ()
 
         // uOwnerCount is the number of entries in this legder for this
         // account that require a reserve.
-        auto const uOwnerCount = view().read(
-            keylet::account(account_))->getFieldU32 (sfOwnerCount);
+        auto const uOwnerCount = view().read(keylet::account(account_))->getFieldU32 (sfOwnerCount);
 
         // This is the total reserve in drops.
         auto const reserve = view().fees().accountReserve(uOwnerCount);
@@ -527,8 +470,7 @@ Payment::doApply ()
         // mPriorBalance is the balance on the sending account BEFORE the
         // fees were charged. We want to make sure we have enough reserve
         // to send. Allow final spend to use reserve for fee.
-        auto const mmm = std::max(reserve,
-            ctx_.tx.getFieldAmount (sfFee).call ());
+        auto const mmm = std::max(reserve, ctx_.tx.getFieldAmount (sfFee).call ());
 
         if (mPriorBalance < saDstAmount.call () + mmm)
         {
@@ -545,14 +487,14 @@ Payment::doApply ()
         {
             // The source account does have enough money, so do the
             // arithmetic for the transfer and make the ledger change.
-            view().peek(keylet::account(account_))->setFieldAmount (sfBalance,
-                mSourceBalance - saDstAmount);
-            sleDst->setFieldAmount (sfBalance,
-                sleDst->getFieldAmount (sfBalance) + saDstAmount);
+            view().peek(keylet::account(account_))->setFieldAmount (sfBalance, mSourceBalance - saDstAmount);
+            sleDst->setFieldAmount (sfBalance, sleDst->getFieldAmount (sfBalance) + saDstAmount);
 
             // Re-arm the password change fee if we can and need to.
             if ((sleDst->getFlags () & lsfPasswordSpent))
+            {
                 sleDst->clearFlag (lsfPasswordSpent);
+            }
 
             terResult = tesSUCCESS;
         }

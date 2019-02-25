@@ -187,14 +187,13 @@ Transactor::checkFee (PreclaimContext const& ctx, std::uint64_t baseFee)
     if (!isLegalAmount (feePaid) || feePaid < beast::zero)
         return temBAD_FEE;
 
-    auto const feeDue = call::calculateFee(ctx.app,
-        baseFee, ctx.view.fees(), ctx.flags);
+    auto const feeDue = call::calculateFee(ctx.app, baseFee, ctx.view.fees(), ctx.flags);
 
     // Only check fee is sufficient when the ledger is open.
     if (ctx.view.open() && feePaid < feeDue)
     {
-        JLOG(ctx.j.trace()) << "Insufficient fee paid: " <<
-            to_string (feePaid) << "/" << to_string (feeDue);
+        JLOG(ctx.j.trace()) << "Insufficient fee paid: " 
+            << to_string (feePaid) << "/" << to_string (feeDue);
         return telINSUF_FEE_P;
     }
 
@@ -202,15 +201,13 @@ Transactor::checkFee (PreclaimContext const& ctx, std::uint64_t baseFee)
         return tesSUCCESS;
 
     auto const id = ctx.tx.getAccountID(sfAccount);
-    auto const sle = ctx.view.read(
-        keylet::account(id));
+    auto const sle = ctx.view.read(keylet::account(id));
     auto const balance = (*sle)[sfBalance].call();
 
     if (balance < feePaid)
     {
-        JLOG(ctx.j.trace()) << "Insufficient balance:" <<
-            " balance=" << to_string(balance) <<
-            " paid=" << to_string(feePaid);
+        JLOG(ctx.j.trace()) << "Insufficient balance:" << " balance=" << to_string(balance) 
+            << " paid=" << to_string(feePaid);
 
         if ((balance > zero) && !ctx.view.open())
         {

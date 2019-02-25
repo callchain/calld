@@ -71,7 +71,8 @@ TER IssueSet::doApply()
 	}
 
 	// account only allowed to issue self currency
-	if (satotal.getIssuer() != account_) {
+	if (satotal.getIssuer() != account_)
+	{
 		return tecNO_AUTH;
 	}
 
@@ -87,7 +88,8 @@ TER IssueSet::doApply()
 		auto oldtotal = sleIssueRoot->getFieldAmount(sfTotal);
 		std::uint32_t const flags = sleIssueRoot->getFieldU32(sfFlags);
 		// not allow to edit
-		if ((flags & tfEnaddition) == 0)  {
+		if ((flags & tfEnaddition) == 0)
+		{
 			return tecNO_AUTH;
 		}
 
