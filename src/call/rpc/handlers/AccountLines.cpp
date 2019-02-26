@@ -65,12 +65,13 @@ void addIssue(Json::Value &jsonIssued, IssueRoot &issued, STAmount const &freeze
 	STAmount saTotal(issued.getTotal());
 	STAmount saIssued(issued.getissued());
 	std::uint64_t fans = issued.getFans();
+	std::uint32_t flags = issued.getFlags();
 	Json::Value &jPeer(jsonIssued.append(Json::objectValue));
 
 	jPeer["Total"] = saTotal.getJson(0);
-
 	jPeer["Issued"] = saIssued.getJson(0);
 	jPeer["Freeze"] = freeze.getJson(0);
+	jPeer["Flags"] = boost::lexical_cast<std::string>(flags);
 	jPeer["Fans"] = boost::lexical_cast<std::string>(fans);
 }
 

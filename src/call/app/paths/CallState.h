@@ -201,8 +201,11 @@ public:
 	{
 		return mfans;
 	}
-	uint256
-		key() const
+    std::uint32_t getFlags()
+    {
+        return mflags;
+    }
+	uint256 key() const
 	{
 		return sle_->key();
 	}
@@ -211,6 +214,7 @@ private:
 	STAmount const&             mtotal;
 	STAmount const&             missued;
 	std::uint64_t               mfans;
+    std::uint32_t               mflags;
 
 };
 
