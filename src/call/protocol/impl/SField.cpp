@@ -121,6 +121,10 @@ SF_U32 const sfWalletSize        = make::one<SF_U32::type>(&sfWalletSize,       
 SF_U32 const sfOwnerCount        = make::one<SF_U32::type>(&sfOwnerCount,        STI_UINT32, 13, "OwnerCount");
 SF_U32 const sfDestinationTag    = make::one<SF_U32::type>(&sfDestinationTag,    STI_UINT32, 14, "DestinationTag");
 
+SF_U32 const sfMakerRate         = make::one<SF_U32::type>(&sfMakerRate,         STI_UINT32, 50, "MakerRate");
+SF_U32 const sfTakerRate         = make::one<SF_U32::type>(&sfTakerRate,         STI_UINT32, 51, "TakerRate");
+
+
 // 32-bit integers (uncommon)
 SF_U32 const sfHighQualityIn       = make::one<SF_U32::type>(&sfHighQualityIn,       STI_UINT32, 16, "HighQualityIn");
 SF_U32 const sfHighQualityOut      = make::one<SF_U32::type>(&sfHighQualityOut,      STI_UINT32, 17, "HighQualityOut");

@@ -184,8 +184,7 @@ accountHolds(ReadView const &view,
     }
 
     // IOU: Return balance on trust line modulo freeze
-    auto const sle = view.read(keylet::line(
-        account, issuer, currency));
+    auto const sle = view.read(keylet::line(account, issuer, currency));
     if (!sle)
     {
         amount.clear({currency, issuer});
@@ -204,8 +203,8 @@ accountHolds(ReadView const &view,
         }
         amount.setIssuer(issuer);
     }
-    JLOG(j.trace()) << "accountHolds:"
-                    << " account=" << to_string(account) << " amount=" << amount.getFullText();
+    JLOG(j.trace()) << "accountHolds:" << " account=" << to_string(account) 
+        << " amount=" << amount.getFullText();
 
     return view.balanceHook(account, issuer, amount);
 }
@@ -231,14 +230,15 @@ accountFunds(ReadView const &view, AccountID const &id,
             saFunds = total - issued;
         }
         // saFunds = saDefault;
-        JLOG(j.trace()) << "accountFunds:"
-                        << " account=" << to_string(id) << " saDefault=" << saDefault.getFullText() << " SELF-FUNDED";
+        JLOG(j.trace()) << "accountFunds:" << " account=" << to_string(id) 
+            << " saDefault=" << saDefault.getFullText() << " SELF-FUNDED";
     }
     else
     {
         saFunds = accountHolds(view, id, saDefault.getCurrency(), saDefault.getIssuer(), freezeHandling, j);
         JLOG(j.trace()) << "accountFunds:"
-                        << " account=" << to_string(id) << " saDefault=" << saDefault.getFullText() << " saFunds=" << saFunds.getFullText();
+                        << " account=" << to_string(id) << " saDefault=" << saDefault.getFullText() 
+                        << " saFunds=" << saFunds.getFullText();
     }
 
     /*    std::vector <std::shared_ptr<SLE const>> offers;
@@ -1245,11 +1245,12 @@ TER AccountIssuerCreate(ApplyView &view,
     auto const sleIssueRoot = std::make_shared<SLE>(ltISSUEROOT, uCIndex);
     view.insert(sleIssueRoot);
 
-    auto lowNode = dirAdd(view, keylet::ownerDir(uSrcAccountID),
-                          sleIssueRoot->key(), false, describeOwnerDir(uSrcAccountID), j);
+    auto lowNode = dirAdd(view, keylet::ownerDir(uSrcAccountID), sleIssueRoot->key(), 
+        false, describeOwnerDir(uSrcAccountID), j);
 
-    if (!lowNode)
+    if (!lowNode) {
         return tecDIR_FULL;
+    }
     STAmount total = saTotal;
     STAmount issued(total.issue());
     sleIssueRoot->setFieldAmount(sfTotal, total);
@@ -1343,16 +1344,14 @@ TER callCredit(ApplyView &view,
     auto currency = saAmount.getCurrency();
 
     // Make sure issuer is involved.
-    assert(
-        !bCheckIssuer || uSenderID == issuer || uReceiverID == issuer);
+    assert(!bCheckIssuer || uSenderID == issuer || uReceiverID == issuer);
     (void)issuer;
 
     // Disallow sending to self.
     assert(uSenderID != uReceiverID);
 
     bool bSenderHigh = uSenderID > uReceiverID;
-    uint256 uIndex = getCallStateIndex(
-        uSenderID, uReceiverID, saAmount.getCurrency());
+    uint256 uIndex = getCallStateIndex(uSenderID, uReceiverID, saAmount.getCurrency());
     auto sleCallState = view.peek(keylet::line(uIndex));
 
     TER terResult;
@@ -1365,49 +1364,36 @@ TER callCredit(ApplyView &view,
         STAmount saReceiverLimit({currency, uReceiverID});
         STAmount saBalance = saAmount;
 
-        saBalance.setIssuer(noAccount());
-        SLE::pointer sleIssueRoot = view.peek(keylet::issuet(uSenderID, currency));
-        STAmount satmplimit;
-        if (sleIssueRoot)
-        {
-            JLOG(j.debug()) << "update the sleIssueRoot";
-            satmplimit = sleIssueRoot->getFieldAmount(sfTotal);
-            if (satmplimit.issue() == saAmount.issue())
-            {
-                JLOG(j.debug()) << "update Issued and fans";
-                saReceiverLimit = satmplimit;
-                saReceiverLimit.setIssuer(uReceiverID);
-                auto issued = sleIssueRoot->getFieldAmount(sfIssued);
-                auto fans = sleIssueRoot->getFieldU64(sfFans);
-                view.update(sleIssueRoot);
-                sleIssueRoot->setFieldAmount(sfIssued, issued + saAmount);
-                sleIssueRoot->setFieldU64(sfFans, fans + 1);
-            }
-        }
+        // saBalance.setIssuer(noAccount());
+        // SLE::pointer sleIssueRoot = view.peek(keylet::issuet(uSenderID, currency));
+        // STAmount satmplimit;
+        // if (sleIssueRoot)
+        // {
+        //     JLOG(j.debug()) << "update the sleIssueRoot";
+        //     satmplimit = sleIssueRoot->getFieldAmount(sfTotal);
+        //     if (satmplimit.issue() == saAmount.issue())
+        //     {
+        //         JLOG(j.debug()) << "update Issued and fans";
+        //         saReceiverLimit = satmplimit;
+        //         saReceiverLimit.setIssuer(uReceiverID);
+        //         auto issued = sleIssueRoot->getFieldAmount(sfIssued);
+        //         auto fans = sleIssueRoot->getFieldU64(sfFans);
+        //         view.update(sleIssueRoot);
+        //         sleIssueRoot->setFieldAmount(sfIssued, issued + saAmount);
+        //         sleIssueRoot->setFieldU64(sfFans, fans + 1);
+        //     }
+        // }
 
-        JLOG(j.debug()) << "callCredit: "
-                           "create line: "
-                        << to_string(uSenderID) << " -> " << to_string(uReceiverID) << " : " << saAmount.getFullText();
+        JLOG(j.debug()) << "callCredit: create line: "
+                        << to_string(uSenderID) << " -> " << to_string(uReceiverID) 
+                        << " : " << saAmount.getFullText();
 
-        auto const sleAccount =
-            view.peek(keylet::account(uReceiverID));
+        auto const sleAccount = view.peek(keylet::account(uReceiverID));
 
         bool noCall = (sleAccount->getFlags() & lsfDefaultCall) == 0;
 
-        terResult = trustCreate(view,
-                                bSenderHigh,
-                                uSenderID,
-                                uReceiverID,
-                                uIndex,
-                                sleAccount,
-                                false,
-                                noCall,
-                                false,
-                                saBalance,
-                                saReceiverLimit,
-                                0,
-                                0,
-                                j);
+        terResult = trustCreate(view, bSenderHigh, uSenderID, uReceiverID, uIndex, sleAccount,
+            false, noCall, false, saBalance, saReceiverLimit, 0, 0, j);
     }
     else
     {
@@ -1415,59 +1401,56 @@ TER callCredit(ApplyView &view,
 
         if (bSenderHigh)
             saBalance.negate(); // Put balance in sender terms.
-        if (saBalance > zero)
-        {
-            SLE::pointer sleIssueRoot = view.peek(
-                keylet::issuet(uReceiverID, currency));
-            if (sleIssueRoot)
-            {
-                JLOG(j.debug()) << "trustline:update sleIssueRoot,redeem funds";
-                view.update(sleIssueRoot);
-                auto issued = sleIssueRoot->getFieldAmount(sfIssued);
-                if (saAmount.issue() == issued.issue())
-                {
-                    JLOG(j.debug()) << "update issued";
-                    sleIssueRoot->setFieldAmount(sfIssued, issued - saAmount);
-                }
-            }
-        }
-        else
-        {
 
-            JLOG(j.debug()) << "update trustlines issue funds";
-            SLE::pointer sleIssueRoot = view.peek(
-                keylet::issuet(uSenderID, currency));
-            if (sleIssueRoot)
-            {
-                JLOG(j.debug()) << "update sleIssueRoot";
-                view.update(sleIssueRoot);
-                auto issued = sleIssueRoot->getFieldAmount(sfIssued);
-                auto total = sleIssueRoot->getFieldAmount(sfTotal);
-                if (saAmount.issue() == issued.issue())
-                {
-                    JLOG(j.debug()) << "update issued";
-                    //sleIssueRoot->setFieldAmount(sfIssued, issued + saAmount);
-                    if (issued + saAmount <= total)
-                    {
-                        sleIssueRoot->setFieldAmount(sfIssued, issued + saAmount);
-                    }
-                    else
-                    {
+        // if (saBalance > zero)
+        // {
+        //     SLE::pointer sleIssueRoot = view.peek(keylet::issuet(uReceiverID, currency));
+        //     if (sleIssueRoot)
+        //     {
+        //         JLOG(j.debug()) << "trustline:update sleIssueRoot,redeem funds";
+        //         view.update(sleIssueRoot);
+        //         auto issued = sleIssueRoot->getFieldAmount(sfIssued);
+        //         if (saAmount.issue() == issued.issue())
+        //         {
+        //             JLOG(j.debug()) << "update issued";
+        //             sleIssueRoot->setFieldAmount(sfIssued, issued - saAmount);
+        //         }
+        //     }
+        // }
+        // else
+        // {
+        //     JLOG(j.debug()) << "update trustlines issue funds";
+        //     SLE::pointer sleIssueRoot = view.peek(keylet::issuet(uSenderID, currency));
+        //     if (sleIssueRoot)
+        //     {
+        //         JLOG(j.debug()) << "update sleIssueRoot";
+        //         view.update(sleIssueRoot);
+        //         auto issued = sleIssueRoot->getFieldAmount(sfIssued);
+        //         auto total = sleIssueRoot->getFieldAmount(sfTotal);
+        //         if (saAmount.issue() == issued.issue())
+        //         {
+        //             JLOG(j.debug()) << "update issued";
+        //             //sleIssueRoot->setFieldAmount(sfIssued, issued + saAmount);
+        //             if (issued + saAmount <= total)
+        //             {
+        //                 sleIssueRoot->setFieldAmount(sfIssued, issued + saAmount);
+        //             }
+        //             else
+        //             {
 
-                        return tecOVERISSUED_AMOUNT;
-                    }
-                }
-            }
-        }
+        //                 return tecOVERISSUED_AMOUNT;
+        //             }
+        //         }
+        //     }
+        // }
 
-        view.creditHook(uSenderID,
-                        uReceiverID, saAmount, saBalance);
-
+        view.creditHook(uSenderID, uReceiverID, saAmount, saBalance);
         STAmount saBefore = saBalance;
-
         saBalance -= saAmount;
 
-        JLOG(j.trace()) << "callCredit: " << to_string(uSenderID) << " -> " << to_string(uReceiverID) << " : before=" << saBefore.getFullText() << " amount=" << saAmount.getFullText() << " after=" << saBalance.getFullText();
+        JLOG(j.trace()) << "callCredit: " << to_string(uSenderID) << " -> " 
+            << to_string(uReceiverID) << " : before=" << saBefore.getFullText() 
+            << " amount=" << saAmount.getFullText() << " after=" << saBalance.getFullText();
 
         std::uint32_t const uFlags(sleCallState->getFieldU32(sfFlags));
         bool bDelete = false;
@@ -1491,13 +1474,10 @@ TER callCredit(ApplyView &view,
         // Sender quality out is 0.
         {
             // Clear the reserve of the sender, possibly delete the line!
-            adjustOwnerCount(view,
-                             view.peek(keylet::account(uSenderID)), -1, j);
+            adjustOwnerCount(view, view.peek(keylet::account(uSenderID)), -1, j);
 
             // Clear reserve flag.
-            sleCallState->setFieldU32(
-                sfFlags,
-                uFlags & (!bSenderHigh ? ~lsfLowReserve : ~lsfHighReserve));
+            sleCallState->setFieldU32(sfFlags, uFlags & (!bSenderHigh ? ~lsfLowReserve : ~lsfHighReserve));
 
             // Balance is zero, receiver reserve is clear.
             bDelete = !saBalance // Balance is zero.
@@ -1514,10 +1494,8 @@ TER callCredit(ApplyView &view,
 
         if (bDelete)
         {
-            terResult = trustDelete(view,
-                                    sleCallState,
-                                    bSenderHigh ? uReceiverID : uSenderID,
-                                    !bSenderHigh ? uReceiverID : uSenderID, j);
+            terResult = trustDelete(view, sleCallState, bSenderHigh ? uReceiverID : uSenderID,
+                !bSenderHigh ? uReceiverID : uSenderID, j);
         }
         else
         {
@@ -1546,8 +1524,8 @@ callTransferFee(ReadView const &view,
         {
             auto const fee = multiply(amount, rate) - amount;
 
-            JLOG(j.debug()) << "callTransferFee:"
-                            << " amount=" << amount.getFullText() << " fee=" << fee.getFullText();
+            JLOG(j.debug()) << "callTransferFee: amount=" << amount.getFullText() 
+                << " fee=" << fee.getFullText();
 
             return fee;
         }

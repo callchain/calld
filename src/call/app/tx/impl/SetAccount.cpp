@@ -271,11 +271,10 @@ SetAccount::doApply ()
 	if (ctx_.tx.isFieldPresent(sfNickName))
 	{
 		Blob nick = ctx_.tx.getFieldVL(sfNickName);
-                 std::string tmp3=strHex(nick);
-                 Blob nick3= strCopy(tmp3);
+        std::string tmp3=strHex(nick);
+        Blob nick3= strCopy(tmp3);
 
-		auto const nickname = view().peek(
-			keylet::nick(nick3));
+		auto const nickname = view().peek(keylet::nick(nick3));
 		if (nickname)
 		{
 			return temNICKNAMEEXISTED;
@@ -286,33 +285,29 @@ SetAccount::doApply ()
 			{
 				Blob oldname = sle->getFieldVL(sfNickName);
 				//auto oldindex = getNicknameIndex(oldname);
-                                std::string tmp=strHex(oldname);
+                std::string tmp=strHex(oldname);
 				Blob oldname1= strCopy(tmp);
 				auto oldnicksle = view().peek(keylet::nick(oldname1));
-                                if(oldnicksle)
-                                {
-                                    JLOG(j_.trace()) <<"nick name account: "<<toBase58(oldnicksle->getAccountID(sfAccount));
-                                    view().erase(oldnicksle);
-                                }
-                                std::string tmp1=strHex(nick);
+                if(oldnicksle)
+                {
+                    JLOG(j_.trace()) <<"nick name account: "<<toBase58(oldnicksle->getAccountID(sfAccount));
+                    view().erase(oldnicksle);
+                }
+                std::string tmp1=strHex(nick);
 				Blob nick1= strCopy(tmp1);
 
 				auto newindex = getNicknameIndex(nick1);
-				auto const newslenick = std::make_shared<SLE>(
-					ltNICKNAME, newindex);
+				auto const newslenick = std::make_shared<SLE>(ltNICKNAME, newindex);
 				newslenick->setAccountID(sfAccount, sle->getAccountID(sfAccount));
 				sle->setFieldVL(sfNickName, nick);
-				view().insert(newslenick);
-				
+				view().insert(newslenick);	
 			}
 			else
 			{
-
-                                std::string tmp2=strHex(nick);
+                std::string tmp2=strHex(nick);
 				Blob nick2= strCopy(tmp2);
 				auto index = getNicknameIndex(nick2);
-				auto const slenick = std::make_shared<SLE>(
-					ltNICKNAME, index);
+				auto const slenick = std::make_shared<SLE>(ltNICKNAME, index);
 				slenick->setAccountID(sfAccount,sle->getAccountID(sfAccount));
 				sle->setFieldVL(sfNickName, nick);
 				view().insert(slenick);
@@ -322,55 +317,50 @@ SetAccount::doApply ()
 	//
 	//total issue amount
 	//
-	if (ctx_.tx.isFieldPresent(sfTotal))
-	{
-		STAmount satotal = ctx_.tx.getFieldAmount(sfTotal);
-                        if(satotal.native())
-			return tecBADTOTAL;
-		if (!satotal)
-		{
-			JLOG(j_.trace()) << "unset total issue amount";
-			sle->makeFieldAbsent(sfTotal);
-		}
-                 else if (satotal.native())
-		{
-			return temBAD_CURRENCY;
-		}
-		else
-		{
-			JLOG(j_.trace()) << "set total issue amount";
-			if (!sle->isFieldPresent(sfTotal)) 
-			{
-				sle->setFieldAmount(sfTotal, satotal);
-				if (!sle->isFieldPresent(sfIssued))
-				{
-					JLOG(j_.trace()) << "set  issued amount is 0  at first time";
-					STAmount issued(satotal.issue());
-					sle->setFieldAmount(sfIssued, issued);
-				}
-			}
-			else
-			{
-                          if(satotal.getCurrency() == sle->getFieldAmount(sfTotal).getCurrency())
-				{
-					if (satotal > sle->getFieldAmount(sfTotal))
-					{
-						JLOG(j_.trace()) << "increase total issue amount ";
-						sle->setFieldAmount(sfTotal, satotal);
-					}
-					else
-						return  tecBADTOTAL;
-				}
-                              else
-				return temBAD_CURRENCY;
-				
-			}
-			
-		}
-    
-	}
-
-
+	// if (ctx_.tx.isFieldPresent(sfTotal))
+	// {
+	// 	STAmount satotal = ctx_.tx.getFieldAmount(sfTotal);
+    //     if(satotal.native())
+	// 		return tecBADTOTAL;
+	// 	if (!satotal)
+	// 	{
+	// 		JLOG(j_.trace()) << "unset total issue amount";
+	// 		sle->makeFieldAbsent(sfTotal);
+	// 	}
+    //     else if (satotal.native())
+	// 	{
+	// 		return temBAD_CURRENCY;
+	// 	}
+	// 	else
+	// 	{
+	// 		JLOG(j_.trace()) << "set total issue amount";
+	// 		if (!sle->isFieldPresent(sfTotal)) 
+	// 		{
+	// 			sle->setFieldAmount(sfTotal, satotal);
+	// 			if (!sle->isFieldPresent(sfIssued))
+	// 			{
+	// 				JLOG(j_.trace()) << "set  issued amount is 0  at first time";
+	// 				STAmount issued(satotal.issue());
+	// 				sle->setFieldAmount(sfIssued, issued);
+	// 			}
+	// 		}
+	// 		else
+	// 		{
+    //             if(satotal.getCurrency() == sle->getFieldAmount(sfTotal).getCurrency())
+	// 			{
+	// 				if (satotal > sle->getFieldAmount(sfTotal))
+	// 				{
+	// 					JLOG(j_.trace()) << "increase total issue amount ";
+	// 					sle->setFieldAmount(sfTotal, satotal);
+	// 				}
+	// 				else
+	// 					return  tecBADTOTAL;
+	// 			}
+    //             else
+	// 			    return temBAD_CURRENCY;	
+	// 		}
+	// 	}
+	// }
 
 
     //
