@@ -83,6 +83,9 @@ TER IssueSet::doApply()
 		uint256 uCIndex(getIssueIndex(account_, currency));
 		JLOG(j_.trace()) << "doTrustSet: Creating IssueRoot: " << to_string(uCIndex);
 		terResult = AccountIssuerCreate(view(), account_, satotal, uTxFlags, uCIndex, viewJ);
+		if (terResult == tesSUCCESS) {
+			adjustOwnerCount(view(), sleIssueRoot, 1, viewJ);
+		}
 	}
 	// old issue setting
 	else

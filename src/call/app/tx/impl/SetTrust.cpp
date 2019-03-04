@@ -224,31 +224,26 @@ SetTrust::doApply ()
         // trust line to oneself to be deleted. If no such trust
         // lines exist now, why not remove this code and simply
         // return an error?
-        SLE::pointer sleDelete = view().peek (
-            keylet::line(account_, uDstAccountID, currency));
+        SLE::pointer sleDelete = view().peek (keylet::line(account_, uDstAccountID, currency));
 
         JLOG(j_.warn()) <<
             "Clearing redundant line.";
 
-        return trustDelete (view(),
-            sleDelete, account_, uDstAccountID, viewJ);
+        return trustDelete (view(), sleDelete, account_, uDstAccountID, viewJ);
     }
 
-    SLE::pointer sleDst =
-        view().peek (keylet::account(uDstAccountID));
+    SLE::pointer sleDst = view().peek (keylet::account(uDstAccountID));
 
     if (!sleDst)
     {
-        JLOG(j_.trace()) <<
-            "Delay transaction: Destination account does not exist.";
+        JLOG(j_.trace()) << "Delay transaction: Destination account does not exist.";
         return tecNO_DST;
     }
 
     STAmount saLimitAllow = saLimitAmount;
     saLimitAllow.setIssuer (account_);
 
-    SLE::pointer sleCallState = view().peek (
-        keylet::line(account_, uDstAccountID, currency));
+    SLE::pointer sleCallState = view().peek (keylet::line(account_, uDstAccountID, currency));
 
     if (sleCallState)
     {
@@ -468,14 +463,12 @@ SetTrust::doApply ()
         (! bQualityOut || ! uQualityOut) &&         // Not setting quality out or setting default quality out.
         (! (view().rules().enabled(featureTrustSetAuth)) || ! bSetAuth))
     {
-        JLOG(j_.trace()) <<
-            "Redundant: Setting non-existent call line to defaults.";
+        JLOG(j_.trace()) << "Redundant: Setting non-existent call line to defaults.";
         return tecNO_LINE_REDUNDANT;
     }
     else if (mPriorBalance < reserveCreate) // Reserve is not scaled by load.
     {
-        JLOG(j_.trace()) <<
-            "Delay transaction: Line does not exist. Insufficent reserve to create line.";
+        JLOG(j_.trace()) << "Delay transaction: Line does not exist. Insufficent reserve to create line.";
 
         // Another transaction could create the account and then this transaction would succeed.
         terResult = tecNO_LINE_INSUF_RESERVE;
@@ -483,27 +476,22 @@ SetTrust::doApply ()
     else
     {
        //update the Issuer fans
-	SLE::pointer sleIssueRoot = view().peek(
-		keylet::issuet(uDstAccountID, currency));
-	if (sleIssueRoot)
-	{
-	//	view().update(sleIssueRoot);
-		sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
-		view().update(sleIssueRoot);
-	}else
-         {
-              return terBADTRUST;
-       }
+	    SLE::pointer sleIssueRoot = view().peek(keylet::issuet(uDstAccountID, currency));
+        if (sleIssueRoot)
+        {
+            //	view().update(sleIssueRoot);
+            sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
+            view().update(sleIssueRoot);
+        } else {
+            return terBADTRUST;
+        }
         
         // Zero balance in currency.
         STAmount saBalance ({currency, noAccount()});
 
-        uint256 index (getCallStateIndex (
-            account_, uDstAccountID, currency));
+        uint256 index (getCallStateIndex (account_, uDstAccountID, currency));
 
-        JLOG(j_.trace()) <<
-            "doTrustSet: Creating call line: " <<
-            to_string (index);
+        JLOG(j_.trace()) << "doTrustSet: Creating call line: " << to_string (index);
 
         // Create a new call line.
         terResult = trustCreate (view(),
