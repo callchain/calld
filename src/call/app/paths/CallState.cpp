@@ -105,7 +105,7 @@ IssueRoot::IssueRoot(std::shared_ptr<SLE const>&& sle,
 	, mtotal(sle_->getFieldAmount(sfTotal))
 	, missued(sle_->getFieldAmount(sfIssued))
 	, mfans(sle_->getFieldU64(sfFans))
-    , mflags(sle_->getFieldU64(sfFlags))
+    , mflags(sle_->getFieldU32(sfFlags))
 {}
 IssueRoot::pointer
 IssueRoot::makeItem(
