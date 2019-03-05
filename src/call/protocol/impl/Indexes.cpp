@@ -226,6 +226,16 @@ getFeesIndex()
 {
 	return sha512Half(std::uint16_t(spaceFees));
 }
+
+uint256
+getTokenIndex(uint256 const& id, AccountID const& a, Currency const& currency)
+{
+    return sha512Half(
+        std::uint16_t(spaceIssue),
+        id,
+        a,
+        currency);
+}
 //------------------------------------------------------------------------------
 
 namespace keylet {
@@ -234,8 +244,6 @@ Keylet issue_t::operator()(AccountID const& a, Currency const& currency) const
 {
 	return{ ltISSUEROOT,getIssueIndex(a,currency) };
 }
-
-
 
 Keylet account_t::operator()(
     AccountID const& id) const

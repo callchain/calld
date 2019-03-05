@@ -190,8 +190,13 @@ LedgerFormats::LedgerFormats ()
 	    ;
 
     add ("FeeRoot", ltFeeRoot)
-	    << SOElement(sfBalance,            SOE_REQUIRED)
+	    << SOElement (sfBalance,            SOE_REQUIRED)
 	    ;
+
+    add ("TokenInfo", ltTokenInfo)
+            << SOElement (sfBalance,            SOE_REQUIRED)
+            << SOElement (sfMetaInfo,           SOE_REQUIRED)
+            ;
 }
 
 void LedgerFormats::addCommonFields (Item& item)

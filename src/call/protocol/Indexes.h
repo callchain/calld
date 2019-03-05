@@ -113,6 +113,9 @@ getIssueIndex(AccountID const& a, Currency const& currency);
 
 uint256
 getFeesIndex();
+
+uint256
+getTokenIndex(uint256 const& id, AccountID const& a, Currency const& currency);
 //------------------------------------------------------------------------------
 
 /* VFALCO TODO

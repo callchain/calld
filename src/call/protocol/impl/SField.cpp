@@ -192,6 +192,8 @@ SF_U256 const sfTicketID      = make::one<SF_U256::type>(&sfTicketID,      STI_H
 SF_U256 const sfDigest        = make::one<SF_U256::type>(&sfDigest,        STI_HASH256, 21, "Digest");
 SF_U256 const sfPayChannel    = make::one<SF_U256::type>(&sfPayChannel,    STI_HASH256, 22, "Channel");
 SF_U256 const sfConsensusHash = make::one<SF_U256::type>(&sfConsensusHash, STI_HASH256, 23, "ConsensusHash");
+SF_U256 const sfTokenID       = make::one<SF_U256::type>(&sfTokenID,       STI_HASH256, 24, "TokenID");
+
 
 // currency amount (common)
 SF_Amount const sfAmount      = make::one<SF_Amount::type>(&sfAmount,      STI_AMOUNT,  1, "Amount");
@@ -234,6 +236,7 @@ SF_Blob const sfFulfillment     = make::one<SF_Blob::type>(&sfFulfillment,     S
 SF_Blob const sfCondition       = make::one<SF_Blob::type>(&sfCondition,       STI_VL, 17, "Condition");
 SF_Blob const sfMasterSignature = make::one<SF_Blob::type>(&sfMasterSignature, STI_VL, 18, "MasterSignature", SField::sMD_Default, SField::notSigning);
 SF_Blob const sfNickName        = make::one<SF_Blob::type>(&sfNickName,        STI_VL, 19, "NickName");
+SF_Blob const sfMetaInfo        = make::one<SF_Blob::type>(&sfMetaInfo,        STI_VL, 20, "MetaInfo");
 
 // account
 SF_Account const sfAccount     = make::one<SF_Account::type>(&sfAccount,     STI_ACCOUNT, 1, "Account");

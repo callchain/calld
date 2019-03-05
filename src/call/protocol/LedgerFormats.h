@@ -105,7 +105,8 @@ enum LedgerEntryType
     ltNotUsed01         = 'c',
     
     ltISSUEROOT         = 'i',
-    ltFeeRoot           = 'F'
+    ltFeeRoot           = 'F',
+    ltTokenInfo         = 't'
 };
 
 /**
@@ -132,9 +133,11 @@ enum LedgerNameSpace
 
     // No longer used or supported. Left here to reserve the space and
     // avoid accidental reuse of the space.
+
     spaceNickname       = 'n',
     spaceIssue          = 'i',
-    spaceFees           = 'F'
+    spaceFees           = 'F',
+    spaceToken          = 't'
 };
 
 /**

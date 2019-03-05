@@ -438,6 +438,7 @@ extern SF_U256 const sfTicketID;
 extern SF_U256 const sfDigest;
 extern SF_U256 const sfPayChannel;
 extern SF_U256 const sfConsensusHash;
+extern SF_U256 const sfTokenID;
 
 // currency amount (common)
 extern SF_Amount const sfAmount;
@@ -472,12 +473,13 @@ extern SF_Blob const sfCreateCode;
 extern SF_Blob const sfMemoType;
 extern SF_Blob const sfMemoData;
 extern SF_Blob const sfMemoFormat;
-extern SF_Blob const sfNickName;
 
 // variable length (uncommon)
 extern SF_Blob const sfFulfillment;
 extern SF_Blob const sfCondition;
 extern SF_Blob const sfMasterSignature;
+extern SF_Blob const sfNickName;
+extern SF_Blob const sfMetaInfo;
 
 // account
 extern SF_Account const sfAccount;
