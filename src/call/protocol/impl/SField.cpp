@@ -162,6 +162,7 @@ SF_U64 const sfLowNode          = make::one<SF_U64::type>(&sfLowNode,          S
 SF_U64 const sfHighNode         = make::one<SF_U64::type>(&sfHighNode,         STI_UINT64, 8, "HighNode");
 SF_U64 const sfDestinationNode  = make::one<SF_U64::type>(&sfDestinationNode,  STI_UINT64, 9, "DestinationNode");
 SF_U64 const sfFans             = make::one<SF_U64::type>(&sfFans,             STI_UINT64, 10, "Fans");
+SF_U64 const sfNumber           = make::one<SF_U64::type>(&sfsfNumber,         STI_UINT64, 11, "Number");
 
 // 128-bit
 SF_U128 const sfEmailHash = make::one<SF_U128::type>(&sfEmailHash, STI_HASH128, 1, "EmailHash");
@@ -186,7 +187,7 @@ SF_U256 const sfAccountTxnID    = make::one<SF_U256::type>(&sfAccountTxnID,    S
 // 256-bit (uncommon)
 SF_U256 const sfBookDirectory = make::one<SF_U256::type>(&sfBookDirectory, STI_HASH256, 16, "BookDirectory");
 SF_U256 const sfInvoiceID     = make::one<SF_U256::type>(&sfInvoiceID,     STI_HASH256, 17, "InvoiceID");
-SF_U256 const sfNickname      = make::one<SF_U256::type>(&sfNickname,      STI_HASH256, 18, "Nickname");
+SF_U256 const sfNickname      = make::one<SF_U256::type>(&sfNickname,      STI_HASH256, 18, "Nickname"); // be careful
 SF_U256 const sfAmendment     = make::one<SF_U256::type>(&sfAmendment,     STI_HASH256, 19, "Amendment");
 SF_U256 const sfTicketID      = make::one<SF_U256::type>(&sfTicketID,      STI_HASH256, 20, "TicketID");
 SF_U256 const sfDigest        = make::one<SF_U256::type>(&sfDigest,        STI_HASH256, 21, "Digest");

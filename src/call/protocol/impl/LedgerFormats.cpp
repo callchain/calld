@@ -193,9 +193,10 @@ LedgerFormats::LedgerFormats ()
 	    << SOElement (sfBalance,            SOE_REQUIRED)
 	    ;
 
-    add ("TokenInfo", ltTokenInfo)
-            << SOElement (sfBalance,            SOE_REQUIRED)
+    add ("TokenRoot", ltTOKEN_ROOT)
+            << SOElement (sfNumber,              SOE_REQUIRED)
             << SOElement (sfMetaInfo,           SOE_REQUIRED)
+            << SOElement (sfLowNode,            SOE_OPTIONAL)
             ;
 }
 

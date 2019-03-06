@@ -84,6 +84,8 @@ TxFormats::TxFormats ()
         << SOElement (sfInvoiceID,           SOE_OPTIONAL)
         << SOElement (sfDestinationTag,      SOE_OPTIONAL)
         << SOElement (sfDeliverMin,          SOE_OPTIONAL)
+        << SOElement (sfTokenID,             SOE_REQUIRED) 
+        << SOElement (sfMetaInfo,            SOE_OPTIONAL); // for token create
         ;
 
     add ("EscrowCreate", ttESCROW_CREATE) <<
@@ -155,12 +157,6 @@ TxFormats::TxFormats ()
 
     add ("IssueSet", ttISSUE_SET) <<
 		    SOElement (sfTotal,             SOE_REQUIRED);
-
-    add ("Transfer", ttTRANSFER) <<
-            SOElement (sfDestination,       SOE_REQUIRED) <<
-            SOElement (sfAmount,            SOE_REQUIRED) <<
-            SOElement (sfTokenID,           SOE_REQUIRED) <<
-            SOElement (sfMetaInfo,          SOE_OPTIONAL); // for create
 }
 
 void TxFormats::addCommonFields (Item& item)

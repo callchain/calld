@@ -1261,6 +1261,57 @@ TER AccountIssuerCreate(ApplyView &view,
     return tesSUCCESS;
 }
 
+//create accounttoken
+TER AccountTokenCreate(ApplyView &view,
+                        AccountID const &uDstAccountID,
+                        uint256 &id,
+                        Blob &metaInfo,
+                        uint256 const &uCIndex,
+                        beast::Journal j)
+{
+    auto const sleTokenRoot = std::make_shared<SLE>(ltTOKEN_ROOT, uCIndex);
+    view.insert(sleTokenRoot);
+
+    auto lowNode = dirAdd(view, keylet::ownerDir(uDstAccountID), sleTokenRoot->key(), 
+        false, describeOwnerDir(uDstAccountID), j);
+
+    if (!lowNode) {
+        return tecDIR_FULL;
+    }
+    sleTokenRoot->setFieldU64(sfNumber, 1);
+    sleTokenRoot->setFieldU64(sfLowNode, *lowNode);
+    sleTokenRoot->setFieldVL(sfMetaInfo, metaInfo);
+    return tesSUCCESS;
+}
+
+// transfer token owner
+TER
+TokenTransfer(ApplyView &view, 
+                        AccountID const &uSrcAccountID, 
+                        AccountID const &uDstAccountID,
+                        uint256 const &uCIndex,
+                        beast::Journal j)
+{
+    auto const sleTokenRoot = std::make_shared<SLE>(ltTOKEN_ROOT, uCIndex);
+    auto oldNode = sleTokenRoot->getFieldU64(sfLowNode);
+    // delete from old
+    TER result = dirDelete(view, false, oldNode, keylet::ownerDir(uSrcAccountID),
+                    sleTokenRoot->key(), false, false, j);
+    if (result != tesSUCCESS)
+    {
+        return result;
+    }
+    // create into new
+    auto newNode = dirAdd(view, keylet::ownerDir(uSrcAccountID), sleTokenRoot->key(), 
+        false, describeOwnerDir(uSrcAccountID), j);
+    if (!newNode) {
+        return tecDIR_FULL;
+    }
+    sleTokenRoot->setFieldU64(sfLowNode, *newNode);
+
+    return tesSUCCESS;
+}
+
 TER trustDelete(ApplyView &view,
                 std::shared_ptr<SLE> const &sleCallState,
                 AccountID const &uLowAccountID,

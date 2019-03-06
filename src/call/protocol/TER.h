@@ -113,6 +113,9 @@ enum TER
     temUNKNOWN,
     temNICKNAMEEXISTED,
     temBAD_FUNDS,
+    temID_EXISTED,
+    temBAD_TOKENID,
+    temBAD_METAINFO,
     // -199 .. -100: F
     //    Failure (sequence number previously used)
     //
@@ -208,7 +211,7 @@ enum TER
     tecINSUF_RESERVE_LINE       = 122,
     tecINSUF_RESERVE_OFFER      = 123,
     tecNO_DST                   = 124,
-    tecNO_DST_INSUF_CALL         = 125,
+    tecNO_DST_INSUF_CALL        = 125,
     tecNO_LINE_INSUF_RESERVE    = 126,
     tecNO_LINE_REDUNDANT        = 127,
     tecPATH_DRY                 = 128,

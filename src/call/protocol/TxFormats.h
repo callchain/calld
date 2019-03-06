@@ -68,8 +68,6 @@ enum TxType
     ttISSUE_SET         = 16,
 
     ttTRUST_SET         = 20,
-    
-    ttTRANSFER          = 30,
 
     ttAMENDMENT         = 100,
     ttFEE               = 101,

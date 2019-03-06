@@ -317,6 +317,7 @@ Payment::doApply ()
     bool const defaultPathsAllowed = !(uTxFlags & tfNoCallDirect);
     auto const paths = ctx_.tx.isFieldPresent(sfPaths);
     auto const sendMax = ctx_.tx[~sfSendMax];
+    bool issuing = false;
 
     AccountID const uDstAccountID (ctx_.tx.getAccountID (sfDestination));
     STAmount const saDstAmount (ctx_.tx.getFieldAmount (sfAmount));
@@ -367,22 +368,66 @@ Payment::doApply ()
         AccountID AIssuer = saDstAmount.getIssuer();
         Currency currency = saDstAmount.getCurrency();
         SLE::pointer sleIssueRoot = view().peek(keylet::issuet(AIssuer, currency));
-        
-        if (sleIssueRoot)
+        if (!sleIssueRoot)
         {
-            STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
-            // source account is issue account
-            if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
-            {
-                if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
-                {
-                    return tecOVERISSUED_AMOUNT;
-                }
-                // else add issused
-                sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
-            }
-        } else {
             return temBAD_FUNDS;
+        }
+
+        STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
+        std::uint32_t const uIssueFlags = sleIssueRoot->getFieldU32(sfFlags);
+        bool const nft = (uIssueFlags & tfNonFungible);
+        if (nft)
+        {
+            // id not present
+            if (!ctx_.tx.isFieldPresent(sfTokenID))
+            {
+                return temBAD_TOKENID;
+            }
+            // amount not 1
+            STAmount one(saDstAmount.issue(), 1);
+            if (saDstAmount != one)
+            {
+                return temBAD_AMOUNT;
+            }
+        }
+
+        // source account is issue account
+        if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
+        {
+            issuing = true;
+            // update issue set
+            if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
+            {
+                return tecOVERISSUED_AMOUNT;
+            }
+            // else add issused
+            sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
+
+            // when issuer issue new one, check if id exists already return error else create one
+            if (nft) 
+            {
+                uint256 id = ctx_.tx.getFieldH256 (sfTokenID);
+                SLE::pointer sleTokenRoot = view().peek(keylet::tokent(id, account_, currency));
+                // issue should not create same id token
+                if (sleTokenRoot) 
+                {
+                    return temID_EXISTED;
+                }
+                auto const isMeta = ctx_.tx.isFieldPresent(sfMetaInfo);
+                if (!isMeta)
+                {
+                    return temBAD_METAINFO;
+                }
+ 
+                Blob metaInfo = ctx_.tx.getFieldVL(sfMetaInfo);
+                uint256 uCIndex(getTokenIndex(id, account_, currency));
+	            JLOG(j_.trace()) << "doPayment: Creating TokenRoot: " << to_string(uCIndex);
+	            terResult = AccountTokenCreate(view(), sleDst, id, metaInfo, uCIndex, j_);                    
+                if (terResult != tesSUCCESS)
+                {
+                    return terResult;
+                }
+            }
         }
 
         //  update uDst balance
@@ -403,8 +448,8 @@ Payment::doApply ()
                     return result;
                 }
 
+                sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
                 view().update(sleIssueRoot);
-			    sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
 		    }
         }
         // Copy paths into an editable class.
@@ -453,6 +498,14 @@ Payment::doApply ()
         if (isTerRetry (terResult)) 
         {
             terResult = tecPATH_DRY;
+        }
+
+        // update token owner, when not issue
+        if (terResult == tesSUCCESS && nft && issuing)
+        {
+            uint256 id = ctx_.tx.getFieldH256 (sfTokenID);
+            uint256 uCIndex(getTokenIndex(id, account_, currency));
+            terResult = TokenTransfer(view(), account_, uDstAccountID, uCIndex, j_);
         }
     }
     else

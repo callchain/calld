@@ -81,7 +81,7 @@ TER IssueSet::doApply()
 	if (!sleIssueRoot)
 	{
 		uint256 uCIndex(getIssueIndex(account_, currency));
-		JLOG(j_.trace()) << "doTrustSet: Creating IssueRoot: " << to_string(uCIndex);
+		JLOG(j_.trace()) << "doIssueSet: Creating IssueRoot: " << to_string(uCIndex);
 		terResult = AccountIssuerCreate(view(), account_, satotal, uTxFlags, uCIndex, viewJ);
 	}
 	// old issue setting

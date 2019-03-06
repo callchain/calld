@@ -278,6 +278,7 @@ LedgerEntryTypesMatch::visitEntry(
         case ltNICKNAME:
         case ltISSUEROOT:
         case ltFeeRoot:
+        case ltTOKEN_ROOT:
             break;
         default:
             invalidTypeAdded_ = true;

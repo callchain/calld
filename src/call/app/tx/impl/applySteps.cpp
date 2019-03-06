@@ -74,7 +74,6 @@ invoke_preflight (PreflightContext const& ctx)
     case ttPAYCHAN_FUND:    return PayChanFund      ::preflight(ctx);
     case ttPAYCHAN_CLAIM:   return PayChanClaim     ::preflight(ctx);
     case ttISSUE_SET:       return IssueSet         ::preflight(ctx);
-    case ttTRANSFER:        return Transfer         ::preflight(ctx);
 
     default:
         assert(false);
@@ -142,7 +141,6 @@ invoke_preclaim (PreclaimContext const& ctx)
     case ttPAYCHAN_FUND:    return invoke_preclaim<PayChanFund>(ctx);
     case ttPAYCHAN_CLAIM:   return invoke_preclaim<PayChanClaim>(ctx);
     case ttISSUE_SET:       return invoke_preclaim<IssueSet>(ctx);
-    case ttTRANSFER:        return invoke_preclaim<Transfer>(ctx);
 
     default:
         assert(false);
@@ -214,7 +212,6 @@ invoke_calculateConsequences(STTx const& tx)
     case ttPAYCHAN_FUND:    return invoke_calculateConsequences<PayChanFund>(tx);
     case ttPAYCHAN_CLAIM:   return invoke_calculateConsequences<PayChanClaim>(tx);
     case ttISSUE_SET:       return invoke_calculateConsequences<IssueSet>(tx);
-    case ttTRANSFER:        return invoke_calculateConsequences<Transfer>(tx);
     case ttAMENDMENT:
     case ttFEE:
         // fall through to default
@@ -249,7 +246,6 @@ invoke_apply (ApplyContext& ctx)
     case ttPAYCHAN_FUND:    { PayChanFund   p(ctx); return p(); }
     case ttPAYCHAN_CLAIM:   { PayChanClaim  p(ctx); return p(); }
     case ttISSUE_SET:       { IssueSet      p(ctx); return p(); }
-    case ttTRANSFER:        { Transfer      p(ctx); return p(); }
     default:
         assert(false);
         return { temUNKNOWN, false };

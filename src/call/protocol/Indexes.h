@@ -136,10 +136,22 @@ struct issue_t
 	Keylet operator()(AccountID const& a, Currency const& currency) const;
 	Keylet operator()(uint256 const& key) const
 	{
-		return{ltISSUEROOT,key};
+		return { ltISSUEROOT, key };
 	}
 };
 static issue_t const issuet{};
+
+/** An token root info for id, account, currency */
+struct token_t
+{
+    Keylet operator()(uint256 const &id, AccountID const &a, Currency const& currency) const;
+    Keylet operator()(uint256 const& key) const
+	{
+		return { ltTOKEN_ROOT, key };
+	}
+};
+static token_t const tokent{};
+
 /** AccountID root */
 struct account_t
 {

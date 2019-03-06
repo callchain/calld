@@ -276,6 +276,21 @@ AccountIssuerCreate( ApplyView& view,
 	beast::Journal j
 );
 
+// create one token for nft
+TER 
+AccountTokenCreate(ApplyView &view,
+                        AccountID const &uDstAccountID,
+                        uint256 &id,
+                        Blob &metaInfo,
+                        uint256 const &uCIndex,
+                        beast::Journal j);
+
+TER
+TokenTransfer(ApplyView &view, 
+                        AccountID const &uSrcAccountID, 
+                        AccountID const &uDstAccountID,
+                        uint256 const &uCIndex,
+                        beast::Journal j);
 
 /** Create a trust line
 

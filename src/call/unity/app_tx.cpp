@@ -56,4 +56,3 @@
 #include <call/app/tx/impl/ApplyContext.cpp>
 #include <call/app/tx/impl/Transactor.cpp>
 #include <call/app/tx/impl/IssueSet.cpp>
-#include <call/app/tx/impl/Transfer.cpp>
