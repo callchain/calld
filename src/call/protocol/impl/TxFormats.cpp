@@ -84,7 +84,7 @@ TxFormats::TxFormats ()
         << SOElement (sfInvoiceID,           SOE_OPTIONAL)
         << SOElement (sfDestinationTag,      SOE_OPTIONAL)
         << SOElement (sfDeliverMin,          SOE_OPTIONAL)
-        << SOElement (sfTokenID,             SOE_REQUIRED) 
+        << SOElement (sfTokenID,             SOE_OPTIONAL) 
         << SOElement (sfMetaInfo,            SOE_OPTIONAL); // for token create
         ;
 

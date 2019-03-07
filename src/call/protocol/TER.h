@@ -113,6 +113,7 @@ enum TER
     temUNKNOWN,
     temNICKNAMEEXISTED,
     temBAD_FUNDS,
+    
     temID_EXISTED,
     temBAD_TOKENID,
     temBAD_METAINFO,
