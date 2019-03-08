@@ -501,7 +501,7 @@ Payment::doApply ()
         }
 
         // update token owner, when not issue
-        if (terResult == tesSUCCESS && nft && issuing)
+        if (terResult == tesSUCCESS && nft && !issuing)
         {
             uint256 id = ctx_.tx.getFieldH256 (sfTokenID);
             uint256 uCIndex(getTokenIndex(id, account_, currency));

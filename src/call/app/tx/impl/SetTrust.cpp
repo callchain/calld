@@ -490,7 +490,7 @@ SetTrust::doApply ()
             sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
             view().update(sleIssueRoot);
         } else {
-            eturn terBADTRUST;
+            return terBADTRUST;
         }
         
         // Zero balance in currency.
