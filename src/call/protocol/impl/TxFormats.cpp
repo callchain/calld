@@ -49,10 +49,9 @@ TxFormats::TxFormats ()
         << SOElement (sfSetFlag,             SOE_OPTIONAL)
         << SOElement (sfClearFlag,           SOE_OPTIONAL)
         << SOElement (sfTickSize,            SOE_OPTIONAL)
-        
-        << SOElement (sfTotal,               SOE_OPTIONAL)
-	    << SOElement (sfIssued,              SOE_OPTIONAL)
-        << SOElement (sfNickName,            SOE_OPTIONAL)
+        << SOElement (sfTotal,               SOE_OPTIONAL) // not used
+	    << SOElement (sfIssued,              SOE_OPTIONAL) // not used
+        << SOElement (sfNickName,            SOE_OPTIONAL) // not used
         ;
 
     add ("TrustSet", ttTRUST_SET)

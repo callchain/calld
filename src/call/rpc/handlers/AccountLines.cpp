@@ -54,9 +54,14 @@ struct VisitData
 	bool hasPeer;
 	AccountID const &raPeerAccount;
 };
-struct VisitData1
+struct IssueData
 {
 	std::vector<IssueRoot::pointer> items;
+	AccountID const &accountID;
+};
+struct TokenData
+{
+	std::vector<std::shared_ptr<SLE const> > items;
 	AccountID const &accountID;
 };
 
@@ -73,6 +78,19 @@ void addIssue(Json::Value &jsonIssued, IssueRoot &issued, STAmount const &freeze
 	jPeer["Freeze"] = freeze.getJson(0);
 	jPeer["Flags"] = boost::lexical_cast<std::string>(flags);
 	jPeer["Fans"] = boost::lexical_cast<std::string>(fans);
+}
+
+void addToken(Json::Value &jsonToken, std::shared_ptr<SLE const> sleToken)
+{
+	Json::Value &jPeer(jsonToken.append(Json::objectValue));
+
+	std::uint64_t number = sleToken->getFieldU64(sfNumber);
+	uint256 tokenId = sleToken->getFieldH256(sfTokenID);
+	Blob metaInfo = sleToken->getFieldVL(sfMetaInfo);
+
+	jPeer["Number"] = boost::lexical_cast<std::string>(number);
+	jPeer["TokenID"] = call::to_string(tokenId);
+	jPeer["MetaInfo"] = strHex(metaInfo);
 }
 
 void addLine(Json::Value &jsonLines, CallState const &line, STAmount const &freeze, std::shared_ptr<ReadView const> &ledger)
@@ -364,6 +382,113 @@ Json::Value doAccountLines(RPC::Context &context)
 }
 
 //============================================
+Json::Value doAccountTokens(RPC::Context &context)
+{
+	auto const &params(context.params);
+	if (!params.isMember(jss::account))
+		return RPC::missing_field_error(jss::account);
+
+	std::shared_ptr<ReadView const> ledger;
+	auto result = RPC::lookupLedger(ledger, context);
+	if (!ledger)
+		return result;
+
+	std::string strIdent(params[jss::account].asString());
+	AccountID accountID;
+
+	if (auto jv = RPC::accountFromString(accountID, strIdent))
+	{
+		for (auto it = jv.begin(); it != jv.end(); ++it)
+			result[it.memberName()] = *it;
+		return result;
+	}
+
+	if (!ledger->exists(keylet::account(accountID)))
+		return rpcError(rpcACT_NOT_FOUND);
+
+	auto const sleAccepted = ledger->read(keylet::account(accountID));
+	if (sleAccepted)
+	{
+		if (sleAccepted->isFieldPresent(sfNickName))
+		{
+			Json::Value jvAccepted;
+			RPC::injectSLE(jvAccepted, *sleAccepted);
+			result[jss::NickName] = jvAccepted[jss::NickName];
+		}
+	}
+
+	unsigned int limit;
+	if (auto err = readLimitField(limit, RPC::Tuning::accountLines, context))
+		return *err;
+
+	Json::Value &jsonTokens(result[jss::lines] = Json::arrayValue);
+	TokenData visitData = {{}, accountID};
+	unsigned int reserve(limit);
+	uint256 startAfter;
+	std::uint64_t startHint;
+
+	if (params.isMember(jss::marker))
+	{
+		// We have a start point. Use limit - 1 from the result and use the
+		// very last one for the resume.
+		Json::Value const &marker(params[jss::marker]);
+
+		if (!marker.isString())
+			return RPC::expected_field_error(jss::marker, "string");
+
+		startAfter.SetHex(marker.asString());
+		auto const sleToken = ledger->read({ltTOKEN_ROOT, startAfter});
+
+		if (!sleToken)
+			return rpcError(rpcINVALID_PARAMS);
+
+		startHint = sleToken->getFieldU64(sfLowNode);
+
+		addToken(jsonTokens, sleToken);
+		visitData.items.reserve(reserve);
+	}
+	else
+	{
+		startHint = 0;
+		// We have no start point, limit should be one higher than requested.
+		visitData.items.reserve(++reserve);
+	}
+
+	{
+		if (!forEachItemAfter(*ledger, accountID, startAfter, startHint, reserve,
+				[&visitData](std::shared_ptr<SLE const> const &sleCur) {
+			if (sleCur != NULL)
+			{
+				visitData.items.emplace_back(sleCur);
+				return true;
+			}
+			return false;
+		}))
+		{
+			return rpcError(rpcINVALID_PARAMS);
+		}
+	}
+
+	if (visitData.items.size() == reserve)
+	{
+		result[jss::limit] = limit;
+
+		std::shared_ptr<SLE const> last = visitData.items.back();
+		result[jss::marker] = to_string(last->key());
+		visitData.items.pop_back();
+	}
+
+	result[jss::account] = context.app.accountIDCache().toBase58(accountID);
+
+	for (auto const &item : visitData.items)
+	{
+		addToken(jsonTokens, item);
+	}
+
+	context.loadType = Resource::feeMediumBurdenRPC;
+	return result;
+}
+
 Json::Value doAccountIssues(RPC::Context &context)
 {
 	auto const &params(context.params);
@@ -398,11 +523,14 @@ Json::Value doAccountIssues(RPC::Context &context)
 			result[jss::NickName] = jvAccepted[jss::NickName];
 		}
 	}
+
 	//get offers
 	std::vector<std::shared_ptr<SLE const>> offers;
 	forEachItem(*ledger, accountID, [&offers](std::shared_ptr<SLE const> const &sle) {
-		if (sle->getType() == ltOFFER)
+		if (sle->getType() == ltOFFER) 
+		{
 			offers.emplace_back(sle);
+		}
 	});
 
 	unsigned int limit;
@@ -410,7 +538,7 @@ Json::Value doAccountIssues(RPC::Context &context)
 		return *err;
 
 	Json::Value &jsonIssues(result[jss::lines] = Json::arrayValue);
-	VisitData1 visitData = {{}, accountID};
+	IssueData visitData = {{}, accountID};
 	unsigned int reserve(limit);
 	uint256 startAfter;
 	std::uint64_t startHint;

@@ -619,8 +619,7 @@ bool cdirNext(ReadView const &view,
         return cdirNext(view, uRootIndex, sleNode, uDirEntry, uEntryIndex, j);
     }
     uEntryIndex = svIndexes[uDirEntry++];
-    JLOG(j.trace()) << "dirNext:"
-                    << " uDirEntry=" << uDirEntry << " uEntryIndex=" << uEntryIndex;
+    JLOG(j.trace()) << "dirNext:" << " uDirEntry=" << uDirEntry << " uEntryIndex=" << uEntryIndex;
     return true;
 }
 
@@ -1279,6 +1278,7 @@ TER AccountTokenCreate(ApplyView &view,
         return tecDIR_FULL;
     }
     sleTokenRoot->setFieldU64(sfNumber, 1);
+    sleTokenRoot->setFieldH256(sfTokenID, id);
     sleTokenRoot->setFieldU64(sfLowNode, *lowNode);
     sleTokenRoot->setFieldVL(sfMetaInfo, metaInfo);
     return tesSUCCESS;

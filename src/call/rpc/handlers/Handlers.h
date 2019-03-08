@@ -104,6 +104,7 @@ Json::Value doValidators            (RPC::Context&);
 Json::Value doValidatorListSites    (RPC::Context&);
 Json::Value doNickSearch            (RPC::Context&);
 Json::Value doAccountIssues         (RPC::Context&);
+Json::Value doAccountTokens         (RPC::Context&);
 
 } // call
 

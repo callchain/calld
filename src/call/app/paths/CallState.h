@@ -182,13 +182,11 @@ public:
 	IssueRoot() = delete;
 
 	virtual ~IssueRoot() = default;
-	IssueRoot(std::shared_ptr<SLE const>&& sle,
-		AccountID const& viewAccount);
+	IssueRoot(std::shared_ptr<SLE const>&& sle, AccountID const& viewAccount);
 	// VFALCO Why is this shared_ptr?
 	using pointer = std::shared_ptr <IssueRoot>;
-	static IssueRoot::pointer makeItem(
-		AccountID const& accountID,
-		std::shared_ptr<SLE const> sle);
+	static IssueRoot::pointer makeItem(AccountID const& accountID, std::shared_ptr<SLE const> sle);
+
 	STAmount getTotal()
 	{
 		return mtotal;
@@ -210,7 +208,7 @@ public:
 		return sle_->key();
 	}
 private:
-	std::shared_ptr<SLE const>   sle_;
+	std::shared_ptr<SLE const>  sle_;
 	STAmount const&             mtotal;
 	STAmount const&             missued;
 	std::uint64_t               mfans;
