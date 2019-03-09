@@ -264,7 +264,7 @@ Payment::preclaim(PreclaimContext const& ctx)
     //     }
     // }
 
-    if ((sleDst->getFlags() & lsfRequireDestTag) && !ctx.tx.isFieldPresent(sfDestinationTag))
+    if (sleDst != NULL && (sleDst->getFlags() & lsfRequireDestTag) && !ctx.tx.isFieldPresent(sfDestinationTag))
     {
         // The tag is basically account-specific information we don't
         // understand, but we can require someone to fill it in.
