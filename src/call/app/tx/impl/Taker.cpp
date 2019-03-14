@@ -527,8 +527,8 @@ Taker::Taker (CrossType cross_type, ApplyView& view,
         std::uint32_t flags,
             beast::Journal journal)
     : BasicTaker (cross_type, account, offer, Quality(offer), flags,
-        calculateRate(view, offer.in.getIssuer(), account),
-        calculateRate(view, offer.out.getIssuer(), account), journal)
+        calculateRate(view, offer.in.getIssuer(), account, offer.in.getCurrency()),
+        calculateRate(view, offer.out.getIssuer(), account, offer.in.getCurrency()), journal)
     , view_ (view)
     , call_flow_ (0)
     , direct_crossings_ (0)
@@ -779,11 +779,11 @@ Rate
 Taker::calculateRate (
     ApplyView const& view,
         AccountID const& issuer,
-            AccountID const& account)
+            AccountID const& account, Currency const& currency)
 {
     return isCALL (issuer) || (account == issuer)
         ? parityRate
-        : transferRate (view, issuer);
+        : transferRate (view, issuer, currency);
 }
 
 } // call

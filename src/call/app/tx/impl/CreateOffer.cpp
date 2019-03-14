@@ -685,7 +685,7 @@ CreateOffer::flowCross (
         STAmount sendMax = takerAmount.in;
         if (! sendMax.native() && (account_ != sendMax.getIssuer()))
         {
-            gatewayXferRate = transferRate (psb, sendMax.getIssuer());
+            gatewayXferRate = transferRate (psb, sendMax.getIssuer(), sendMax.getCurrency());
             if (gatewayXferRate.value != QUALITY_ONE)
             {
                 sendMax = multiplyRound (takerAmount.in,

@@ -154,7 +154,10 @@ TxFormats::TxFormats ()
             SOElement (sfPublicKey,         SOE_OPTIONAL);
 
     add ("IssueSet", ttISSUE_SET) <<
-		    SOElement(sfTotal, SOE_REQUIRED);
+		    SOElement (sfTotal,             SOE_REQUIRED) <<
+            SOElement (sfTransferRate,      SOE_OPTIONAL) <<
+            SOElement (sfExpiration,        SOE_OPTIONAL)
+            ;
 }
 
 void TxFormats::addCommonFields (Item& item)

@@ -45,9 +45,26 @@ TER IssueSet::preflight(PreflightContext const &ctx)
 	std::uint32_t const uTxFlags = tx.getFlags ();
 	if (uTxFlags & tfIssueSetMask)
     {
-        JLOG(j.trace()) <<
-            "Malformed transaction: Invalid flags set.";
+        JLOG(j.trace()) << "Malformed transaction: Invalid flags set.";
         return temINVALID_FLAG;
+    }
+
+	// TransferRate
+    if (tx.isFieldPresent (sfTransferRate))
+    {
+        std::uint32_t uRate = tx.getFieldU32 (sfTransferRate);
+
+        if (uRate && (uRate < QUALITY_ONE))
+        {
+            JLOG(j.trace()) << "Malformed transaction: Transfer rate too small.";
+            return temBAD_TRANSFER_RATE;
+        }
+
+        if (ctx.rules.enabled(fix1201) && (uRate > 2 * QUALITY_ONE))
+        {
+            JLOG(j.trace()) << "Malformed transaction: Transfer rate too large.";
+            return temBAD_TRANSFER_RATE;
+        }
     }
 
 	return tesSUCCESS;
@@ -81,8 +98,9 @@ TER IssueSet::doApply()
 	if (!sleIssueRoot)
 	{
 		uint256 uCIndex(getIssueIndex(account_, currency));
-		JLOG(j_.trace()) << "doTrustSet: Creating IssueRoot: " << to_string(uCIndex);
-		terResult = AccountIssuerCreate(view(), account_, satotal, uTxFlags, uCIndex, viewJ);
+		JLOG(j_.trace()) << "IssueSet: Creating IssueRoot " << to_string(uCIndex);
+		std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
+		terResult = AccountIssuerCreate(view(), account_, satotal, rate, uTxFlags, uCIndex, viewJ);
 		if (terResult == tesSUCCESS) {
 			SLE::pointer sleRoot = view().peek (keylet::account(account_));
 			adjustOwnerCount(view(), sleRoot, 1, viewJ);

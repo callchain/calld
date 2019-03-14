@@ -471,7 +471,7 @@ TER accountFundCheck(ReadView const &view, AccountID const &id, STAmount const &
     return tesSUCCESS;
 }
 
-Rate transferRate(ReadView const &view, AccountID const &issuer)
+Rate transferRate (ReadView const &view, AccountID const &issuer)
 {
     auto const sle = view.read(keylet::account(issuer));
 
@@ -479,6 +479,17 @@ Rate transferRate(ReadView const &view, AccountID const &issuer)
         return Rate{sle->getFieldU32(sfTransferRate)};
 
     return parityRate;
+}
+
+/**
+ *  Query Issue set trandfer rate 
+ */
+Rate transferRate (ReadView const& view, AccountID const& issuer, Currency const& currency)
+{
+    auto const sle = view.read(keylet::issuet(issuer, currency));
+    if (sle && sle->isFieldPresent(sfTransferRate))
+        return Rate{sle->getFieldU32(sfTransferRate)};
+    return transferRate(view, issuer); // call old transfer rate
 }
 
 bool areCompatible(ReadView const &validLedger, ReadView const &testLedger,
@@ -1237,6 +1248,7 @@ TER auto_trust(ApplyView &view, AccountID const &account, STAmount const &amount
 TER AccountIssuerCreate(ApplyView &view,
                         AccountID const &uSrcAccountID,
                         STAmount const &saTotal,
+                        std::uint32_t const rate,
                         std::uint32_t const flags,
                         uint256 const &uCIndex,
                         beast::Journal j)
@@ -1248,16 +1260,21 @@ TER AccountIssuerCreate(ApplyView &view,
     auto lowNode = dirAdd(view, keylet::ownerDir(uSrcAccountID), sleIssueRoot->key(), 
         false, describeOwnerDir(uSrcAccountID), j);
 
-    if (!lowNode) {
+    if (!lowNode) 
+    {
         return tecDIR_FULL;
     }
     STAmount total = saTotal;
-    STAmount issued(total.issue());
+    STAmount issued = total.zeroed();
     sleIssueRoot->setFieldAmount(sfTotal, total);
     sleIssueRoot->setFieldAmount(sfIssued, issued);
     sleIssueRoot->setFieldU64(sfFans, 0);
     sleIssueRoot->setFieldU32(sfFlags, flags);
     sleIssueRoot->setFieldU64(sfLowNode, *lowNode);
+    if (rate)
+    {
+        sleIssueRoot->setFieldU32(sfTransferRate, rate);
+    }
     return tesSUCCESS;
 }
 
@@ -1518,7 +1535,7 @@ callTransferFee(ReadView const &view,
 {
     if (from != issuer && to != issuer)
     {
-        Rate const rate = transferRate(view, issuer);
+        Rate const rate = transferRate(view, issuer, amount.getCurrency());
 
         if (parityRate != rate)
         {
@@ -1569,8 +1586,7 @@ callSend(ApplyView &view,
     }
     else
     {
-        saActual = multiply(saAmount,
-                            transferRate(view, issuer));
+        saActual = multiply(saAmount, transferRate(view, issuer, saAmount.getCurrency()));
     }
 
     JLOG(j.debug()) << "callSend> " << to_string(uSenderID) << " - > " << to_string(uReceiverID) << " : deliver=" << saAmount.getFullText() << " cost=" << saActual.getFullText();

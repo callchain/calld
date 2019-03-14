@@ -288,7 +288,7 @@ private:
     Rate
     calculateRate (ApplyView const& view,
         AccountID const& issuer,
-            AccountID const& account);
+            AccountID const& account, Currency const& currency);
 
     TER
     fill (BasicTaker::Flow const& flow, Offer& offer);
