@@ -1281,6 +1281,7 @@ TER AccountTokenCreate(ApplyView &view,
     sleTokenRoot->setFieldH256(sfTokenID, id);
     sleTokenRoot->setFieldU64(sfLowNode, *lowNode);
     sleTokenRoot->setFieldVL(sfMetaInfo, metaInfo);
+    view.update(sleTokenRoot);
     return tesSUCCESS;
 }
 
@@ -1289,26 +1290,38 @@ TER
 TokenTransfer(ApplyView &view, 
                         AccountID const &uSrcAccountID, 
                         AccountID const &uDstAccountID,
-                        uint256 const &uCIndex,
+                        Currency const &currency,
+                        uint256 const &id,
                         beast::Journal j)
 {
-    auto const sleTokenRoot = std::make_shared<SLE>(ltTOKEN_ROOT, uCIndex);
+    uint256 oldIndex(getTokenIndex(id, uSrcAccountID, currency));
+    auto const sleTokenRoot = std::make_shared<SLE>(ltTOKEN_ROOT, oldIndex);
     auto oldNode = sleTokenRoot->getFieldU64(sfLowNode);
     // delete from old
     TER result = dirDelete(view, false, oldNode, keylet::ownerDir(uSrcAccountID),
-                    sleTokenRoot->key(), false, false, j);
+        sleTokenRoot->key(), false, oldNode == 0, j);
     if (result != tesSUCCESS)
     {
         return result;
     }
+
     // create into new
-    auto newNode = dirAdd(view, keylet::ownerDir(uSrcAccountID), sleTokenRoot->key(), 
-        false, describeOwnerDir(uSrcAccountID), j);
+    uint256 newIndex(getTokenIndex(id, uDstAccountID, currency));
+    auto const sleNewTokenRoot = std::make_shared<SLE>(ltTOKEN_ROOT, newIndex);
+    view.insert(sleNewTokenRoot);
+    sleNewTokenRoot->setFieldU64(sfNumber, sleTokenRoot->getFieldU64(sfNumber));
+    sleNewTokenRoot->setFieldH256(sfTokenID, id);
+    sleNewTokenRoot->setFieldVL(sfMetaInfo, sleTokenRoot->getFieldVL(sfMetaInfo));
+    view.erase(sleTokenRoot);
+
+    auto newNode = dirAdd(view, keylet::ownerDir(uDstAccountID), newIndex, 
+        false, describeOwnerDir(uDstAccountID), j);
     if (!newNode) {
         return tecDIR_FULL;
     }
-    sleTokenRoot->setFieldU64(sfLowNode, *newNode);
-
+    sleNewTokenRoot->setFieldU64(sfLowNode, *newNode);
+    view.update(sleNewTokenRoot);
+    
     return tesSUCCESS;
 }
 

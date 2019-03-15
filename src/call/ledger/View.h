@@ -289,7 +289,8 @@ TER
 TokenTransfer(ApplyView &view, 
                         AccountID const &uSrcAccountID, 
                         AccountID const &uDstAccountID,
-                        uint256 const &uCIndex,
+                        Currency const &currency,
+                        uint256 const &id,
                         beast::Journal j);
 
 /** Create a trust line

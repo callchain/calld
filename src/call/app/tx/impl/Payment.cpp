@@ -394,7 +394,6 @@ Payment::doApply ()
         // source account is issue account
         if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
         {
-            issuing = true;
             // update issue set
             if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
             {
@@ -406,6 +405,7 @@ Payment::doApply ()
             // when issuer issue new one, check if id exists already return error else create one
             if (nft) 
             {
+                issuing = true;
                 uint256 id = ctx_.tx.getFieldH256 (sfTokenID);
                 SLE::pointer sleTokenRoot = view().peek(keylet::tokent(id, account_, currency));
                 // issue should not create same id token
@@ -504,8 +504,7 @@ Payment::doApply ()
         if (terResult == tesSUCCESS && nft && !issuing)
         {
             uint256 id = ctx_.tx.getFieldH256 (sfTokenID);
-            uint256 uCIndex(getTokenIndex(id, account_, currency));
-            terResult = TokenTransfer(view(), account_, uDstAccountID, uCIndex, j_);
+            terResult = TokenTransfer(view(), account_, uDstAccountID, currency, j_);
         }
     }
     else
