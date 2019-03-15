@@ -457,7 +457,7 @@ Json::Value doAccountTokens(RPC::Context &context)
 	{
 		if (!forEachItemAfter(*ledger, accountID, startAfter, startHint, reserve,
 				[&visitData](std::shared_ptr<SLE const> const &sleCur) {
-			if (sleCur != NULL)
+			if (sleCur != NULL && sleCur->getType() == ltTOKEN_ROOT)
 			{
 				visitData.items.emplace_back(sleCur);
 				return true;
