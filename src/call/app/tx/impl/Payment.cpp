@@ -324,11 +324,11 @@ Payment::doApply ()
     STAmount maxSourceAmount;
 
     // Check issue set exists
-    if (!checkIssue(ctx, saDstAmount, false))
+    if (!checkIssue(ctx_, saDstAmount, false))
     {
         return temBAD_FUNDS;
     }
-    if (sendMax && !checkIssue(ctx, *sendMax, false))
+    if (sendMax && !checkIssue(ctx_, *sendMax, false))
     {
         return temBAD_FUNDS;
     }
@@ -508,7 +508,7 @@ Payment::doApply ()
         }
 
         // update token owner, when not issue
-        if (terResult == tesSUCCESS && nft && !issuing)
+        if (terResult == tesSUCCESS && is_nft && !issuing)
         {
             uint256 id = ctx_.tx.getFieldH256 (sfTokenID);
             uint256 uCIndex(getTokenIndex(id, AIssuer, currency));
