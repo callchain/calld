@@ -47,6 +47,8 @@
 #include <call/protocol/Indexes.h>
 #include <call/protocol/types.h>
 #include <call/protocol/Protocol.h>
+#include <call/protocol/TxFlags.h>
+
 
 namespace call {
 
@@ -373,6 +375,32 @@ Transactor::checkSign (PreclaimContext const& ctx)
     }
 
     return checkSingleSign (ctx);
+}
+
+
+/**
+ * Check if amount issuet set exists and check it's non nft flags
+ */
+bool
+checkIssue (PreclaimContext const& ctx, STAmount const& amount, bool const check_non_nft)
+{
+    if (amount.native())
+        return true;
+    AccountID AIssuer = amount.getIssuer();
+    Currency currency = amount.getCurrency();
+    std::shared_ptr<SLE const> sle = ctx.view.read(keylet::issuet(AIssuer, currency));
+    if (!sle)
+    {
+        return false;
+    }
+    std::uint32_t const uIssueFlags = sle->getFieldU32(sfFlags);
+    // check non nft
+    if (check_non_nft)
+    {
+        // should no nft flags
+        return (uIssueFlags & tfNonFungible) == 0;
+    }
+    return true;
 }
 
 TER

@@ -172,6 +172,12 @@ CreateOffer::preclaim(PreclaimContext const& ctx)
 
     auto viewJ = ctx.app.journal("View");
 
+    // Check issue set exists
+    if (!checkIssue(ctx, saTakerPays, true) || !checkIssue(ctx, saTakerGets, true))
+    {
+        return temBAD_FUNDS;
+    }
+
     if (isGlobalFrozen(ctx.view, uPaysIssuerID) ||
         isGlobalFrozen(ctx.view, uGetsIssuerID))
     {

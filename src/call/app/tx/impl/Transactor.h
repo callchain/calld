@@ -139,6 +139,11 @@ public:
     TER
     checkSign (PreclaimContext const& ctx);
 
+    // chech issue exists and check non nft
+    static
+    bool
+    checkIssue (PreclaimContext const& ctx, STAmount const& amount, bool const check_non_nft);
+
     // Returns the fee in fee units, not scaled for load.
     static
     std::uint64_t

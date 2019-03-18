@@ -224,6 +224,16 @@ Payment::preclaim(PreclaimContext const& ctx)
     auto const k = keylet::account(uDstAccountID);
     auto const sleDst = ctx.view.read(k);
 
+    // Check issue set exists
+    if (!checkIssue(ctx, saDstAmount, false))
+    {
+        return temBAD_FUNDS;
+    }
+    if (sendMax && !checkIssue(ctx, *sendMax, false))
+    {
+        return temBAD_FUNDS;
+    }
+
     // if (!sleDst)
     // {
     //     // Destination account does not exist.
@@ -367,15 +377,12 @@ Payment::doApply ()
         // Call payment with at least one intermediate step and uses
         AccountID AIssuer = saDstAmount.getIssuer();
         Currency currency = saDstAmount.getCurrency();
-        SLE::pointer sleIssueRoot = view().peek(keylet::issuet(AIssuer, currency));
-        if (!sleIssueRoot)
-        {
-            return temBAD_FUNDS;
-        }
 
+        SLE::pointer sleIssueRoot = view().peek(keylet::issuet(AIssuer, currency));
         STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
         std::uint32_t const uIssueFlags = sleIssueRoot->getFieldU32(sfFlags);
-        bool const nft = (uIssueFlags & tfNonFungible);
+
+        bool const nft = ((uIssueFlags & tfNonFungible) != 0);
         if (nft)
         {
             // id not present
