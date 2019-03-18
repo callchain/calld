@@ -158,7 +158,7 @@ transResults()
         { temDISABLED,               { "temDISABLED",              "The transaction requires logic that is currently disabled."                    } },
         { temBAD_TICK_SIZE,          { "temBAD_TICK_SIZE",         "Malformed: Tick size out of range."                                            } },
         { temNICKNAMEEXISTED,        { "temNICKNAMEEXISTED",       "This name is existed"                                                          } },
-        { temBAD_FUNDS,              { "temBAD_FUNDS",             "this funds is not exist"                                                       } },
+        { temBAD_FUNDS,              { "temBAD_FUNDS",             "this currency not issued set yet"                                              } },
         { temID_EXISTED,             { "temID_EXISTED",            "Token id exists already"                                                       } },
         { temBAD_TOKENID,            { "temBAD_TOKENID",           "Token id not present for non-fungible tokens trandfer"                         } },
         { temBAD_METAINFO,           { "temBAD_METAINFO",           "Token meta info missing for initial NFT issuing"                              } },
