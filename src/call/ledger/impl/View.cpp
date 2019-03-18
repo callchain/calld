@@ -1266,6 +1266,7 @@ TER AccountTokenCreate(ApplyView &view,
                         uint256 &id,
                         Blob &metaInfo,
                         uint256 const &uCIndex,
+                        STAmount const &amount,
                         beast::Journal j)
 {
     // uCIndex -> {id, issuer_, currency_}
@@ -1278,7 +1279,7 @@ TER AccountTokenCreate(ApplyView &view,
     if (!lowNode) {
         return tecDIR_FULL;
     }
-    sleTokenRoot->setFieldU64(sfNumber, 1);
+    sleTokenRoot->setFieldAmount(sfAmount, amount);
     sleTokenRoot->setFieldH256(sfTokenID, id);
     sleTokenRoot->setFieldU64(sfLowNode, *lowNode);
     sleTokenRoot->setFieldVL(sfMetaInfo, metaInfo);

@@ -283,6 +283,7 @@ AccountTokenCreate(ApplyView &view,
                         uint256 &id,
                         Blob &metaInfo,
                         uint256 const &uCIndex,
+                        STAmount const &amount,
                         beast::Journal j);
 
 TER

@@ -195,7 +195,7 @@ LedgerFormats::LedgerFormats ()
 
     add ("TokenRoot", ltTOKEN_ROOT)
             << SOElement (sfTokenID,            SOE_REQUIRED) 
-            << SOElement (sfNumber,             SOE_REQUIRED)
+            << SOElement (sfAmount,             SOE_REQUIRED)
             << SOElement (sfMetaInfo,           SOE_REQUIRED)
             << SOElement (sfLowNode,            SOE_OPTIONAL)
             ;

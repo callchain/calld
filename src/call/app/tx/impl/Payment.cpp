@@ -429,7 +429,7 @@ Payment::doApply ()
                 Blob metaInfo = ctx_.tx.getFieldVL(sfMetaInfo);
                 uint256 uCIndex(getTokenIndex(id, account_, currency));
 	            JLOG(j_.trace()) << "doPayment: Creating TokenRoot: " << to_string(uCIndex);
-	            terResult = AccountTokenCreate(view(), uDstAccountID, id, metaInfo, uCIndex, j_);                    
+	            terResult = AccountTokenCreate(view(), uDstAccountID, id, metaInfo, uCIndex, saDstAmount, j_);                    
                 if (terResult != tesSUCCESS)
                 {
                     return terResult;

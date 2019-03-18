@@ -84,11 +84,11 @@ void addToken(Json::Value &jsonToken, std::shared_ptr<SLE const> sleToken)
 {
 	Json::Value &jPeer(jsonToken.append(Json::objectValue));
 
-	std::uint64_t number = sleToken->getFieldU64(sfNumber);
+	STAmount number = sleToken->getFieldAmount(sfAmount);
 	uint256 tokenId = sleToken->getFieldH256(sfTokenID);
 	Blob metaInfo = sleToken->getFieldVL(sfMetaInfo);
 
-	jPeer["Number"] = boost::lexical_cast<std::string>(number);
+	jPeer["Amount"] = number.getText();
 	jPeer["TokenID"] = call::to_string(tokenId);
 	jPeer["MetaInfo"] = strHex(metaInfo);
 }
