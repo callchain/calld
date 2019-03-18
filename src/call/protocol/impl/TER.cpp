@@ -162,6 +162,7 @@ transResults()
         { temID_EXISTED,             { "temID_EXISTED",            "Token id exists already"                                                       } },
         { temBAD_TOKENID,            { "temBAD_TOKENID",           "Token id not present for non-fungible tokens trandfer"                         } },
         { temBAD_METAINFO,           { "temBAD_METAINFO",           "Token meta info missing for initial NFT issuing"                              } },
+        { temNOT_SUPPORT,            { "temNOT_SUPPORT",           "Not support feature"                                                           } },
         { terRETRY,                  { "terRETRY",                 "Retry transaction."                                                            } },
         { terFUNDS_SPENT,            { "terFUNDS_SPENT",           "Can't set password, password set funds already spent."                         } },
         { terINSUF_FEE_B,            { "terINSUF_FEE_B",           "Account balance can't pay fee."                                                } },

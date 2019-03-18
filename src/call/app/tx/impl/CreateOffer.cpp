@@ -1081,7 +1081,7 @@ CreateOffer::applyGuts (Sandbox& sb, Sandbox& sbCancel)
     // Check issue set exists
     if (!checkIssue(ctx_, saTakerPays, true) || !checkIssue(ctx_, saTakerGets, true))
     {
-        return { temBAD_FUNDS, false };
+        return { temNOT_SUPPORT, false };
     }
 
     auto const cancelSequence = ctx_.tx[~sfOfferSequence];

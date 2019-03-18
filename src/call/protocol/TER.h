@@ -117,6 +117,8 @@ enum TER
     temID_EXISTED,
     temBAD_TOKENID,
     temBAD_METAINFO,
+    temNOT_SUPPORT,
+    
     // -199 .. -100: F
     //    Failure (sequence number previously used)
     //
