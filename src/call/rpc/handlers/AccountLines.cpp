@@ -88,7 +88,7 @@ void addToken(Json::Value &jsonToken, std::shared_ptr<SLE const> sleToken)
 	uint256 tokenId = sleToken->getFieldH256(sfTokenID);
 	Blob metaInfo = sleToken->getFieldVL(sfMetaInfo);
 
-	jPeer["Amount"] = number.getText();
+	jPeer["Amount"] = number.getJson(0);
 	jPeer["TokenID"] = call::to_string(tokenId);
 	jPeer["MetaInfo"] = strHex(metaInfo);
 }

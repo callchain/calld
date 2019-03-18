@@ -408,6 +408,7 @@ Payment::doApply ()
             }
             // else add issused
             sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
+            view().update(sleIssueRoot);
 
             // when issuer issue new one, check if id exists already return error else create one
             if (is_nft)
