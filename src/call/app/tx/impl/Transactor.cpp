@@ -382,7 +382,7 @@ Transactor::checkSign (PreclaimContext const& ctx)
  * Check if amount issuet set exists and check it's non nft flags
  */
 bool
-checkIssue (ApplyContext const& ctx, STAmount const& amount, bool const check_non_nft)
+Transactor::checkIssue (ApplyContext const& ctx, STAmount const& amount, bool const check_non_nft)
 {
     if (amount.native())
         return true;
