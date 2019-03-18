@@ -172,12 +172,6 @@ CreateOffer::preclaim(PreclaimContext const& ctx)
 
     auto viewJ = ctx.app.journal("View");
 
-    // Check issue set exists
-    if (!checkIssue(ctx, saTakerPays, true) || !checkIssue(ctx, saTakerGets, true))
-    {
-        return temBAD_FUNDS;
-    }
-
     if (isGlobalFrozen(ctx.view, uPaysIssuerID) ||
         isGlobalFrozen(ctx.view, uGetsIssuerID))
     {
@@ -1084,6 +1078,12 @@ CreateOffer::applyGuts (Sandbox& sb, Sandbox& sbCancel)
     auto saTakerPays = ctx_.tx[sfTakerPays];
     auto saTakerGets = ctx_.tx[sfTakerGets];
 
+    // Check issue set exists
+    if (!checkIssue(ctx_, saTakerPays, true) || !checkIssue(ctx_, saTakerGets, true))
+    {
+        return { temBAD_FUNDS, false };
+    }
+
     auto const cancelSequence = ctx_.tx[~sfOfferSequence];
 
     // FIXME understand why we use SequenceNext instead of current transaction
@@ -1103,8 +1103,7 @@ CreateOffer::applyGuts (Sandbox& sb, Sandbox& sbCancel)
     // Process a cancellation request that's passed along with an offer.
     if (cancelSequence)
     {
-        auto const sleCancel = sb.peek(
-            keylet::offer(account_, *cancelSequence));
+        auto const sleCancel = sb.peek(keylet::offer(account_, *cancelSequence));
 
         // It's not an error to not find the offer to cancel: it might have
         // been consumed or removed. If it is found, however, it's an error

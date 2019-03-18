@@ -382,13 +382,13 @@ Transactor::checkSign (PreclaimContext const& ctx)
  * Check if amount issuet set exists and check it's non nft flags
  */
 bool
-checkIssue (PreclaimContext const& ctx, STAmount const& amount, bool const check_non_nft)
+checkIssue (ApplyContext const& ctx, STAmount const& amount, bool const check_non_nft)
 {
     if (amount.native())
         return true;
     AccountID AIssuer = amount.getIssuer();
     Currency currency = amount.getCurrency();
-    std::shared_ptr<SLE const> sle = ctx.view.read(keylet::issuet(AIssuer, currency));
+    std::shared_ptr<SLE const> sle = ctx.view().read(keylet::issuet(AIssuer, currency));
     if (!sle)
     {
         return false;

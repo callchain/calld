@@ -224,16 +224,6 @@ Payment::preclaim(PreclaimContext const& ctx)
     auto const k = keylet::account(uDstAccountID);
     auto const sleDst = ctx.view.read(k);
 
-    // Check issue set exists
-    if (!checkIssue(ctx, saDstAmount, false))
-    {
-        return temBAD_FUNDS;
-    }
-    if (sendMax && !checkIssue(ctx, *sendMax, false))
-    {
-        return temBAD_FUNDS;
-    }
-
     // if (!sleDst)
     // {
     //     // Destination account does not exist.
@@ -333,6 +323,16 @@ Payment::doApply ()
     STAmount const saDstAmount (ctx_.tx.getFieldAmount (sfAmount));
     STAmount maxSourceAmount;
 
+    // Check issue set exists
+    if (!checkIssue(ctx, saDstAmount, false))
+    {
+        return temBAD_FUNDS;
+    }
+    if (sendMax && !checkIssue(ctx, *sendMax, false))
+    {
+        return temBAD_FUNDS;
+    }
+
     if (sendMax)
         maxSourceAmount = *sendMax;
     else if (saDstAmount.native ())
@@ -382,8 +382,8 @@ Payment::doApply ()
         STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
         std::uint32_t const uIssueFlags = sleIssueRoot->getFieldU32(sfFlags);
 
-        bool const nft = ((uIssueFlags & tfNonFungible) != 0);
-        if (nft)
+        bool const is_nft = ((uIssueFlags & tfNonFungible) != 0);
+        if (is_nft)
         {
             // id not present
             if (!ctx_.tx.isFieldPresent(sfTokenID))
@@ -410,7 +410,7 @@ Payment::doApply ()
             sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
 
             // when issuer issue new one, check if id exists already return error else create one
-            if (nft) 
+            if (is_nft)
             {
                 issuing = true;
                 uint256 id = ctx_.tx.getFieldH256 (sfTokenID);
