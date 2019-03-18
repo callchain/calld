@@ -290,7 +290,7 @@ TokenTransfer(ApplyView &view,
                         AccountID const &uSrcAccountID, 
                         AccountID const &uDstAccountID,
                         Currency const &currency,
-                        uint256 const &id,
+                        uint256 const &uCIndex,
                         beast::Journal j);
 
 /** Create a trust line

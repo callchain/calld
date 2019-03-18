@@ -504,7 +504,8 @@ Payment::doApply ()
         if (terResult == tesSUCCESS && nft && !issuing)
         {
             uint256 id = ctx_.tx.getFieldH256 (sfTokenID);
-            terResult = TokenTransfer(view(), account_, uDstAccountID, currency, id, j_);
+            uint256 uCIndex(getTokenIndex(id, AIssuer, currency));
+            terResult = TokenTransfer(view(), account_, uDstAccountID, currency, uCIndex, j_);
         }
     }
     else

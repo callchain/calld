@@ -1268,6 +1268,7 @@ TER AccountTokenCreate(ApplyView &view,
                         uint256 const &uCIndex,
                         beast::Journal j)
 {
+    // uCIndex -> {id, issuer_, currency_}
     auto const sleTokenRoot = std::make_shared<SLE>(ltTOKEN_ROOT, uCIndex);
     view.insert(sleTokenRoot);
 
@@ -1291,11 +1292,10 @@ TokenTransfer(ApplyView &view,
                         AccountID const &uSrcAccountID, 
                         AccountID const &uDstAccountID,
                         Currency const &currency,
-                        uint256 const &id,
+                        uint256 const &uCIndex,
                         beast::Journal j)
 {
-    uint256 oldIndex(getTokenIndex(id, uSrcAccountID, currency));
-    auto const sleTokenRoot = std::make_shared<SLE>(ltTOKEN_ROOT, oldIndex);
+    auto const sleTokenRoot = std::make_shared<SLE>(ltTOKEN_ROOT, uCIndex);
     auto oldNode = sleTokenRoot->getFieldU64(sfLowNode);
     // delete from old
     TER result = dirDelete(view, false, oldNode, keylet::ownerDir(uSrcAccountID),
@@ -1306,22 +1306,12 @@ TokenTransfer(ApplyView &view,
     }
 
     // create into new
-    uint256 newIndex(getTokenIndex(id, uDstAccountID, currency));
-    auto const sleNewTokenRoot = std::make_shared<SLE>(ltTOKEN_ROOT, newIndex);
-    view.insert(sleNewTokenRoot);
-    sleNewTokenRoot->setFieldU64(sfNumber, sleTokenRoot->getFieldU64(sfNumber));
-    sleNewTokenRoot->setFieldH256(sfTokenID, id);
-    sleNewTokenRoot->setFieldVL(sfMetaInfo, sleTokenRoot->getFieldVL(sfMetaInfo));
-    view.erase(sleTokenRoot);
-
-    auto newNode = dirAdd(view, keylet::ownerDir(uDstAccountID), newIndex, 
+    auto newNode = dirAdd(view, keylet::ownerDir(uDstAccountID), uCIndex, 
         false, describeOwnerDir(uDstAccountID), j);
     if (!newNode) {
         return tecDIR_FULL;
     }
-    sleNewTokenRoot->setFieldU64(sfLowNode, *newNode);
-    view.update(sleNewTokenRoot);
-    
+
     return tesSUCCESS;
 }
 
