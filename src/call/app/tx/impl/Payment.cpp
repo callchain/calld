@@ -505,7 +505,8 @@ Payment::doApply ()
         {
             uint256 id = ctx_.tx.getFieldH256 (sfTokenID);
             uint256 uCIndex(getTokenIndex(id, AIssuer, currency));
-            terResult = TokenTransfer(view(), account_, uDstAccountID, currency, uCIndex, j_);
+            terResult = TokenTransfer(view(), account_, uDstAccountID, currency, 
+                uCIndex, uDstAccountID == AIssuer, j_);
         }
     }
     else

@@ -1293,6 +1293,7 @@ TokenTransfer(ApplyView &view,
                         AccountID const &uDstAccountID,
                         Currency const &currency,
                         uint256 const &uCIndex,
+                        const bool revoke,
                         beast::Journal j)
 {
     auto const sleTokenRoot = std::make_shared<SLE>(ltTOKEN_ROOT, uCIndex);
@@ -1305,13 +1306,20 @@ TokenTransfer(ApplyView &view,
         return result;
     }
 
-    // create into new
-    auto newNode = dirAdd(view, keylet::ownerDir(uDstAccountID), uCIndex, 
-        false, describeOwnerDir(uDstAccountID), j);
-    if (!newNode) {
-        return tecDIR_FULL;
+    // add to new dir
+    if (revoke)
+    {
+        view.erase(sleTokenRoot);
     }
-
+    else 
+    {
+        auto newNode = dirAdd(view, keylet::ownerDir(uDstAccountID), uCIndex, 
+            false, describeOwnerDir(uDstAccountID), j);
+        if (!newNode) {
+            return tecDIR_FULL;
+        }
+    }
+    
     return tesSUCCESS;
 }
 
