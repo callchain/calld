@@ -105,9 +105,14 @@ IssueRoot::IssueRoot(std::shared_ptr<SLE const>&& sle,
 	, mtotal(sle_->getFieldAmount(sfTotal))
 	, missued(sle_->getFieldAmount(sfIssued))
 	, mfans(sle_->getFieldU64(sfFans))
-    , mrate(sle->getFieldU32(sfTransferRate))
     , mflags(sle_->getFieldU32(sfFlags))
-{}
+{
+    if (sle->isFieldPresent(sfTransferRate)) {
+        mrate = sle->getFieldU32(sfTransferRate);
+    } else {
+        mrate = 0;
+    }
+}
 IssueRoot::pointer
 IssueRoot::makeItem(
 	AccountID const& accountID,
