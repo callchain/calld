@@ -469,6 +469,7 @@ Json::Value doAccountIssues(RPC::Context &context)
 	{
 		if (!forEachItemAfter(*ledger, accountID, startAfter, startHint, reserve,
 				[&visitData](std::shared_ptr<SLE const> const &sleCur) {
+			if (sleCur->getType() != ltISSUEROOT) return false;
 			auto const line = IssueRoot::makeItem(visitData.accountID, sleCur);
 			if (line != nullptr)
 			{
