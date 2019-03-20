@@ -510,7 +510,7 @@ BookStep<TIn, TOut, TDerived>::forEachOffer (
         : QUALITY_ONE;
     // Always charge the transfer fee, even if the owner is the issuer
     std::uint32_t const trOut = ownerPaysTransferFee_
-        ? rate (book_.out.account, book_.in.currency)
+        ? rate (book_.out.account, book_.out.currency)
         : QUALITY_ONE;
 
     typename FlowOfferStream<TIn, TOut>::StepCounter

@@ -528,7 +528,7 @@ Taker::Taker (CrossType cross_type, ApplyView& view,
             beast::Journal journal)
     : BasicTaker (cross_type, account, offer, Quality(offer), flags,
         calculateRate(view, offer.in.getIssuer(), account, offer.in.getCurrency()),
-        calculateRate(view, offer.out.getIssuer(), account, offer.in.getCurrency()), journal)
+        calculateRate(view, offer.out.getIssuer(), account, offer.out.getCurrency()), journal)
     , view_ (view)
     , call_flow_ (0)
     , direct_crossings_ (0)
