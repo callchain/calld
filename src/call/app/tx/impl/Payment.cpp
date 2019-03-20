@@ -380,6 +380,7 @@ Payment::doApply ()
                 }
                 // else add issused
                 sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
+                view().update(sleIssueRoot);
             }
         } else {
             return temBAD_FUNDS;
