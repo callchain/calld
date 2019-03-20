@@ -68,7 +68,7 @@ void addIssue(Json::Value &jsonIssued,  std::shared_ptr<SLE const> sleIssue, STA
 	jPeer["Issued"] = sleIssue->getFieldAmount(sfIssued).getJson(0);
 	jPeer["Freeze"] = freeze.getJson(0);
 	jPeer["Flags"] = boost::lexical_cast<std::string>(sleIssue->getFieldU32(sfFlags));
-	jPeer["Fans"] = boost::lexical_cast<std::string>(sleIssue->getFieldU32(sfFans));
+	jPeer["Fans"] = boost::lexical_cast<std::string>(sleIssue->getFieldU64(sfFans));
 	jPeer["TransferRate"] = boost::lexical_cast<std::string>(sleIssue->getFieldU32(sfTransferRate));
 }
 
