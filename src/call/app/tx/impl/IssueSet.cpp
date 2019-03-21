@@ -117,7 +117,7 @@ TER IssueSet::doApply()
 		auto oldtotal = sleIssueRoot->getFieldAmount(sfTotal);
 		std::uint32_t const flags = sleIssueRoot->getFieldU32(sfFlags);
 		// not allow to edit total
-		if ((flags & tfEnaddition) == 0 && (satotal >= oldtotal))
+		if ((flags & tfEnaddition) == 0 && (satotal > oldtotal))
 		{
 			return tecNO_AUTH;
 		}
@@ -128,6 +128,7 @@ TER IssueSet::doApply()
 			sleIssueRoot->setFieldAmount(sfTotal, satotal);
 		}
 		
+		// if has transfer rate, update it
 		std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
 		if (rate) 
 		{
