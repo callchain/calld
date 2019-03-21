@@ -1591,9 +1591,7 @@ TER accountSend(ApplyView &view,
         {
             // VFALCO Its laborious to have to mutate the
             //        TER based on params everywhere
-            terResult = view.open()
-                            ? telFAILED_PROCESSING
-                            : tecFAILED_PROCESSING;
+            terResult = view.open() ? telFAILED_PROCESSING : tecFAILED_PROCESSING;
         }
         else
         {
