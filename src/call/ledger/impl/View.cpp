@@ -1510,6 +1510,17 @@ TER callCredit(ApplyView &view,
         }
     }
 
+    // redeem back to issue set issued amount
+    Rate const rate = transferRate(view, issuer, currency);
+    if (terResult == tesSUCCESS && uReceiverID == issuer && rate != parityRate)
+    {
+        STAmount redeemIssued = saAmount - divide(saAmount, rate);
+        SLE::pointer sleIssueRoot = view.peek(keylet::issuet(issuer, currency));
+        STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
+        sleIssueRoot->setFieldAmount(sfIssued, issued - redeemIssued);
+        view.update(sleIssueRoot);
+    }
+
     return terResult;
 }
 
@@ -1586,15 +1597,15 @@ callSend(ApplyView &view,
     if (tesSUCCESS == terResult)
         terResult = callCredit(view, uSenderID, issuer, saActual, true, j);
     
-    // redeam issue set issued
-    if (tesSUCCESS == terResult && saActual > saAmount)
-    {
-        STAmount const fee = saActual - saAmount;
-        SLE::pointer sleIssueRoot = view.peek(keylet::issuet(fee.getIssuer(), fee.getCurrency()));
-        STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
-        sleIssueRoot->setFieldAmount(sfIssued, issued - fee);
-        view.update(sleIssueRoot);
-    }
+    // // redeam issue set issued
+    // if (tesSUCCESS == terResult && saActual > saAmount)
+    // {
+    //     STAmount const fee = saActual - saAmount;
+    //     SLE::pointer sleIssueRoot = view.peek(keylet::issuet(fee.getIssuer(), fee.getCurrency()));
+    //     STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
+    //     sleIssueRoot->setFieldAmount(sfIssued, issued - fee);
+    //     view.update(sleIssueRoot);
+    // }
 
     return terResult;
 }
