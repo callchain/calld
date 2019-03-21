@@ -116,21 +116,27 @@ TER IssueSet::doApply()
 	{
 		auto oldtotal = sleIssueRoot->getFieldAmount(sfTotal);
 		std::uint32_t const flags = sleIssueRoot->getFieldU32(sfFlags);
+		bool const editable = (flags & tfEnaddition) != 0;
+		bool const is_nft = (flags & tfNonFungible) != 0;
 		// not allow to edit total
-		if ((flags & tfEnaddition) == 0 && (satotal > oldtotal))
+		if (!editable && (satotal > oldtotal))
 		{
 			return tecNO_AUTH;
 		}
 
 		// allow to edit and total is bigger than old total
-		if ((flags & tfEnaddition) != 0 && (satotal > oldtotal))
+		if (editable && (satotal > oldtotal))
 		{
 			sleIssueRoot->setFieldAmount(sfTotal, satotal);
 		}
 		
 		// if has transfer rate, update it
 		std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
-		if (rate) 
+		if (rate && is_nft) 
+		{
+			return tecNO_AUTH;
+		}
+		if (rate && !is_nft) 
 		{
 			sleIssueRoot->setFieldU32(sfTransferRate, rate);
 		}
