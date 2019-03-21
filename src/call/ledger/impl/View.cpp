@@ -44,6 +44,7 @@
 #include <call/protocol/st.h>
 #include <call/protocol/Protocol.h>
 #include <call/protocol/Quality.h>
+#include <call/protocol/TxFlags.h>
 #include <boost/algorithm/string.hpp>
 #include <cassert>
 
@@ -492,6 +493,10 @@ Rate transferRate (ReadView const &view, AccountID const &issuer)
 Rate transferRate (ReadView const& view, AccountID const& issuer, Currency const& currency)
 {
     auto const sle = view.read(keylet::issuet(issuer, currency));
+    std::uint32_t const uIssueFlags = sle->getFieldU32(sfFlags);
+    bool const is_nft = ((uIssueFlags & tfNonFungible) != 0);
+    if (is_nft)
+        return parityRate; // no fee for nft token
     if (sle && sle->isFieldPresent(sfTransferRate))
         return Rate{sle->getFieldU32(sfTransferRate)};
     return transferRate(view, issuer); // call old transfer rate

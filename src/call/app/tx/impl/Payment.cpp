@@ -381,7 +381,6 @@ Payment::doApply ()
         SLE::pointer sleIssueRoot = view().peek(keylet::issuet(AIssuer, currency));
         STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
         std::uint32_t const uIssueFlags = sleIssueRoot->getFieldU32(sfFlags);
-
         bool const is_nft = ((uIssueFlags & tfNonFungible) != 0);
         if (is_nft)
         {
