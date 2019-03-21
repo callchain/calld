@@ -314,54 +314,6 @@ SetAccount::doApply ()
 			}
 		}
 	}
-	//
-	//total issue amount
-	//
-	// if (ctx_.tx.isFieldPresent(sfTotal))
-	// {
-	// 	STAmount satotal = ctx_.tx.getFieldAmount(sfTotal);
-    //     if(satotal.native())
-	// 		return tecBADTOTAL;
-	// 	if (!satotal)
-	// 	{
-	// 		JLOG(j_.trace()) << "unset total issue amount";
-	// 		sle->makeFieldAbsent(sfTotal);
-	// 	}
-    //     else if (satotal.native())
-	// 	{
-	// 		return temBAD_CURRENCY;
-	// 	}
-	// 	else
-	// 	{
-	// 		JLOG(j_.trace()) << "set total issue amount";
-	// 		if (!sle->isFieldPresent(sfTotal)) 
-	// 		{
-	// 			sle->setFieldAmount(sfTotal, satotal);
-	// 			if (!sle->isFieldPresent(sfIssued))
-	// 			{
-	// 				JLOG(j_.trace()) << "set  issued amount is 0  at first time";
-	// 				STAmount issued(satotal.issue());
-	// 				sle->setFieldAmount(sfIssued, issued);
-	// 			}
-	// 		}
-	// 		else
-	// 		{
-    //             if(satotal.getCurrency() == sle->getFieldAmount(sfTotal).getCurrency())
-	// 			{
-	// 				if (satotal > sle->getFieldAmount(sfTotal))
-	// 				{
-	// 					JLOG(j_.trace()) << "increase total issue amount ";
-	// 					sle->setFieldAmount(sfTotal, satotal);
-	// 				}
-	// 				else
-	// 					return  tecBADTOTAL;
-	// 			}
-    //             else
-	// 			    return temBAD_CURRENCY;	
-	// 		}
-	// 	}
-	// }
-
 
     //
     // RequireDestTag

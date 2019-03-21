@@ -56,7 +56,7 @@ struct VisitData
 };
 struct IssueData
 {
-	std::vector<IssueRoot::pointer> items;
+	std::vector<std::shared_ptr<SLE const> > items;
 	AccountID const &accountID;
 };
 struct TokenData
@@ -65,19 +65,16 @@ struct TokenData
 	AccountID const &accountID;
 };
 
-void addIssue(Json::Value &jsonIssued, IssueRoot &issued, STAmount const &freeze)
-{
-	STAmount saTotal(issued.getTotal());
-	STAmount saIssued(issued.getissued());
-	std::uint64_t fans = issued.getFans();
-	std::uint32_t flags = issued.getFlags();
+void addIssue(Json::Value &jsonIssued,  std::shared_ptr<SLE const> sleIssue, STAmount const &freeze)
+{	
 	Json::Value &jPeer(jsonIssued.append(Json::objectValue));
 
-	jPeer["Total"] = saTotal.getJson(0);
-	jPeer["Issued"] = saIssued.getJson(0);
+	jPeer["Total"] = sleIssue->getFieldAmount(sfTotal).getJson(0);
+	jPeer["Issued"] = sleIssue->getFieldAmount(sfIssued).getJson(0);
 	jPeer["Freeze"] = freeze.getJson(0);
-	jPeer["Flags"] = boost::lexical_cast<std::string>(flags);
-	jPeer["Fans"] = boost::lexical_cast<std::string>(fans);
+	jPeer["Flags"] = boost::lexical_cast<std::string>(sleIssue->getFieldU32(sfFlags));
+	jPeer["Fans"] = boost::lexical_cast<std::string>(sleIssue->getFieldU64(sfFans));
+	jPeer["TransferRate"] = boost::lexical_cast<std::string>(sleIssue->getFieldU32(sfTransferRate));
 }
 
 void addToken(Json::Value &jsonToken, std::shared_ptr<SLE const> sleToken)
@@ -561,18 +558,10 @@ Json::Value doAccountIssues(RPC::Context &context)
 		startHint = sleIssue->getFieldU64(sfLowNode);
 
 		// Caller provided the first line (startAfter), add it as first result
-		auto const issueroot = IssueRoot::makeItem(accountID, sleIssue);
-		if (issueroot == nullptr)
-			return rpcError(rpcINVALID_PARAMS);
-
-		STAmount const &saBalance(issueroot->getTotal());
-		Currency currency = saBalance.getCurrency();
-		Issue issue(currency, accountID);
-
+		STAmount const &saBalance(sleIssue->getFieldAmount(sfTotal));
 		STAmount freeze;
 		freeze = zero;
-		freeze.setIssue(issue);
-
+		freeze.setIssue(saBalance.issue());
 		for (auto const &offer : offers)
 		{
 			STAmount takergets = offer->getFieldAmount(sfTakerGets);
@@ -582,7 +571,7 @@ Json::Value doAccountIssues(RPC::Context &context)
 			}
 		}
 
-		addIssue(jsonIssues, *issueroot, freeze);
+		addIssue(jsonIssues, sleIssue, freeze);
 		visitData.items.reserve(reserve);
 	}
 	else
@@ -595,10 +584,9 @@ Json::Value doAccountIssues(RPC::Context &context)
 	{
 		if (!forEachItemAfter(*ledger, accountID, startAfter, startHint, reserve,
 				[&visitData](std::shared_ptr<SLE const> const &sleCur) {
-			auto const line = IssueRoot::makeItem(visitData.accountID, sleCur);
-			if (line != nullptr)
+			if (sleCur != NULL && sleCur->getType() == ltISSUEROOT)
 			{
-				visitData.items.emplace_back(line);
+				visitData.items.emplace_back(sleCur);
 				return true;
 			}
 			return false;
@@ -612,8 +600,8 @@ Json::Value doAccountIssues(RPC::Context &context)
 	{
 		result[jss::limit] = limit;
 
-		IssueRoot::pointer Issue(visitData.items.back());
-		result[jss::marker] = to_string(Issue->key());
+		std::shared_ptr<SLE const> last = visitData.items.back();
+		result[jss::marker] = to_string(last->key());
 		visitData.items.pop_back();
 	}
 
@@ -621,13 +609,10 @@ Json::Value doAccountIssues(RPC::Context &context)
 
 	for (auto const &item : visitData.items)
 	{
-		STAmount const &saBalance(item->getTotal());
-		Currency currency = saBalance.getCurrency();
-		Issue issue(currency, accountID);
-
+		STAmount const &saBalance(item->getFieldAmount(sfTotal));
 		STAmount freeze;
 		freeze = zero;
-		freeze.setIssue(issue);
+		freeze.setIssue(saBalance.issue());
 
 		for (auto const &offer : offers)
 		{
@@ -637,7 +622,7 @@ Json::Value doAccountIssues(RPC::Context &context)
 				freeze += takergets;
 			}
 		}
-		addIssue(jsonIssues, *item.get(), freeze);
+		addIssue(jsonIssues, item, freeze);
 	}
 
 	//	for (auto const& item : visitData.items)

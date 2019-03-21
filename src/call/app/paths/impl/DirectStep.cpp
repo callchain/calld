@@ -789,7 +789,7 @@ DirectStepI<TDerived>::qualities (
             prevStepRedeems));
 
         std::uint32_t const srcQOut =
-            prevStepRedeems ? transferRate (sb, src_).value : QUALITY_ONE;
+            prevStepRedeems ? transferRate (sb, src_, currency_).value : QUALITY_ONE;
         auto dstQIn = static_cast<TDerived const*>(this)->quality (
             sb, /* dst quality in */ true);
 
@@ -815,7 +815,7 @@ DirectStepI<TDerived>::qualityUpperBound(ReadView const& v, bool& redeems) const
     auto const prevRedeems = redeems;
     redeems = this->redeems(v, true);
     std::uint32_t const srcQOut =
-        (prevRedeems && !redeems) ? transferRate(v, src_).value : QUALITY_ONE;
+        (prevRedeems && !redeems) ? transferRate(v, src_, currency_).value : QUALITY_ONE;
     auto dstQIn = static_cast<TDerived const*>(this)->quality (
         v, /* dst quality in */ true);
 

@@ -331,7 +331,10 @@ callLiquid(ReadView const &view, AccountID const &id,
             amount.clear();
 
         JLOG(j.trace()) << "accountHolds:"
-                        << " account=" << to_string(id) << " amount=" << amount.getFullText() << " fullBalance=" << fullBalance.getFullText() << " balance=" << balance.getFullText() << " reserve=" << to_string(reserve) << " ownerCount=" << to_string(ownerCount) << " ownerCountAdj=" << to_string(ownerCountAdj);
+                        << " account=" << to_string(id) << " amount=" << amount.getFullText() 
+                        << " fullBalance=" << fullBalance.getFullText() << " balance=" << balance.getFullText() 
+                        << " reserve=" << to_string(reserve) << " ownerCount=" << to_string(ownerCount) 
+                        << " ownerCountAdj=" << to_string(ownerCountAdj);
 
         return amount.call();
     }
@@ -348,7 +351,9 @@ callLiquid(ReadView const &view, AccountID const &id,
             amount.clear();
 
         JLOG(j.trace()) << "accountHolds:"
-                        << " account=" << to_string(id) << " amount=" << amount.getFullText() << " balance=" << balance.getFullText() << " reserve=" << to_string(reserve) << " ownerCount=" << to_string(ownerCount) << " ownerCountAdj=" << to_string(ownerCountAdj);
+                        << " account=" << to_string(id) << " amount=" << amount.getFullText() 
+                        << " balance=" << balance.getFullText() << " reserve=" << to_string(reserve) 
+                        << " ownerCount=" << to_string(ownerCount) << " ownerCountAdj=" << to_string(ownerCountAdj);
 
         return view.balanceHook(id, callAccount(), amount).call();
     }
@@ -471,7 +476,7 @@ TER accountFundCheck(ReadView const &view, AccountID const &id, STAmount const &
     return tesSUCCESS;
 }
 
-Rate transferRate(ReadView const &view, AccountID const &issuer)
+Rate transferRate (ReadView const &view, AccountID const &issuer)
 {
     auto const sle = view.read(keylet::account(issuer));
 
@@ -479,6 +484,17 @@ Rate transferRate(ReadView const &view, AccountID const &issuer)
         return Rate{sle->getFieldU32(sfTransferRate)};
 
     return parityRate;
+}
+
+/**
+ *  Query Issue set trandfer rate 
+ */
+Rate transferRate (ReadView const& view, AccountID const& issuer, Currency const& currency)
+{
+    auto const sle = view.read(keylet::issuet(issuer, currency));
+    if (sle && sle->isFieldPresent(sfTransferRate))
+        return Rate{sle->getFieldU32(sfTransferRate)};
+    return transferRate(view, issuer); // call old transfer rate
 }
 
 bool areCompatible(ReadView const &validLedger, ReadView const &testLedger,
@@ -1181,8 +1197,7 @@ TER trustCreate(ApplyView &view,
     // ONLY: Create call balance.
     sleCallState->setFieldAmount(sfBalance, bSetHigh ? -saBalance : saBalance);
 
-    view.creditHook(uSrcAccountID,
-                    uDstAccountID, saBalance, saBalance.zeroed());
+    view.creditHook(uSrcAccountID, uDstAccountID, saBalance, saBalance.zeroed());
 
     return tesSUCCESS;
 }
@@ -1198,36 +1213,24 @@ TER auto_trust(ApplyView &view, AccountID const &account, STAmount const &amount
     STAmount saLimitAllow = amount;
     saLimitAllow.setIssuer(srcAccount);
     STAmount saBalance({currency, noAccount()});
-    auto const sle = view.peek(
-        keylet::account(srcAccount));
+
+    auto const sle = view.peek(keylet::account(srcAccount));
     if (!sle)
     {
         return tecNO_DST;
     }
-    SLE::pointer sleCallState = view.peek(
-        keylet::line(srcAccount, desAccount, currency));
+    SLE::pointer sleCallState = view.peek(keylet::line(srcAccount, desAccount, currency));
     if (!sleCallState)
     {
         bool const bHigh = srcAccount > desAccount;
-        uint256 index(getCallStateIndex(
-            srcAccount, desAccount, currency));
+        uint256 index(getCallStateIndex(srcAccount, desAccount, currency));
 
         JLOG(j.trace()) << "doTrustSet: Creating call line: " << to_string(index);
 
         // Create a new call line.
-        terResult = trustCreate(view,
-                                bHigh,
-                                srcAccount,
-                                desAccount,
-                                index,
-                                sle,
-                                false,
-                                false,
-                                false,
-                                saBalance,
-                                saLimitAllow, // Limit for who is being charged.
-                                0,
-                                0, j);
+        terResult = trustCreate(view, bHigh, srcAccount, desAccount, index, sle, false,
+            false, false, saBalance, saLimitAllow, // Limit for who is being charged.
+            0, 0, j);
     }
     return terResult;
 }
@@ -1236,6 +1239,7 @@ TER auto_trust(ApplyView &view, AccountID const &account, STAmount const &amount
 TER AccountIssuerCreate(ApplyView &view,
                         AccountID const &uSrcAccountID,
                         STAmount const &saTotal,
+                        std::uint32_t const rate,
                         std::uint32_t const flags,
                         uint256 const &uCIndex,
                         beast::Journal j)
@@ -1247,16 +1251,21 @@ TER AccountIssuerCreate(ApplyView &view,
     auto lowNode = dirAdd(view, keylet::ownerDir(uSrcAccountID), sleIssueRoot->key(), 
         false, describeOwnerDir(uSrcAccountID), j);
 
-    if (!lowNode) {
+    if (!lowNode) 
+    {
         return tecDIR_FULL;
     }
     STAmount total = saTotal;
-    STAmount issued(total.issue());
+    STAmount issued = total.zeroed();
     sleIssueRoot->setFieldAmount(sfTotal, total);
     sleIssueRoot->setFieldAmount(sfIssued, issued);
     sleIssueRoot->setFieldU64(sfFans, 0);
     sleIssueRoot->setFieldU32(sfFlags, flags);
     sleIssueRoot->setFieldU64(sfLowNode, *lowNode);
+    if (rate)
+    {
+        sleIssueRoot->setFieldU32(sfTransferRate, rate);
+    }
     return tesSUCCESS;
 }
 
@@ -1339,27 +1348,15 @@ TER trustDelete(ApplyView &view,
 
     JLOG(j.trace())
         << "trustDelete: Deleting call line: low";
-    terResult = dirDelete(view,
-                          false,
-                          uLowNode,
-                          keylet::ownerDir(uLowAccountID),
-                          sleCallState->key(),
-                          false,
-                          !bLowNode,
-                          j);
+    terResult = dirDelete(view, false, uLowNode, keylet::ownerDir(uLowAccountID),
+            sleCallState->key(), false, !bLowNode, j);
 
     if (tesSUCCESS == terResult)
     {
         JLOG(j.trace())
             << "trustDelete: Deleting call line: high";
-        terResult = dirDelete(view,
-                              false,
-                              uHighNode,
-                              keylet::ownerDir(uHighAccountID),
-                              sleCallState->key(),
-                              false,
-                              !bHighNode,
-                              j);
+        terResult = dirDelete(view, false, uHighNode, keylet::ownerDir(uHighAccountID),
+                sleCallState->key(), false, !bHighNode, j);
     }
 
     JLOG(j.trace()) << "trustDelete: Deleting call line: state";
@@ -1427,26 +1424,6 @@ TER callCredit(ApplyView &view,
         STAmount saReceiverLimit({currency, uReceiverID});
         STAmount saBalance = saAmount;
 
-        // saBalance.setIssuer(noAccount());
-        // SLE::pointer sleIssueRoot = view.peek(keylet::issuet(uSenderID, currency));
-        // STAmount satmplimit;
-        // if (sleIssueRoot)
-        // {
-        //     JLOG(j.debug()) << "update the sleIssueRoot";
-        //     satmplimit = sleIssueRoot->getFieldAmount(sfTotal);
-        //     if (satmplimit.issue() == saAmount.issue())
-        //     {
-        //         JLOG(j.debug()) << "update Issued and fans";
-        //         saReceiverLimit = satmplimit;
-        //         saReceiverLimit.setIssuer(uReceiverID);
-        //         auto issued = sleIssueRoot->getFieldAmount(sfIssued);
-        //         auto fans = sleIssueRoot->getFieldU64(sfFans);
-        //         view.update(sleIssueRoot);
-        //         sleIssueRoot->setFieldAmount(sfIssued, issued + saAmount);
-        //         sleIssueRoot->setFieldU64(sfFans, fans + 1);
-        //     }
-        // }
-
         JLOG(j.debug()) << "callCredit: create line: "
                         << to_string(uSenderID) << " -> " << to_string(uReceiverID) 
                         << " : " << saAmount.getFullText();
@@ -1464,48 +1441,6 @@ TER callCredit(ApplyView &view,
 
         if (bSenderHigh)
             saBalance.negate(); // Put balance in sender terms.
-
-        // if (saBalance > zero)
-        // {
-        //     SLE::pointer sleIssueRoot = view.peek(keylet::issuet(uReceiverID, currency));
-        //     if (sleIssueRoot)
-        //     {
-        //         JLOG(j.debug()) << "trustline:update sleIssueRoot,redeem funds";
-        //         view.update(sleIssueRoot);
-        //         auto issued = sleIssueRoot->getFieldAmount(sfIssued);
-        //         if (saAmount.issue() == issued.issue())
-        //         {
-        //             JLOG(j.debug()) << "update issued";
-        //             sleIssueRoot->setFieldAmount(sfIssued, issued - saAmount);
-        //         }
-        //     }
-        // }
-        // else
-        // {
-        //     JLOG(j.debug()) << "update trustlines issue funds";
-        //     SLE::pointer sleIssueRoot = view.peek(keylet::issuet(uSenderID, currency));
-        //     if (sleIssueRoot)
-        //     {
-        //         JLOG(j.debug()) << "update sleIssueRoot";
-        //         view.update(sleIssueRoot);
-        //         auto issued = sleIssueRoot->getFieldAmount(sfIssued);
-        //         auto total = sleIssueRoot->getFieldAmount(sfTotal);
-        //         if (saAmount.issue() == issued.issue())
-        //         {
-        //             JLOG(j.debug()) << "update issued";
-        //             //sleIssueRoot->setFieldAmount(sfIssued, issued + saAmount);
-        //             if (issued + saAmount <= total)
-        //             {
-        //                 sleIssueRoot->setFieldAmount(sfIssued, issued + saAmount);
-        //             }
-        //             else
-        //             {
-
-        //                 return tecOVERISSUED_AMOUNT;
-        //             }
-        //         }
-        //     }
-        // }
 
         view.creditHook(uSenderID, uReceiverID, saAmount, saBalance);
         STAmount saBefore = saBalance;
@@ -1581,7 +1516,7 @@ callTransferFee(ReadView const &view,
 {
     if (from != issuer && to != issuer)
     {
-        Rate const rate = transferRate(view, issuer);
+        Rate const rate = transferRate(view, issuer, amount.getCurrency());
 
         if (parityRate != rate)
         {
@@ -1632,16 +1567,26 @@ callSend(ApplyView &view,
     }
     else
     {
-        saActual = multiply(saAmount,
-                            transferRate(view, issuer));
+        saActual = multiply(saAmount, transferRate(view, issuer, saAmount.getCurrency()));
     }
 
-    JLOG(j.debug()) << "callSend> " << to_string(uSenderID) << " - > " << to_string(uReceiverID) << " : deliver=" << saAmount.getFullText() << " cost=" << saActual.getFullText();
+    JLOG(j.debug()) << "callSend> " << to_string(uSenderID) << " - > " << to_string(uReceiverID) 
+        << " : deliver=" << saAmount.getFullText() << " cost=" << saActual.getFullText();
 
     TER terResult = callCredit(view, issuer, uReceiverID, saAmount, true, j);
 
     if (tesSUCCESS == terResult)
         terResult = callCredit(view, uSenderID, issuer, saActual, true, j);
+    
+    // redeam issue set issued
+    if (tesSUCCESS == terResult && saActual > saAmount)
+    {
+        STAmount const fee = saActual - saAmount;
+        SLE::pointer sleIssueRoot = view.peek(keylet::issuet(fee.getIssuer(), fee.getCurrency()));
+        STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
+        sleIssueRoot->setFieldAmount(sfIssued, issued - fee);
+        view.update(sleIssueRoot);
+    }
 
     return terResult;
 }
@@ -1709,9 +1654,7 @@ TER accountSend(ApplyView &view,
         {
             // VFALCO Its laborious to have to mutate the
             //        TER based on params everywhere
-            terResult = view.open()
-                            ? telFAILED_PROCESSING
-                            : tecFAILED_PROCESSING;
+            terResult = view.open() ? telFAILED_PROCESSING : tecFAILED_PROCESSING;
         }
         else
         {
@@ -1793,7 +1736,7 @@ updateTrustLine(
 
         // Clear reserve flag.
         state->setFieldU32(sfFlags,
-                           flags & (!bSenderHigh ? ~lsfLowReserve : ~lsfHighReserve));
+                flags & (!bSenderHigh ? ~lsfLowReserve : ~lsfHighReserve));
 
         // Balance is zero, receiver reserve is clear.
         if (!after // Balance is zero.
@@ -1819,8 +1762,7 @@ TER issueIOU(ApplyView &view,
     JLOG(j.trace()) << "issueIOU: " << to_string(account) << ": " << amount.getFullText();
 
     bool bSenderHigh = issue.account > account;
-    uint256 const index = getCallStateIndex(
-        issue.account, account, issue.currency);
+    uint256 const index = getCallStateIndex(issue.account, account, issue.currency);
     auto state = view.peek(keylet::line(index));
 
     if (!state)
@@ -1844,28 +1786,34 @@ TER issueIOU(ApplyView &view,
     STAmount final_balance = state->getFieldAmount(sfBalance);
 
     if (bSenderHigh)
+    {
         final_balance.negate(); // Put balance in sender terms.
+    }
 
     STAmount const start_balance = final_balance;
 
     final_balance -= amount;
 
     auto const must_delete = updateTrustLine(view, state, bSenderHigh, issue.account,
-                                             start_balance, final_balance, j);
+            start_balance, final_balance, j);
 
     view.creditHook(issue.account, account, amount, start_balance);
 
     if (bSenderHigh)
+    {
         final_balance.negate();
+    }
 
     // Adjust the balance on the trust line if necessary. We do this even if we
     // are going to delete the line to reflect the correct balance at the time
     // of deletion.
     state->setFieldAmount(sfBalance, final_balance);
-    if (must_delete)
+    if (must_delete) 
+    {
         return trustDelete(view, state,
                            bSenderHigh ? account : issue.account,
                            bSenderHigh ? issue.account : account, j);
+    }
 
     view.update(state);
 
@@ -1889,8 +1837,7 @@ TER redeemIOU(ApplyView &view,
     JLOG(j.trace()) << "redeemIOU: " << to_string(account) << ": " << amount.getFullText();
 
     bool bSenderHigh = account > issue.account;
-    uint256 const index = getCallStateIndex(
-        account, issue.account, issue.currency);
+    uint256 const index = getCallStateIndex(account, issue.account, issue.currency);
     auto state = view.peek(keylet::line(index));
 
     if (!state)
@@ -1899,27 +1846,29 @@ TER redeemIOU(ApplyView &view,
         // balance. If it doesn't, then something is very wrong. Don't try
         // to continue.
         JLOG(j.fatal()) << "redeemIOU: " << to_string(account) << " attempts to redeem " << amount.getFullText() << " but no trust line exists!";
-
         return tefINTERNAL;
     }
 
     STAmount final_balance = state->getFieldAmount(sfBalance);
 
     if (bSenderHigh)
+    {
         final_balance.negate(); // Put balance in sender terms.
+    }
 
     STAmount const start_balance = final_balance;
-
     final_balance -= amount;
 
-    auto const must_delete = updateTrustLine(view, state, bSenderHigh, account,
-                                             start_balance, final_balance, j);
+    auto const must_delete = updateTrustLine(view, state, bSenderHigh, 
+        account, start_balance, final_balance, j);
 
     view.creditHook(account, issue.account, amount, start_balance);
 
     if (bSenderHigh)
+    {
         final_balance.negate();
-
+    }
+        
     // Adjust the balance on the trust line if necessary. We do this even if we
     // are going to delete the line to reflect the correct balance at the time
     // of deletion.
@@ -1957,18 +1906,14 @@ TER transferCALL(ApplyView &view,
         // VFALCO Its unfortunate we have to keep
         //        mutating these TER everywhere
         // FIXME: this logic should be moved to callers maybe?
-        return view.open()
-                   ? telFAILED_PROCESSING
-                   : tecFAILED_PROCESSING;
+        return view.open() ? telFAILED_PROCESSING : tecFAILED_PROCESSING;
     }
 
     // Decrement CALL balance.
-    sender->setFieldAmount(sfBalance,
-                           sender->getFieldAmount(sfBalance) - amount);
+    sender->setFieldAmount(sfBalance, sender->getFieldAmount(sfBalance) - amount);
     view.update(sender);
 
-    receiver->setFieldAmount(sfBalance,
-                             receiver->getFieldAmount(sfBalance) + amount);
+    receiver->setFieldAmount(sfBalance, receiver->getFieldAmount(sfBalance) + amount);
     view.update(receiver);
 
     return tesSUCCESS;

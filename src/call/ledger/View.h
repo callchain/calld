@@ -116,10 +116,17 @@ forEachItemAfter (ReadView const& view, AccountID const& id,
         unsigned int limit, std::function<
             bool (std::shared_ptr<SLE const> const&)> f);
 
-TER accountFundCheck(ReadView const & view,AccountID const& id,STAmount const &satakerget, beast::Journal j);
+TER 
+accountFundCheck (ReadView const & view, AccountID const& id,
+    STAmount const &satakerget, beast::Journal j);
+
 Rate
 transferRate (ReadView const& view,
     AccountID const& issuer);
+
+Rate
+transferRate (ReadView const& view,
+    AccountID const& issuer, Currency const& currency);
 
 /** Returns `true` if the directory is empty
     @param key The key of the directory
@@ -271,6 +278,7 @@ TER
 AccountIssuerCreate( ApplyView& view,
 	AccountID const&  uSrcAccountID,
 	STAmount const& saTotal,
+    std::uint32_t const rate,
     std::uint32_t const flags,
 	uint256 const&  uIndex,
 	beast::Journal j

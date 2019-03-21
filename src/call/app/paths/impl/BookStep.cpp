@@ -253,18 +253,18 @@ public:
         // (the old code does not charge a fee)
         // Calculate amount that goes to the taker and the amount charged the
         // offer owner
-        auto rate = [&](AccountID const& id) {
+        auto rate = [&](AccountID const& id, Currency const& currency) {
             if (isCALL(id) || id == this->strandDst_)
                 return parityRate;
-            return transferRate(v, id);
+            return transferRate(v, id, currency);
         };
 
         auto const trIn =
-            prevStepRedeems ? rate(this->book_.in.account) : parityRate;
+            prevStepRedeems ? rate(this->book_.in.account, this->book_.in.currency) : parityRate;
         // Always charge the transfer fee, even if the owner is the issuer
         auto const trOut =
             this->ownerPaysTransferFee_
-            ? rate(this->book_.out.account)
+            ? rate(this->book_.out.account, this->book_.out.currency)
             : parityRate;
 
         Quality const q1{getRate(STAmount(trOut.value), STAmount(trIn.value))};
@@ -498,19 +498,19 @@ BookStep<TIn, TOut, TDerived>::forEachOffer (
     // Charge a fee even if the owner is the same as the issuer
     // (the old code does not charge a fee)
     // Calculate amount that goes to the taker and the amount charged the offer owner
-    auto rate = [this, &sb](AccountID const& id)->std::uint32_t
+    auto rate = [this, &sb](AccountID const& id, Currency const& currency)->std::uint32_t
     {
         if (isCALL (id) || id == this->strandDst_)
             return QUALITY_ONE;
-        return transferRate (sb, id).value;
+        return transferRate (sb, id, currency).value;
     };
 
     std::uint32_t const trIn = prevStepRedeems
-        ? rate (book_.in.account)
+        ? rate (book_.in.account, book_.in.currency)
         : QUALITY_ONE;
     // Always charge the transfer fee, even if the owner is the issuer
     std::uint32_t const trOut = ownerPaysTransferFee_
-        ? rate (book_.out.account)
+        ? rate (book_.out.account, book_.out.currency)
         : QUALITY_ONE;
 
     typename FlowOfferStream<TIn, TOut>::StepCounter

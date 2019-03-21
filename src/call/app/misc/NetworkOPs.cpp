@@ -3036,7 +3036,7 @@ void NetworkOPsImp::getBookPage (
     unsigned int    uBookEntry;
     STAmount        saDirRate;
 
-    auto const rate = transferRate(view, book.out.account);
+    auto const rate = transferRate(view, book.out.account, book.out.currency);
     auto viewJ = app_.journal ("View");
 
     while (! bDone && iLimit-- > 0)
@@ -3079,12 +3079,9 @@ void NetworkOPsImp::getBookPage (
 
             if (sleOffer)
             {
-                auto const uOfferOwnerID =
-                        sleOffer->getAccountID (sfAccount);
-                auto const& saTakerGets =
-                        sleOffer->getFieldAmount (sfTakerGets);
-                auto const& saTakerPays =
-                        sleOffer->getFieldAmount (sfTakerPays);
+                auto const uOfferOwnerID = sleOffer->getAccountID (sfAccount);
+                auto const& saTakerGets = sleOffer->getFieldAmount (sfTakerGets);
+                auto const& saTakerPays = sleOffer->getFieldAmount (sfTakerPays);
                 STAmount saOwnerFunds;
                 bool firstOwnerOffer (true);
 
@@ -3113,15 +3110,12 @@ void NetworkOPsImp::getBookPage (
                     else
                     {
                         // Did not find balance in table.
-
-                        saOwnerFunds = accountHolds (view,
-                            uOfferOwnerID, book.out.currency,
+                        saOwnerFunds = accountHolds (view, uOfferOwnerID, book.out.currency,
                                 book.out.account, fhZERO_IF_FROZEN, viewJ);
 
                         if (saOwnerFunds < zero)
                         {
                             // Treat negative funds as zero.
-
                             saOwnerFunds.clear ();
                         }
                     }
@@ -3142,8 +3136,7 @@ void NetworkOPsImp::getBookPage (
                 {
                     // Need to charge a transfer fee to offer owner.
                     offerRate = rate;
-                    saOwnerFundsLimit = divide (
-                        saOwnerFunds, offerRate);
+                    saOwnerFundsLimit = divide (saOwnerFunds, offerRate);
                 }
 
                 if (saOwnerFundsLimit >= saTakerGets)
@@ -3154,7 +3147,6 @@ void NetworkOPsImp::getBookPage (
                 else
                 {
                     // Only provide, if not fully funded.
-
                     saTakerGetsFunded = saOwnerFundsLimit;
 
                     saTakerGetsFunded.setJson (jvOffer[jss::taker_gets_funded]);
@@ -3184,8 +3176,7 @@ void NetworkOPsImp::getBookPage (
                 JLOG(m_journal.warn()) << "Missing offer";
             }
 
-            if (! cdirNext(view,
-                    uTipIndex, sleOfferDir, uBookEntry, offerIndex, viewJ))
+            if (! cdirNext(view, uTipIndex, sleOfferDir, uBookEntry, offerIndex, viewJ))
             {
                 bDirectAdvance  = true;
             }
@@ -3223,15 +3214,15 @@ void NetworkOPsImp::getBookPage (
     MetaView  lesActive (lpLedger, tapNONE, true);
     OrderBookIterator obIterator (lesActive, book);
 
-    auto const rate = transferRate(lesActive, book.out.account);
+    auto const rate = transferRate(lesActive, book.out.account, book.out.currency);
 
-    const bool bGlobalFreeze = lesActive.isGlobalFrozen (book.out.account) ||
-                               lesActive.isGlobalFrozen (book.in.account);
+    const bool bGlobalFreeze = lesActive.isGlobalFrozen (book.out.account) 
+            || lesActive.isGlobalFrozen (book.in.account);
 
     while (iLimit-- > 0 && obIterator.nextOffer ())
     {
 
-        SLE::pointer    sleOffer        = obIterator.getCurrentOffer();
+        SLE::pointer sleOffer = obIterator.getCurrentOffer();
         if (sleOffer)
         {
             auto const uOfferOwnerID = sleOffer->getAccountID (sfAccount);
@@ -3258,20 +3249,17 @@ void NetworkOPsImp::getBookPage (
                 if (umBalanceEntry != umBalance.end ())
                 {
                     // Found in running balance table.
-
                     saOwnerFunds    = umBalanceEntry->second;
                 }
                 else
                 {
                     // Did not find balance in table.
-
-                    saOwnerFunds = lesActive.accountHolds (
-                        uOfferOwnerID, book.out.currency, book.out.account, fhZERO_IF_FROZEN);
+                    saOwnerFunds = lesActive.accountHolds (uOfferOwnerID, 
+                        book.out.currency, book.out.account, fhZERO_IF_FROZEN);
 
                     if (saOwnerFunds.isNegative ())
                     {
                         // Treat negative funds as zero.
-
                         saOwnerFunds.zero ();
                     }
                 }
@@ -3304,7 +3292,6 @@ void NetworkOPsImp::getBookPage (
             {
                 // Only provide, if not fully funded.
                 saTakerGetsFunded   = saOwnerFundsLimit;
-
                 saTakerGetsFunded.setJson (jvOffer[jss::taker_gets_funded]);
 
                 // TOOD(tom): The result of this expression is not used - what's

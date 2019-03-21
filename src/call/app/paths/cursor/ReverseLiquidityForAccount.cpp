@@ -332,7 +332,7 @@ TER PathCursor::reverseLiquidityForAccount () const
                 callLiquidity (
                     callCalc_,
                     parityRate,
-                    transferRate (view(), node().account_),
+                    transferRate (view(), node().account_, node().issue_.currency),
                     saPrvRedeemReq,
                     node().saRevIssue,
                     previousNode().saRevRedeem,
@@ -418,7 +418,7 @@ TER PathCursor::reverseLiquidityForAccount () const
             callLiquidity (
                 callCalc_,
                 parityRate,
-                transferRate (view(), node().account_),
+                transferRate (view(), node().account_, node().issue_.currency),
                 saPrvRedeemReq,
                 node().saRevDeliver,
                 previousNode().saRevRedeem,
@@ -561,7 +561,7 @@ TER PathCursor::reverseLiquidityForAccount () const
                 callLiquidity (
                     callCalc_,
                     parityRate,
-                    transferRate (view(), node().account_),
+                    transferRate (view(), node().account_, node().issue_.currency),
                     saPrvDeliverReq,
                     node().saRevIssue,
                     previousNode().saRevDeliver,
@@ -594,7 +594,7 @@ TER PathCursor::reverseLiquidityForAccount () const
         callLiquidity (
             callCalc_,
             parityRate,
-            transferRate (view(), node().account_),
+            transferRate (view(), node().account_, node().issue_.currency),
             saPrvDeliverReq,
             node().saRevDeliver,
             previousNode().saRevDeliver,

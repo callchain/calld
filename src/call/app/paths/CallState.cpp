@@ -99,24 +99,5 @@ getCallStateItems (AccountID const& accountID,
     return items;
 }
 
-IssueRoot::IssueRoot(std::shared_ptr<SLE const>&& sle,
-	AccountID const& viewAccount)
-	:sle_(std::move(sle))
-	, mtotal(sle_->getFieldAmount(sfTotal))
-	, missued(sle_->getFieldAmount(sfIssued))
-	, mfans(sle_->getFieldU64(sfFans))
-    , mflags(sle_->getFieldU32(sfFlags))
-{}
-IssueRoot::pointer
-IssueRoot::makeItem(
-	AccountID const& accountID,
-	std::shared_ptr<SLE const> sle)
-{
-	// VFALCO Does this ever happen in practice?
-	if (!sle || sle->getType() != ltISSUEROOT)
-		return{};
-	return std::make_shared<IssueRoot>(
-		std::move(sle), accountID);
-}
 
 } // call

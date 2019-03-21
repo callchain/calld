@@ -176,46 +176,6 @@ std::vector <CallState::pointer>
 getCallStateItems (AccountID const& accountID,
     ReadView const& view);
 
-
-class IssueRoot {
-public:
-	IssueRoot() = delete;
-
-	virtual ~IssueRoot() = default;
-	IssueRoot(std::shared_ptr<SLE const>&& sle, AccountID const& viewAccount);
-	// VFALCO Why is this shared_ptr?
-	using pointer = std::shared_ptr <IssueRoot>;
-	static IssueRoot::pointer makeItem(AccountID const& accountID, std::shared_ptr<SLE const> sle);
-
-	STAmount getTotal()
-	{
-		return mtotal;
-	}
-	STAmount getissued()
-	{
-		return missued;
-	}
-	std::uint64_t getFans()
-	{
-		return mfans;
-	}
-    std::uint32_t getFlags()
-    {
-        return mflags;
-    }
-	uint256 key() const
-	{
-		return sle_->key();
-	}
-private:
-	std::shared_ptr<SLE const>  sle_;
-	STAmount const&             mtotal;
-	STAmount const&             missued;
-	std::uint64_t               mfans;
-    std::uint32_t               mflags;
-
-};
-
 } // call
 
 #endif

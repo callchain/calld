@@ -72,9 +72,7 @@ TER PathCursor::deliverNodeForward (
     {
         // Did not spend all inbound deliver funds.
         if (++loopCount >
-            (multiQuality_ ?
-                CALC_NODE_DELIVER_MAX_LOOPS_MQ :
-                CALC_NODE_DELIVER_MAX_LOOPS))
+            (multiQuality_ ? CALC_NODE_DELIVER_MAX_LOOPS_MQ : CALC_NODE_DELIVER_MAX_LOOPS))
         {
             JLOG (j_.warn())
                 << "deliverNodeForward: max loops cndf";
@@ -89,6 +87,7 @@ TER PathCursor::deliverNodeForward (
 
         if (resultCode != tesSUCCESS)
         {
+            // TODO
         }
         else if (!node().offerIndex_)
         {

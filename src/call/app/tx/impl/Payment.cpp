@@ -435,6 +435,10 @@ Payment::doApply ()
                 {
                     return terResult;
                 }
+
+                // else add issused
+                sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
+                view().update(sleIssueRoot);
             }
         }
 
@@ -456,7 +460,7 @@ Payment::doApply ()
                     return result;
                 }
 
-                sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
+			    sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
                 view().update(sleIssueRoot);
 		    }
         }

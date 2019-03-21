@@ -45,9 +45,26 @@ TER IssueSet::preflight(PreflightContext const &ctx)
 	std::uint32_t const uTxFlags = tx.getFlags ();
 	if (uTxFlags & tfIssueSetMask)
     {
-        JLOG(j.trace()) <<
-            "Malformed transaction: Invalid flags set.";
+        JLOG(j.trace()) << "Malformed transaction: Invalid flags set.";
         return temINVALID_FLAG;
+    }
+
+	// TransferRate
+    if (tx.isFieldPresent (sfTransferRate))
+    {
+        std::uint32_t uRate = tx.getFieldU32 (sfTransferRate);
+
+        if (uRate && (uRate < QUALITY_ONE))
+        {
+            JLOG(j.trace()) << "Malformed transaction: Transfer rate too small.";
+            return temBAD_TRANSFER_RATE;
+        }
+
+        if (ctx.rules.enabled(fix1201) && (uRate > 2 * QUALITY_ONE))
+        {
+            JLOG(j.trace()) << "Malformed transaction: Transfer rate too large.";
+            return temBAD_TRANSFER_RATE;
+        }
     }
 
 	return tesSUCCESS;
@@ -62,46 +79,61 @@ TER IssueSet::doApply()
 {
 	TER terResult = tesSUCCESS;
 	std::uint32_t const uTxFlags = ctx_.tx.getFlags();
+
+	if (!ctx_.tx.isFieldPresent(sfTotal))
+	{
+		return temBAD_AMOUNT;
+	}
+
 	STAmount satotal = ctx_.tx.getFieldAmount(sfTotal);
 	Currency currency = satotal.getCurrency();
-	auto viewJ = ctx_.app.journal("View");
 	if (satotal.native())
 	{
 		return temBAD_CURRENCY;
 	}
-
-	// account only allowed to issue self currency
 	if (satotal.getIssuer() != account_)
 	{
 		return tecNO_AUTH;
 	}
+
+	auto viewJ = ctx_.app.journal("View");
 
 	SLE::pointer sleIssueRoot = view().peek(keylet::issuet(account_, currency));
 	// not isused yet
 	if (!sleIssueRoot)
 	{
 		uint256 uCIndex(getIssueIndex(account_, currency));
-		JLOG(j_.trace()) << "doIssueSet: Creating IssueRoot: " << to_string(uCIndex);
-		terResult = AccountIssuerCreate(view(), account_, satotal, uTxFlags, uCIndex, viewJ);
+		JLOG(j_.trace()) << "IssueSet: Creating IssueRoot " << to_string(uCIndex);
+		std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
+		terResult = AccountIssuerCreate(view(), account_, satotal, rate, uTxFlags, uCIndex, viewJ);
+		if (terResult == tesSUCCESS) {
+			SLE::pointer sleRoot = view().peek (keylet::account(account_));
+			adjustOwnerCount(view(), sleRoot, 1, viewJ);
+		}
 	}
 	// old issue setting
 	else
 	{
 		auto oldtotal = sleIssueRoot->getFieldAmount(sfTotal);
 		std::uint32_t const flags = sleIssueRoot->getFieldU32(sfFlags);
-		// not allow to edit
-		if ((flags & tfEnaddition) == 0)
+		// not allow to edit total
+		if ((flags & tfEnaddition) == 0 && (satotal >= oldtotal))
 		{
 			return tecNO_AUTH;
 		}
 
-		// not allow to update total amount of issue smaller than current amount
-		if (satotal <= oldtotal)
+		// allow to edit and total is bigger than old total
+		if ((flags & tfEnaddition) != 0 && (satotal > oldtotal))
 		{
-			return tecBADTOTAL;
+			sleIssueRoot->setFieldAmount(sfTotal, satotal);
 		}
-
-		sleIssueRoot->setFieldAmount(sfTotal, satotal);
+		
+		std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
+		if (rate) 
+		{
+			sleIssueRoot->setFieldU32(sfTransferRate, rate);
+		}
+		
 		view().update(sleIssueRoot);
 		JLOG(j_.trace()) << "apendent the total";
 	}
