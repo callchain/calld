@@ -1596,16 +1596,6 @@ callSend(ApplyView &view,
 
     if (tesSUCCESS == terResult)
         terResult = callCredit(view, uSenderID, issuer, saActual, true, j);
-    
-    // // redeam issue set issued
-    // if (tesSUCCESS == terResult && saActual > saAmount)
-    // {
-    //     STAmount const fee = saActual - saAmount;
-    //     SLE::pointer sleIssueRoot = view.peek(keylet::issuet(fee.getIssuer(), fee.getCurrency()));
-    //     STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
-    //     sleIssueRoot->setFieldAmount(sfIssued, issued - fee);
-    //     view.update(sleIssueRoot);
-    // }
 
     return terResult;
 }
@@ -1899,8 +1889,19 @@ TER redeemIOU(ApplyView &view,
                            bSenderHigh ? issue.account : account,
                            bSenderHigh ? account : issue.account, j);
     }
-
     view.update(state);
+
+    // update issue set redeem
+    Rate const rate = transferRate(view, issue.account, issue.currency);
+    if (rate != parityRate)
+    {
+        STAmount redeemIssued = amount - divide(amount, rate);
+        SLE::pointer sleIssueRoot = view.peek(keylet::issuet(issue.account, issue.currency));
+        STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
+        sleIssueRoot->setFieldAmount(sfIssued, issued - redeemIssued);
+        view.update(sleIssueRoot);
+    }
+
     return tesSUCCESS;
 }
 
