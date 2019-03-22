@@ -131,13 +131,14 @@ TER IssueSet::doApply()
 		}
 		
 		// if has transfer rate, update it
-		std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
-		if (rate && is_nft) 
+		const bool has_rate = ctx_.tx.isFieldPresent(sfTransferRate);
+		if (has_rate && is_nft) 
 		{
 			return tecNO_AUTH;
 		}
-		if (rate && !is_nft) 
+		if (has_rate && !is_nft) 
 		{
+			std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
 			sleIssueRoot->setFieldU32(sfTransferRate, rate);
 		}
 		
