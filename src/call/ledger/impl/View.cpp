@@ -499,8 +499,10 @@ Rate transferRate (ReadView const& view, AccountID const& issuer, Currency const
         bool const is_nft = ((uIssueFlags & tfNonFungible) != 0);
         if (is_nft)
             return parityRate; // no fee for nft token
-        if (sle->isFieldPresent(sfTransferRate))
-            return Rate{sle->getFieldU32(sfTransferRate)};
+
+        std::uint32_t rate = sle->getFieldU32(sfTransferRate);
+        if (rate)
+            return Rate{rate};
     }
     return transferRate(view, issuer); // call old transfer rate
 }
