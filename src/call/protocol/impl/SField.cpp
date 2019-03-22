@@ -1,7 +1,22 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Call Labs Inc.
+    This file is part of calld: https://github.com/callchain/calld
+    Copyright (c) 2018, 2019 Callchain Fundation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose  with  or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE  SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH  REGARD  TO  THIS  SOFTWARE  INCLUDING  ALL  IMPLIED  WARRANTIES  OF
+    MERCHANTABILITY  AND  FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY  SPECIAL ,  DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER  RESULTING  FROM  LOSS  OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION  OF  CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+    This file is part of rippled: https://github.com/ripple/rippled
+    Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -81,6 +96,7 @@ SField const sfIndex       = make::one(&sfIndex,       STI_HASH256,     258, "in
 SF_U8 const sfCloseResolution   = make::one<SF_U8::type>(&sfCloseResolution,   STI_UINT8, 1, "CloseResolution");
 SF_U8 const sfMethod            = make::one<SF_U8::type>(&sfMethod,            STI_UINT8, 2, "Method");
 SF_U8 const sfTransactionResult = make::one<SF_U8::type>(&sfTransactionResult, STI_UINT8, 3, "TransactionResult");
+SF_U8 const sfDecimal           = make::one<SF_U8::type>(&sfDecimal,           STI_UINT8, 4, "Decimal");
 
 // 8-bit integers (uncommon)
 SF_U8 const sfTickSize          = make::one<SF_U8::type>(&sfTickSize,          STI_UINT8, 16, "TickSize");
@@ -141,6 +157,7 @@ SF_U64 const sfExchangeRate     = make::one<SF_U64::type>(&sfExchangeRate,     S
 SF_U64 const sfLowNode          = make::one<SF_U64::type>(&sfLowNode,          STI_UINT64, 7, "LowNode");
 SF_U64 const sfHighNode         = make::one<SF_U64::type>(&sfHighNode,         STI_UINT64, 8, "HighNode");
 SF_U64 const sfDestinationNode  = make::one<SF_U64::type>(&sfDestinationNode,  STI_UINT64, 9, "DestinationNode");
+SF_U64 const sfFans             = make::one<SF_U64::type>(&sfFans,             STI_UINT64, 10, "Fans");
 
 // 128-bit
 SF_U128 const sfEmailHash = make::one<SF_U128::type>(&sfEmailHash, STI_HASH128, 1, "EmailHash");
@@ -165,12 +182,14 @@ SF_U256 const sfAccountTxnID    = make::one<SF_U256::type>(&sfAccountTxnID,    S
 // 256-bit (uncommon)
 SF_U256 const sfBookDirectory = make::one<SF_U256::type>(&sfBookDirectory, STI_HASH256, 16, "BookDirectory");
 SF_U256 const sfInvoiceID     = make::one<SF_U256::type>(&sfInvoiceID,     STI_HASH256, 17, "InvoiceID");
-SF_U256 const sfNickname      = make::one<SF_U256::type>(&sfNickname,      STI_HASH256, 18, "Nickname");
+SF_U256 const sfNickname      = make::one<SF_U256::type>(&sfNickname,      STI_HASH256, 18, "Nickname"); // be careful
 SF_U256 const sfAmendment     = make::one<SF_U256::type>(&sfAmendment,     STI_HASH256, 19, "Amendment");
 SF_U256 const sfTicketID      = make::one<SF_U256::type>(&sfTicketID,      STI_HASH256, 20, "TicketID");
 SF_U256 const sfDigest        = make::one<SF_U256::type>(&sfDigest,        STI_HASH256, 21, "Digest");
 SF_U256 const sfPayChannel    = make::one<SF_U256::type>(&sfPayChannel,    STI_HASH256, 22, "Channel");
 SF_U256 const sfConsensusHash = make::one<SF_U256::type>(&sfConsensusHash, STI_HASH256, 23, "ConsensusHash");
+SF_U256 const sfTokenID       = make::one<SF_U256::type>(&sfTokenID,       STI_HASH256, 24, "TokenID");
+
 
 // currency amount (common)
 SF_Amount const sfAmount      = make::one<SF_Amount::type>(&sfAmount,      STI_AMOUNT,  1, "Amount");
@@ -182,13 +201,14 @@ SF_Amount const sfLowLimit    = make::one<SF_Amount::type>(&sfLowLimit,    STI_A
 SF_Amount const sfHighLimit   = make::one<SF_Amount::type>(&sfHighLimit,   STI_AMOUNT,  7, "HighLimit");
 SF_Amount const sfFee         = make::one<SF_Amount::type>(&sfFee,         STI_AMOUNT,  8, "Fee");
 SF_Amount const sfSendMax     = make::one<SF_Amount::type>(&sfSendMax,     STI_AMOUNT,  9, "SendMax");
-SF_Amount const sfDeliverMin  = make::one<SF_Amount::type>(&sfDeliverMin,  STI_AMOUNT, 10, "DeliverMin");
-SF_Amount const sfTotal = make::one<SF_Amount::type>(&sfTotal, STI_AMOUNT, 11, "Total");
-SF_Amount const sfIssued = make::one<SF_Amount::type>(&sfIssued, STI_AMOUNT, 12, "Issued");
+SF_Amount const sfDeliverMin  = make::one<SF_Amount::type>(&sfDeliverMin,  STI_AMOUNT,  10, "DeliverMin");
+SF_Amount const sfTotal       = make::one<SF_Amount::type>(&sfTotal,       STI_AMOUNT,  11, "Total");
+SF_Amount const sfIssued      = make::one<SF_Amount::type>(&sfIssued,      STI_AMOUNT,  12, "Issued");
+SF_Amount const sfFreezed     = make::one<SF_Amount::type>(&sfFreezed,     STI_AMOUNT,  13, "Freezed");
 
 // currency amount (uncommon)
 SF_Amount const sfMinimumOffer    = make::one<SF_Amount::type>(&sfMinimumOffer,    STI_AMOUNT, 16, "MinimumOffer");
-SF_Amount const sfCallEscrow    = make::one<SF_Amount::type>(&sfCallEscrow,    STI_AMOUNT, 17, "CallEscrow");
+SF_Amount const sfCallEscrow      = make::one<SF_Amount::type>(&sfCallEscrow,      STI_AMOUNT, 17, "CallEscrow");
 SF_Amount const sfDeliveredAmount = make::one<SF_Amount::type>(&sfDeliveredAmount, STI_AMOUNT, 18, "DeliveredAmount");
 
 // variable length (common)
@@ -212,6 +232,7 @@ SF_Blob const sfFulfillment     = make::one<SF_Blob::type>(&sfFulfillment,     S
 SF_Blob const sfCondition       = make::one<SF_Blob::type>(&sfCondition,       STI_VL, 17, "Condition");
 SF_Blob const sfMasterSignature = make::one<SF_Blob::type>(&sfMasterSignature, STI_VL, 18, "MasterSignature", SField::sMD_Default, SField::notSigning);
 SF_Blob const sfNickName        = make::one<SF_Blob::type>(&sfNickName,        STI_VL, 19, "NickName");
+SF_Blob const sfMetaInfo        = make::one<SF_Blob::type>(&sfMetaInfo,        STI_VL, 20, "MetaInfo");
 
 // account
 SF_Account const sfAccount     = make::one<SF_Account::type>(&sfAccount,     STI_ACCOUNT, 1, "Account");

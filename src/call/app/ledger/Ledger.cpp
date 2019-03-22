@@ -1,7 +1,22 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Call Labs Inc.
+    This file is part of calld: https://github.com/callchain/calld
+    Copyright (c) 2018, 2019 Callchain Fundation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose  with  or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE  SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH  REGARD  TO  THIS  SOFTWARE  INCLUDING  ALL  IMPLIED  WARRANTIES  OF
+    MERCHANTABILITY  AND  FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY  SPECIAL ,  DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER  RESULTING  FROM  LOSS  OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION  OF  CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+    This file is part of rippled: https://github.com/ripple/rippled
+    Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -199,6 +214,7 @@ Ledger::Ledger (
 {
     info_.seq = 1;
     info_.drops = SYSTEM_CURRENCY_START;
+    info_.fees = 0;
     info_.closeTimeResolution = ledgerDefaultTimeResolution;
 
     static auto const id = calcAccountID(
@@ -283,6 +299,7 @@ Ledger::Ledger (Ledger const& prevLedger,
         prevLedger.info_.closeTime;
     info_.hash = prevLedger.info().hash + uint256(1);
     info_.drops = prevLedger.info().drops;
+    info_.fees = prevLedger.info().fees;
     info_.closeTimeResolution = prevLedger.info_.closeTimeResolution;
     info_.parentHash = prevLedger.info().hash;
     info_.closeTimeResolution = getNextLedgerTimeResolution(
@@ -958,10 +975,10 @@ static bool saveValidatedLedger (
     {
         static std::string addLedger(
             R"sql(INSERT OR REPLACE INTO Ledgers
-                (LedgerHash,LedgerSeq,PrevHash,TotalCoins,ClosingTime,PrevClosingTime,
+                (LedgerHash,LedgerSeq,PrevHash,TotalCoins,Fees,ClosingTime,PrevClosingTime,
                 CloseTimeRes,CloseFlags,AccountSetHash,TransSetHash)
             VALUES
-                (:ledgerHash,:ledgerSeq,:prevHash,:totalCoins,:closingTime,:prevClosingTime,
+                (:ledgerHash,:ledgerSeq,:prevHash,:totalCoins,:fees,:closingTime,:prevClosingTime,
                 :closeTimeRes,:closeFlags,:accountSetHash,:transSetHash);)sql");
         static std::string updateVal(
             R"sql(UPDATE Validations SET LedgerSeq = :ledgerSeq, InitialSeq = :initialSeq
@@ -974,6 +991,7 @@ static bool saveValidatedLedger (
         auto const hash = to_string (ledger->info().hash);
         auto const parentHash = to_string (ledger->info().parentHash);
         auto const drops = to_string (ledger->info().drops);
+        auto const fees = to_string(ledger->info().fees);
         auto const closeTime =
             ledger->info().closeTime.time_since_epoch().count();
         auto const parentCloseTime =
@@ -989,6 +1007,7 @@ static bool saveValidatedLedger (
             soci::use(seq),
             soci::use(parentHash),
             soci::use(drops),
+            soci::use(fees),
             soci::use(closeTime),
             soci::use(parentCloseTime),
             soci::use(closeTimeResolution),
@@ -1004,7 +1023,6 @@ static bool saveValidatedLedger (
 
         tr.commit();
     }
-
     // Clients can now trust the database for
     // information about this ledger sequence.
     app.pendingSaves().finishWork(seq);
@@ -1112,13 +1130,13 @@ loadLedgerHelper(std::string const& sqlSuffix, Application& app)
 
     boost::optional<std::string> sLedgerHash, sPrevHash, sAccountHash,
         sTransHash;
-    boost::optional<std::uint64_t> totDrops, closingTime, prevClosingTime,
+    boost::optional<std::uint64_t> totDrops,toFees, closingTime, prevClosingTime,
         closeResolution, closeFlags, ledgerSeq64;
 
     std::string const sql =
             "SELECT "
             "LedgerHash, PrevHash, AccountSetHash, TransSetHash, "
-            "TotalCoins,"
+            "TotalCoins,Fees,"
             "ClosingTime, PrevClosingTime, CloseTimeRes, CloseFlags,"
             "LedgerSeq from Ledgers " +
             sqlSuffix + ";";
@@ -1129,6 +1147,7 @@ loadLedgerHelper(std::string const& sqlSuffix, Application& app)
             soci::into(sAccountHash),
             soci::into(sTransHash),
             soci::into(totDrops),
+            soci::into(toFees),
             soci::into(closingTime),
             soci::into(prevClosingTime),
             soci::into(closeResolution),
@@ -1166,6 +1185,7 @@ loadLedgerHelper(std::string const& sqlSuffix, Application& app)
     info.txHash = transHash;
     info.accountHash = accountHash;
     info.drops = totDrops.value_or(0);
+    info.fees = toFees.value_or(0);
     info.closeTime = time_point{duration{closingTime.value_or(0)}};
     info.parentCloseTime = time_point{duration{prevClosingTime.value_or(0)}};
     info.closeFlags = closeFlags.value_or(0);

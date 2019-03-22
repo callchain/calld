@@ -1,7 +1,22 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Call Labs Inc.
+    This file is part of calld: https://github.com/callchain/calld
+    Copyright (c) 2018, 2019 Callchain Fundation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose  with  or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE  SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH  REGARD  TO  THIS  SOFTWARE  INCLUDING  ALL  IMPLIED  WARRANTIES  OF
+    MERCHANTABILITY  AND  FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY  SPECIAL ,  DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER  RESULTING  FROM  LOSS  OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION  OF  CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+    This file is part of rippled: https://github.com/ripple/rippled
+    Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -331,6 +346,7 @@ extern SF_U8 const sfCloseResolution;
 extern SF_U8 const sfMethod;
 extern SF_U8 const sfTransactionResult;
 extern SF_U8 const sfTickSize;
+extern SF_U8 const sfDecimal;
 
 // 16-bit integers
 extern SF_U16 const sfLedgerEntryType;
@@ -388,6 +404,7 @@ extern SF_U64 const sfExchangeRate;
 extern SF_U64 const sfLowNode;
 extern SF_U64 const sfHighNode;
 extern SF_U64 const sfDestinationNode;
+extern SF_U64 const sfFans;
 
 // 128-bit
 extern SF_U128 const sfEmailHash;
@@ -418,6 +435,7 @@ extern SF_U256 const sfTicketID;
 extern SF_U256 const sfDigest;
 extern SF_U256 const sfPayChannel;
 extern SF_U256 const sfConsensusHash;
+extern SF_U256 const sfTokenID;
 
 // currency amount (common)
 extern SF_Amount const sfAmount;
@@ -432,6 +450,7 @@ extern SF_Amount const sfSendMax;
 extern SF_Amount const sfDeliverMin;
 extern SF_Amount const sfTotal;
 extern SF_Amount const sfIssued;
+extern SF_Amount const sfFreezed;
 // currency amount (uncommon)
 extern SF_Amount const sfMinimumOffer;
 extern SF_Amount const sfCallEscrow;
@@ -451,12 +470,13 @@ extern SF_Blob const sfCreateCode;
 extern SF_Blob const sfMemoType;
 extern SF_Blob const sfMemoData;
 extern SF_Blob const sfMemoFormat;
-extern SF_Blob const sfNickName;
 
 // variable length (uncommon)
 extern SF_Blob const sfFulfillment;
 extern SF_Blob const sfCondition;
 extern SF_Blob const sfMasterSignature;
+extern SF_Blob const sfNickName;
+extern SF_Blob const sfMetaInfo;
 
 // account
 extern SF_Account const sfAccount;

@@ -1,7 +1,22 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Call Labs Inc.
+    This file is part of calld: https://github.com/callchain/calld
+    Copyright (c) 2018, 2019 Callchain Fundation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose  with  or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE  SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH  REGARD  TO  THIS  SOFTWARE  INCLUDING  ALL  IMPLIED  WARRANTIES  OF
+    MERCHANTABILITY  AND  FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY  SPECIAL ,  DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER  RESULTING  FROM  LOSS  OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION  OF  CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+    This file is part of rippled: https://github.com/ripple/rippled
+    Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -209,31 +224,26 @@ SetTrust::doApply ()
         // trust line to oneself to be deleted. If no such trust
         // lines exist now, why not remove this code and simply
         // return an error?
-        SLE::pointer sleDelete = view().peek (
-            keylet::line(account_, uDstAccountID, currency));
+        SLE::pointer sleDelete = view().peek (keylet::line(account_, uDstAccountID, currency));
 
         JLOG(j_.warn()) <<
             "Clearing redundant line.";
 
-        return trustDelete (view(),
-            sleDelete, account_, uDstAccountID, viewJ);
+        return trustDelete (view(), sleDelete, account_, uDstAccountID, viewJ);
     }
 
-    SLE::pointer sleDst =
-        view().peek (keylet::account(uDstAccountID));
+    SLE::pointer sleDst = view().peek (keylet::account(uDstAccountID));
 
     if (!sleDst)
     {
-        JLOG(j_.trace()) <<
-            "Delay transaction: Destination account does not exist.";
+        JLOG(j_.trace()) << "Delay transaction: Destination account does not exist.";
         return tecNO_DST;
     }
 
     STAmount saLimitAllow = saLimitAmount;
     saLimitAllow.setIssuer (account_);
 
-    SLE::pointer sleCallState = view().peek (
-        keylet::line(account_, uDstAccountID, currency));
+    SLE::pointer sleCallState = view().peek (keylet::line(account_, uDstAccountID, currency));
 
     if (sleCallState)
     {
@@ -453,29 +463,35 @@ SetTrust::doApply ()
         (! bQualityOut || ! uQualityOut) &&         // Not setting quality out or setting default quality out.
         (! (view().rules().enabled(featureTrustSetAuth)) || ! bSetAuth))
     {
-        JLOG(j_.trace()) <<
-            "Redundant: Setting non-existent call line to defaults.";
+        JLOG(j_.trace()) << "Redundant: Setting non-existent call line to defaults.";
         return tecNO_LINE_REDUNDANT;
     }
     else if (mPriorBalance < reserveCreate) // Reserve is not scaled by load.
     {
-        JLOG(j_.trace()) <<
-            "Delay transaction: Line does not exist. Insufficent reserve to create line.";
+        JLOG(j_.trace()) << "Delay transaction: Line does not exist. Insufficent reserve to create line.";
 
         // Another transaction could create the account and then this transaction would succeed.
         terResult = tecNO_LINE_INSUF_RESERVE;
     }
     else
     {
+       //update the Issuer fans
+        SLE::pointer sleIssueRoot = view().peek(keylet::issuet(uDstAccountID, currency));
+        if (sleIssueRoot)
+        {
+            //	view().update(sleIssueRoot);
+            sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
+            view().update(sleIssueRoot);
+        } else {
+            return terBADTRUST;
+        }
+        
         // Zero balance in currency.
         STAmount saBalance ({currency, noAccount()});
 
-        uint256 index (getCallStateIndex (
-            account_, uDstAccountID, currency));
+        uint256 index (getCallStateIndex (account_, uDstAccountID, currency));
 
-        JLOG(j_.trace()) <<
-            "doTrustSet: Creating call line: " <<
-            to_string (index);
+        JLOG(j_.trace()) << "doTrustSet: Creating call line: " << to_string (index);
 
         // Create a new call line.
         terResult = trustCreate (view(),

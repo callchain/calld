@@ -1,7 +1,22 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Call Labs Inc.
+    This file is part of calld: https://github.com/callchain/calld
+    Copyright (c) 2018, 2019 Callchain Fundation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose  with  or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE  SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH  REGARD  TO  THIS  SOFTWARE  INCLUDING  ALL  IMPLIED  WARRANTIES  OF
+    MERCHANTABILITY  AND  FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY  SPECIAL ,  DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER  RESULTING  FROM  LOSS  OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION  OF  CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+    This file is part of rippled: https://github.com/ripple/rippled
+    Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -184,6 +199,11 @@ CreateOffer::preclaim(PreclaimContext const& ctx)
         return temBAD_SEQUENCE;
     }
 
+    auto res = accountFundCheck(ctx.view,id, saTakerGets, viewJ);
+	if (res != tesSUCCESS)
+	{
+		return tecUNFUNDED_OFFER;
+	}
     using d = NetClock::duration;
     using tp = NetClock::time_point;
     auto const expiration = ctx.tx[~sfExpiration];
@@ -665,7 +685,7 @@ CreateOffer::flowCross (
         STAmount sendMax = takerAmount.in;
         if (! sendMax.native() && (account_ != sendMax.getIssuer()))
         {
-            gatewayXferRate = transferRate (psb, sendMax.getIssuer());
+            gatewayXferRate = transferRate (psb, sendMax.getIssuer(), sendMax.getCurrency());
             if (gatewayXferRate.value != QUALITY_ONE)
             {
                 sendMax = multiplyRound (takerAmount.in,
@@ -1058,6 +1078,12 @@ CreateOffer::applyGuts (Sandbox& sb, Sandbox& sbCancel)
     auto saTakerPays = ctx_.tx[sfTakerPays];
     auto saTakerGets = ctx_.tx[sfTakerGets];
 
+    // Check issue set exists
+    if (!checkIssue(ctx_, saTakerPays, true) || !checkIssue(ctx_, saTakerGets, true))
+    {
+        return { temNOT_SUPPORT, false };
+    }
+
     auto const cancelSequence = ctx_.tx[~sfOfferSequence];
 
     // FIXME understand why we use SequenceNext instead of current transaction
@@ -1077,8 +1103,7 @@ CreateOffer::applyGuts (Sandbox& sb, Sandbox& sbCancel)
     // Process a cancellation request that's passed along with an offer.
     if (cancelSequence)
     {
-        auto const sleCancel = sb.peek(
-            keylet::offer(account_, *cancelSequence));
+        auto const sleCancel = sb.peek(keylet::offer(account_, *cancelSequence));
 
         // It's not an error to not find the offer to cancel: it might have
         // been consumed or removed. If it is found, however, it's an error

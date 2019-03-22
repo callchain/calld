@@ -1,7 +1,22 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Call Labs Inc.
+    This file is part of calld: https://github.com/callchain/calld
+    Copyright (c) 2018, 2019 Callchain Fundation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose  with  or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE  SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH  REGARD  TO  THIS  SOFTWARE  INCLUDING  ALL  IMPLIED  WARRANTIES  OF
+    MERCHANTABILITY  AND  FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY  SPECIAL ,  DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER  RESULTING  FROM  LOSS  OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION  OF  CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+    This file is part of rippled: https://github.com/ripple/rippled
+    Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -101,9 +116,17 @@ forEachItemAfter (ReadView const& view, AccountID const& id,
         unsigned int limit, std::function<
             bool (std::shared_ptr<SLE const> const&)> f);
 
+TER 
+accountFundCheck (ReadView const & view, AccountID const& id,
+    STAmount const &satakerget, beast::Journal j);
+
 Rate
 transferRate (ReadView const& view,
     AccountID const& issuer);
+
+Rate
+transferRate (ReadView const& view,
+    AccountID const& issuer, Currency const& currency);
 
 /** Returns `true` if the directory is empty
     @param key The key of the directory
@@ -246,6 +269,40 @@ dirDelete (ApplyView& view,
 // VFALCO NOTE Both STAmount parameters should just
 //             be "Amount", a unit-less number.
 //
+
+
+/*
+create and delete an AccountIssue currency
+*/
+TER 
+AccountIssuerCreate( ApplyView& view,
+	AccountID const&  uSrcAccountID,
+	STAmount const& saTotal,
+    std::uint32_t const rate,
+    std::uint32_t const flags,
+	uint256 const&  uIndex,
+	beast::Journal j
+);
+
+// create one token for nft
+TER 
+AccountTokenCreate(ApplyView &view,
+                        AccountID const &uDstAccountID,
+                        uint256 &id,
+                        Blob &metaInfo,
+                        uint256 const &uCIndex,
+                        STAmount const &amount,
+                        beast::Journal j);
+
+TER
+TokenTransfer(ApplyView &view, 
+                        AccountID const &uSrcAccountID, 
+                        AccountID const &uDstAccountID,
+                        Currency const &currency,
+                        uint256 const &uCIndex,
+                        const bool revoke,
+                        beast::Journal j);
+
 /** Create a trust line
 
     This can set an initial balance.
@@ -267,6 +324,9 @@ trustCreate (ApplyView& view,
     std::uint32_t uSrcQualityIn,
     std::uint32_t uSrcQualityOut,
     beast::Journal j);
+
+//issuer auto trust fans
+TER auto_trust(ApplyView& view, AccountID const&  account, STAmount const &amount, beast::Journal j);
 
 TER
 trustDelete (ApplyView& view,

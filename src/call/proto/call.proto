@@ -8,6 +8,7 @@ enum MessageType
     mtPING                  = 3;
     mtPROOFOFWORK           = 4;
     mtCLUSTER               = 5;
+    mtVALIDATOR             =10;
     mtGET_PEERS             = 12;
     mtPEERS                 = 13;
     mtENDPOINTS             = 15;
@@ -76,6 +77,14 @@ message TMProofWork
 }
 
 //------------------------------------------------------------------------------
+//provide the validator  message
+message TMValidator
+{
+     optional uint32         ipv4Port        = 1;
+     optional uint32         local_ip        = 2;
+     required bytes          feeAccount      = 3;
+     required bytes          nodePublic      = 4;
+}
 
 // Sent on connect
 message TMHello
@@ -87,17 +96,18 @@ message TMHello
     required uint32         protoVersionMin = 2;
     required bytes          nodePublic      = 3;
     required bytes          nodeProof       = 4;
-    optional string         fullVersion     = 5;
-    optional uint64         netTime         = 6;
-    optional uint32         ipv4Port        = 7;
-    optional uint32         ledgerIndex     = 8;
-    optional bytes          ledgerClosed    = 9;  // our last closed ledger
-    optional bytes          ledgerPrevious  = 10; // the ledger before the last closed ledger
-    optional bool           nodePrivate     = 11; // Request to not forward IP.
-    optional TMProofWork    proofOfWork     = 12; // request/provide proof of work
-    optional bool           testNet         = 13; // Running as testnet.
-    optional uint32         local_ip        = 14; // our public IP
-    optional uint32         remote_ip       = 15; // IP we see connection from
+    required bytes          feeAccount      = 5;
+    optional string         fullVersion     = 6;
+    optional uint64         netTime         = 7;
+    optional uint32         ipv4Port        = 8;
+    optional uint32         ledgerIndex     = 9;
+    optional bytes          ledgerClosed    = 10;  // our last closed ledger
+    optional bytes          ledgerPrevious  = 11; // the ledger before the last closed ledger
+    optional bool           nodePrivate     = 12; // Request to not forward IP.
+    optional TMProofWork    proofOfWork     = 13; // request/provide proof of work
+    optional bool           testNet         = 14; // Running as testnet.
+    optional uint32         local_ip        = 15; // our public IP
+    optional uint32         remote_ip       = 16; // IP we see connection from
 }
 
 // The status of a node in our cluster

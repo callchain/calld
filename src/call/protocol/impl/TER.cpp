@@ -1,7 +1,22 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of calld: https://github.com/call/calld
-    Copyright (c) 2012, 2013 Call Labs Inc.
+    This file is part of calld: https://github.com/callchain/calld
+    Copyright (c) 2018, 2019 Callchain Fundation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose  with  or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE  SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH  REGARD  TO  THIS  SOFTWARE  INCLUDING  ALL  IMPLIED  WARRANTIES  OF
+    MERCHANTABILITY  AND  FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY  SPECIAL ,  DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER  RESULTING  FROM  LOSS  OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION  OF  CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+    This file is part of rippled: https://github.com/ripple/rippled
+    Copyright (c) 2012, 2013 Ripple Labs Inc.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -59,7 +74,7 @@ transResults()
         { tecUNFUNDED_PAYMENT,       { "tecUNFUNDED_PAYMENT",      "Insufficient CALL balance to send."                                             } },
         { tecOWNERS,                 { "tecOWNERS",                "Non-zero owner count."                                                         } },
         { tecNO_ISSUER,              { "tecNO_ISSUER",             "Issuer account does not exist."                                                } },
-        { tecNO_AUTH,                { "tecNO_AUTH",               "Not authorized to hold asset."                                                 } },
+        { tecNO_AUTH,                { "tecNO_AUTH",               "Not authorized to hold or issue aditional asset ."                                                 } },
         { tecNO_LINE,                { "tecNO_LINE",               "No such line."                                                                 } },
         { tecINSUFF_FEE,             { "tecINSUFF_FEE",            "Insufficient balance to pay fee."                                              } },
         { tecFROZEN,                 { "tecFROZEN",                "Asset is frozen."                                                              } },
@@ -72,8 +87,10 @@ transResults()
         { tecINTERNAL,               { "tecINTERNAL",              "An internal error has occurred during processing."                             } },
         { tecCRYPTOCONDITION_ERROR,  { "tecCRYPTOCONDITION_ERROR", "Malformed, invalid, or mismatched conditional or fulfillment."                 } },
         { tecINVARIANT_FAILED,       { "tecINVARIANT_FAILED",      "One or more invariants for the transaction were not satisfied."                } },
-	{ tecOVERISSUED_AMOUNT,      { "tecOVERISSUED_AMOUNT",     "the issued amount is beyond to the total amount."                              } },
+	    { tecOVERISSUED_AMOUNT,      { "tecOVERISSUED_AMOUNT",     "the issued amount is beyond to the total amount."                              } },
         { tecBADTOTAL,               { "tecBADTOTAL",              "the set amount is lower than total amount."                                    } },
+        { tecINSUFFICINET_FUND,      { "tecINSUFFICINET_FUND",     "the account fund is insufficient to create transactions."                      } },
+        
 
         { tefALREADY,                { "tefALREADY",               "The exact transaction was already in this ledger."                             } },
         { tefBAD_ADD_AUTH,           { "tefBAD_ADD_AUTH",          "Not authorized to add account."                                                } },
@@ -135,23 +152,29 @@ transResults()
         { temINVALID,                { "temINVALID",               "The transaction is ill-formed."                                                } },
         { temINVALID_FLAG,           { "temINVALID_FLAG",          "The transaction has an invalid flag."                                          } },
         { temREDUNDANT,              { "temREDUNDANT",             "Sends same currency to self."                                                  } },
-        { temCALL_EMPTY,           { "temCALL_EMPTY",          "PathSet with no paths."                                                        } },
+        { temCALL_EMPTY,             { "temCALL_EMPTY",            "PathSet with no paths."                                                        } },
         { temUNCERTAIN,              { "temUNCERTAIN",             "In process of determining result. Never returned."                             } },
         { temUNKNOWN,                { "temUNKNOWN",               "The transaction requires logic that is not implemented yet."                   } },
         { temDISABLED,               { "temDISABLED",              "The transaction requires logic that is currently disabled."                    } },
         { temBAD_TICK_SIZE,          { "temBAD_TICK_SIZE",         "Malformed: Tick size out of range."                                            } },
-        { temNICKNAMEEXISTED,        { "temNICKNAMEEXISTED",         "This name is existed"                                                        } },
+        { temNICKNAMEEXISTED,        { "temNICKNAMEEXISTED",       "This name is existed"                                                          } },
+        { temBAD_FUNDS,              { "temBAD_FUNDS",             "this currency not issued set yet"                                              } },
+        { temID_EXISTED,             { "temID_EXISTED",            "Token id exists already"                                                       } },
+        { temBAD_TOKENID,            { "temBAD_TOKENID",           "Token id not present for non-fungible tokens trandfer"                         } },
+        { temBAD_METAINFO,           { "temBAD_METAINFO",           "Token meta info missing for initial NFT issuing"                              } },
+        { temNOT_SUPPORT,            { "temNOT_SUPPORT",           "Not support feature"                                                           } },
         { terRETRY,                  { "terRETRY",                 "Retry transaction."                                                            } },
         { terFUNDS_SPENT,            { "terFUNDS_SPENT",           "Can't set password, password set funds already spent."                         } },
         { terINSUF_FEE_B,            { "terINSUF_FEE_B",           "Account balance can't pay fee."                                                } },
         { terLAST,                   { "terLAST",                  "Process last."                                                                 } },
-        { terNO_CALL,              { "terNO_CALL",             "Path does not permit rippling."                                                } },
+        { terNO_CALL,                { "terNO_CALL",               "Path does not permit rippling."                                                } },
         { terNO_ACCOUNT,             { "terNO_ACCOUNT",            "The source account does not exist."                                            } },
         { terNO_AUTH,                { "terNO_AUTH",               "Not authorized to hold IOUs."                                                  } },
         { terNO_LINE,                { "terNO_LINE",               "No such line."                                                                 } },
         { terPRE_SEQ,                { "terPRE_SEQ",               "Missing/inapplicable prior transaction."                                       } },
         { terOWNERS,                 { "terOWNERS",                "Non-zero owner count."                                                         } },
         { terQUEUED,                 { "terQUEUED",                "Held until escalated fee drops."                                               } },
+        { terBADTRUST,               { "terBADTRUST",              "Trusted Account does not issuer this funds" } },
 
         { tesSUCCESS,                { "tesSUCCESS",               "The transaction was applied. Only final in a validated ledger."                } },
     };

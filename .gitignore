@@ -27,6 +27,7 @@ TAGS
 bin/calld
 Debug/*.*
 Release/*.*
+.vscode/
 
 # Ignore coverage files.
 *.gcno

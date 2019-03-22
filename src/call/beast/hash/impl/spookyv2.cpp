@@ -1,5 +1,6 @@
 // Spooky Hash
 // A 128-bit noncryptographic hash, for checksums and table lookup
+
 // By Bob Jenkins.  Public domain.
 //   Oct 31 2010: published framework, disclaimer ShortHash isn't right
 //   Nov 7 2010: disabled ShortHash

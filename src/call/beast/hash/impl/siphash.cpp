@@ -1,5 +1,6 @@
 //------------------------------- siphash.h ------------------------------------
 //
+
 // This software is in the public domain.  The only restriction on its use is
 // that no one can remove it from the public domain by claiming ownership of it,
 // including the original authors.
