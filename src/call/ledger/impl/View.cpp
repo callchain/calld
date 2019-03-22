@@ -1317,7 +1317,15 @@ TokenTransfer(ApplyView &view,
                         beast::Journal j)
 {
     auto const sleTokenRoot = std::make_shared<SLE>(ltTOKEN_ROOT, uCIndex);
+    if (!sleTokenRoot)
+    {
+        return temBAD_TOKENID;
+    }
     auto oldNode = sleTokenRoot->getFieldU64(sfLowNode);
+    if (!oldNode)
+    {
+        return temBAD_TOKENID;
+    }
     // delete from old
     TER result = dirDelete(view, false, oldNode, keylet::ownerDir(uSrcAccountID),
         sleTokenRoot->key(), false, oldNode == 0, j);
