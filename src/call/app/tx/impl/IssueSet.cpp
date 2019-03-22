@@ -96,6 +96,12 @@ TER IssueSet::doApply()
 		return tecNO_AUTH;
 	}
 
+	bool const is_nft = (uTxFlags & tfNonFungible) != 0;
+	if (is_nft && ctx_.tx.isFieldPresent(sfTransferRate))
+	{
+		return temNOT_SUPPORT;
+	}
+
 	auto viewJ = ctx_.app.journal("View");
 
 	SLE::pointer sleIssueRoot = view().peek(keylet::issuet(account_, currency));
