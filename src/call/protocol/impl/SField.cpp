@@ -231,7 +231,7 @@ SF_Blob const sfFulfillment     = make::one<SF_Blob::type>(&sfFulfillment,     S
 SF_Blob const sfCondition       = make::one<SF_Blob::type>(&sfCondition,       STI_VL, 17, "Condition");
 SF_Blob const sfMasterSignature = make::one<SF_Blob::type>(&sfMasterSignature, STI_VL, 18, "MasterSignature", SField::sMD_Default, SField::notSigning);
 SF_Blob const sfNickName        = make::one<SF_Blob::type>(&sfNickName,        STI_VL, 19, "NickName");
-SF_Blob const sfInvoice         = make::one<SF_Blob::type>(&sfMetaInfo,        STI_VL, 20, "Invoice");
+SF_Blob const sfInvoice         = make::one<SF_Blob::type>(&sfInvoice,         STI_VL, 20, "Invoice");
 
 // account
 SF_Account const sfAccount     = make::one<SF_Account::type>(&sfAccount,     STI_ACCOUNT, 1, "Account");
