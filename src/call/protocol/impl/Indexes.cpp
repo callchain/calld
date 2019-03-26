@@ -247,7 +247,7 @@ Keylet issue_t::operator()(AccountID const& a, Currency const& currency) const
 
 Keylet token_t::operator()(uint256 const &id, AccountID const &a, Currency const& currency) const
 {
-    return { ltTOKEN_ROOT,  getTokenIndex(id, a, currency) };
+    return { ltINVOICEROOT,  getTokenIndex(id, a, currency) };
 }
 
 Keylet account_t::operator()(

@@ -106,7 +106,7 @@ enum LedgerEntryType
     
     ltISSUEROOT         = 'i',
     ltFeeRoot           = 'F',
-    ltTOKEN_ROOT        = 't'
+    ltINVOCIEROOT       = 't'
 };
 
 /**
