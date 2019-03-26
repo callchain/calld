@@ -1283,7 +1283,7 @@ TER AccountIssuerCreate(ApplyView &view,
 TER AccountTokenCreate(ApplyView &view,
                         AccountID const &uDstAccountID,
                         uint256 &id,
-                        Blob &metaInfo,
+                        Blob &invoice,
                         uint256 const &uCIndex,
                         STAmount const &amount,
                         beast::Journal j)
@@ -1299,9 +1299,9 @@ TER AccountTokenCreate(ApplyView &view,
         return tecDIR_FULL;
     }
     sleTokenRoot->setFieldAmount(sfAmount, amount);
-    sleTokenRoot->setFieldH256(sfTokenID, id);
+    sleTokenRoot->setFieldH256(sfInvoiceID, id);
     sleTokenRoot->setFieldU64(sfLowNode, *lowNode);
-    sleTokenRoot->setFieldVL(sfMetaInfo, metaInfo);
+    sleTokenRoot->setFieldVL(sfInvoice, invoice);
     view.update(sleTokenRoot);
     return tesSUCCESS;
 }

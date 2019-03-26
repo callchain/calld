@@ -83,8 +83,7 @@ TxFormats::TxFormats ()
         << SOElement (sfInvoiceID,           SOE_OPTIONAL)
         << SOElement (sfDestinationTag,      SOE_OPTIONAL)
         << SOElement (sfDeliverMin,          SOE_OPTIONAL)
-        << SOElement (sfTokenID,             SOE_OPTIONAL) 
-        << SOElement (sfMetaInfo,            SOE_OPTIONAL); // for token create
+        << SOElement (sfInvoice,             SOE_OPTIONAL); // for invoice token create
         ;
 
     add ("EscrowCreate", ttESCROW_CREATE) <<

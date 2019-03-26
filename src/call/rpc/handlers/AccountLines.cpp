@@ -82,12 +82,12 @@ void addToken(Json::Value &jsonToken, std::shared_ptr<SLE const> sleToken)
 	Json::Value &jPeer(jsonToken.append(Json::objectValue));
 
 	STAmount number = sleToken->getFieldAmount(sfAmount);
-	uint256 tokenId = sleToken->getFieldH256(sfTokenID);
-	Blob metaInfo = sleToken->getFieldVL(sfMetaInfo);
+	uint256 invoiceID = sleToken->getFieldH256(sfInvoiceID);
+	Blob invoice = sleToken->getFieldVL(sfInvoice);
 
 	jPeer["Amount"] = number.getJson(0);
-	jPeer["TokenID"] = call::to_string(tokenId);
-	jPeer["MetaInfo"] = strHex(metaInfo);
+	jPeer["InvoiceID"] = call::to_string(invoiceID);
+	jPeer["Invoice"] = strHex(invoice);
 }
 
 void addLine(Json::Value &jsonLines, CallState const &line, STAmount const &freeze, std::shared_ptr<ReadView const> &ledger)

@@ -385,7 +385,7 @@ Payment::doApply ()
         if (is_nft)
         {
             // id not present
-            if (!ctx_.tx.isFieldPresent(sfTokenID))
+            if (!ctx_.tx.isFieldPresent(sfInvoiceID))
             {
                 return temBAD_TOKENID;
             }
@@ -413,23 +413,23 @@ Payment::doApply ()
             if (is_nft)
             {
                 issuing = true;
-                uint256 id = ctx_.tx.getFieldH256 (sfTokenID);
+                uint256 id = ctx_.tx.getFieldH256 (sfInvoiceID);
                 SLE::pointer sleTokenRoot = view().peek(keylet::tokent(id, account_, currency));
                 // issue should not create same id token
                 if (sleTokenRoot) 
                 {
                     return temID_EXISTED;
                 }
-                auto const isMeta = ctx_.tx.isFieldPresent(sfMetaInfo);
+                auto const isMeta = ctx_.tx.isFieldPresent(sfInvoice);
                 if (!isMeta)
                 {
                     return temBAD_METAINFO;
                 }
  
-                Blob metaInfo = ctx_.tx.getFieldVL(sfMetaInfo);
+                Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
                 uint256 uCIndex(getTokenIndex(id, account_, currency));
 	            JLOG(j_.trace()) << "doPayment: Creating TokenRoot: " << to_string(uCIndex);
-	            terResult = AccountTokenCreate(view(), uDstAccountID, id, metaInfo, uCIndex, saDstAmount, j_);                    
+	            terResult = AccountTokenCreate(view(), uDstAccountID, id, invoice, uCIndex, saDstAmount, j_);                    
                 if (terResult != tesSUCCESS)
                 {
                     return terResult;
@@ -514,7 +514,7 @@ Payment::doApply ()
         // update token owner, when not issue
         if (terResult == tesSUCCESS && is_nft && !issuing)
         {
-            uint256 id = ctx_.tx.getFieldH256 (sfTokenID);
+            uint256 id = ctx_.tx.getFieldH256 (sfInvoiceID);
             uint256 uCIndex(getTokenIndex(id, AIssuer, currency));
             terResult = TokenTransfer(view(), account_, uDstAccountID, currency, 
                 uCIndex, uDstAccountID == AIssuer, j_);

@@ -289,7 +289,7 @@ TER
 AccountTokenCreate(ApplyView &view,
                         AccountID const &uDstAccountID,
                         uint256 &id,
-                        Blob &metaInfo,
+                        Blob &invoice,
                         uint256 const &uCIndex,
                         STAmount const &amount,
                         beast::Journal j);
