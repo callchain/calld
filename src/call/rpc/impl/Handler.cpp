@@ -119,7 +119,7 @@ Handler handlerArray[] {
     {   "account_currencies",   byRef (&doAccountCurrencies),   Role::USER,  NO_CONDITION       },
     {   "account_lines",        byRef (&doAccountLines),        Role::USER,  NO_CONDITION       },
     {   "account_issues",       byRef (&doAccountIssues),       Role::USER,  NO_CONDITION       },
-    {   "account_tokens",       byRef (&doAccountTokens),       Role::USER,  NO_CONDITION       },
+    {   "account_invoices",     byRef (&doAccountInvoices),     Role::USER,  NO_CONDITION       },
     {   "account_channels",     byRef (&doAccountChannels),     Role::USER,  NO_CONDITION       },
     {   "account_objects",      byRef (&doAccountObjects),      Role::USER,  NO_CONDITION       },
     {   "account_offers",       byRef (&doAccountOffers),       Role::USER,  NO_CONDITION       },

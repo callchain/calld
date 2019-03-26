@@ -379,7 +379,7 @@ Json::Value doAccountLines(RPC::Context &context)
 }
 
 //============================================
-Json::Value doAccountTokens(RPC::Context &context)
+Json::Value doAccountInvoices(RPC::Context &context)
 {
 	auto const &params(context.params);
 	if (!params.isMember(jss::account))
