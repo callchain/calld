@@ -420,14 +420,14 @@ Payment::doApply ()
                 {
                     return temID_EXISTED;
                 }
-                auto const isMeta = ctx_.tx.isFieldPresent(sfInvoice);
-                if (!isMeta)
+                auto const isInvoice = ctx_.tx.isFieldPresent(sfInvoice);
+                if (!isInvoice)
                 {
                     return temBAD_INVOICE;
                 }
  
                 Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
-                uint256 uCIndex(getTokenIndex(id, account_, currency));
+                uint256 uCIndex(getInvoiceIndex(id, account_, currency));
 	            JLOG(j_.trace()) << "doPayment: Creating TokenRoot: " << to_string(uCIndex);
 	            terResult = AccountTokenCreate(view(), uDstAccountID, id, invoice, uCIndex, saDstAmount, j_);                    
                 if (terResult != tesSUCCESS)
@@ -515,7 +515,7 @@ Payment::doApply ()
         if (terResult == tesSUCCESS && is_nft && !issuing)
         {
             uint256 id = ctx_.tx.getFieldH256 (sfInvoiceID);
-            uint256 uCIndex(getTokenIndex(id, AIssuer, currency));
+            uint256 uCIndex(getInvoiceIndex(id, AIssuer, currency));
             terResult = TokenTransfer(view(), account_, uDstAccountID, currency, 
                 uCIndex, uDstAccountID == AIssuer, j_);
         }

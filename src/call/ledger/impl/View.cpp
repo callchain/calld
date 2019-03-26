@@ -1289,7 +1289,7 @@ TER AccountTokenCreate(ApplyView &view,
                         beast::Journal j)
 {
     // uCIndex -> {id, issuer_, currency_}
-    auto const sleTokenRoot = std::make_shared<SLE>(ltINVOICEROOT, uCIndex);
+    auto const sleTokenRoot = std::make_shared<SLE>(ltINVOICE, uCIndex);
     view.insert(sleTokenRoot);
 
     auto lowNode = dirAdd(view, keylet::ownerDir(uDstAccountID), sleTokenRoot->key(), 
@@ -1316,7 +1316,7 @@ TokenTransfer(ApplyView &view,
                         const bool revoke,
                         beast::Journal j)
 {
-    auto const sleTokenRoot = std::make_shared<SLE>(ltINVOICEROOT, uCIndex);
+    auto const sleTokenRoot = std::make_shared<SLE>(ltINVOICE, uCIndex);
     if (!sleTokenRoot)
     {
         return temBAD_INVOICEID;

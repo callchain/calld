@@ -192,7 +192,7 @@ LedgerFormats::LedgerFormats ()
 	    << SOElement (sfBalance,            SOE_REQUIRED)
 	    ;
 
-    add ("InvoiceRoot", ltINVOICEROOT)
+    add ("InvoiceRoot", ltINVOICE)
             << SOElement (sfInvoiceID,          SOE_REQUIRED) 
             << SOElement (sfAmount,             SOE_REQUIRED)
             << SOElement (sfInvoice,            SOE_REQUIRED)

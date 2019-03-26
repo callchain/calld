@@ -115,7 +115,7 @@ uint256
 getFeesIndex();
 
 uint256
-getTokenIndex(uint256 const& id, AccountID const& a, Currency const& currency);
+getInvoiceIndex(uint256 const& id, AccountID const& a, Currency const& currency);
 //------------------------------------------------------------------------------
 
 /* VFALCO TODO
@@ -147,7 +147,7 @@ struct invoice_t
     Keylet operator()(uint256 const &id, AccountID const &a, Currency const& currency) const;
     Keylet operator()(uint256 const& key) const
 	{
-		return { ltINVOICEROOT, key };
+		return { ltINVOICE, key };
 	}
 };
 static invoice_t const invoicet{};

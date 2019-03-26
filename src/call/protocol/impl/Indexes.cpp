@@ -228,7 +228,7 @@ getFeesIndex()
 }
 
 uint256
-getTokenIndex(uint256 const& id, AccountID const& a, Currency const& currency)
+getInvoiceIndex(uint256 const& id, AccountID const& a, Currency const& currency)
 {
     return sha512Half(
         std::uint16_t(spaceIssue),
@@ -247,7 +247,7 @@ Keylet issue_t::operator()(AccountID const& a, Currency const& currency) const
 
 Keylet invoice_t::operator()(uint256 const &id, AccountID const &a, Currency const& currency) const
 {
-    return { ltINVOICEROOT,  getTokenIndex(id, a, currency) };
+    return { ltINVOICE,  getInvoiceIndex(id, a, currency) };
 }
 
 Keylet account_t::operator()(

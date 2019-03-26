@@ -434,7 +434,7 @@ Json::Value doAccountTokens(RPC::Context &context)
 			return RPC::expected_field_error(jss::marker, "string");
 
 		startAfter.SetHex(marker.asString());
-		auto const sleToken = ledger->read({ltINVOICEROOT, startAfter});
+		auto const sleToken = ledger->read({ltINVOICE, startAfter});
 
 		if (!sleToken)
 			return rpcError(rpcINVALID_PARAMS);
@@ -454,7 +454,7 @@ Json::Value doAccountTokens(RPC::Context &context)
 	{
 		if (!forEachItemAfter(*ledger, accountID, startAfter, startHint, reserve,
 				[&visitData](std::shared_ptr<SLE const> const &sleCur) {
-			if (sleCur != NULL && sleCur->getType() == ltINVOICEROOT)
+			if (sleCur != NULL && sleCur->getType() == ltINVOICE)
 			{
 				visitData.items.emplace_back(sleCur);
 				return true;

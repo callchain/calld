@@ -79,7 +79,7 @@ enum LedgerEntryType
     */
     ltDIR_NODE          = 'd',
 
-    ltCALL_STATE      = 'r',
+    ltCALL_STATE        = 'r',
 
     ltTICKET            = 'T',
 
@@ -106,7 +106,7 @@ enum LedgerEntryType
     
     ltISSUEROOT         = 'i',
     ltFeeRoot           = 'F',
-    ltINVOCIEROOT       = 't'
+    ltINVOICE           = 'I'
 };
 
 /**
@@ -137,7 +137,7 @@ enum LedgerNameSpace
     spaceNickname       = 'n',
     spaceIssue          = 'i',
     spaceFees           = 'F',
-    spaceToken          = 't'
+    spaceInvoice        = 'I'
 };
 
 /**
