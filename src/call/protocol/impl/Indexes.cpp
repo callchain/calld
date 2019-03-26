@@ -231,7 +231,7 @@ uint256
 getInvoiceIndex(uint256 const& id, AccountID const& a, Currency const& currency)
 {
     return sha512Half(
-        std::uint16_t(spaceIssue),
+        std::uint16_t(spaceInvoice),
         id,
         a,
         currency);
