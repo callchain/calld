@@ -286,7 +286,7 @@ AccountIssuerCreate( ApplyView& view,
 
 // create one token for nft
 TER 
-AccountTokenCreate(ApplyView &view,
+AccountInvoiceCreate(ApplyView &view,
                         AccountID const &uDstAccountID,
                         uint256 &id,
                         Blob &invoice,
@@ -295,7 +295,7 @@ AccountTokenCreate(ApplyView &view,
                         beast::Journal j);
 
 TER
-TokenTransfer(ApplyView &view, 
+InvoiceTransfer(ApplyView &view, 
                         AccountID const &uSrcAccountID, 
                         AccountID const &uDstAccountID,
                         Currency const &currency,

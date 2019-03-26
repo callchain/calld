@@ -1280,7 +1280,7 @@ TER AccountIssuerCreate(ApplyView &view,
 }
 
 //create accounttoken
-TER AccountTokenCreate(ApplyView &view,
+TER AccountInvoiceCreate(ApplyView &view,
                         AccountID const &uDstAccountID,
                         uint256 &id,
                         Blob &invoice,
@@ -1288,27 +1288,27 @@ TER AccountTokenCreate(ApplyView &view,
                         STAmount const &amount,
                         beast::Journal j)
 {
-    // uCIndex -> {id, issuer_, currency_}
-    auto const sleTokenRoot = std::make_shared<SLE>(ltINVOICE, uCIndex);
-    view.insert(sleTokenRoot);
+    auto const sleInvoice = std::make_shared<SLE>(ltINVOICE, uCIndex);
+    view.insert(sleInvoice);
 
-    auto lowNode = dirAdd(view, keylet::ownerDir(uDstAccountID), sleTokenRoot->key(), 
+    auto lowNode = dirAdd(view, keylet::ownerDir(uDstAccountID), sleInvoice->key(), 
         false, describeOwnerDir(uDstAccountID), j);
 
     if (!lowNode) {
+        JLOG(j.trace()) << "AccountInvoiceCreate: empty dir";
         return tecDIR_FULL;
     }
-    sleTokenRoot->setFieldAmount(sfAmount, amount);
-    sleTokenRoot->setFieldH256(sfInvoiceID, id);
-    sleTokenRoot->setFieldU64(sfLowNode, *lowNode);
-    sleTokenRoot->setFieldVL(sfInvoice, invoice);
-    view.update(sleTokenRoot);
+    sleInvoice->setFieldAmount(sfAmount, amount);
+    sleInvoice->setFieldH256(sfInvoiceID, id);
+    sleInvoice->setFieldU64(sfLowNode, *lowNode);
+    sleInvoice->setFieldVL(sfInvoice, invoice);
+    view.update(sleInvoice);
     return tesSUCCESS;
 }
 
 // transfer token owner
 TER
-TokenTransfer(ApplyView &view, 
+InvoiceTransfer(ApplyView &view, 
                         AccountID const &uSrcAccountID, 
                         AccountID const &uDstAccountID,
                         Currency const &currency,
@@ -1316,19 +1316,21 @@ TokenTransfer(ApplyView &view,
                         const bool revoke,
                         beast::Journal j)
 {
-    auto const sleTokenRoot = std::make_shared<SLE>(ltINVOICE, uCIndex);
-    if (!sleTokenRoot)
+    auto const sleInvoice = std::make_shared<SLE>(ltINVOICE, uCIndex);
+    if (!sleInvoice)
     {
+        JLOG(j.trace()) << "InvoiceTransfer, invoice not exists";
         return temBAD_INVOICEID;
     }
-    auto oldNode = sleTokenRoot->getFieldU64(sfLowNode);
+    auto oldNode = sleInvoice->getFieldU64(sfLowNode);
     if (!oldNode)
     {
-        return temBAD_INVOICEID;
+        JLOG(j.trace()) << "InvoiceTransfer, invoice dir is empty";
+        return tecDIR_FULL;
     }
     // delete from old
     TER result = dirDelete(view, false, oldNode, keylet::ownerDir(uSrcAccountID),
-        sleTokenRoot->key(), false, oldNode == 0, j);
+        sleInvoice->key(), false, oldNode == 0, j);
     if (result != tesSUCCESS)
     {
         return result;
@@ -1337,13 +1339,14 @@ TokenTransfer(ApplyView &view,
     // add to new dir
     if (revoke)
     {
-        view.erase(sleTokenRoot);
+        view.erase(sleInvoice);
     }
     else 
     {
         auto newNode = dirAdd(view, keylet::ownerDir(uDstAccountID), uCIndex, 
             false, describeOwnerDir(uDstAccountID), j);
         if (!newNode) {
+            JLOG(j.trace()) << "InvoiceTransfer, fail to insert new entry, dir full";
             return tecDIR_FULL;
         }
     }

@@ -326,10 +326,14 @@ Payment::doApply ()
     // Check issue set exists
     if (!checkIssue(ctx_, saDstAmount, false))
     {
+        JLOG(j_.trace()) << "doPayment: checkIssue, issue set not exists or not valid, dstAmount: " 
+            << saDstAmount.getFullText();
         return temBAD_FUNDS;
     }
     if (sendMax && !checkIssue(ctx_, *sendMax, false))
     {
+        JLOG(j_.trace()) << "doPayment: checkIssue, issue set not exists or not valid, sendMax: " 
+            << (*sendMax).getFullText();
         return temBAD_FUNDS;
     }
 
@@ -387,12 +391,14 @@ Payment::doApply ()
             // id not present
             if (!ctx_.tx.isFieldPresent(sfInvoiceID))
             {
+                JLOG(j_.trace()) << "doPayment: invoice id not present";
                 return temBAD_INVOICEID;
             }
             // amount not 1
             STAmount one(saDstAmount.issue(), 1);
             if (saDstAmount != one)
             {
+                 JLOG(j_.trace()) << "doPayment: invoice amount should be 1: " << saDstAmount.getFullText();
                 return temBAD_AMOUNT;
             }
         }
@@ -429,7 +435,7 @@ Payment::doApply ()
                 Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
                 uint256 uCIndex(getInvoiceIndex(id, account_, currency));
 	            JLOG(j_.trace()) << "doPayment: Creating TokenRoot: " << to_string(uCIndex);
-	            terResult = AccountTokenCreate(view(), uDstAccountID, id, invoice, uCIndex, saDstAmount, j_);                    
+	            terResult = AccountInvoiceCreate(view(), uDstAccountID, id, invoice, uCIndex, saDstAmount, j_);                    
                 if (terResult != tesSUCCESS)
                 {
                     return terResult;
@@ -516,7 +522,7 @@ Payment::doApply ()
         {
             uint256 id = ctx_.tx.getFieldH256 (sfInvoiceID);
             uint256 uCIndex(getInvoiceIndex(id, AIssuer, currency));
-            terResult = TokenTransfer(view(), account_, uDstAccountID, currency, 
+            terResult = InvoiceTransfer(view(), account_, uDstAccountID, currency, 
                 uCIndex, uDstAccountID == AIssuer, j_);
         }
     }
