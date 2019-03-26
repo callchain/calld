@@ -1319,12 +1319,12 @@ TokenTransfer(ApplyView &view,
     auto const sleTokenRoot = std::make_shared<SLE>(ltINVOICEROOT, uCIndex);
     if (!sleTokenRoot)
     {
-        return temBAD_TOKENID;
+        return temBAD_INVOICEID;
     }
     auto oldNode = sleTokenRoot->getFieldU64(sfLowNode);
     if (!oldNode)
     {
-        return temBAD_TOKENID;
+        return temBAD_INVOICEID;
     }
     // delete from old
     TER result = dirDelete(view, false, oldNode, keylet::ownerDir(uSrcAccountID),

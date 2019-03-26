@@ -115,8 +115,8 @@ enum TER
     temBAD_FUNDS,
     
     temID_EXISTED,
-    temBAD_TOKENID,
-    temBAD_METAINFO,
+    temBAD_INVOICEID,
+    temBAD_INVOICE,
     temNOT_SUPPORT,
     
     // -199 .. -100: F

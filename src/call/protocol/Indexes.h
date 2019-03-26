@@ -142,7 +142,7 @@ struct issue_t
 static issue_t const issuet{};
 
 /** An token root info for id, account, currency */
-struct token_t
+struct invoice_t
 {
     Keylet operator()(uint256 const &id, AccountID const &a, Currency const& currency) const;
     Keylet operator()(uint256 const& key) const
@@ -150,7 +150,7 @@ struct token_t
 		return { ltINVOICEROOT, key };
 	}
 };
-static token_t const tokent{};
+static invoice_t const invoicet{};
 
 /** AccountID root */
 struct account_t

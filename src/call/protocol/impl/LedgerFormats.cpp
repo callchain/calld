@@ -196,7 +196,7 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfInvoiceID,          SOE_REQUIRED) 
             << SOElement (sfAmount,             SOE_REQUIRED)
             << SOElement (sfInvoice,            SOE_REQUIRED)
-            << SOElement (sfLowNode,            SOE_OPTIONAL)
+            << SOElement (sfLowNode,            SOE_REQUIRED)
             ;
 }
 

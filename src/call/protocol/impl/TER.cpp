@@ -159,9 +159,9 @@ transResults()
         { temBAD_TICK_SIZE,          { "temBAD_TICK_SIZE",         "Malformed: Tick size out of range."                                            } },
         { temNICKNAMEEXISTED,        { "temNICKNAMEEXISTED",       "This name is existed"                                                          } },
         { temBAD_FUNDS,              { "temBAD_FUNDS",             "this currency not issued set yet"                                              } },
-        { temID_EXISTED,             { "temID_EXISTED",            "Token id exists already"                                                       } },
-        { temBAD_TOKENID,            { "temBAD_TOKENID",           "Token id not present for non-fungible tokens trandfer"                         } },
-        { temBAD_METAINFO,           { "temBAD_METAINFO",           "Token meta info missing for initial NFT issuing"                              } },
+        { temID_EXISTED,             { "temID_EXISTED",            "Invoice id exists already"                                                     } },
+        { temBAD_INVOICEID,          { "temBAD_INVOICEID",         "Invoice id not present for invoice trandfer"                                   } },
+        { temBAD_INVOICE,            { "temBAD_INVOICE",           "Invoice information missing for invoice issuing"                               } },
         { temNOT_SUPPORT,            { "temNOT_SUPPORT",           "Not support feature"                                                           } },
         { terRETRY,                  { "terRETRY",                 "Retry transaction."                                                            } },
         { terFUNDS_SPENT,            { "terFUNDS_SPENT",           "Can't set password, password set funds already spent."                         } },
@@ -174,7 +174,7 @@ transResults()
         { terPRE_SEQ,                { "terPRE_SEQ",               "Missing/inapplicable prior transaction."                                       } },
         { terOWNERS,                 { "terOWNERS",                "Non-zero owner count."                                                         } },
         { terQUEUED,                 { "terQUEUED",                "Held until escalated fee drops."                                               } },
-        { terBADTRUST,               { "terBADTRUST",              "Trusted Account does not issuer this funds" } },
+        { terBADTRUST,               { "terBADTRUST",              "Trusted Account does not issuer this funds"                                    } },
 
         { tesSUCCESS,                { "tesSUCCESS",               "The transaction was applied. Only final in a validated ledger."                } },
     };

@@ -387,7 +387,7 @@ Payment::doApply ()
             // id not present
             if (!ctx_.tx.isFieldPresent(sfInvoiceID))
             {
-                return temBAD_TOKENID;
+                return temBAD_INVOICEID;
             }
             // amount not 1
             STAmount one(saDstAmount.issue(), 1);
@@ -414,16 +414,16 @@ Payment::doApply ()
             {
                 issuing = true;
                 uint256 id = ctx_.tx.getFieldH256 (sfInvoiceID);
-                SLE::pointer sleTokenRoot = view().peek(keylet::tokent(id, account_, currency));
-                // issue should not create same id token
-                if (sleTokenRoot) 
+                SLE::pointer sleInvoiceRoot = view().peek(keylet::invoicet(id, account_, currency));
+                // issue should not create same id invoice
+                if (sleInvoiceRoot) 
                 {
                     return temID_EXISTED;
                 }
                 auto const isMeta = ctx_.tx.isFieldPresent(sfInvoice);
                 if (!isMeta)
                 {
-                    return temBAD_METAINFO;
+                    return temBAD_INVOICE;
                 }
  
                 Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
