@@ -147,7 +147,7 @@ struct token_t
     Keylet operator()(uint256 const &id, AccountID const &a, Currency const& currency) const;
     Keylet operator()(uint256 const& key) const
 	{
-		return { ltTOKEN_ROOT, key };
+		return { ltINVOICEROOT, key };
 	}
 };
 static token_t const tokent{};
