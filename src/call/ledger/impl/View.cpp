@@ -1307,7 +1307,7 @@ TER invoiceCreate(ApplyView &view,
     sleInvoice->setFieldH256(sfInvoiceID, id);
     sleInvoice->setFieldU64(sfLowNode, *lowNode);
     sleInvoice->setFieldVL(sfInvoice, invoice);
-    view.insert(sleInvoice);
+    view.update(sleInvoice);
     return tesSUCCESS;
 }
 
@@ -1327,7 +1327,7 @@ invoiceTransfer(ApplyView &view,
         return temBAD_INVOICEID;
     }
     auto oldNode = sleInvoice->getFieldU64(sfLowNode);
-    
+
     // TODO, no requied ?
     // if (!oldNode)
     // {
