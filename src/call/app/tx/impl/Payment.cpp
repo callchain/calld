@@ -436,9 +436,9 @@ Payment::doApply ()
                 }
  
                 Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
-                uint256 uCIndex(getInvoiceIndex(id, account_, currency));
-	            JLOG(j_.trace()) << "doPayment: Creating TokenRoot: " << to_string(uCIndex);
-	            terResult = AccountInvoiceCreate(view(), uDstAccountID, id, invoice, uCIndex, saDstAmount, j_);                    
+                uint256 uCIndex(getInvoiceIndex(id, account_, currency)); // issuer, currency, id
+	            JLOG(j_.trace()) << "doPayment: Creating InvoiceRoot: " << to_string(uCIndex);
+	            terResult = invoiceCreate(view(), uDstAccountID, id, invoice, uCIndex, saDstAmount, j_);                    
                 if (terResult != tesSUCCESS)
                 {
                     return terResult;
@@ -525,7 +525,7 @@ Payment::doApply ()
         {
             uint256 id = ctx_.tx.getFieldH256 (sfInvoiceID);
             uint256 uCIndex(getInvoiceIndex(id, AIssuer, currency));
-            terResult = InvoiceTransfer(view(), account_, uDstAccountID, currency, 
+            terResult = invoiceTransfer(view(), account_, uDstAccountID, currency, 
                 uCIndex, uDstAccountID == AIssuer, j_);
         }
     }

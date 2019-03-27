@@ -174,9 +174,9 @@ isFrozen(ReadView const &view, AccountID const &account,
 
 STAmount
 accountHolds(ReadView const &view,
-             AccountID const &account, Currency const &currency,
-             AccountID const &issuer, FreezeHandling zeroIfFrozen,
-             beast::Journal j)
+        AccountID const &account, Currency const &currency,
+        AccountID const &issuer, FreezeHandling zeroIfFrozen,
+        beast::Journal j)
 {
     STAmount amount;
     if (isCALL(currency))
@@ -212,8 +212,8 @@ accountHolds(ReadView const &view,
 
 STAmount
 accountFunds(ReadView const &view, AccountID const &id,
-             STAmount const &saDefault, FreezeHandling freezeHandling,
-             beast::Journal j)
+        STAmount const &saDefault, FreezeHandling freezeHandling,
+        beast::Journal j)
 {
     STAmount saFunds;
 
@@ -260,9 +260,9 @@ accountFunds(ReadView const &view, AccountID const &id,
 		}
 	}
 		
-JLOG(j.debug())  << "====================saFunds-saTakerGetFunded:" << saFunds - saTakerGetFunded;
-     return saFunds - saTakerGetFunded;
-*/
+    JLOG(j.debug())  << "====================saFunds-saTakerGetFunded:" << saFunds - saTakerGetFunded;
+        return saFunds - saTakerGetFunded;
+    */
     return saFunds;
 }
 
@@ -602,11 +602,11 @@ bool dirIsEmpty(ReadView const &view, Keylet const &k)
 }
 
 bool cdirFirst(ReadView const &view,
-               uint256 const &uRootIndex,           // --> Root of directory.
-               std::shared_ptr<SLE const> &sleNode, // <-> current node
-               unsigned int &uDirEntry,             // <-- next entry
-               uint256 &uEntryIndex,                // <-- The entry, if available. Otherwise, zero.
-               beast::Journal j)
+        uint256 const &uRootIndex,           // --> Root of directory.
+        std::shared_ptr<SLE const> &sleNode, // <-> current node
+        unsigned int &uDirEntry,             // <-- next entry
+        uint256 &uEntryIndex,                // <-- The entry, if available. Otherwise, zero.
+        beast::Journal j)
 {
     sleNode = view.read(keylet::page(uRootIndex));
     uDirEntry = 0;
@@ -615,11 +615,11 @@ bool cdirFirst(ReadView const &view,
 }
 
 bool cdirNext(ReadView const &view,
-              uint256 const &uRootIndex,           // --> Root of directory
-              std::shared_ptr<SLE const> &sleNode, // <-> current node
-              unsigned int &uDirEntry,             // <-> next entry
-              uint256 &uEntryIndex,                // <-- The entry, if available. Otherwise, zero.
-              beast::Journal j)
+        uint256 const &uRootIndex,           // --> Root of directory
+        std::shared_ptr<SLE const> &sleNode, // <-> current node
+        unsigned int &uDirEntry,             // <-> next entry
+        uint256 &uEntryIndex,                // <-- The entry, if available. Otherwise, zero.
+        beast::Journal j)
 {
     auto const &svIndexes = sleNode->getFieldV256(sfIndexes);
     assert(uDirEntry <= svIndexes.size());
@@ -751,8 +751,8 @@ hashOfSeq(ReadView const &ledger, LedgerIndex seq, beast::Journal journal)
 //------------------------------------------------------------------------------
 
 void adjustOwnerCount(ApplyView &view,
-                      std::shared_ptr<SLE> const &sle,
-                      std::int32_t amount, beast::Journal j)
+        std::shared_ptr<SLE> const &sle,
+        std::int32_t amount, beast::Journal j)
 {
     assert(amount != 0);
     std::uint32_t const current{sle->getFieldU32(sfOwnerCount)};
@@ -764,11 +764,11 @@ void adjustOwnerCount(ApplyView &view,
 }
 
 bool dirFirst(ApplyView &view,
-              uint256 const &uRootIndex,     // --> Root of directory.
-              std::shared_ptr<SLE> &sleNode, // <-> current node
-              unsigned int &uDirEntry,       // <-- next entry
-              uint256 &uEntryIndex,          // <-- The entry, if available. Otherwise, zero.
-              beast::Journal j)
+        uint256 const &uRootIndex,     // --> Root of directory.
+        std::shared_ptr<SLE> &sleNode, // <-> current node
+        unsigned int &uDirEntry,       // <-- next entry
+        uint256 &uEntryIndex,          // <-- The entry, if available. Otherwise, zero.
+        beast::Journal j)
 {
     sleNode = view.peek(keylet::page(uRootIndex));
     uDirEntry = 0;
@@ -777,11 +777,11 @@ bool dirFirst(ApplyView &view,
 }
 
 bool dirNext(ApplyView &view,
-             uint256 const &uRootIndex,     // --> Root of directory
-             std::shared_ptr<SLE> &sleNode, // <-> current node
-             unsigned int &uDirEntry,       // <-> next entry
-             uint256 &uEntryIndex,          // <-- The entry, if available. Otherwise, zero.
-             beast::Journal j)
+        uint256 const &uRootIndex,     // --> Root of directory
+        std::shared_ptr<SLE> &sleNode, // <-> current node
+        unsigned int &uDirEntry,       // <-> next entry
+        uint256 &uEntryIndex,          // <-- The entry, if available. Otherwise, zero.
+        beast::Journal j)
 {
     auto const &svIndexes = sleNode->getFieldV256(sfIndexes);
     assert(uDirEntry <= svIndexes.size());
@@ -924,13 +924,13 @@ dirAdd(ApplyView &view,
 
 // Ledger must be in a state for this to work.
 TER dirDelete(ApplyView &view,
-              const bool bKeepRoot,        // --> True, if we never completely clean up, after we overflow the root node.
-              std::uint64_t uNodeDir,      // --> Node containing entry.
-              Keylet const &root,          // --> The index of the base of the directory.  Nodes are based off of this.
-              uint256 const &uLedgerIndex, // --> Value to remove from directory.
-              const bool bStable,          // --> True, not to change relative order of entries.
-              const bool bSoft,            // --> True, uNodeDir is not hard and fast (pass uNodeDir=0).
-              beast::Journal j)
+        const bool bKeepRoot,        // --> True, if we never completely clean up, after we overflow the root node.
+        std::uint64_t uNodeDir,      // --> Node containing entry.
+        Keylet const &root,          // --> The index of the base of the directory.  Nodes are based off of this.
+        uint256 const &uLedgerIndex, // --> Value to remove from directory.
+        const bool bStable,          // --> True, not to change relative order of entries.
+        const bool bSoft,            // --> True, uNodeDir is not hard and fast (pass uNodeDir=0).
+        beast::Journal j)
 {
     if (view.rules().enabled(featureSortedDirectories))
     {
@@ -1113,21 +1113,21 @@ TER dirDelete(ApplyView &view,
 }
 
 TER trustCreate(ApplyView &view,
-                const bool bSrcHigh,
-                AccountID const &uSrcAccountID,
-                AccountID const &uDstAccountID,
-                uint256 const &uIndex,     // --> call state entry
-                SLE::ref sleAccount,       // --> the account being set.
-                const bool bAuth,          // --> authorize account.
-                const bool bNoCall,        // --> others cannot call through
-                const bool bFreeze,        // --> funds cannot leave
-                STAmount const &saBalance, // --> balance of account being set.
-                                           // Issuer should be noAccount()
-                STAmount const &saLimit,   // --> limit for account being set.
-                                           // Issuer should be the account being set.
-                std::uint32_t uQualityIn,
-                std::uint32_t uQualityOut,
-                beast::Journal j)
+        const bool bSrcHigh,
+        AccountID const &uSrcAccountID,
+        AccountID const &uDstAccountID,
+        uint256 const &uIndex,     // --> call state entry
+        SLE::ref sleAccount,       // --> the account being set.
+        const bool bAuth,          // --> authorize account.
+        const bool bNoCall,        // --> others cannot call through
+        const bool bFreeze,        // --> funds cannot leave
+        STAmount const &saBalance, // --> balance of account being set.
+                                   // Issuer should be noAccount()
+        STAmount const &saLimit,   // --> limit for account being set.
+                                   // Issuer should be the account being set.
+        std::uint32_t uQualityIn,
+        std::uint32_t uQualityOut,
+        beast::Journal j)
 {
     JLOG(j.trace())
         << "trustCreate: " << to_string(uSrcAccountID) << ", "
@@ -1246,13 +1246,13 @@ TER auto_trust(ApplyView &view, AccountID const &account, STAmount const &amount
 }
 
 //create accountissue
-TER AccountIssuerCreate(ApplyView &view,
-                        AccountID const &uSrcAccountID,
-                        STAmount const &saTotal,
-                        std::uint32_t const rate,
-                        std::uint32_t const flags,
-                        uint256 const &uCIndex,
-                        beast::Journal j)
+TER issueSetCreate(ApplyView &view,
+        AccountID const &uSrcAccountID,
+        STAmount const &saTotal,
+        std::uint32_t const rate,
+        std::uint32_t const flags,
+        uint256 const &uCIndex,
+        beast::Journal j)
 {
 
     auto const sleIssueRoot = std::make_shared<SLE>(ltISSUEROOT, uCIndex);
@@ -1263,6 +1263,7 @@ TER AccountIssuerCreate(ApplyView &view,
 
     if (!lowNode) 
     {
+        JLOG(j.trace()) << "issueSetCreate: fail to create issue set: " << to_string(uCIndex);
         return tecDIR_FULL;
     }
     STAmount total = saTotal;
@@ -1280,13 +1281,13 @@ TER AccountIssuerCreate(ApplyView &view,
 }
 
 //create accounttoken
-TER AccountInvoiceCreate(ApplyView &view,
-                        AccountID const &uDstAccountID,
-                        uint256 &id,
-                        Blob &invoice,
-                        uint256 const &uCIndex,
-                        STAmount const &amount,
-                        beast::Journal j)
+TER invoiceCreate(ApplyView &view,
+        AccountID const &uDstAccountID,
+        uint256 &id,
+        Blob &invoice,
+        uint256 const &uCIndex,
+        STAmount const &amount,
+        beast::Journal j)
 {
     auto const sleInvoice = std::make_shared<SLE>(ltINVOICE, uCIndex);
     view.insert(sleInvoice);
@@ -1295,7 +1296,8 @@ TER AccountInvoiceCreate(ApplyView &view,
         false, describeOwnerDir(uDstAccountID), j);
 
     if (!lowNode) {
-        JLOG(j.trace()) << "AccountInvoiceCreate: empty dir";
+        JLOG(j.trace()) << "invoiceCreate: empty dir, account: " << uDstAccountID
+            << ", id: " << to_string(id) << ", index: " << to_string(uCIndex);
         return tecDIR_FULL;
     }
     sleInvoice->setFieldAmount(sfAmount, amount);
@@ -1308,24 +1310,24 @@ TER AccountInvoiceCreate(ApplyView &view,
 
 // transfer token owner
 TER
-InvoiceTransfer(ApplyView &view, 
-                        AccountID const &uSrcAccountID, 
-                        AccountID const &uDstAccountID,
-                        Currency const &currency,
-                        uint256 const &uCIndex,
-                        const bool revoke,
-                        beast::Journal j)
+invoiceTransfer(ApplyView &view, 
+        AccountID const &uSrcAccountID, 
+        AccountID const &uDstAccountID,
+        Currency const &currency,
+        uint256 const &uCIndex,
+        const bool revoke,
+        beast::Journal j)
 {
     auto const sleInvoice = std::make_shared<SLE>(ltINVOICE, uCIndex);
     if (!sleInvoice)
     {
-        JLOG(j.trace()) << "InvoiceTransfer, invoice not exists";
+        JLOG(j.trace()) << "invoiceTransfer, invoice not exists, index: " << to_string(uCIndex);
         return temBAD_INVOICEID;
     }
     auto oldNode = sleInvoice->getFieldU64(sfLowNode);
     if (!oldNode)
     {
-        JLOG(j.trace()) << "InvoiceTransfer, invoice dir is empty";
+        JLOG(j.trace()) << "invoiceTransfer, old invoice dir is empty";
         return tecDIR_FULL;
     }
     // delete from old
@@ -1346,7 +1348,7 @@ InvoiceTransfer(ApplyView &view,
         auto newNode = dirAdd(view, keylet::ownerDir(uDstAccountID), uCIndex, 
             false, describeOwnerDir(uDstAccountID), j);
         if (!newNode) {
-            JLOG(j.trace()) << "InvoiceTransfer, fail to insert new entry, dir full";
+            JLOG(j.trace()) << "invoiceTransfer, fail to insert new entry, dir full";
             return tecDIR_FULL;
         }
     }

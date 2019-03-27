@@ -111,7 +111,7 @@ TER IssueSet::doApply()
 		uint256 uCIndex(getIssueIndex(account_, currency));
 		JLOG(j_.trace()) << "IssueSet: Creating IssueRoot " << to_string(uCIndex);
 		std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
-		terResult = AccountIssuerCreate(view(), account_, satotal, rate, uTxFlags, uCIndex, viewJ);
+		terResult = issueSetCreate(view(), account_, satotal, rate, uTxFlags, uCIndex, viewJ);
 		if (terResult == tesSUCCESS) {
 			SLE::pointer sleRoot = view().peek (keylet::account(account_));
 			adjustOwnerCount(view(), sleRoot, 1, viewJ);

@@ -275,7 +275,7 @@ dirDelete (ApplyView& view,
 create and delete an AccountIssue currency
 */
 TER 
-AccountIssuerCreate( ApplyView& view,
+issueSetCreate( ApplyView& view,
 	AccountID const&  uSrcAccountID,
 	STAmount const& saTotal,
     std::uint32_t const rate,
@@ -286,22 +286,24 @@ AccountIssuerCreate( ApplyView& view,
 
 // create one token for nft
 TER 
-AccountInvoiceCreate(ApplyView &view,
-                        AccountID const &uDstAccountID,
-                        uint256 &id,
-                        Blob &invoice,
-                        uint256 const &uCIndex,
-                        STAmount const &amount,
-                        beast::Journal j);
+invoiceCreate(ApplyView &view,
+    AccountID const &uDstAccountID,
+    uint256 &id,
+    Blob &invoice,
+    uint256 const &uCIndex,
+    STAmount const &amount,
+    beast::Journal j
+);
 
 TER
-InvoiceTransfer(ApplyView &view, 
-                        AccountID const &uSrcAccountID, 
-                        AccountID const &uDstAccountID,
-                        Currency const &currency,
-                        uint256 const &uCIndex,
-                        const bool revoke,
-                        beast::Journal j);
+invoiceTransfer(ApplyView &view, 
+    AccountID const &uSrcAccountID, 
+    AccountID const &uDstAccountID,
+    Currency const &currency,
+    uint256 const &uCIndex,
+    const bool revoke,
+    beast::Journal j
+);
 
 /** Create a trust line
 
