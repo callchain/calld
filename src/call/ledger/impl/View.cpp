@@ -1290,21 +1290,22 @@ TER invoiceCreate(ApplyView &view,
         beast::Journal j)
 {
     auto const sleInvoice = std::make_shared<SLE>(ltINVOICE, uCIndex);
-    view.insert(sleInvoice);
 
     auto lowNode = dirAdd(view, keylet::ownerDir(uDstAccountID), sleInvoice->key(), 
         false, describeOwnerDir(uDstAccountID), j);
 
     if (!lowNode) {
-        JLOG(j.trace()) << "invoiceCreate: empty dir, account: " << uDstAccountID
+        JLOG(j.trace()) << "invoiceCreate, empty dir, account: " << uDstAccountID
             << ", id: " << to_string(id) << ", index: " << to_string(uCIndex);
         return tecDIR_FULL;
     }
+    JLOG(j.trace()) << "invoiceCreate, dir node " << to_string(*lowNode)
+        << ", for index: " << to_string(uCIndex);
     sleInvoice->setFieldAmount(sfAmount, amount);
     sleInvoice->setFieldH256(sfInvoiceID, id);
     sleInvoice->setFieldU64(sfLowNode, *lowNode);
     sleInvoice->setFieldVL(sfInvoice, invoice);
-    view.update(sleInvoice);
+    view.insert(sleInvoice);
     return tesSUCCESS;
 }
 
@@ -1313,7 +1314,6 @@ TER
 invoiceTransfer(ApplyView &view, 
         AccountID const &uSrcAccountID, 
         AccountID const &uDstAccountID,
-        Currency const &currency,
         uint256 const &uCIndex,
         const bool revoke,
         beast::Journal j)
@@ -1321,13 +1321,13 @@ invoiceTransfer(ApplyView &view,
     auto const sleInvoice = std::make_shared<SLE>(ltINVOICE, uCIndex);
     if (!sleInvoice)
     {
-        JLOG(j.trace()) << "invoiceTransfer, invoice not exists, index: " << to_string(uCIndex);
+        JLOG(j.trace()) << "invoiceTransfer, invoice not exists for index: " << to_string(uCIndex);
         return temBAD_INVOICEID;
     }
     auto oldNode = sleInvoice->getFieldU64(sfLowNode);
     if (!oldNode)
     {
-        JLOG(j.trace()) << "invoiceTransfer, old invoice dir is empty";
+        JLOG(j.trace()) << "invoiceTransfer, old invoice dir is empty for index: " << to_string(uCIndex);
         return tecDIR_FULL;
     }
     // delete from old
@@ -1348,7 +1348,8 @@ invoiceTransfer(ApplyView &view,
         auto newNode = dirAdd(view, keylet::ownerDir(uDstAccountID), uCIndex, 
             false, describeOwnerDir(uDstAccountID), j);
         if (!newNode) {
-            JLOG(j.trace()) << "invoiceTransfer, fail to insert new entry, dir full";
+            JLOG(j.trace()) << "invoiceTransfer, fail to insert new entry, "
+                << "dst account: " << uDstAccountID << " for index: " << to_string(uCIndex);
             return tecDIR_FULL;
         }
     }
@@ -1357,10 +1358,10 @@ invoiceTransfer(ApplyView &view,
 }
 
 TER trustDelete(ApplyView &view,
-                std::shared_ptr<SLE> const &sleCallState,
-                AccountID const &uLowAccountID,
-                AccountID const &uHighAccountID,
-                beast::Journal j)
+        std::shared_ptr<SLE> const &sleCallState,
+        AccountID const &uLowAccountID,
+        AccountID const &uHighAccountID,
+        beast::Journal j)
 {
     // Detect legacy dirs.
     bool bLowNode = sleCallState->isFieldPresent(sfLowNode);
@@ -1389,8 +1390,8 @@ TER trustDelete(ApplyView &view,
 }
 
 TER offerDelete(ApplyView &view,
-                std::shared_ptr<SLE> const &sle,
-                beast::Journal j)
+        std::shared_ptr<SLE> const &sle,
+        beast::Journal j)
 {
     if (!sle)
         return tesSUCCESS;
@@ -1419,9 +1420,9 @@ TER offerDelete(ApplyView &view,
 // - Create trust line if needed.
 // --> bCheckIssuer : normally require issuer to be involved.
 TER callCredit(ApplyView &view,
-               AccountID const &uSenderID, AccountID const &uReceiverID,
-               STAmount const &saAmount, bool bCheckIssuer,
-               beast::Journal j)
+        AccountID const &uSenderID, AccountID const &uReceiverID,
+        STAmount const &saAmount, bool bCheckIssuer,
+        beast::Journal j)
 {
     auto issuer = saAmount.getIssuer();
     auto currency = saAmount.getCurrency();
@@ -1542,11 +1543,11 @@ TER callCredit(ApplyView &view,
 // Calculate the fee needed to transfer IOU assets between two parties.
 static STAmount
 callTransferFee(ReadView const &view,
-                AccountID const &from,
-                AccountID const &to,
-                AccountID const &issuer,
-                STAmount const &amount,
-                beast::Journal j)
+        AccountID const &from,
+        AccountID const &to,
+        AccountID const &issuer,
+        STAmount const &amount,
+        beast::Journal j)
 {
     if (from != issuer && to != issuer)
     {
@@ -1616,8 +1617,8 @@ callSend(ApplyView &view,
 }
 
 TER accountSend(ApplyView &view,
-                AccountID const &uSenderID, AccountID const &uReceiverID,
-                STAmount const &saAmount, beast::Journal j)
+        AccountID const &uSenderID, AccountID const &uReceiverID,
+        STAmount const &saAmount, beast::Journal j)
 {
     assert(saAmount >= zero);
 
@@ -1723,13 +1724,13 @@ TER accountSend(ApplyView &view,
 
 static bool
 updateTrustLine(
-    ApplyView &view,
-    SLE::pointer state,
-    bool bSenderHigh,
-    AccountID const &sender,
-    STAmount const &before,
-    STAmount const &after,
-    beast::Journal j)
+        ApplyView &view,
+        SLE::pointer state,
+        bool bSenderHigh,
+        AccountID const &sender,
+        STAmount const &before,
+        STAmount const &after,
+        beast::Journal j)
 {
     std::uint32_t const flags(state->getFieldU32(sfFlags));
 

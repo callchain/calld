@@ -299,7 +299,6 @@ TER
 invoiceTransfer(ApplyView &view, 
     AccountID const &uSrcAccountID, 
     AccountID const &uDstAccountID,
-    Currency const &currency,
     uint256 const &uCIndex,
     const bool revoke,
     beast::Journal j
