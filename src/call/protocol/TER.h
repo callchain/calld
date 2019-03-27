@@ -239,7 +239,8 @@ enum TER
     tecINVARIANT_FAILED         = 147,
     tecOVERISSUED_AMOUNT        = 148, 
     tecBADTOTAL                 = 149,
-    tecINSUFFICINET_FUND        = 150
+    tecINSUFFICINET_FUND        = 150,
+    tecDIR_NOT_EXISTS           = 151,
 };
 
 inline bool isTelLocal(TER x)

@@ -90,6 +90,7 @@ transResults()
 	    { tecOVERISSUED_AMOUNT,      { "tecOVERISSUED_AMOUNT",     "the issued amount is beyond to the total amount."                              } },
         { tecBADTOTAL,               { "tecBADTOTAL",              "the set amount is lower than total amount."                                    } },
         { tecINSUFFICINET_FUND,      { "tecINSUFFICINET_FUND",     "the account fund is insufficient to create transactions."                      } },
+        { tecDIR_NOT_EXISTS,         { "tecDIR_NOT_EXISTS",        "The stored dir entry not exists."                                              } },
         
 
         { tefALREADY,                { "tefALREADY",               "The exact transaction was already in this ledger."                             } },

@@ -1289,7 +1289,9 @@ TER invoiceCreate(ApplyView &view,
         STAmount const &amount,
         beast::Journal j)
 {
+    // uCIndex -> {id, issuer_, currency_}
     auto const sleInvoice = std::make_shared<SLE>(ltINVOICE, uCIndex);
+    view.insert(sleInvoice);
 
     auto lowNode = dirAdd(view, keylet::ownerDir(uDstAccountID), sleInvoice->key(), 
         false, describeOwnerDir(uDstAccountID), j);
@@ -1325,11 +1327,15 @@ invoiceTransfer(ApplyView &view,
         return temBAD_INVOICEID;
     }
     auto oldNode = sleInvoice->getFieldU64(sfLowNode);
-    if (!oldNode)
-    {
-        JLOG(j.trace()) << "invoiceTransfer, old invoice dir is empty for index: " << to_string(uCIndex);
-        return tecDIR_FULL;
-    }
+    
+    // TODO, no requied ?
+    // if (!oldNode)
+    // {
+    //     JLOG(j.trace()) << "invoiceTransfer, old invoice dir is empty for index: " 
+    //         << to_string(uCIndex) << ", invoiceID: " << sleInvoice->getFieldH256(sfInvoiceID);
+    //     return tecDIR_NOT_EXISTS;
+    // }
+
     // delete from old
     TER result = dirDelete(view, false, oldNode, keylet::ownerDir(uSrcAccountID),
         sleInvoice->key(), false, oldNode == 0, j);
