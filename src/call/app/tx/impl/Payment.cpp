@@ -525,8 +525,8 @@ Payment::doApply ()
         {
             uint256 id = ctx_.tx.getFieldH256 (sfInvoiceID);
             uint256 uCIndex(getInvoiceIndex(id, AIssuer, currency));
-            terResult = invoiceTransfer(view(), account_, uDstAccountID, currency, 
-                uCIndex, uDstAccountID == AIssuer, j_);
+            terResult = invoiceTransfer(view(), account_, uDstAccountID, 
+                    uCIndex, uDstAccountID == AIssuer, j_);
         }
     }
     else
