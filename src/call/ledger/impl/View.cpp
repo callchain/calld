@@ -1318,7 +1318,7 @@ invoiceTransfer(ApplyView &view,
         const bool revoke,
         beast::Journal j)
 {
-    auto const sleInvoice = view.read(keylet::invoicet(uCIndex));
+    SLE::pointer sleInvoice = view.peek(keylet::invoicet(uCIndex));
     if (!sleInvoice)
     {
         JLOG(j.trace()) << "invoiceTransfer, invoice not exists for index: " << to_string(uCIndex);
