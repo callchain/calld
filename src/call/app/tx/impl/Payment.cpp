@@ -409,6 +409,7 @@ Payment::doApply ()
             // update issue set
             if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
             {
+                JLOG(j_.trace()) << "doPayment: issue over amount: " << saDstAmount.getFullText();
                 return tecOVERISSUED_AMOUNT;
             }
             // else add issused
@@ -424,11 +425,13 @@ Payment::doApply ()
                 // issue should not create same id invoice
                 if (sleInvoiceRoot) 
                 {
+                    JLOG(j_.trace()) << "doPayment: invoice id exists " << id;
                     return temID_EXISTED;
                 }
                 auto const isInvoice = ctx_.tx.isFieldPresent(sfInvoice);
                 if (!isInvoice)
                 {
+                    JLOG(j_.trace()) << "doPayment: issue invoice, but invoice id not present";
                     return temBAD_INVOICE;
                 }
  
