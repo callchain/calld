@@ -304,6 +304,14 @@ invoiceTransfer(ApplyView &view,
     beast::Journal j
 );
 
+TER
+updateIssueSet(ApplyView& view,
+    std::shared_ptr<SLE> const& sleCallState,
+    AccountID const& uLowAccountID,
+    AccountID const& uHighAccountID,
+    int fans,
+    beast::Journal j);
+
 /** Create a trust line
 
     This can set an initial balance.

@@ -406,16 +406,14 @@ SetTrust::doApply ()
         if (bLowReserveClear && bLowReserved)
         {
             // Clear reserve for low account.
-            adjustOwnerCount(view(),
-                sleLowAccount, -1, viewJ);
+            adjustOwnerCount(view(), sleLowAccount, -1, viewJ);
             uFlagsOut &= ~lsfLowReserve;
         }
 
         if (bHighReserveSet && !bHighReserved)
         {
             // Set reserve for high account.
-            adjustOwnerCount(view(),
-                sleHighAccount, 1, viewJ);
+            adjustOwnerCount(view(), sleHighAccount, 1, viewJ);
             uFlagsOut |= lsfHighReserve;
 
             if (bHigh)
@@ -425,8 +423,7 @@ SetTrust::doApply ()
         if (bHighReserveClear && bHighReserved)
         {
             // Clear reserve for high account.
-            adjustOwnerCount(view(),
-                sleHighAccount, -1, viewJ);
+            adjustOwnerCount(view(), sleHighAccount, -1, viewJ);
             uFlagsOut &= ~lsfHighReserve;
         }
 
@@ -436,15 +433,12 @@ SetTrust::doApply ()
         if (bDefault || badCurrency() == currency)
         {
             // Delete.
-
-            terResult = trustDelete (view(),
-                sleCallState, uLowAccountID, uHighAccountID, viewJ);
+            terResult = trustDelete (view(), sleCallState, uLowAccountID, uHighAccountID, viewJ);
         }
         // Reserve is not scaled by load.
         else if (bReserveIncrease && mPriorBalance < reserveCreate)
         {
-            JLOG(j_.trace()) <<
-                "Delay transaction: Insufficent reserve to add trust line.";
+            JLOG(j_.trace()) << "Delay transaction: Insufficent reserve to add trust line.";
 
             // Another transaction could provide CALL to the account and then
             // this transaction would succeed.
@@ -453,7 +447,6 @@ SetTrust::doApply ()
         else
         {
             view().update (sleCallState);
-
             JLOG(j_.trace()) << "Modify call line";
         }
     }
@@ -476,15 +469,15 @@ SetTrust::doApply ()
     else
     {
        //update the Issuer fans
-        SLE::pointer sleIssueRoot = view().peek(keylet::issuet(uDstAccountID, currency));
-        if (sleIssueRoot)
-        {
-            //	view().update(sleIssueRoot);
-            sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
-            view().update(sleIssueRoot);
-        } else {
-            return terBADTRUST;
-        }
+        // SLE::pointer sleIssueRoot = view().peek(keylet::issuet(uDstAccountID, currency));
+        // if (sleIssueRoot)
+        // {
+        //     //	view().update(sleIssueRoot);
+        //     sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
+        //     view().update(sleIssueRoot);
+        // } else {
+        //     return terBADTRUST;
+        // }
         
         // Zero balance in currency.
         STAmount saBalance ({currency, noAccount()});

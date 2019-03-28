@@ -403,7 +403,7 @@ Payment::doApply ()
             }
         }
 
-        // source account is issue account
+        // source account is issue account, its issuing operation
         if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
         {
             // update issue set
@@ -413,8 +413,8 @@ Payment::doApply ()
                 return tecOVERISSUED_AMOUNT;
             }
             // else add issused
-            sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
-            view().update(sleIssueRoot);
+            // sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
+            // view().update(sleIssueRoot);
 
             // when issuer issue new one, check if id exists already return error else create one
             if (is_nft)
@@ -445,8 +445,8 @@ Payment::doApply ()
                 }
 
                 // else add issused
-                sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
-                view().update(sleIssueRoot);
+                // sleIssueRoot->setFieldAmount(sfIssued, issued + saDstAmount);
+                // view().update(sleIssueRoot);
             }
         }
 
@@ -468,8 +468,8 @@ Payment::doApply ()
                     return result;
                 }
 
-			    sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
-                view().update(sleIssueRoot);
+			    // sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
+                // view().update(sleIssueRoot);
 		    }
         }
         // Copy paths into an editable class.
