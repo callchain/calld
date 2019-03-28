@@ -1202,6 +1202,9 @@ TER trustCreate(ApplyView &view,
 
     view.creditHook(uSrcAccountID, uDstAccountID, saBalance, saBalance.zeroed());
 
+    JLOG(j.trace())
+        << "trustCreate: increase fans " << to_string(uLowAccountID) << ", "
+        << to_string(uHighAccountID);
     // update fans
     return updateIssueSet(view, sleCallState, uLowAccountID, uHighAccountID, 1, j);
 }
@@ -1220,9 +1223,11 @@ updateIssueSet(ApplyView& view,
     const STAmount balance = sleCallState->getFieldAmount(sfBalance);
     Currency currency = balance.getCurrency();
     AccountID issuer = highReserve ? uLowAccountID : uHighAccountID;
+    JLOG(j.trace())
+	<< "updateIssueSset: currency " << currency << ", issuer " << issuer;
 
     SLE::pointer sleIssueRoot = view.peek(keylet::issuet(issuer, currency));
-    sleIssueRoot->setFieldAmount(sfFans, sleIssueRoot->getFieldU32(sfFans) + fans);
+    sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + fans);
     view.update(sleIssueRoot);
 
     return tesSUCCESS;
@@ -1453,6 +1458,11 @@ TER callCredit(ApplyView &view,
     // Disallow sending to self.
     assert(uSenderID != uReceiverID);
 
+   JLOG(j.debug()) << "callCredit: uSenderID=" << to_string(uSenderID)
+	<< ", uReceiverID=" << to_string(uReceiverID)
+	<< ", saAmount=" << saAmount.getFullText()
+	<< ", checkIssuer=" << bCheckIssuer;
+
     bool bSenderHigh = uSenderID > uReceiverID;
     uint256 uIndex = getCallStateIndex(uSenderID, uReceiverID, saAmount.getCurrency());
     auto sleCallState = view.peek(keylet::line(uIndex));
@@ -1545,10 +1555,16 @@ TER callCredit(ApplyView &view,
         }
     }
 
+    JLOG(j.trace()) << "callCredit: issued update, issuer=" << to_string(issuer)
+		<< ", currency=" << currency;
     // update issueSet issued
     if (terResult == tesSUCCESS) 
     {
         SLE::pointer sleIssueRoot = view.peek(keylet::issuet(issuer, currency));
+        if (sleIssueRoot == NULL)
+        {
+            return temBAD_FUNDS; 
+        }
         STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
         if (uSenderID == issuer)
         {
