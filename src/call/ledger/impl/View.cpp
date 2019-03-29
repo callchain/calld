@@ -1473,6 +1473,7 @@ TER callCredit(ApplyView &view,
     assert(!isCALL(uSenderID) && uSenderID != noAccount());
     assert(!isCALL(uReceiverID) && uReceiverID != noAccount());
 
+    std::uint32_t uFlags = 0;
     if (!sleCallState)
     {
         STAmount saReceiverLimit({currency, uReceiverID});
@@ -1488,6 +1489,11 @@ TER callCredit(ApplyView &view,
 
         terResult = trustCreate(view, bSenderHigh, uSenderID, uReceiverID, uIndex, sleAccount,
             false, noCall, false, saBalance, saReceiverLimit, 0, 0, j);
+        if (terResult == tesSUCCESS) 
+        {
+            sleCallState = view.peek(keylet::line(uIndex));
+            uFlags = sleCallState->getFieldU32(sfFlags);
+        }
     }
     else
     {
@@ -1504,7 +1510,7 @@ TER callCredit(ApplyView &view,
             << to_string(uReceiverID) << " : before=" << saBefore.getFullText() 
             << " amount=" << saAmount.getFullText() << " after=" << saBalance.getFullText();
 
-        std::uint32_t const uFlags(sleCallState->getFieldU32(sfFlags));
+        uFlags = sleCallState->getFieldU32(sfFlags);
         bool bDelete = false;
 
         // YYY Could skip this if rippling in reverse.
@@ -1518,11 +1524,9 @@ TER callCredit(ApplyView &view,
                    static_cast<bool>(view.read(keylet::account(uSenderID))->getFlags() & lsfDefaultCall) &&
             !(uFlags & (!bSenderHigh ? lsfLowFreeze : lsfHighFreeze)) && !sleCallState->getFieldAmount(!bSenderHigh ? sfLowLimit : sfHighLimit)
             // Sender trust limit is 0.
-            && !sleCallState->getFieldU32(
-                   !bSenderHigh ? sfLowQualityIn : sfHighQualityIn)
+            && !sleCallState->getFieldU32(!bSenderHigh ? sfLowQualityIn : sfHighQualityIn)
             // Sender quality in is 0.
-            && !sleCallState->getFieldU32(
-                   !bSenderHigh ? sfLowQualityOut : sfHighQualityOut))
+            && !sleCallState->getFieldU32(!bSenderHigh ? sfLowQualityOut : sfHighQualityOut))
         // Sender quality out is 0.
         {
             // Clear the reserve of the sender, possibly delete the line!
@@ -1561,15 +1565,16 @@ TER callCredit(ApplyView &view,
 
     if (terResult == tesSUCCESS)
     {
-        if (uSenderID == issuer)
+        AccountID lowAccount = bSenderHigh ? uReceiverID : uSenderID;
+        AccountID highAccount = !bSenderHigh ? uReceiverID : uSenderID;
+        AccountID isser_ = (uFlags & lsfHighReserve) != 0 ? lowAccount: highAccount;
+        if (uSenderID == isser_)
         {
-            terResult =  updateIssueSet(view, sleCallState, bSenderHigh ? uReceiverID : uSenderID, 
-                !bSenderHigh ? uReceiverID : uSenderID, saAmount, 0, j);
+            terResult =  updateIssueSet(view, sleCallState, lowAccount, highAccount, saAmount, 0, j);
         }
-        else if (uReceiverID == issuer)
+        else if (uReceiverID == isser_)
         {
-            terResult =  updateIssueSet(view, sleCallState, bSenderHigh ? uReceiverID : uSenderID, 
-                !bSenderHigh ? uReceiverID : uSenderID, -saAmount, 0, j);
+            terResult =  updateIssueSet(view, sleCallState, lowAccount, highAccount, -saAmount, 0, j);
         }
     }
 
