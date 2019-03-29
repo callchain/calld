@@ -669,8 +669,12 @@ Transactor::operator()()
             } else {
                 if (uDstAccountID != saDstAmount.getIssuer())
                 {
-			        SLE::pointer sleCallState = view().peek(keylet::line(uDstAccountID, saDstAmount.getIssuer(), saDstAmount.getCurrency()));
-                 	if (!sleCallState)
+			        SLE::pointer sleCallState = view().peek(keylet::line(uDstAccountID, 
+                            saDstAmount.getIssuer(), saDstAmount.getCurrency()));
+                    std::uint32_t ownerCount = uDstsle->getFieldU32(sfOwnerCount);
+                    STAmount reserve = STAmount(view().fees().accountReserve(ownerCount));
+                    STAmount balance = uDstsle->getFieldAmount(sfBalance);
+                 	if (!sleCallState && balance == reserve)
  		        	{
 			         	mActivation = 1;
 				    }

@@ -467,18 +467,7 @@ SetTrust::doApply ()
         terResult = tecNO_LINE_INSUF_RESERVE;
     }
     else
-    {
-       //update the Issuer fans
-        // SLE::pointer sleIssueRoot = view().peek(keylet::issuet(uDstAccountID, currency));
-        // if (sleIssueRoot)
-        // {
-        //     //	view().update(sleIssueRoot);
-        //     sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
-        //     view().update(sleIssueRoot);
-        // } else {
-        //     return terBADTRUST;
-        // }
-        
+    {        
         // Zero balance in currency.
         STAmount saBalance ({currency, noAccount()});
 

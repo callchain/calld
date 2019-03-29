@@ -460,9 +460,6 @@ Payment::doApply ()
                 {
                     return result;
                 }
-
-			    // sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + 1);
-                // view().update(sleIssueRoot);
 		    }
         }
         // Copy paths into an editable class.
