@@ -1206,7 +1206,7 @@ TER trustCreate(ApplyView &view,
         << "trustCreate: increase fans " << to_string(uLowAccountID) << ", "
         << to_string(uHighAccountID);
     // update fans
-    return updateIssueSet(view, sleCallState, uLowAccountID, uHighAccountID, 1, j);
+    return updateIssueSet(view, sleCallState, uLowAccountID, uHighAccountID, 0, 1, j);
 }
 
 
@@ -1215,20 +1215,30 @@ updateIssueSet(ApplyView& view,
         std::shared_ptr<SLE> const& sleCallState,
         AccountID const& uLowAccountID,
         AccountID const& uHighAccountID,
+        STAmount saIssued,
         int fans,
         beast::Journal j)
 {
+    JLOG(j.trace())
+        << "updateIssueSet: low=" << to_string(uLowAccountID) << ", high="
+        << to_string(uHighAccountID) << ", issued=" << saIssued.getFullText()
+        << ", fans=" << fans;
     std::uint32_t uFlags = sleCallState->getFieldU32(sfFlags);
     const bool highReserve = ((uFlags & lsfHighReserve) != 0);
     const STAmount balance = sleCallState->getFieldAmount(sfBalance);
     Currency currency = balance.getCurrency();
     AccountID issuer = highReserve ? uLowAccountID : uHighAccountID;
-    JLOG(j.trace())
-	<< "updateIssueSset: currency " << currency << ", issuer " << issuer;
 
-    SLE::pointer sleIssueRoot = view.peek(keylet::issuet(issuer, currency));
-    sleIssueRoot->setFieldU64(sfFans, sleIssueRoot->getFieldU64(sfFans) + fans);
-    view.update(sleIssueRoot);
+    JLOG(j.trace()) << "updateIssueSset: currency " << currency << ", issuer " << issuer;
+
+    SLE::pointer sle = view.peek(keylet::issuet(issuer, currency));
+    if (saIssued) {
+        sle->setFieldAmount(sfIssued, sle->getFieldAmount(sfIssued) + saIssued);
+    }
+    if (fans) {
+        sle->setFieldU64(sfFans, sle->getFieldU64(sfFans) + fans);
+    }
+    view.update(sle);
 
     return tesSUCCESS;
 }
@@ -1347,15 +1357,6 @@ invoiceTransfer(ApplyView &view,
         return temBAD_INVOICEID;
     }
     auto oldNode = sleInvoice->getFieldU64(sfLowNode);
-
-    // TODO, no requied ?
-    // if (!oldNode)
-    // {
-    //     JLOG(j.trace()) << "invoiceTransfer, old invoice dir is empty for index: " 
-    //         << to_string(uCIndex) << ", invoiceID: " << sleInvoice->getFieldH256(sfInvoiceID);
-    //     return tecDIR_NOT_EXISTS;
-    // }
-
     // delete from old
     TER result = dirDelete(view, false, oldNode, keylet::ownerDir(uSrcAccountID),
         sleInvoice->key(), false, oldNode == 0, j);
@@ -1410,7 +1411,7 @@ TER trustDelete(ApplyView &view,
     JLOG(j.trace()) << "trustDelete: Deleting call line: state";
     view.erase(sleCallState);
 
-    return updateIssueSet(view, sleCallState, uLowAccountID, uHighAccountID, -1, j);
+    return updateIssueSet(view, sleCallState, uLowAccountID, uHighAccountID, 0, -1, j);
 }
 
 TER offerDelete(ApplyView &view,
@@ -1557,36 +1558,20 @@ TER callCredit(ApplyView &view,
 
     JLOG(j.trace()) << "callCredit: issued update, issuer=" << to_string(issuer)
 		<< ", currency=" << currency;
-    // update issueSet issued
-    if (terResult == tesSUCCESS) 
+
+    if (terResult == tesSUCCESS)
     {
-        SLE::pointer sleIssueRoot = view.peek(keylet::issuet(issuer, currency));
-        if (sleIssueRoot == NULL)
-        {
-            return temBAD_FUNDS; 
-        }
-        STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
         if (uSenderID == issuer)
         {
-            sleIssueRoot->setFieldAmount(sfIssued, issued + saAmount);
+            terResult =  updateIssueSet(view, sleCallState, bSenderHigh ? uReceiverID : uSenderID, 
+                !bSenderHigh ? uReceiverID : uSenderID, saAmount, 0, j);
         }
         else if (uReceiverID == issuer)
         {
-            sleIssueRoot->setFieldAmount(sfIssued, issued - saAmount);
+            terResult =  updateIssueSet(view, sleCallState, bSenderHigh ? uReceiverID : uSenderID, 
+                !bSenderHigh ? uReceiverID : uSenderID, -saAmount, 0, j);
         }
-        view.update(sleIssueRoot);
     }
-
-    // redeem back to issue set issued amount
-    // Rate const rate = transferRate(view, issuer, currency);
-    // if (terResult == tesSUCCESS && uReceiverID == issuer && rate != parityRate)
-    // {
-    //     STAmount redeemIssued = saAmount - divide(saAmount, rate);
-    //     SLE::pointer sleIssueRoot = view.peek(keylet::issuet(issuer, currency));
-    //     STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
-    //     sleIssueRoot->setFieldAmount(sfIssued, issued - redeemIssued);
-    //     view.update(sleIssueRoot);
-    // }
 
     return terResult;
 }
@@ -1683,7 +1668,9 @@ TER accountSend(ApplyView &view,
     {
         STAmount saActual;
 
-        JLOG(j.trace()) << "accountSend: " << to_string(uSenderID) << " -> " << to_string(uReceiverID) << " : " << saAmount.getFullText();
+        JLOG(j.trace()) 
+            << "accountSend: " << to_string(uSenderID) << " -> " << to_string(uReceiverID) 
+            << " : " << saAmount.getFullText();
 
         return callSend(view, uSenderID, uReceiverID, saAmount, saActual, j);
     }
@@ -1704,11 +1691,9 @@ TER accountSend(ApplyView &view,
     TER terResult(tesSUCCESS);
 
     SLE::pointer sender = uSenderID != beast::zero
-                              ? view.peek(keylet::account(uSenderID))
-                              : SLE::pointer();
+            ? view.peek(keylet::account(uSenderID)) : SLE::pointer();
     SLE::pointer receiver = uReceiverID != beast::zero
-                                ? view.peek(keylet::account(uReceiverID))
-                                : SLE::pointer();
+            ? view.peek(keylet::account(uReceiverID)) : SLE::pointer();
 
     if (auto stream = j.trace())
     {
@@ -1721,7 +1706,10 @@ TER accountSend(ApplyView &view,
         if (receiver)
             receiver_bal = receiver->getFieldAmount(sfBalance).getFullText();
 
-        stream << "accountSend> " << to_string(uSenderID) << " (" << sender_bal << ") -> " << to_string(uReceiverID) << " (" << receiver_bal << ") : " << saAmount.getFullText();
+        stream << "accountSend> " 
+            << to_string(uSenderID) << " (" << sender_bal << ") -> " 
+            << to_string(uReceiverID) << " (" << receiver_bal 
+            << ") : " << saAmount.getFullText();
     }
 
     if (sender)
@@ -1767,7 +1755,9 @@ TER accountSend(ApplyView &view,
         if (receiver)
             receiver_bal = receiver->getFieldAmount(sfBalance).getFullText();
 
-        stream << "accountSend< " << to_string(uSenderID) << " (" << sender_bal << ") -> " << to_string(uReceiverID) << " (" << receiver_bal << ") : " << saAmount.getFullText();
+        stream << "accountSend< " << to_string(uSenderID) 
+            << " (" << sender_bal << ") -> " << to_string(uReceiverID) 
+            << " (" << receiver_bal << ") : " << saAmount.getFullText();
     }
 
     return terResult;
@@ -1799,11 +1789,9 @@ updateTrustLine(
                static_cast<bool>(sle->getFlags() & lsfDefaultCall) &&
         !(flags & (!bSenderHigh ? lsfLowFreeze : lsfHighFreeze)) && !state->getFieldAmount(!bSenderHigh ? sfLowLimit : sfHighLimit)
         // Sender trust limit is 0.
-        && !state->getFieldU32(
-               !bSenderHigh ? sfLowQualityIn : sfHighQualityIn)
+        && !state->getFieldU32(!bSenderHigh ? sfLowQualityIn : sfHighQualityIn)
         // Sender quality in is 0.
-        && !state->getFieldU32(
-               !bSenderHigh ? sfLowQualityOut : sfHighQualityOut))
+        && !state->getFieldU32(!bSenderHigh ? sfLowQualityOut : sfHighQualityOut))
     // Sender quality out is 0.
     {
         // VFALCO Where is the line being deleted?
@@ -1822,9 +1810,10 @@ updateTrustLine(
     return false;
 }
 
+// send to user
 TER issueIOU(ApplyView &view,
-             AccountID const &account,
-             STAmount const &amount, Issue const &issue, beast::Journal j)
+            AccountID const &account,
+            STAmount const &amount, Issue const &issue, beast::Journal j)
 {
     assert(!isCALL(account) && !isCALL(issue.account));
 
@@ -1896,18 +1885,15 @@ TER issueIOU(ApplyView &view,
         }
     }
 
-    if (terResult == tesSUCCESS) 
-    {
-         // update issueSet issued
-        SLE::pointer sleIssueRoot = view.peek(keylet::issuet(issue.account, issue.currency));
-        STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
-        sleIssueRoot->setFieldAmount(sfIssued, issued + amount);
-        view.update(sleIssueRoot);
+    if (terResult == tesSUCCESS) {
+        terResult =  updateIssueSet(view, state, bSenderHigh ? account : issue.account, 
+            bSenderHigh ? issue.account : account, amount, 0, j);
     }
 
     return terResult;
 }
 
+// send back to issuer
 TER redeemIOU(ApplyView &view,
               AccountID const &account,
               STAmount const &amount,
@@ -1972,13 +1958,9 @@ TER redeemIOU(ApplyView &view,
         view.update(state);
     }
     
-    if (terResult == tesSUCCESS) 
-    {
-         // update issueSet issued
-        SLE::pointer sleIssueRoot = view.peek(keylet::issuet(issue.account, issue.currency));
-        STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
-        sleIssueRoot->setFieldAmount(sfIssued, issued - amount);
-        view.update(sleIssueRoot);
+     if (terResult == tesSUCCESS) {
+        terResult =  updateIssueSet(view, state, bSenderHigh ? issue.account : account, 
+            bSenderHigh ? account : issue.account, -amount, 0, j);
     }
    
     return terResult;

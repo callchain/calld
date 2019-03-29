@@ -309,6 +309,7 @@ updateIssueSet(ApplyView& view,
     std::shared_ptr<SLE> const& sleCallState,
     AccountID const& uLowAccountID,
     AccountID const& uHighAccountID,
+    STAmount saIssued,
     int fans,
     beast::Journal j);
 
