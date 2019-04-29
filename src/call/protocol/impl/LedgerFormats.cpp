@@ -180,10 +180,10 @@ LedgerFormats::LedgerFormats ()
             ;
 
     add ("IssueRoot", ltISSUEROOT)
-	    << SOElement (sfTotal,             SOE_REQUIRED)
-	    << SOElement (sfIssued,            SOE_REQUIRED)
-	    << SOElement (sfFans,              SOE_REQUIRED)
-	    << SOElement (sfLowNode,           SOE_REQUIRED)
+	    << SOElement (sfTotal,             SOE_OPTIONAL)
+	    << SOElement (sfIssued,            SOE_OPTIONAL)
+	    << SOElement (sfFans,              SOE_OPTIONAL)
+	    << SOElement (sfLowNode,           SOE_OPTIONAL)
             << SOElement (sfDecimal,           SOE_OPTIONAL)
             << SOElement (sfTransferRate,      SOE_OPTIONAL)
 	    ;
