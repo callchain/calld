@@ -98,8 +98,7 @@ void STLedgerEntry::setSLEType ()
             j << "Object: " << getJson (0);
         }
 
-        Throw<std::runtime_error> ("ledger entry not valid for type: "
-            + format->getName () + ", object: " + getJson (0));
+        Throw<std::runtime_error> ("ledger entry not valid for type: " + format->getName ());
     }
 }
 
