@@ -240,6 +240,7 @@ SF_Account const sfDestination = make::one<SF_Account::type>(&sfDestination, STI
 SF_Account const sfIssuer      = make::one<SF_Account::type>(&sfIssuer,      STI_ACCOUNT, 4, "Issuer");
 SF_Account const sfTarget      = make::one<SF_Account::type>(&sfTarget,      STI_ACCOUNT, 7, "Target");
 SF_Account const sfRegularKey  = make::one<SF_Account::type>(&sfRegularKey,  STI_ACCOUNT, 8, "RegularKey");
+SF_Account const sfInviter     = make::one<SF_Account::type>(&sfInviter,     STI_ACCOUNT, 9, "Inviter");
 
 // path set
 SField const sfPaths = make::one(&sfPaths, STI_PATHSET, 1, "Paths");

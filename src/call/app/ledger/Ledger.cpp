@@ -615,6 +615,7 @@ Ledger::setup (Config const& config)
     fees_.units = config.TRANSACTION_FEE_BASE;
     fees_.reserve = config.FEE_ACCOUNT_RESERVE;
     fees_.increment = config.FEE_OWNER_RESERVE;
+    fees_.inviter = config.INVITER_FEE;
 
     try
     {
