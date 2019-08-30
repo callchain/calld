@@ -118,6 +118,9 @@ enum TER
     temBAD_INVOICEID,
     temBAD_INVOICE,
     temNOT_SUPPORT,
+    temBAD_CODE,
+    temBAD_FUNCTION,
+    temBADCODE_MAIN_FUNCTION,
     
     // -199 .. -100: F
     //    Failure (sequence number previously used)
@@ -241,6 +244,7 @@ enum TER
     tecBADTOTAL                 = 149,
     tecINSUFFICINET_FUND        = 150,
     tecDIR_NOT_EXISTS           = 151,
+    tecUNFUNDED_CONTRACT        = 152,
 };
 
 inline bool isTelLocal(TER x)

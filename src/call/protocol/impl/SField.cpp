@@ -232,6 +232,9 @@ SF_Blob const sfCondition       = make::one<SF_Blob::type>(&sfCondition,       S
 SF_Blob const sfMasterSignature = make::one<SF_Blob::type>(&sfMasterSignature, STI_VL, 18, "MasterSignature", SField::sMD_Default, SField::notSigning);
 SF_Blob const sfNickName        = make::one<SF_Blob::type>(&sfNickName,        STI_VL, 19, "NickName");
 SF_Blob const sfInvoice         = make::one<SF_Blob::type>(&sfInvoice,         STI_VL, 20, "Invoice");
+SF_Blob const sfCode            = make::one<SF_Blob::type>(&sfCode,            STI_VL, 21, "Code");
+SF_Blob const sfFunction        = make::one<SF_Blob::type>(&sfFunction,        STI_VL, 21, "Code");
+SF_Blob const sfValue           = make::one<SF_Blob::type>(&sfValue,           STI_VL, 22, "Value");
 
 // account
 SF_Account const sfAccount     = make::one<SF_Account::type>(&sfAccount,     STI_ACCOUNT, 1, "Account");
@@ -262,11 +265,13 @@ SField const sfNewFields           = make::one(&sfNewFields,           STI_OBJEC
 SField const sfTemplateEntry       = make::one(&sfTemplateEntry,       STI_OBJECT,  9, "TemplateEntry");
 SField const sfMemo                = make::one(&sfMemo,                STI_OBJECT, 10, "Memo");
 SField const sfSignerEntry         = make::one(&sfSignerEntry,         STI_OBJECT, 11, "SignerEntry");
+SField const sfArg                 = make::one(&sfArg,                 STI_OBJECT, 12, "Parameter");
 
 // inner object (uncommon)
 SField const sfSigner              = make::one(&sfSigner,              STI_OBJECT, 16, "Signer");
 //                                                                                 17 has not been used yet...
 SField const sfMajority            = make::one(&sfMajority,            STI_OBJECT, 18, "Majority");
+
 
 // array of objects
 // ARRAY/1 is reserved for end of array
@@ -278,6 +283,7 @@ SField const sfNecessary       = make::one(&sfNecessary,       STI_ARRAY, 6, "Ne
 SField const sfSufficient      = make::one(&sfSufficient,      STI_ARRAY, 7, "Sufficient");
 SField const sfAffectedNodes   = make::one(&sfAffectedNodes,   STI_ARRAY, 8, "AffectedNodes");
 SField const sfMemos           = make::one(&sfMemos,           STI_ARRAY, 9, "Memos");
+SField const sfArgs            = make::one(&sfArgs,            STI_ARRAY, 10, "Parameters");
 
 // array of objects (uncommon)
 SField const sfMajorities      = make::one(&sfMajorities,      STI_ARRAY, 16, "Majorities");

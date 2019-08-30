@@ -158,6 +158,19 @@ TxFormats::TxFormats ()
             SOElement (sfTransferRate,      SOE_OPTIONAL) <<
             SOElement (sfExpiration,        SOE_OPTIONAL)
             ;
+
+    add ("CreateContract", ttCREATE_CONTRACT) << 
+            SOElement (sfAmount,            SOE_REQUIRED) <<
+            SOElement (sfCode,              SOE_REQUIRED) << 
+            SOElement (sfArgs,              SOE_OPTIONAL)
+            ;
+
+    add ("InvokeContract", ttINVOKE_CONTRACT) <<
+            SOElement (sfDestination,         SOE_REQUIRED) <<
+            SOElement (sfFunction,            SOE_REQUIRED) <<
+            SOElement (sfArgs,                SOE_OPTIONAL) <<
+            SOElement (sfAmount,              SOE_OPTIONAL) 
+            ;
 }
 
 void TxFormats::addCommonFields (Item& item)

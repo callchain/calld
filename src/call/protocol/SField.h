@@ -476,6 +476,9 @@ extern SF_Blob const sfCondition;
 extern SF_Blob const sfMasterSignature;
 extern SF_Blob const sfNickName;
 extern SF_Blob const sfInvoice;
+extern SF_Blob const sfCode;
+extern SF_Blob const sfFunction;
+extern SF_Blob const sfValue;
 
 // account
 extern SF_Account const sfAccount;
@@ -520,6 +523,7 @@ extern SField const sfSufficient;
 extern SField const sfAffectedNodes;
 extern SField const sfMemos;
 extern SField const sfMajorities;
+extern SField const sfArgs;
 
 //------------------------------------------------------------------------------
 

@@ -91,3 +91,8 @@ Builds/VisualStudio2015/*.sdf
 # MSVC
 *.pdb
 .vs/
+
+src/lua/src/*.o
+src/lua/lua
+src/lua/luac
+

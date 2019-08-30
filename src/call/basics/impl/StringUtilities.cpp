@@ -160,4 +160,21 @@ std::string strCopy (Blob const& vucSrc)
     return strDst;
 
 }
+
+int checkFuncNumber(std::string code, std::string func)
+{
+    std::string str = code;
+    boost::regex reg("\\s*function\\s+" + func + "\\s*\\(\\s*[a-zA-Z_][0-9a-zA-Z_]{0,}\\s*\\)");
+    boost::cmatch m;
+    int count = 0;
+    while(boost::regex_search(str.c_str(), m, reg))
+    {
+        count += m.size();
+        str = m[0].second;
+    }
+
+    return count;      
+}
+
+
 } // call

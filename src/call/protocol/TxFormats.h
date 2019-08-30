@@ -69,6 +69,9 @@ enum TxType
 
     ttTRUST_SET         = 20,
 
+    ttCREATE_CONTRACT   = 30,
+    ttINVOKE_CONTRACT   = 31,
+
     ttAMENDMENT         = 100,
     ttFEE               = 101,
 };

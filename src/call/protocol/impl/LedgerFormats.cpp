@@ -65,6 +65,7 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfNickName,            SOE_OPTIONAL) // not used
             << SOElement (sfFreezed,             SOE_OPTIONAL)
             << SOElement (sfInviter,             SOE_OPTIONAL)
+            << SOElement (sfCode,                SOE_OPTIONAL)
             ;
 
     add ("DirectoryNode", ltDIR_NODE)

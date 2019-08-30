@@ -48,6 +48,8 @@
 #include <call/app/tx/impl/SetTrust.h>
 #include <call/app/tx/impl/PayChan.h>
 #include <call/app/tx/impl/IssueSet.h>
+#include <call/app/tx/impl/CreateContract.h>
+#include <call/app/tx/impl/InvokeContract.h>
 namespace call {
 
 static
@@ -74,6 +76,8 @@ invoke_preflight (PreflightContext const& ctx)
     case ttPAYCHAN_FUND:    return PayChanFund      ::preflight(ctx);
     case ttPAYCHAN_CLAIM:   return PayChanClaim     ::preflight(ctx);
     case ttISSUE_SET:       return IssueSet         ::preflight(ctx);
+    case ttCREATE_CONTRACT: return CreateContract   ::preflight(ctx);
+    case ttINVOKE_CONTRACT: return InvokeContract   ::preflight(ctx);
 
     default:
         assert(false);
@@ -141,6 +145,8 @@ invoke_preclaim (PreclaimContext const& ctx)
     case ttPAYCHAN_FUND:    return invoke_preclaim<PayChanFund>(ctx);
     case ttPAYCHAN_CLAIM:   return invoke_preclaim<PayChanClaim>(ctx);
     case ttISSUE_SET:       return invoke_preclaim<IssueSet>(ctx);
+    case ttCREATE_CONTRACT: return invoke_preclaim<CreateContract>(ctx);
+    case ttINVOKE_CONTRACT: return invoke_preclaim<InvokeContract>(ctx);
 
     default:
         assert(false);
@@ -212,6 +218,8 @@ invoke_calculateConsequences(STTx const& tx)
     case ttPAYCHAN_FUND:    return invoke_calculateConsequences<PayChanFund>(tx);
     case ttPAYCHAN_CLAIM:   return invoke_calculateConsequences<PayChanClaim>(tx);
     case ttISSUE_SET:       return invoke_calculateConsequences<IssueSet>(tx);
+    case ttCREATE_CONTRACT: return invoke_calculateConsequences<CreateContract>(tx);
+    case ttINVOKE_CONTRACT: return invoke_calculateConsequences<InvokeContract>(tx);
     case ttAMENDMENT:
     case ttFEE:
         // fall through to default
@@ -246,6 +254,8 @@ invoke_apply (ApplyContext& ctx)
     case ttPAYCHAN_FUND:    { PayChanFund   p(ctx); return p(); }
     case ttPAYCHAN_CLAIM:   { PayChanClaim  p(ctx); return p(); }
     case ttISSUE_SET:       { IssueSet      p(ctx); return p(); }
+    case ttCREATE_CONTRACT: { CreateContract p(ctx); return p(); }
+    case ttINVOKE_CONTRACT: { InvokeContract p(ctx); return p(); }
     default:
         assert(false);
         return { temUNKNOWN, false };
