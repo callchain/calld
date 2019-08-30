@@ -98,7 +98,6 @@ protected:
     CALLAmount     mFeeDue;
     CALLAmount     mPriorBalance;  // Balance before fees.
     CALLAmount     mSourceBalance; // Balance after fees.
-    CALLAmount     mActivation;
 
 public:
     /** Process the transaction. */

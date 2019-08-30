@@ -239,14 +239,14 @@ TER Transactor::payFee ()
 		auto feeindex = getFeesIndex();
 		auto const feesle = std::make_shared<SLE>(
 		ltFeeRoot,feeindex);
-		feesle->setFieldAmount(sfBalance, feePaid - mActivation);
+		feesle->setFieldAmount(sfBalance, feePaid);
 		view().insert(feesle);
 		auto after = view().read(keylet::txfee());
 	}
 	else
 	{
 		view().update(feesle);
-		auto fee = feesle->getFieldAmount(sfBalance) + feePaid - mActivation;
+		auto fee = feesle->getFieldAmount(sfBalance) + feePaid;
 		feesle->setFieldAmount(sfBalance, fee);
 		
 		auto after = view().read(keylet::txfee());
@@ -652,36 +652,6 @@ Transactor::operator()()
     auto const txID = ctx_.tx.getTransactionID ();
 
     JLOG(j_.debug()) << "Transactor for id: " << txID;
-    mActivation = 0;
-	auto txtype = ctx_.tx.getTxnType();
-
-	if (txtype == ttPAYMENT)
-	{
-		STAmount const saDstAmount(ctx_.tx.getFieldAmount(sfAmount));
-		AccountID const uDstAccountID(ctx_.tx.getAccountID(sfDestination));
-
-		if (!saDstAmount.native())
-		{
-			auto const uDstsle = view().peek(keylet::account(uDstAccountID));
-			if (!uDstsle)
-			{
-				mActivation = 2;
-            } else {
-                if (uDstAccountID != saDstAmount.getIssuer())
-                {
-			        SLE::pointer sleCallState = view().peek(keylet::line(uDstAccountID, 
-                            saDstAmount.getIssuer(), saDstAmount.getCurrency()));
-                    std::uint32_t ownerCount = uDstsle->getFieldU32(sfOwnerCount);
-                    STAmount reserve = STAmount(view().fees().accountReserve(ownerCount));
-                    STAmount balance = uDstsle->getFieldAmount(sfBalance);
-                 	if (!sleCallState && balance == reserve)
- 		        	{
-			         	mActivation = 1;
-				    }
-                }
-		    }
-		 }
-	}
 
 #ifdef BEAST_DEBUG
     {
@@ -797,7 +767,7 @@ Transactor::operator()()
             }
 
             if (fee != zero)
-                ctx_.destroyCALL (fee - mActivation);
+                ctx_.destroyCALL (fee);
         }
 
         ctx_.apply(terResult);
