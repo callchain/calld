@@ -99,7 +99,7 @@ TER IssueSet::doApply()
 	bool const is_nft = (uTxFlags & tfNonFungible) != 0;
 	if (is_nft && ctx_.tx.isFieldPresent(sfTransferRate))
 	{
-		return temNOT_SUPPORT;
+		return temNFT_NO_FEE;
 	}
 
 	auto viewJ = ctx_.app.journal("View");
@@ -115,6 +115,8 @@ TER IssueSet::doApply()
 		if (terResult == tesSUCCESS) {
 			SLE::pointer sleRoot = view().peek (keylet::account(account_));
 			adjustOwnerCount(view(), sleRoot, 1, viewJ);
+		} else {
+			return terResult;
 		}
 	}
 	// old issue setting
@@ -135,7 +137,7 @@ TER IssueSet::doApply()
 		const bool has_rate = ctx_.tx.isFieldPresent(sfTransferRate);
 		if (has_rate && is_nft2) 
 		{
-			return tecNO_AUTH;
+			return temNFT_NO_FEE;
 		}
 		if (has_rate && !is_nft2) 
 		{

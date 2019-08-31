@@ -118,6 +118,7 @@ enum TER
     temBAD_INVOICEID,
     temBAD_INVOICE,
     temNOT_SUPPORT,
+    temNFT_NO_FEE,
     
     // -199 .. -100: F
     //    Failure (sequence number previously used)

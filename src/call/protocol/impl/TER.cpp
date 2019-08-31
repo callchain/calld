@@ -164,6 +164,7 @@ transResults()
         { temBAD_INVOICEID,          { "temBAD_INVOICEID",         "Invoice id not present for invoice trandfer"                                   } },
         { temBAD_INVOICE,            { "temBAD_INVOICE",           "Invoice information missing for invoice issuing"                               } },
         { temNOT_SUPPORT,            { "temNOT_SUPPORT",           "Not support feature"                                                           } },
+        { temNFT_NO_FEE,             { "temNFT_NO_FEE",            "NFT Token not support transfer fee"                                            } },
         { terRETRY,                  { "terRETRY",                 "Retry transaction."                                                            } },
         { terFUNDS_SPENT,            { "terFUNDS_SPENT",           "Can't set password, password set funds already spent."                         } },
         { terINSUF_FEE_B,            { "terINSUF_FEE_B",           "Account balance can't pay fee."                                                } },
