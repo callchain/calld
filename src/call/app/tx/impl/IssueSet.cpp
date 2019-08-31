@@ -124,11 +124,6 @@ TER IssueSet::doApply()
 		std::uint32_t const flags = sleIssueRoot->getFieldU32(sfFlags);
 		bool const editable = (flags & tfEnaddition) != 0;
 		bool const is_nft2 = (flags & tfNonFungible) != 0;
-		// not allow to edit total
-		if (!editable && (satotal > oldtotal))
-		{
-			return tecNO_AUTH;
-		}
 
 		// allow to edit and total is bigger than old total
 		if (editable && (satotal > oldtotal))
