@@ -120,6 +120,8 @@ enum TER
     temNOT_SUPPORT,
     temNFT_NO_FEE,
     temCURRENCY_NOT_ISSUE,
+    temSELF_TRUST,
+    
     
     // -199 .. -100: F
     //    Failure (sequence number previously used)

@@ -166,6 +166,7 @@ transResults()
         { temNOT_SUPPORT,            { "temNOT_SUPPORT",           "Not support feature"                                                           } },
         { temNFT_NO_FEE,             { "temNFT_NO_FEE",            "NFT Token not support transfer fee"                                            } },
         { temCURRENCY_NOT_ISSUE,     { "temCURRENCY_NOT_ISSUE",    "Issuer not issue such currency yet"                                            } },
+        { temSELF_TRUST,             { "temSELF_TRUST",            "Not allow to self trust"                                                       } },
         { terRETRY,                  { "terRETRY",                 "Retry transaction."                                                            } },
         { terFUNDS_SPENT,            { "terFUNDS_SPENT",           "Can't set password, password set funds already spent."                         } },
         { terINSUF_FEE_B,            { "terINSUF_FEE_B",           "Account balance can't pay fee."                                                } },

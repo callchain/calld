@@ -306,9 +306,8 @@ invoiceTransfer(ApplyView &view,
 
 TER
 updateIssueSet(ApplyView& view,
-    std::shared_ptr<SLE> const& sleCallState,
-    AccountID const& uLowAccountID,
-    AccountID const& uHighAccountID,
+    AccountID const& uIssuer,
+    Currency const& currency,
     STAmount saIssued,
     int fans,
     beast::Journal j);

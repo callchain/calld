@@ -143,6 +143,7 @@ SetTrust::doApply ()
     STAmount   saLimitAmount (ctx_.tx.getFieldAmount (sfLimitAmount));
     bool const bQualityIn (ctx_.tx.isFieldPresent (sfQualityIn));
     bool const bQualityOut (ctx_.tx.isFieldPresent (sfQualityOut));
+    int fans = 0;
 
     Currency const currency (saLimitAmount.getCurrency ());
     AccountID uDstAccountID (saLimitAmount.getIssuer ());
@@ -154,7 +155,8 @@ SetTrust::doApply ()
 		return  temBAD_ISSUER;
 	}
 
-    SLE::pointer sleIssueRoot = view().peek(keylet::issuet(uDstAccountID, currency));
+    AccountID const& issuer = uDstAccountID;
+    SLE::pointer sleIssueRoot = view().peek(keylet::issuet(issuer, currency));
     if (!sleIssueRoot)
     {
         JLOG(j_.warn()) << "Issuer not issue such currency";
@@ -209,18 +211,10 @@ SetTrust::doApply ()
 
     if (account_ == uDstAccountID)
     {
-        // The only purpose here is to allow a mistakenly created
-        // trust line to oneself to be deleted. If no such trust
-        // lines exist now, why not remove this code and simply
-        // return an error?
-        SLE::pointer sleDelete = view().peek (keylet::line(account_, uDstAccountID, currency));
-
-        JLOG(j_.warn()) << "Clearing redundant line.";
-        return trustDelete (view(), sleDelete, account_, uDstAccountID, viewJ);
+        return temSELF_TRUST;
     }
 
     SLE::pointer sleDst = view().peek (keylet::account(uDstAccountID));
-
     if (!sleDst)
     {
         JLOG(j_.trace()) << "Delay transaction: Destination account does not exist.";
@@ -420,6 +414,7 @@ SetTrust::doApply ()
         {
             // Delete.
             terResult = trustDelete (view(), sleCallState, uLowAccountID, uHighAccountID, viewJ);
+            if (terResult == tesSUCCESS) fans -= 1;
         }
         // Reserve is not scaled by load.
         else if (bReserveIncrease && mPriorBalance < reserveCreate)
@@ -475,6 +470,11 @@ SetTrust::doApply ()
             saLimitAllow,       // Limit for who is being charged.
             uQualityIn,
             uQualityOut, viewJ);
+        if (terResult == tesSUCCESS) fans += 1;
+    }
+    if (terResult == tesSUCCESS && fans != 0) 
+    {
+        terResult = updateIssueSet(view(), uDstAccountID, saLimitAllow.getCurrency(), 0, fans, j_);
     }
 
     return terResult;
