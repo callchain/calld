@@ -550,8 +550,7 @@ DirectStepI<TDerived>::revImp (
         IOUAmount const in = mulRatio (
             srcToDst, srcQOut, QUALITY_ONE, /*roundUp*/ true);
         cache_.emplace (in, srcToDst, out, srcRedeems);
-        callCredit (sb,
-                      src_, dst_, toSTAmount (srcToDst, srcToDstIss),
+        callCredit (sb, src_, dst_, toSTAmount (srcToDst, srcToDstIss),
                       /*checkIssuer*/ true, j_);
         JLOG (j_.trace()) <<
             "DirectStepI::rev: Non-limiting" <<
@@ -568,8 +567,7 @@ DirectStepI<TDerived>::revImp (
     IOUAmount const actualOut = mulRatio (
         maxSrcToDst, dstQIn, QUALITY_ONE, /*roundUp*/ false);
     cache_.emplace (in, maxSrcToDst, actualOut, srcRedeems);
-    callCredit (sb,
-                  src_, dst_, toSTAmount (maxSrcToDst, srcToDstIss),
+    callCredit (sb, src_, dst_, toSTAmount (maxSrcToDst, srcToDstIss),
                   /*checkIssuer*/ true, j_);
     JLOG (j_.trace()) <<
         "DirectStepI::rev: Limiting" <<
@@ -672,8 +670,7 @@ DirectStepI<TDerived>::fwdImp (
         IOUAmount const out = mulRatio (
             srcToDst, dstQIn, QUALITY_ONE, /*roundUp*/ false);
         setCacheLimiting (in, srcToDst, out, srcRedeems);
-        callCredit (sb,
-            src_, dst_, toSTAmount (cache_->srcToDst, srcToDstIss),
+        callCredit (sb, src_, dst_, toSTAmount (cache_->srcToDst, srcToDstIss),
             /*checkIssuer*/ true, j_);
         JLOG (j_.trace()) <<
                 "DirectStepI::fwd: Non-limiting" <<
@@ -690,8 +687,7 @@ DirectStepI<TDerived>::fwdImp (
         IOUAmount const out = mulRatio (
             maxSrcToDst, dstQIn, QUALITY_ONE, /*roundUp*/ false);
         setCacheLimiting (actualIn, maxSrcToDst, out, srcRedeems);
-        callCredit (sb,
-            src_, dst_, toSTAmount (cache_->srcToDst, srcToDstIss),
+        callCredit (sb, src_, dst_, toSTAmount (cache_->srcToDst, srcToDstIss),
             /*checkIssuer*/ true, j_);
         JLOG (j_.trace()) <<
                 "DirectStepI::rev: Limiting" <<

@@ -1438,7 +1438,6 @@ TER callCredit(ApplyView &view,
 {
     auto issuer = saAmount.getIssuer();
     auto currency = saAmount.getCurrency();
-    int fans = 0;
 
     // Make sure issuer is involved.
     assert(!bCheckIssuer || uSenderID == issuer || uReceiverID == issuer);
@@ -1481,12 +1480,19 @@ TER callCredit(ApplyView &view,
         {
             sleCallState = view.peek(keylet::line(uIndex));
             uFlags = sleCallState->getFieldU32(sfFlags);
-            fans += 1;
+            terResult = updateIssueSet(view, uSenderID, currency, saAmount, 1, j);
         }
     }
     else
     {
         STAmount saBalance = sleCallState->getFieldAmount(sfBalance);
+        AccountID issuer1_ = noAccount();
+        if (bSenderHigh) 
+        {
+            issuer1_ = saBalance < zero ? uReceiverID : ((saBalance > 0) ? uSenderID : noAccount());
+        } else {
+            issuer1_ = saBalance > zero ? uReceiverID : ((saBalance < 0) ? uSenderID : noAccount());
+        }
 
         if (bSenderHigh)
             saBalance.negate(); // Put balance in sender terms.
@@ -1502,7 +1508,7 @@ TER callCredit(ApplyView &view,
         uFlags = sleCallState->getFieldU32(sfFlags);
         bool bDelete = false;
 
-        // YYY Could skip this if rippling in reverse.
+        // YYY Could skip this if calling in reverse.
         if (saBefore > zero
             // Sender balance was positive.
             && saBalance <= zero
@@ -1537,25 +1543,45 @@ TER callCredit(ApplyView &view,
         sleCallState->setFieldAmount(sfBalance, saBalance);
         // ONLY: Adjust call balance.
 
+        AccountID issuer2_ = noAccount();
+        if (bSenderHigh) 
+        {
+            issuer2_ = saBalance < zero ? uReceiverID : ((saBalance > 0) ? uSenderID : noAccount());
+        } else {
+            issuer2_ = saBalance > zero ? uReceiverID : ((saBalance < 0) ? uSenderID : noAccount());
+        }
+
         if (bDelete)
         {
             terResult = trustDelete(view, sleCallState, bSenderHigh ? uReceiverID : uSenderID,
                 !bSenderHigh ? uReceiverID : uSenderID, j);
-            if (terResult == tesSUCCESS) fans -= 1;
         }
         else
         {
             view.update(sleCallState);
             terResult = tesSUCCESS;
         }
-    }
 
-    JLOG(j.trace()) << "callCredit: issued update, issuer=" << to_string(issuer)
-		<< ", currency=" << currency;
-
-    if (terResult == tesSUCCESS)
-    {
-        terResult = updateIssueSet(view, issuer, currency, uSenderID == issuer ? saAmount : -saAmount, fans, j);
+        assert(issuer1_ != noAccount() || issuer2_ != noAccount());
+        if (terResult == tesSUCCESS)
+        {
+            if (issuer1_ == issuer2_)
+            {
+                terResult = updateIssueSet(view, issuer1_, currency, issuer1_ == uSenderID ? saAmount : saAmount.negative(), 0, j);
+            }
+            else
+            {
+                if (issuer1_ != noAccount())
+                {
+                    terResult = updateIssueSet(view, issuer1_, currency, issuer1_ == uSenderID ? saBefore : saBefore.negative(), bDelete ? -1 : 0, j);
+                }
+                if (issuer2_ != noAccount()) 
+                {
+                    STAmount saAmountFinal = saAmount - saBefore;
+                    terResult = updateIssueSet(view, issuer2_, currency, issuer2_ == uSenderID ? saAmountFinal : saAmountFinal.negative(), bDelete ? -1 : 0, j);
+                }
+            }
+        }
     }
 
     return terResult;
