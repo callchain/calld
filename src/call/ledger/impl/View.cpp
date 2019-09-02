@@ -1489,9 +1489,9 @@ TER callCredit(ApplyView &view,
         AccountID issuer1_ = noAccount();
         if (bSenderHigh) 
         {
-            issuer1_ = saBalance < zero ? uReceiverID : ((saBalance > 0) ? uSenderID : noAccount());
+            issuer1_ = saBalance < zero ? uReceiverID : ((saBalance > zero) ? uSenderID : noAccount());
         } else {
-            issuer1_ = saBalance > zero ? uReceiverID : ((saBalance < 0) ? uSenderID : noAccount());
+            issuer1_ = saBalance > zero ? uReceiverID : ((saBalance < zero) ? uSenderID : noAccount());
         }
 
         if (bSenderHigh)
@@ -1546,9 +1546,9 @@ TER callCredit(ApplyView &view,
         AccountID issuer2_ = noAccount();
         if (bSenderHigh) 
         {
-            issuer2_ = saBalance < zero ? uReceiverID : ((saBalance > 0) ? uSenderID : noAccount());
+            issuer2_ = saBalance < zero ? uReceiverID : ((saBalance > zero) ? uSenderID : noAccount());
         } else {
-            issuer2_ = saBalance > zero ? uReceiverID : ((saBalance < 0) ? uSenderID : noAccount());
+            issuer2_ = saBalance > zero ? uReceiverID : ((saBalance < zero) ? uSenderID : noAccount());
         }
 
         if (bDelete)
@@ -1567,18 +1567,18 @@ TER callCredit(ApplyView &view,
         {
             if (issuer1_ == issuer2_)
             {
-                terResult = updateIssueSet(view, issuer1_, currency, issuer1_ == uSenderID ? saAmount : saAmount.negative(), 0, j);
+                terResult = updateIssueSet(view, issuer1_, currency, issuer1_ == uSenderID ? saAmount : -saAmount, 0, j);
             }
             else
             {
                 if (issuer1_ != noAccount())
                 {
-                    terResult = updateIssueSet(view, issuer1_, currency, issuer1_ == uSenderID ? saBefore : saBefore.negative(), bDelete ? -1 : 0, j);
+                    terResult = updateIssueSet(view, issuer1_, currency, issuer1_ == uSenderID ? saBefore : -saBefore, bDelete ? -1 : 0, j);
                 }
                 if (issuer2_ != noAccount()) 
                 {
                     STAmount saAmountFinal = saAmount - saBefore;
-                    terResult = updateIssueSet(view, issuer2_, currency, issuer2_ == uSenderID ? saAmountFinal : saAmountFinal.negative(), bDelete ? -1 : 0, j);
+                    terResult = updateIssueSet(view, issuer2_, currency, issuer2_ == uSenderID ? saAmountFinal : -saAmountFinal, bDelete ? -1 : 0, j);
                 }
             }
         }

@@ -118,9 +118,11 @@ enum TER
     temBAD_INVOICEID,
     temBAD_INVOICE,
     temNOT_SUPPORT,
-    temNFT_NO_FEE,
+    temINVOICE_NO_FEE,
     temCURRENCY_NOT_ISSUE,
     temSELF_TRUST,
+    temNOT_EDITABLE,
+    temBAD_INVOICE_AMOUNT,
     
     
     // -199 .. -100: F

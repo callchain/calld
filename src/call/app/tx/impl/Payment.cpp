@@ -393,7 +393,7 @@ Payment::doApply ()
             if (saDstAmount != one)
             {
                  JLOG(j_.trace()) << "doPayment: invoice amount should be 1: " << saDstAmount.getFullText();
-                return temBAD_AMOUNT;
+                return temBAD_INVOICE_AMOUNT;
             }
         }
 

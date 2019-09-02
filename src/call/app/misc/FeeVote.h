@@ -58,13 +58,13 @@ public:
         std::uint64_t reference_fee = 10;
 
         /** The cost of a reference transaction in fee units. */
-        std::uint32_t const reference_fee_units = 10;
+        std::uint32_t const reference_fee_units = 1;
 
         /** The account reserve requirement in drops. */
-        std::uint64_t account_reserve = 1;
+        std::uint64_t account_reserve = 10000;
 
         /** The per-owned item reserve requirement in drops. */
-        std::uint64_t owner_reserve = 1;
+        std::uint64_t owner_reserve = 100;
     };
 
     virtual ~FeeVote () = default;

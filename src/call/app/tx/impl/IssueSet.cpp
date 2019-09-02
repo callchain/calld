@@ -99,7 +99,7 @@ TER IssueSet::doApply()
 	bool const is_nft = (uTxFlags & tfNonFungible) != 0;
 	if (is_nft && ctx_.tx.isFieldPresent(sfTransferRate))
 	{
-		return temNFT_NO_FEE;
+		return temINVOICE_NO_FEE;
 	}
 
 	auto viewJ = ctx_.app.journal("View");
@@ -127,6 +127,11 @@ TER IssueSet::doApply()
 		bool const editable = (flags & tfEnaddition) != 0;
 		bool const is_nft2 = (flags & tfNonFungible) != 0;
 
+		if (!editable && (satotal > oldtotal))
+		{
+			return temNOT_EDITABLE;
+		}
+
 		// allow to edit and total is bigger than old total
 		if (editable && (satotal > oldtotal))
 		{
@@ -137,7 +142,7 @@ TER IssueSet::doApply()
 		const bool has_rate = ctx_.tx.isFieldPresent(sfTransferRate);
 		if (has_rate && is_nft2) 
 		{
-			return temNFT_NO_FEE;
+			return temINVOICE_NO_FEE;
 		}
 		if (has_rate && !is_nft2) 
 		{
