@@ -147,7 +147,7 @@ public:
     std::string                 START_LEDGER;
 
     // Network parameters
-    int const                   TRANSACTION_FEE_BASE = 1;   // The number of fee units a reference transaction costs
+    int const                   TRANSACTION_FEE_BASE = 10;   // The number of fee units a reference transaction costs
 
     // Note: The following parameters do not relate to the UNL or trust at all
     std::size_t                 NETWORK_QUORUM = 0;         // Minimum number of nodes to consider the network present
@@ -167,7 +167,7 @@ public:
     // Validation
     boost::optional<std::size_t> VALIDATION_QUORUM;     // validations to consider ledger authoritative
 
-    std::uint64_t                      FEE_DEFAULT = 10;
+    std::uint64_t                      FEE_DEFAULT = 1;
     std::uint64_t                      FEE_ACCOUNT_RESERVE =10000;
     std::uint64_t                      FEE_OWNER_RESERVE = 100;
     std::uint64_t                      FEE_OFFER = 10;
