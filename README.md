@@ -4,7 +4,7 @@ CallChain=Ripple + Bitshares DPOS + Ethereum EVM + Pan-Entertainment Features
 
 - - -
 
-Copyright © 2018,CallChain Fundation. All rights reserved.
+Copyright © 2018,CallChain Foundation. All rights reserved.
 
 Copyright © 2017,Ripple Labs. All rights reserved.
 
