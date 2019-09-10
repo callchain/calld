@@ -218,6 +218,38 @@ Payment::preclaim(PreclaimContext const& ctx)
     AccountID const uDstAccountID(ctx.tx[sfDestination]);
     STAmount const saDstAmount(ctx.tx[sfAmount]);
 
+
+    // Check currency's issue set
+    TER ter1 = checkIssue(ctx, saDstAmount, false);
+    if (ter1 != tesSUCCESS)
+    {
+        JLOG(ctx.j.trace()) << "doPayment: preclaim, issue set not exists or not valid, dstAmount: " 
+            << saDstAmount.getFullText();
+        return ter1;
+    }
+
+    // sendMax not support invoice token
+    if (sendMax)
+    {
+        // TODO, when sendMax issuer is account_
+        TER ter2 = checkIssue(ctx, *sendMax, true);
+        if (ter2 != tesSUCCESS)
+        {
+            JLOG(ctx.j.trace()) << "doPayment: preclaim, issue set not exists or not valid, sendMax: " 
+                << (*sendMax).getFullText();
+            return ter2;
+        }
+    }
+
+    // check invoice id
+    auto issueRoot = ctx.view.read(keylet::issuet(saDstAmount));
+    std::uint32_t const issueFlags = issueRoot->getFieldU32(sfFlags);
+    if ((issueFlags & tfNonFungible) != 0 && !ctx.tx.isFieldPresent(sfInvoiceID))
+    {
+        JLOG(ctx.j.trace()) << "doPayment: preclaim, invoice id not present";
+        return temBAD_INVOICEID;
+    }
+
     auto const srck = keylet::account(srcAccountID);
     auto const sleSrc = ctx.view.read(srck);
 
@@ -317,20 +349,6 @@ Payment::doApply ()
     STAmount const saDstAmount (ctx_.tx.getFieldAmount (sfAmount));
     STAmount maxSourceAmount;
 
-    // Check issue set exists
-    if (!checkIssue(ctx_, saDstAmount, false))
-    {
-        JLOG(j_.trace()) << "doPayment: checkIssue, issue set not exists or not valid, dstAmount: " 
-            << saDstAmount.getFullText();
-        return temBAD_FUNDS;
-    }
-    if (sendMax && !checkIssue(ctx_, *sendMax, false))
-    {
-        JLOG(j_.trace()) << "doPayment: checkIssue, issue set not exists or not valid, sendMax: " 
-            << (*sendMax).getFullText();
-        return temBAD_FUNDS;
-    }
-
     if (sendMax)
         maxSourceAmount = *sendMax;
     else if (saDstAmount.native ())
@@ -376,27 +394,11 @@ Payment::doApply ()
         AccountID AIssuer = saDstAmount.getIssuer();
         Currency currency = saDstAmount.getCurrency();
 
-        SLE::pointer sleIssueRoot = view().peek(keylet::issuet(AIssuer, currency));
+        SLE::pointer sleIssueRoot = view().peek(keylet::issuet(saDstAmount));
         STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
         std::uint32_t const uIssueFlags = sleIssueRoot->getFieldU32(sfFlags);
         bool const is_nft = ((uIssueFlags & tfNonFungible) != 0);
-        if (is_nft)
-        {
-            // id not present
-            if (!ctx_.tx.isFieldPresent(sfInvoiceID))
-            {
-                JLOG(j_.trace()) << "doPayment: invoice id not present";
-                return temBAD_INVOICEID;
-            }
-            // amount not 1
-            STAmount one(saDstAmount.issue(), 1);
-            if (saDstAmount != one)
-            {
-                 JLOG(j_.trace()) << "doPayment: invoice amount should be 1: " << saDstAmount.getFullText();
-                return temBAD_INVOICE_AMOUNT;
-            }
-        }
-
+       
         // source account is issue account, its issuing operation
         if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
         {

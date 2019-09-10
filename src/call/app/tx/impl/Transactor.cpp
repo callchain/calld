@@ -381,26 +381,31 @@ Transactor::checkSign (PreclaimContext const& ctx)
 /**
  * Check if amount issuet set exists and check it's non nft flags
  */
-bool
-Transactor::checkIssue (ApplyContext const& ctx, STAmount const& amount, bool const check_non_nft)
+TER
+Transactor::checkIssue (PreclaimContext const& ctx, STAmount const& amount, bool const non_invoice)
 {
     if (amount.native())
-        return true;
-    AccountID AIssuer = amount.getIssuer();
-    Currency currency = amount.getCurrency();
-    std::shared_ptr<SLE const> sle = ctx.view().read(keylet::issuet(AIssuer, currency));
+        return tesSUCCESS;
+    
+    std::shared_ptr<SLE const> sle = ctx.view.read(keylet::issuet(amount));
     if (!sle)
     {
-        return false;
+        return temCURRENCY_NOT_ISSUE;
     }
     std::uint32_t const uIssueFlags = sle->getFieldU32(sfFlags);
-    // check non nft
-    if (check_non_nft)
+    // check non now
+    if (non_invoice && ((uIssueFlags & tfNonFungible) != 0))
     {
-        // should no nft flags
-        return (uIssueFlags & tfNonFungible) == 0;
+        // not support invoice now
+        return temNOT_SUPPORT;
     }
-    return true;
+    if (uIssueFlags & tfNonFungible) 
+    {
+         STAmount one(amount.issue(), 1);
+         // invoice amount value should be one
+         if (amount != one) return temBAD_INVOICE_AMOUNT;
+    }
+    return tesSUCCESS;
 }
 
 TER

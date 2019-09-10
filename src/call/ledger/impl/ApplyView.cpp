@@ -287,4 +287,24 @@ ApplyView::dirRemove (
     return true;
 }
 
+bool
+ApplyView::dirItemExists(
+    Keylet const& directory,
+    std::uint64_t page,
+    uint256 const& key)
+{
+    auto node = peek(keylet::page(directory, page));
+    if (!node) return false;
+
+    std::uint64_t constexpr rootPage = 0;
+    auto entries = node->getFieldV256(sfIndexes);
+
+    auto it = std::find(entries.begin(), entries.end(), key);
+
+    if (entries.end () == it)
+        return false;
+        
+    return true;
+}
+
 } // call

@@ -64,7 +64,7 @@ TxFormats::TxFormats ()
         << SOElement (sfTakerPays,           SOE_REQUIRED)
         << SOElement (sfTakerGets,           SOE_REQUIRED)
         << SOElement (sfTakerPaysInvoiceID,  SOE_OPTIONAL)
-        << SOElement (sfTakerGetsInvoiceID,  SOE_OPTIONAL)
+        << SOElement (sfInvoiceID,           SOE_OPTIONAL)
         << SOElement (sfExpiration,          SOE_OPTIONAL)
         << SOElement (sfOfferSequence,       SOE_OPTIONAL)
         ;

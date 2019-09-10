@@ -166,15 +166,16 @@ public:
         // after checkSeq/Fee/Sign.
         return tesSUCCESS;
     }
+
+    // chech issue exists and check non invoice support
+    static
+    TER
+    checkIssue (PreclaimContext const& ctx, STAmount const& amount, bool const non_invoice);
     /////////////////////////////////////////////////////
 
 protected:
     TER
     apply();
-
-    // chech issue exists and check non nft
-    bool
-    checkIssue (ApplyContext const& ctx, STAmount const& amount, bool const check_non_nft);
 
     explicit
     Transactor (ApplyContext& ctx);

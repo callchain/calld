@@ -188,8 +188,6 @@ SF_U256 const sfTicketID      = make::one<SF_U256::type>(&sfTicketID,      STI_H
 SF_U256 const sfDigest        = make::one<SF_U256::type>(&sfDigest,        STI_HASH256, 21, "Digest");
 SF_U256 const sfPayChannel    = make::one<SF_U256::type>(&sfPayChannel,    STI_HASH256, 22, "Channel");
 SF_U256 const sfConsensusHash = make::one<SF_U256::type>(&sfConsensusHash, STI_HASH256, 23, "ConsensusHash");
-SF_U256 const sfTakerGetsInvoiceID = make::one<SF_U256::type>(&sfTakerGetsInvoiceID, STI_HASH256, 24, "TakerGetsInvoiceID");
-SF_U256 const sfTakerPaysInvoiceID = make::one<SF_U256::type>(&sfTakerPaysInvoiceID, STI_HASH256, 25, "TakerPaysInvoiceID");
 
 
 // currency amount (common)

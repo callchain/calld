@@ -89,8 +89,7 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfOwnerNode,           SOE_REQUIRED)
             << SOElement (sfPreviousTxnID,       SOE_REQUIRED)
             << SOElement (sfPreviousTxnLgrSeq,   SOE_REQUIRED)
-            << SOElement (sfTakerGetsInvoiceID,  SOE_OPTIONAL)
-            << SOElement (sfTakerPaysInvoiceID,  SOE_OPTIONAL)
+            << SOElement (sfInvoiceID,           SOE_OPTIONAL)
             << SOElement (sfExpiration,          SOE_OPTIONAL)
             ;
 

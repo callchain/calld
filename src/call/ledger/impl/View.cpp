@@ -242,6 +242,7 @@ accountFunds(ReadView const &view, AccountID const &id,
                         << " saFunds=" << saFunds.getFullText();
     }
 
+    // TODO, deduct offer funds
     /*    std::vector <std::shared_ptr<SLE const>> offers;
      STAmount saTakerGetFunded(saDefault);
 	forEachItem(view, id,
@@ -922,6 +923,54 @@ dirAdd(ApplyView &view,
     return uNodeDir;
 }
 
+bool
+dirItemExists(ApplyView& view,
+    std::uint64_t        uNodeDir,      // Node item is mentioned in.
+    Keylet const&        root,
+    uint256 const&       uLedgerIndex,
+    const bool           bSoft,
+    beast::Journal j)
+{
+    if (view.rules().enabled(featureSortedDirectories))
+    {
+        return view.dirItemExists(root, uNodeDir, uLedgerIndex);
+    }
+
+    std::uint64_t uNodeCur = uNodeDir;
+    SLE::pointer sleNode = view.peek(keylet::page(root, uNodeCur));
+    if (!sleNode) 
+    {
+        if (!bSoft)
+        {
+            return false;
+        }
+        else if (uNodeDir < 20) 
+        {
+            return dirItemExists(view, uNodeDir + 1, root, uLedgerIndex, true, j);
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    STVector256 svIndexes = sleNode->getFieldV256(sfIndexes);
+    auto it = std::find(svIndexes.begin(), svIndexes.end(), uLedgerIndex);
+    if (svIndexes.end() == it)
+    {
+        if (!bSoft)
+        {
+            return false;
+        }
+        if (uNodeDir < 20)
+        {
+            return dirItemExists(view, uNodeDir + 1, root, uLedgerIndex, true, j);
+        }
+        return false;
+    }
+    return true;
+}
+
 // Ledger must be in a state for this to work.
 TER dirDelete(ApplyView &view,
         const bool bKeepRoot,        // --> True, if we never completely clean up, after we overflow the root node.
@@ -1269,6 +1318,7 @@ TER issueSetCreate(ApplyView &view,
         std::uint32_t const rate,
         std::uint32_t const flags,
         uint256 const &uCIndex,
+        Blob const& info,
         beast::Journal j)
 {
 
@@ -1293,6 +1343,10 @@ TER issueSetCreate(ApplyView &view,
     if (rate)
     {
         sleIssueRoot->setFieldU32(sfTransferRate, rate);
+    }
+    if (!info.empty())
+    {
+        sleIssueRoot->setFieldVL(sfInfo, info);
     }
     return tesSUCCESS;
 }
@@ -1341,9 +1395,15 @@ invoiceTransfer(ApplyView &view,
     if (!sleInvoice)
     {
         JLOG(j.trace()) << "invoiceTransfer, invoice not exists for index: " << to_string(uCIndex);
-        return temBAD_INVOICEID;
+        return temINVOICE_NOT_EXISTS;
     }
     auto oldNode = sleInvoice->getFieldU64(sfLowNode);
+    bool exists = dirItemExists(view, oldNode, keylet::ownerDir(uSrcAccountID), sleInvoice->key(), oldNode == 0, j);
+    if (!exists)
+    {
+        return temINVOICE_NOT_ACCOUNT;
+    }
+
     // delete from old
     TER result = dirDelete(view, false, oldNode, keylet::ownerDir(uSrcAccountID),
         sleInvoice->key(), false, oldNode == 0, j);

@@ -133,7 +133,8 @@ namespace keylet {
 /** An issueroot for an account*/
 struct issue_t
 {
-	Keylet operator()(AccountID const& a, Currency const& currency) const;
+	Keylet operator()(AccountID const& issuer, Currency const& currency) const;
+    Keylet operator()(STAmount const& amount) const;
 	Keylet operator()(uint256 const& key) const
 	{
 		return { ltISSUEROOT, key };
@@ -144,7 +145,7 @@ static issue_t const issuet{};
 /** An token root info for id, account, currency */
 struct invoice_t
 {
-    Keylet operator()(uint256 const &id, AccountID const &a, Currency const& currency) const;
+    Keylet operator()(uint256 const &id, AccountID const &issuer, Currency const& currency) const;
     Keylet operator()(uint256 const& key) const
 	{
 		return { ltINVOICE, key };

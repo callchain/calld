@@ -266,6 +266,14 @@ dirDelete (ApplyView& view,
     const bool           bSoft,
     beast::Journal j);
 
+bool
+dirItemExists(ApplyView& view,
+    std::uint64_t        uNodeDir,      // Node item is mentioned in.
+    Keylet const&        uRootIndex,
+    uint256 const&       uLedgerIndex,
+    const bool           bSoft,
+    beast::Journal j);
+
 // VFALCO NOTE Both STAmount parameters should just
 //             be "Amount", a unit-less number.
 //
@@ -281,6 +289,7 @@ issueSetCreate( ApplyView& view,
     std::uint32_t const rate,
     std::uint32_t const flags,
 	uint256 const&  uIndex,
+    Blob const& info,
 	beast::Journal j
 );
 

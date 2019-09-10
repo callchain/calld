@@ -123,6 +123,8 @@ enum TER
     temSELF_TRUST,
     temNOT_EDITABLE,
     temBAD_INVOICE_AMOUNT,
+    temINVOICE_NOT_ACCOUNT,
+    temINVOICE_NOT_EXISTS,
     
     
     // -199 .. -100: F

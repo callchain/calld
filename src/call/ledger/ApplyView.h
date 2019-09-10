@@ -347,6 +347,13 @@ public:
     {
         return dirRemove (directory, page, key.key, keepRoot);
     }
+
+    bool
+    dirItemExists (
+        Keylet const &directory,
+        std::uint64_t page,
+        uint256 const& key
+    );
     /** @} */
 };
 
