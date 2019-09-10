@@ -43,11 +43,14 @@
 #include <call/core/Config.h>
 #include <call/json/to_string.h>
 #include <call/ledger/View.h>
+#include <call/ledger/ReadView.h>
 #include <call/protocol/Feature.h>
 #include <call/protocol/Indexes.h>
 #include <call/protocol/types.h>
 #include <call/protocol/Protocol.h>
 #include <call/protocol/TxFlags.h>
+#include <call/protocol/CALLAmount.h>
+#include <call/protocol/Quality.h>
 
 
 namespace call {
@@ -234,11 +237,23 @@ TER Transactor::payFee ()
     // Will only write the account back if the transaction succeeds.
 
     auto feesle = view().peek(keylet::txfee());
+
+    CALLAmount inviterGot(0);
+    if (sle->isFieldPresent(sfInviter)) 
+    {
+        auto ledger = ctx_.app.getLedgerMaster().getClosedLedger();
+        auto actualPaid = mulRatio(feePaid, ledger.fees().INVITER_FEE, QUALITY_ONE, true);
+        inviterGot = feePaid - actualPaid;
+        feePaid = actualPaid;
+        auto inviterID = sle->getAccountID(sfInviter);
+        auto inviterSLE = view().peek(keylet::account(inviterID));
+        inviterSLE->setFieldAmount(sfBalance, inviterSLE->getFieldAmount(sfBalance) + inviterGot);
+        view().update(inviterSLE);
+    }
 	if (!feesle)
 	{
 		auto feeindex = getFeesIndex();
-		auto const feesle = std::make_shared<SLE>(
-		ltFeeRoot,feeindex);
+		auto const feesle = std::make_shared<SLE>(ltFeeRoot,feeindex);
 		feesle->setFieldAmount(sfBalance, feePaid);
 		view().insert(feesle);
 		auto after = view().read(keylet::txfee());

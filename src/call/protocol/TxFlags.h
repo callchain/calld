@@ -71,7 +71,8 @@ const std::uint32_t tfRequireAuth = 0x00040000;
 const std::uint32_t tfOptionalAuth = 0x00080000;
 const std::uint32_t tfDisallowCALL = 0x00100000;
 const std::uint32_t tfAllowCALL = 0x00200000;
-const std::uint32_t tfAccountSetMask = ~(tfUniversal | TxFlag::requireDestTag | tfOptionalDestTag | tfRequireAuth | tfOptionalAuth | tfDisallowCALL | tfAllowCALL);
+const std::uint32_t tfCodeAccount = 0x00400000;
+const std::uint32_t tfAccountSetMask = ~(tfUniversal | TxFlag::requireDestTag | tfOptionalDestTag | tfRequireAuth | tfOptionalAuth | tfDisallowCALL | tfAllowCALL | tfCodeAccount);
 
 // AccountSet SetFlag/ClearFlag values
 const std::uint32_t asfRequireDest = 1;
@@ -82,6 +83,7 @@ const std::uint32_t asfAccountTxnID = 5;
 const std::uint32_t asfNoFreeze = 6;
 const std::uint32_t asfGlobalFreeze = 7;
 const std::uint32_t asfDefaultCall = 8;
+const std::uint32_t asfCodeAccount = 9; // not allow clear
 
 // OfferCreate flags:
 const std::uint32_t tfPassive = 0x00010000;
@@ -112,10 +114,12 @@ const std::uint32_t tfLostMajority = 0x00020000;
 const std::uint32_t tfRenew = 0x00010000;
 const std::uint32_t tfClose = 0x00020000;
 
-//IssueSet flags:
-const std::uint32_t tfEnaddition =  0x00010000; // only for total amount field
+//IssueSet tx flags:
+const std::uint32_t tfAdditional  = 0x00010000; // only for total amount field
+const std::uint32_t tfCodeFixed   = 0x00020000;
 const std::uint32_t tfNonFungible = 0x00001000;
-const std::uint32_t tfIssueSetMask = ~(tfEnaddition | tfNonFungible);
+
+const std::uint32_t tfIssueSetMask = ~(tfAdditional | tfCodeFixed | tfNonFungible);
 } // namespace call
 
 #endif

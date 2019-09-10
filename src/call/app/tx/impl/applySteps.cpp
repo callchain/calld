@@ -74,7 +74,6 @@ invoke_preflight (PreflightContext const& ctx)
     case ttPAYCHAN_FUND:    return PayChanFund      ::preflight(ctx);
     case ttPAYCHAN_CLAIM:   return PayChanClaim     ::preflight(ctx);
     case ttISSUE_SET:       return IssueSet         ::preflight(ctx);
-
     default:
         assert(false);
         return temUNKNOWN;

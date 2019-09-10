@@ -373,6 +373,7 @@ Payment::doApply ()
         sleDst->setAccountID(sfAccount, uDstAccountID);
         sleDst->setFieldAmount(sfBalance, 0);
         sleDst->setFieldU32(sfSequence, 1);
+        sleDst->setAccountID(sfInviter, account_); // activation inviter
         view().insert(sleDst);
     }
     else
@@ -424,7 +425,7 @@ Payment::doApply ()
                 auto const isInvoice = ctx_.tx.isFieldPresent(sfInvoice);
                 if (!isInvoice)
                 {
-                    JLOG(j_.trace()) << "doPayment: issue invoice, but invoice id not present";
+                    JLOG(j_.trace()) << "doPayment: issue invoice, but invoice not present";
                     return temBAD_INVOICE;
                 }
  

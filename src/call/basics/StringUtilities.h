@@ -111,6 +111,9 @@ bool parseUrl (parsedURL& pUrl, std::string const& strUrl);
 std::string trim_whitespace (std::string str);
 Blob strCopy (std::string const& strSrc);
 std::string strCopy (Blob const& vucSrc);
+
+int checkFuncNumber(std::string code, std::string func);
+
 } // call
 
 #endif

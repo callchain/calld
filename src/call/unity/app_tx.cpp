@@ -56,3 +56,5 @@
 #include <call/app/tx/impl/ApplyContext.cpp>
 #include <call/app/tx/impl/Transactor.cpp>
 #include <call/app/tx/impl/IssueSet.cpp>
+#include <call/app/tx/impl/CreateContract.cpp>
+#include <call/app/tx/impl/InvokeContract.cpp>

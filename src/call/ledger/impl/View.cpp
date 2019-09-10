@@ -1348,6 +1348,11 @@ TER issueSetCreate(ApplyView &view,
     {
         sleIssueRoot->setFieldVL(sfInfo, info);
     }
+
+    // inc owner
+    SLE::pointer accountRoot = view.peek (keylet::account(uSrcAccountID));
+	adjustOwnerCount(view, accountRoot, 1, j);
+    
     return tesSUCCESS;
 }
 

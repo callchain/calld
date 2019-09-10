@@ -221,6 +221,19 @@ std::pair<bool, std::string> STTx::checkSign(bool allowMultiSign) const
     return ret;
 }
 
+AccountID STTx::generateContractAccount() const
+{
+    Blob blob; 
+    Account source = getFieldAccount160(sfAccount);
+    std::uint32_t const sequence = getFieldU32(sfSequence);
+    blob.assign(source.begin(),source.end()); 
+    blob.push_back(sequence);
+    Account account;
+    account.copyFrom(Hash160(blob));
+    return account;
+}
+
+
 Json::Value STTx::getJson (int) const
 {
     Json::Value ret = STObject::getJson (0);

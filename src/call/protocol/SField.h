@@ -346,7 +346,6 @@ extern SF_U8 const sfCloseResolution;
 extern SF_U8 const sfMethod;
 extern SF_U8 const sfTransactionResult;
 extern SF_U8 const sfTickSize;
-extern SF_U8 const sfDecimal;
 
 // 16-bit integers
 extern SF_U16 const sfLedgerEntryType;
@@ -477,6 +476,7 @@ extern SF_Blob const sfCondition;
 extern SF_Blob const sfMasterSignature;
 extern SF_Blob const sfNickName;
 extern SF_Blob const sfInvoice;
+extern SF_Blob const sfCode;
 
 // account
 extern SF_Account const sfAccount;
@@ -485,6 +485,7 @@ extern SF_Account const sfDestination;
 extern SF_Account const sfIssuer;
 extern SF_Account const sfTarget;
 extern SF_Account const sfRegularKey;
+extern SF_Account const sfInviter;
 
 // path set
 extern SField const sfPaths;

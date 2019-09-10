@@ -96,7 +96,6 @@ SField const sfIndex       = make::one(&sfIndex,       STI_HASH256,     258, "in
 SF_U8 const sfCloseResolution   = make::one<SF_U8::type>(&sfCloseResolution,   STI_UINT8, 1, "CloseResolution");
 SF_U8 const sfMethod            = make::one<SF_U8::type>(&sfMethod,            STI_UINT8, 2, "Method");
 SF_U8 const sfTransactionResult = make::one<SF_U8::type>(&sfTransactionResult, STI_UINT8, 3, "TransactionResult");
-SF_U8 const sfDecimal           = make::one<SF_U8::type>(&sfDecimal,           STI_UINT8, 4, "Decimal");
 
 // 8-bit integers (uncommon)
 SF_U8 const sfTickSize          = make::one<SF_U8::type>(&sfTickSize,          STI_UINT8, 16, "TickSize");
@@ -233,6 +232,7 @@ SF_Blob const sfCondition       = make::one<SF_Blob::type>(&sfCondition,       S
 SF_Blob const sfMasterSignature = make::one<SF_Blob::type>(&sfMasterSignature, STI_VL, 18, "MasterSignature", SField::sMD_Default, SField::notSigning);
 SF_Blob const sfNickName        = make::one<SF_Blob::type>(&sfNickName,        STI_VL, 19, "NickName");
 SF_Blob const sfInvoice         = make::one<SF_Blob::type>(&sfInvoice,         STI_VL, 20, "Invoice");
+SF_Blob const sfCode            = make::one<SF_Blob::type>(&sfCode,            STI_VL, 21, "Code");
 
 // account
 SF_Account const sfAccount     = make::one<SF_Account::type>(&sfAccount,     STI_ACCOUNT, 1, "Account");
@@ -241,6 +241,7 @@ SF_Account const sfDestination = make::one<SF_Account::type>(&sfDestination, STI
 SF_Account const sfIssuer      = make::one<SF_Account::type>(&sfIssuer,      STI_ACCOUNT, 4, "Issuer");
 SF_Account const sfTarget      = make::one<SF_Account::type>(&sfTarget,      STI_ACCOUNT, 7, "Target");
 SF_Account const sfRegularKey  = make::one<SF_Account::type>(&sfRegularKey,  STI_ACCOUNT, 8, "RegularKey");
+SF_Account const sfInviter     = make::one<SF_Account::type>(&sfInviter,     STI_ACCOUNT, 9, "Inviter");
 
 // path set
 SField const sfPaths = make::one(&sfPaths, STI_PATHSET, 1, "Paths");
@@ -262,11 +263,13 @@ SField const sfNewFields           = make::one(&sfNewFields,           STI_OBJEC
 SField const sfTemplateEntry       = make::one(&sfTemplateEntry,       STI_OBJECT,  9, "TemplateEntry");
 SField const sfMemo                = make::one(&sfMemo,                STI_OBJECT, 10, "Memo");
 SField const sfSignerEntry         = make::one(&sfSignerEntry,         STI_OBJECT, 11, "SignerEntry");
+SField const sfArg                 = make::one(&sfArg,                 STI_OBJECT, 12, "Parameter");
 
 // inner object (uncommon)
 SField const sfSigner              = make::one(&sfSigner,              STI_OBJECT, 16, "Signer");
 //                                                                                 17 has not been used yet...
 SField const sfMajority            = make::one(&sfMajority,            STI_OBJECT, 18, "Majority");
+
 
 // array of objects
 // ARRAY/1 is reserved for end of array

@@ -53,15 +53,12 @@ SetAccount::affectsSubsequentTransactionAuth(STTx const& tx)
         return true;
 
     auto const uSetFlag = tx[~sfSetFlag];
-    if(uSetFlag && (*uSetFlag == asfRequireAuth ||
-        *uSetFlag == asfDisableMaster ||
-            *uSetFlag == asfAccountTxnID))
-                return true;
+    if(uSetFlag && (*uSetFlag == asfRequireAuth || *uSetFlag == asfDisableMaster || *uSetFlag == asfAccountTxnID))
+        return true;
 
     auto const uClearFlag = tx[~sfClearFlag];
-    return uClearFlag && (*uClearFlag == asfRequireAuth ||
-        *uClearFlag == asfDisableMaster ||
-            *uClearFlag == asfAccountTxnID);
+    return uClearFlag 
+        && (*uClearFlag == asfRequireAuth || *uClearFlag == asfDisableMaster || *uClearFlag == asfAccountTxnID);
 }
 
 TER
@@ -187,8 +184,7 @@ SetAccount::preclaim(PreclaimContext const& ctx)
 
     std::uint32_t const uTxFlags = ctx.tx.getFlags();
 
-    auto const sle = ctx.view.read(
-        keylet::account(id));
+    auto const sle = ctx.view.read(keylet::account(id));
 
     std::uint32_t const uFlagsIn = sle->getFieldU32(sfFlags);
 
@@ -210,6 +206,20 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         }
     }
 
+    // check code account
+    bool bCodeAccount  = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount);
+    if (bCodeAccount && (!sle->isFieldPresent(sfCode) && !ctx.tx.isFieldPresent(sfCode)))
+    {
+        JLOG(ctx.j.trace()) << "when set code account, code should present";
+        return temNO_CODE;
+    }
+
+    if (bCodeAccount && (uFlagsIn & lsfCodeAccount))
+    {
+        JLOG(ctx.j.trace()) << "Account is already code account";
+        return temCODE_ACCOUNT;
+    }
+
     return tesSUCCESS;
 }
 
@@ -218,8 +228,7 @@ SetAccount::doApply ()
 {
     std::uint32_t const uTxFlags = ctx_.tx.getFlags ();
 
-    auto const sle = view().peek(
-        keylet::account(account_));
+    auto const sle = view().peek(keylet::account(account_));
 
     std::uint32_t const uFlagsIn = sle->getFieldU32 (sfFlags);
     std::uint32_t uFlagsOut = uFlagsIn;
@@ -234,6 +243,7 @@ SetAccount::doApply ()
     bool bClearRequireAuth = (uTxFlags & tfOptionalAuth) || (uClearFlag == asfRequireAuth);
     bool bSetDisallowCALL   = (uTxFlags & tfDisallowCALL) || (uSetFlag == asfDisallowCALL);
     bool bClearDisallowCALL = (uTxFlags & tfAllowCALL) || (uClearFlag == asfDisallowCALL);
+    bool bCodeAccount       = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount); // no clear
 
     bool sigWithMaster = false;
 
@@ -270,12 +280,10 @@ SetAccount::doApply ()
 	//
 	if (ctx_.tx.isFieldPresent(sfNickName))
 	{
-		Blob nick = ctx_.tx.getFieldVL(sfNickName);
-        std::string tmp3=strHex(nick);
-        Blob nick3= strCopy(tmp3);
-
-		auto const nickname = view().peek(keylet::nick(nick3));
-		if (nickname)
+		Blob name = ctx_.tx.getFieldVL(sfNickName);
+        Blob nameHex = strCopy(strHex(name));
+		auto const nameSLE = view().peek(keylet::nick(nameHex));
+		if (nameSLE)
 		{
 			return temNICKNAMEEXISTED;
 		}
@@ -284,33 +292,25 @@ SetAccount::doApply ()
 			if (sle->isFieldPresent(sfNickName))
 			{
 				Blob oldname = sle->getFieldVL(sfNickName);
-				//auto oldindex = getNicknameIndex(oldname);
-                std::string tmp=strHex(oldname);
-				Blob oldname1= strCopy(tmp);
-				auto oldnicksle = view().peek(keylet::nick(oldname1));
-                if(oldnicksle)
+				auto oldnameSLE = view().peek(keylet::nick(strCopy(strHex(oldname))));
+                if(oldnameSLE)
                 {
-                    JLOG(j_.trace()) <<"nick name account: "<<toBase58(oldnicksle->getAccountID(sfAccount));
-                    view().erase(oldnicksle);
+                    JLOG(j_.trace()) << "nick name account: " << toBase58(oldnameSLE->getAccountID(sfAccount));
+                    view().erase(oldnameSLE);
                 }
-                std::string tmp1=strHex(nick);
-				Blob nick1= strCopy(tmp1);
-
-				auto newindex = getNicknameIndex(nick1);
-				auto const newslenick = std::make_shared<SLE>(ltNICKNAME, newindex);
-				newslenick->setAccountID(sfAccount, sle->getAccountID(sfAccount));
-				sle->setFieldVL(sfNickName, nick);
-				view().insert(newslenick);	
+				auto newindex = getNicknameIndex(nameHex);
+				auto const newnameSLE = std::make_shared<SLE>(ltNICKNAME, newindex);
+				newnameSLE->setAccountID(sfAccount, sle->getAccountID(sfAccount));
+				sle->setFieldVL(sfNickName, name);
+				view().insert(newnameSLE);	
 			}
 			else
 			{
-                std::string tmp2=strHex(nick);
-				Blob nick2= strCopy(tmp2);
-				auto index = getNicknameIndex(nick2);
-				auto const slenick = std::make_shared<SLE>(ltNICKNAME, index);
-				slenick->setAccountID(sfAccount,sle->getAccountID(sfAccount));
-				sle->setFieldVL(sfNickName, nick);
-				view().insert(slenick);
+				auto index = getNicknameIndex(nameHex);
+				auto const nameSLE2 = std::make_shared<SLE>(ltNICKNAME, index);
+				nameSLE2->setAccountID(sfAccount,sle->getAccountID(sfAccount));
+				sle->setFieldVL(sfNickName, name);
+				view().insert(nameSLE2);
 			}
 		}
 	}
@@ -549,6 +549,20 @@ SetAccount::doApply ()
             JLOG(j_.trace()) << "set tick size";
             sle->setFieldU8 (sfTickSize, uTickSize);
         }
+    }
+
+    // code account flag
+    if (bCodeAccount && !(uFlagsIn & lsfCodeAccount))
+    {
+        JLOG(j_.trace()) << "Set lsfCodeAccount.";
+        uFlagsOut |= lsfCodeAccount;
+    }
+
+    // code account code
+    if (ctx_.tx.isFieldPresent (sfCode))
+    {
+        auto uCode = ctx_.tx[sfCode];
+        sle->setFieldVL(sfCode, uCode);
     }
 
     if (uFlagsIn != uFlagsOut)

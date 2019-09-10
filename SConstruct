@@ -616,6 +616,7 @@ def config_env(toolchain, variant, env):
             'boost_thread'
         ]
         env.Append(LIBS=['dl'])
+        env.Append(LIBS=['lua'])
 
         if should_link_static():
             add_static_libs(env, boost_libs)

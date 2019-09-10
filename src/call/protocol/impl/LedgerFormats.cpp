@@ -60,10 +60,10 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfTransferRate,        SOE_OPTIONAL)
             << SOElement (sfDomain,              SOE_OPTIONAL)
             << SOElement (sfTickSize,            SOE_OPTIONAL)
-            << SOElement (sfTotal,               SOE_OPTIONAL) // not used
-            << SOElement (sfIssued,              SOE_OPTIONAL) // not used
-            << SOElement (sfNickName,            SOE_OPTIONAL) // not used
+            << SOElement (sfNickName,            SOE_OPTIONAL)
             << SOElement (sfFreezed,             SOE_OPTIONAL)
+            << SOElement (sfInviter,             SOE_OPTIONAL)
+            << SOElement (sfCode,                SOE_OPTIONAL)
             ;
 
     add ("DirectoryNode", ltDIR_NODE)
@@ -185,9 +185,9 @@ LedgerFormats::LedgerFormats ()
 	    << SOElement (sfIssued,            SOE_OPTIONAL)
 	    << SOElement (sfFans,              SOE_OPTIONAL)
 	    << SOElement (sfLowNode,           SOE_OPTIONAL)
-            << SOElement (sfDecimal,           SOE_OPTIONAL) // not used yet
             << SOElement (sfTransferRate,      SOE_OPTIONAL)
-            << SOElement (sfInfo,              SOE_OPTIONAL) // todo
+            << SOElement (sfInfo,              SOE_OPTIONAL)
+            << SOElement (sfCode,              SOE_OPTIONAL)
 	    ;
 
     add ("FeeRoot", ltFeeRoot)

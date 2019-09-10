@@ -135,6 +135,8 @@ public:
         return tid_;
     }
 
+    AccountID generateContractAccount() const;
+
     Json::Value getJson (int options) const override;
     Json::Value getJson (int options, bool binary) const;
 
