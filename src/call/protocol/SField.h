@@ -485,7 +485,6 @@ extern SF_Account const sfDestination;
 extern SF_Account const sfIssuer;
 extern SF_Account const sfTarget;
 extern SF_Account const sfRegularKey;
-extern SF_Account const sfInviter;
 
 // path set
 extern SField const sfPaths;

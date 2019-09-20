@@ -62,7 +62,6 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfTickSize,            SOE_OPTIONAL)
             << SOElement (sfNickName,            SOE_OPTIONAL)
             << SOElement (sfFreezed,             SOE_OPTIONAL)
-            << SOElement (sfInviter,             SOE_OPTIONAL)
             << SOElement (sfCode,                SOE_OPTIONAL)
             ;
 

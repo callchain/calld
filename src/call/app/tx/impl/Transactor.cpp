@@ -238,19 +238,6 @@ TER Transactor::payFee ()
     // Will only write the account back if the transaction succeeds.
 
     auto feesle = view().peek(keylet::txfee());
-
-    CALLAmount inviterGot(0);
-    if (sle->isFieldPresent(sfInviter)) 
-    {
-        auto const ledger = ctx_.app.getLedgerMaster().getClosedLedger();
-        CALLAmount actualPaid = mulRatio(feePaid, ledger->fees().inviter, QUALITY_ONE, true);
-        inviterGot = feePaid - actualPaid;
-        feePaid = actualPaid;
-        auto inviterID = sle->getAccountID(sfInviter);
-        auto inviterSLE = view().peek(keylet::account(inviterID));
-        inviterSLE->setFieldAmount(sfBalance, inviterSLE->getFieldAmount(sfBalance) + inviterGot);
-        view().update(inviterSLE);
-    }
 	if (!feesle)
 	{
 		auto const feeindex = getFeesIndex();

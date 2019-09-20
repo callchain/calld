@@ -171,7 +171,6 @@ public:
     std::uint64_t                      FEE_ACCOUNT_RESERVE =10000;
     std::uint64_t                      FEE_OWNER_RESERVE = 100;
     std::uint64_t                      FEE_OFFER = 10;
-    std::uint32_t                      INVITER_FEE = 1000000; // 1000000/QUALITY_ONE
 
     // Node storage configuration
     std::uint32_t                      LEDGER_HISTORY = 256;

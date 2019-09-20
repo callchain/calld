@@ -64,7 +64,6 @@ struct Fees
     std::uint32_t units = 0;        // Reference fee units
     std::uint32_t reserve = 0;      // Reserve base (drops)
     std::uint32_t increment = 0;    // Reserve increment (drops)
-    std::uint32_t inviter = 0;      // Inviter got fee percent %
 
     Fees() = default;
     Fees (Fees const&) = default;
