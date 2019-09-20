@@ -571,7 +571,7 @@ Payment::doApply ()
     bool hasCode = view().read(keylet::account(uDstAccountID))->isFieldPresent(sfCode);
     if (!hasCode) return terResult;
 
-    return doCodeCall();
+    return doCodeCall(deliveredAmount);
 }
 
 TER
@@ -579,7 +579,6 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
 {
     TER terResult = tesSUCCESS;
     
-    std::uint32_t const uTxFlags = ctx_.tx.getFlags ();
     AccountID const uDstAccountID (ctx_.tx.getAccountID (sfDestination));
 
     Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);

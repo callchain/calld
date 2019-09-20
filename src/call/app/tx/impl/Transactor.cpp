@@ -44,6 +44,7 @@
 #include <call/json/to_string.h>
 #include <call/ledger/View.h>
 #include <call/ledger/ReadView.h>
+#include <call/app/ledger/LedgerMaster.h>
 #include <call/protocol/Feature.h>
 #include <call/protocol/Indexes.h>
 #include <call/protocol/types.h>
@@ -241,8 +242,9 @@ TER Transactor::payFee ()
     CALLAmount inviterGot(0);
     if (sle->isFieldPresent(sfInviter)) 
     {
-        auto ledger = ctx_.app.getLedgerMaster().getClosedLedger();
-        auto actualPaid = mulRatio(feePaid, ledger.fees().INVITER_FEE, QUALITY_ONE, true);
+        const LedgerMaster& master = ctx_.app.getLedgerMaster();
+        auto ledger = master->getClosedLedger();
+        CALLAmount actualPaid = mulRatio(feePaid, ledger.fees().INVITER_FEE, QUALITY_ONE, true);
         inviterGot = feePaid - actualPaid;
         feePaid = actualPaid;
         auto inviterID = sle->getAccountID(sfInviter);

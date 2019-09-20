@@ -617,6 +617,7 @@ def config_env(toolchain, variant, env):
         ]
         env.Append(LIBS=['dl'])
         env.Append(LIBS=['lua'])
+        env.Append(LIBS=['boost_regex'])
 
         if should_link_static():
             add_static_libs(env, boost_libs)
