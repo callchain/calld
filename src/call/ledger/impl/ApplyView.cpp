@@ -296,7 +296,7 @@ ApplyView::dirItemExists(
     auto node = peek(keylet::page(directory, page));
     if (!node) return false;
 
-    std::uint64_t constexpr rootPage = 0;
+    // std::uint64_t constexpr rootPage = 0;
     auto entries = node->getFieldV256(sfIndexes);
 
     auto it = std::find(entries.begin(), entries.end(), key);

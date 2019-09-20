@@ -175,10 +175,10 @@ transResults()
         { temINVOICE_NOT_EXISTS,     { "temINVOICE_NOT_EXISTS",    "Invoice not exists"                                                            } },
         { temNO_CODE,                { "temNO_CODE",               "No code is set or setting"                                                     } },
         { temCODE_ACCOUNT,           { "temCODE_ACCOUNT",          "Account is code account already"                                               } },
-        { temBAD_TOTAL_AMOUNT,       { "temBAD_TOTAL_AMOUNT"       "Total amount should present, be non CALL amount, now lower issued amount"      } },
+        { temBAD_TOTAL_AMOUNT,       { "temBAD_TOTAL_AMOUNT",      "Total amount should present, be non CALL amount, now lower issued amount"      } },
         { temCODE_FIXED,             { "temCODE_FIXED",            "Issue code fixed"                                                              } },
         { temPRAMETER_KEYWORD,       { "temPRAMETER_KEYWORD",      "Forbidden use parameter keywords"                                              } },
-        { temNO_CODE_ENTRY,          { "temNO_CODE_ENTRY",         "No code entry for account code"                                                } },
+        { temNO_CODE_ENTRY,          { "temNO_CODE_ENTRY",         "No code entry for account code"                                            }}
 
         { terRETRY,                  { "terRETRY",                 "Retry transaction."                                                            } },
         { terFUNDS_SPENT,            { "terFUNDS_SPENT",           "Can't set password, password set funds already spent."                         } },
