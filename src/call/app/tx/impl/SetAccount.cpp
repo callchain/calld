@@ -45,6 +45,7 @@
 #include <call/basics/StringUtilities.h>
 
 #include <boost/algorithm/string.hpp>
+#include <boost/regex.hpp>
 
 namespace call {
 

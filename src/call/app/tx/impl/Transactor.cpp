@@ -242,9 +242,8 @@ TER Transactor::payFee ()
     CALLAmount inviterGot(0);
     if (sle->isFieldPresent(sfInviter)) 
     {
-        const LedgerMaster& master = ctx_.app.getLedgerMaster();
-        auto ledger = master->getClosedLedger();
-        CALLAmount actualPaid = mulRatio(feePaid, ledger.fees().INVITER_FEE, QUALITY_ONE, true);
+        auto const ledger = ctx_.app.getLedgerMaster().getClosedLedger();
+        CALLAmount actualPaid = mulRatio(feePaid, ledger->fees().inviter, QUALITY_ONE, true);
         inviterGot = feePaid - actualPaid;
         feePaid = actualPaid;
         auto inviterID = sle->getAccountID(sfInviter);
@@ -254,7 +253,7 @@ TER Transactor::payFee ()
     }
 	if (!feesle)
 	{
-		auto feeindex = getFeesIndex();
+		auto const feeindex = getFeesIndex();
 		auto const feesle = std::make_shared<SLE>(ltFeeRoot,feeindex);
 		feesle->setFieldAmount(sfBalance, feePaid);
 		view().insert(feesle);
