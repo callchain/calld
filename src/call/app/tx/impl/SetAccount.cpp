@@ -214,7 +214,7 @@ SetAccount::preclaim(PreclaimContext const& ctx)
     if (sle->isFieldPresent(sfCode))
     {
         std::string code = strCopy(sle->getFieldVL(sfCode));
-        boost::regex reg("\\s*function\\s+Init\\s*\\(\\s*[a-zA-Z_][0-9a-zA-Z_]{0,}\\s*\\)");
+        boost::regex reg("\\s*function\\s+main\\s*\\(\\s*[a-zA-Z_][0-9a-zA-Z_]{0,}\\s*\\)");
         boost::cmatch m;
         bool find = false;
         while (boost::regex_search(code.c_str(), m, reg))
