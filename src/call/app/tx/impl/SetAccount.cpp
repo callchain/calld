@@ -43,6 +43,9 @@
 #include <call/protocol/st.h>
 #include <call/ledger/View.h>
 #include <call/basics/StringUtilities.h>
+
+#include <boost/algorithm/string.hpp>
+
 namespace call {
 
 bool
@@ -207,6 +210,20 @@ SetAccount::preclaim(PreclaimContext const& ctx)
     }
 
     // check code account
+    if (sle->isFieldPresent(sfCode))
+    {
+        std::string code = strCopy(sle->getFieldVL(sfCode));
+        boost::regex reg("\\s*function\\s+Init\\s*\\(\\s*[a-zA-Z_][0-9a-zA-Z_]{0,}\\s*\\)");
+        boost::cmatch m;
+        bool find = false;
+        while (boost::regex_search(code.c_str(), m, reg))
+        {
+            if (m.size() > 0) { find = true; break; }
+            code = m[0].second;
+        }
+        if (!find) return temNO_CODE_ENTRY;
+    }
+
     bool bCodeAccount  = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount);
     if (bCodeAccount && (!sle->isFieldPresent(sfCode) && !ctx.tx.isFieldPresent(sfCode)))
     {

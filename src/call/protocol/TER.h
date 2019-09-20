@@ -129,6 +129,8 @@ enum TER
     temCODE_ACCOUNT,
     temBAD_TOTAL_AMOUNT,
     temCODE_FIXED,
+    temPRAMETER_KEYWORD,
+    temNO_CODE_ENTRY,
     
     // -199 .. -100: F
     //    Failure (sequence number previously used)
@@ -160,6 +162,8 @@ enum TER
     tefNOT_MULTI_SIGNING,
     tefBAD_AUTH_MASTER,
     tefINVARIANT_FAILED,
+    terCODE_LOAD_FAILED,
+    terCODE_CALL_FAILED,
 
     // -99 .. -1: R Retry
     //   sequence too high, no funds for txn fee, originating -account

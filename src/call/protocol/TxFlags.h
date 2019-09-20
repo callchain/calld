@@ -83,6 +83,8 @@ const std::uint32_t asfAccountTxnID = 5;
 const std::uint32_t asfNoFreeze = 6;
 const std::uint32_t asfGlobalFreeze = 7;
 const std::uint32_t asfDefaultCall = 8;
+// when set code account, account cannot be controlled by account self secret
+// it can only be access by code
 const std::uint32_t asfCodeAccount = 9; // not allow clear
 
 // OfferCreate flags:
@@ -96,7 +98,8 @@ const std::uint32_t tfOfferCreateMask = ~(tfUniversal | tfPassive | tfImmediateO
 const std::uint32_t tfNoCallDirect = 0x00010000;
 const std::uint32_t tfPartialPayment = 0x00020000;
 const std::uint32_t tfLimitQuality = 0x00040000;
-const std::uint32_t tfPaymentMask = ~(tfUniversal | tfPartialPayment | tfLimitQuality | tfNoCallDirect);
+const std::uint32_t tfNoCodeCall = 0x00080000;
+const std::uint32_t tfPaymentMask = ~(tfUniversal | tfPartialPayment | tfLimitQuality | tfNoCallDirect | tfNoCodeCall);
 
 // TrustSet flags:
 const std::uint32_t tfSetfAuth = 0x00010000;

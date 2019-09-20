@@ -40,6 +40,8 @@
 #include <call/protocol/st.h>
 #include <call/protocol/TxFlags.h>
 #include <call/protocol/JsonFields.h>
+#include <call/basics/StringUtilities.h>
+#include <lua.hpp>
 
 namespace call {
 
@@ -327,6 +329,24 @@ Payment::preclaim(PreclaimContext const& ctx)
         }
     }
 
+    if (ctx.tx.isFieldPresent(sfMemos))
+    {
+        auto const& memos = ctx.tx.getFieldArray(sfMemos);
+        for (auto const& memo : memos)
+        {
+            auto memoObj = dynamic_cast <STObject const*> (&memo);
+            if (!memoObj->isFieldPresent(sfMemoFormat)
+                || !memoObj->isFieldPresent(sfMemoType)
+                || !memoObj->isFieldPresent(sfMemoData)) continue;
+            std::string format = strCopy(memoObj->getFieldVL(sfMemoFormat));
+            if (format != "parameters") continue;
+
+            std::string name = strCopy(memoObj->getFieldVL(sfMemoType));
+            if (name.find("GLOBAL_PATAMETER_") == 0)
+                return temPRAMETER_KEYWORD;
+        }
+    }
+
     return tesSUCCESS;
 }
 
@@ -348,6 +368,7 @@ Payment::doApply ()
     AccountID const uDstAccountID (ctx_.tx.getAccountID (sfDestination));
     STAmount const saDstAmount (ctx_.tx.getFieldAmount (sfAmount));
     STAmount maxSourceAmount;
+    STAmount deliveredAmount = saDstAmount;
 
     if (sendMax)
         maxSourceAmount = *sendMax;
@@ -473,8 +494,10 @@ Payment::doApply ()
         {
             if (deliverMin && rc.actualAmountOut < *deliverMin)
                 rc.setResult (tecPATH_PARTIAL);
-            else
+            else {
                 ctx_.deliver (rc.actualAmountOut);
+                deliveredAmount = rc.actualAmountOut;
+            }
         }
 
         terResult = rc.result ();
@@ -542,6 +565,60 @@ Payment::doApply ()
             terResult = tesSUCCESS;
         }
     }
+
+    if (terResult != tesSUCCESS || (uTxFlags & tfNoCodeCall) != 0)
+        return terResult;
+    bool hasCode = view().read(keylet::account(uDstAccountID))->isFieldPresent(sfCode);
+    if (!hasCode) return terResult;
+
+    return doCodeCall();
+}
+
+TER
+Payment::doCodeCall(STAmount const& deliveredAmount)
+{
+    TER terResult = tesSUCCESS;
+    
+    std::uint32_t const uTxFlags = ctx_.tx.getFlags ();
+    AccountID const uDstAccountID (ctx_.tx.getAccountID (sfDestination));
+
+    Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);
+    std::string codeS = strCopy(code);
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+    // load and call code
+    if (!luaL_loadstring(L, codeS.c_str()))
+        return terCODE_LOAD_FAILED;
+    
+    lua_getglobal(L, "main");
+    // push parameters, collect parameters if exists
+    lua_newtable(L);
+    if (ctx_.tx.isFieldPresent(sfMemos))
+    {
+        auto const& memos = ctx_.tx.getFieldArray(sfMemos);
+        for (auto const& memo : memos)
+        {
+            auto memoObj = dynamic_cast <STObject const*> (&memo);
+            if (!memoObj->isFieldPresent(sfMemoFormat)
+                || !memoObj->isFieldPresent(sfMemoType)
+                || !memoObj->isFieldPresent(sfMemoData)) continue;
+            std::string format = strCopy(memoObj->getFieldVL(sfMemoFormat));
+            if (format != "parameters") continue;
+
+            std::string name = strCopy(memoObj->getFieldVL(sfMemoType));
+            std::string data = strCopy(memoObj->getFieldVL(sfMemoData));
+            lua_pushstring(L, name.c_str());
+            lua_pushstring(L, data.c_str());
+            lua_settable(L, -3);
+        }
+    }
+    
+    if (!lua_pcall(L, 1, 1, 0))
+        return terCODE_CALL_FAILED;
+
+    // get result
+    terResult = TER(lua_tointeger(L, -1));
+    lua_pop(L, 1);
 
     return terResult;
 }

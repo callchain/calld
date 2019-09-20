@@ -74,7 +74,7 @@ transResults()
         { tecUNFUNDED_PAYMENT,       { "tecUNFUNDED_PAYMENT",      "Insufficient CALL balance to send."                                            } },
         { tecOWNERS,                 { "tecOWNERS",                "Non-zero owner count."                                                         } },
         { tecNO_ISSUER,              { "tecNO_ISSUER",             "Issuer account does not exist."                                                } },
-        { tecNO_AUTH,                { "tecNO_AUTH",               "Not authorized to hold or issue aditional asset ."                                                 } },
+        { tecNO_AUTH,                { "tecNO_AUTH",               "Not authorized to hold or issue aditional asset ."                             } },
         { tecNO_LINE,                { "tecNO_LINE",               "No such line."                                                                 } },
         { tecINSUFF_FEE,             { "tecINSUFF_FEE",            "Insufficient balance to pay fee."                                              } },
         { tecFROZEN,                 { "tecFROZEN",                "Asset is frozen."                                                              } },
@@ -111,6 +111,8 @@ transResults()
         { tefWRONG_PRIOR,            { "tefWRONG_PRIOR",           "This previous transaction does not match."                                     } },
         { tefBAD_AUTH_MASTER,        { "tefBAD_AUTH_MASTER",       "Auth for unclaimed account needs correct master key."                          } },
         { tefINVARIANT_FAILED,       { "tefINVARIANT_FAILED",      "Fee claim violated invariants for the transaction."                            } },
+        { terCODE_LOAD_FAILED,       { "terCODE_LOAD_FAILED",      "Fail to load account code."                                                    } },
+        { terCODE_CALL_FAILED,       { "terCODE_CALL_FAILED",      "Call account code main function failed."                                       } },
 
         { telLOCAL_ERROR,            { "telLOCAL_ERROR",           "Local failure."                                                                } },
         { telBAD_DOMAIN,             { "telBAD_DOMAIN",            "Domain too long."                                                              } },
@@ -175,6 +177,8 @@ transResults()
         { temCODE_ACCOUNT,           { "temCODE_ACCOUNT",          "Account is code account already"                                               } },
         { temBAD_TOTAL_AMOUNT,       { "temBAD_TOTAL_AMOUNT"       "Total amount should present, be non CALL amount, now lower issued amount"      } },
         { temCODE_FIXED,             { "temCODE_FIXED",            "Issue code fixed"                                                              } },
+        { temPRAMETER_KEYWORD,       { "temPRAMETER_KEYWORD",      "Forbidden use parameter keywords"                                              } },
+        { temNO_CODE_ENTRY,          { "temNO_CODE_ENTRY",         "No code entry for account code"                                                } },
 
         { terRETRY,                  { "terRETRY",                 "Retry transaction."                                                            } },
         { terFUNDS_SPENT,            { "terFUNDS_SPENT",           "Can't set password, password set funds already spent."                         } },

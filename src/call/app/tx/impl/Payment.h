@@ -53,6 +53,7 @@ class Payment
     /* The longest path we allow */
     static std::size_t const MaxPathLength = 8;
 
+
 public:
     Payment (ApplyContext& ctx)
         : Transactor(ctx)
@@ -72,6 +73,8 @@ public:
     preclaim(PreclaimContext const& ctx);
 
     TER doApply () override;
+
+    TER doCodeCall(STAmount const& deliveredAmount);
 };
 
 } // call
