@@ -588,9 +588,13 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
     // load and call code
-    if (luaL_loadstring(L, codeS.c_str()) != LUA_OK)
+    int lret = luaL_loadstring(L, codeS.c_str());
+    if (lret != LUA_OK)
+    {
+        JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
         return terCODE_LOAD_FAILED;
-    
+    }
+
     lua_getglobal(L, "main");
     // push parameters, collect parameters if exists
     lua_newtable(L);
@@ -614,8 +618,12 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
         }
     }
     
-    if (lua_pcall(L, 1, 1, 0) != LUA_OK)
+    lret = lua_pcall(L, 1, 1, 0);
+    if (lret != LUA_OK)
+    {
+        JLOG(j_.warn()) << "Fail to call account code main, error=" << lret;
         return terCODE_CALL_FAILED;
+    }
 
     // get result
     terResult = TER(lua_tointeger(L, -1));
