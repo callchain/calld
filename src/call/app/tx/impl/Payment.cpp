@@ -588,7 +588,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
     // load and call code
-    if (!luaL_loadstring(L, codeS.c_str()))
+    if (luaL_loadstring(L, codeS.c_str()) != LUA_OK)
         return terCODE_LOAD_FAILED;
     
     lua_getglobal(L, "main");
@@ -614,7 +614,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
         }
     }
     
-    if (!lua_pcall(L, 1, 1, 0))
+    if (lua_pcall(L, 1, 1, 0) != LUA_OK)
         return terCODE_CALL_FAILED;
 
     // get result
