@@ -245,11 +245,14 @@ Payment::preclaim(PreclaimContext const& ctx)
 
     // check invoice id
     auto issueRoot = ctx.view.read(keylet::issuet(saDstAmount));
-    std::uint32_t const issueFlags = issueRoot->getFieldU32(sfFlags);
-    if ((issueFlags & tfNonFungible) != 0 && !ctx.tx.isFieldPresent(sfInvoiceID))
+    if (issueRoot)
     {
-        JLOG(ctx.j.trace()) << "doPayment: preclaim, invoice id not present";
-        return temBAD_INVOICEID;
+        std::uint32_t const issueFlags = issueRoot->getFieldU32(sfFlags);
+        if ((issueFlags & tfNonFungible) != 0 && !ctx.tx.isFieldPresent(sfInvoiceID))
+        {
+            JLOG(ctx.j.trace()) << "doPayment: preclaim, invoice id not present";
+            return temBAD_INVOICEID;
+        }
     }
 
     auto const srck = keylet::account(srcAccountID);
