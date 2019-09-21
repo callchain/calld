@@ -588,7 +588,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
     // load and call code
-    int lret = luaL_loadstring(L, codeS.c_str());
+    int lret = luaL_dostring(L, codeS.c_str());
     if (lret != LUA_OK)
     {
         JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
