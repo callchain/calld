@@ -205,4 +205,7 @@ make_Application(
 
 }
 
+extern Application& getApp ();
+
+
 #endif

@@ -81,6 +81,33 @@ namespace call {
 // 204/256 about 80%
 static int const MAJORITY_FRACTION (204);
 
+// This hack lets the s_instance variable remain set during
+// the call to ~Application
+class ApplicationImpBase : public Application
+{
+public:
+    ApplicationImpBase ()
+    {
+        assert (s_instance == nullptr);
+        s_instance = this;
+    }
+
+    ~ApplicationImpBase ()
+    {
+        s_instance = nullptr;
+    }
+
+    static Application* s_instance;
+
+    static Application& getInstance ()
+    {
+        bassert (s_instance != nullptr);
+        return *s_instance;
+    }
+};
+
+Application* ApplicationImpBase::s_instance;
+
 //------------------------------------------------------------------------------
 
 namespace detail {
@@ -234,7 +261,7 @@ supportedAmendments ();
 
 // VFALCO TODO Move the function definitions into the class declaration
 class ApplicationImp
-    : public Application
+    : public ApplicationImpBase
     , public RootStoppable
     , public BasicApp
 {
@@ -2052,6 +2079,11 @@ make_Application (
     return std::make_unique<ApplicationImp> (
         std::move(config), std::move(logs),
             std::move(timeKeeper));
+}
+
+Application& getApp ()
+{
+    return ApplicationImpBase::getInstance ();
 }
 
 }

@@ -35,6 +35,7 @@
 #include <BeastConfig.h>
 #include <call/app/tx/impl/Payment.h>
 #include <call/app/paths/CallCalc.h>
+#include <call/app/contract/ContractLib.h>
 #include <call/basics/Log.h>
 #include <call/core/Config.h>
 #include <call/protocol/st.h>
@@ -587,6 +588,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     std::string codeS = strCopy(code);
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
+    RegisterContractLib(L); // register cpp functions for lua contract
     // load and call code
     int lret = luaL_dostring(L, codeS.c_str());
     if (lret != LUA_OK)
