@@ -27,31 +27,31 @@ namespace call
 
 namespace 
 {
-    static void call_push_string(lua_State *L, std::string key, const char* value)
+    static void call_push_string(lua_State *L, std::string k, std::string v)
     {
-        lua_pushstring(L, key.c_str());
-        lua_pushstring(L, value);
+        lua_pushstring(L, k.c_str());
+        lua_pushstring(L, v.c_str());
         lua_settable(L, -3);
     }
 
-    static void call_push_boolean(lua_State *L, std::string key, bool value)
+    static void call_push_boolean(lua_State *L, std::string k, bool v)
     {
-        lua_pushstring(L, key.c_str());
-        lua_pushboolean(L, value);
+        lua_pushstring(L, k.c_str());
+        lua_pushboolean(L, v);
         lua_settable(L, -3);
     }
 
-    static void call_push_integer(lua_State *L, std::string key, lua_Integer value)
+    static void call_push_integer(lua_State *L, std::string k, lua_Integer v)
     {
-        lua_pushstring(L, key.c_str());
-        lua_pushinteger(L, value);
+        lua_pushstring(L, k.c_str());
+        lua_pushinteger(L, v);
         lua_settable(L, -3);
     }
 
-    static void call_push_number(lua_State *L, std::string key, lua_Number value)
+    static void call_push_number(lua_State *L, std::string k, lua_Number v)
     {
-        lua_pushstring(L, key.c_str());
-        lua_pushinteger(L, value);
+        lua_pushstring(L, k.c_str());
+        lua_pushinteger(L, v);
         lua_settable(L, -3);
     }
 }

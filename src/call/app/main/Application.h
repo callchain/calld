@@ -203,9 +203,10 @@ make_Application(
     std::unique_ptr<Logs> logs,
     std::unique_ptr<TimeKeeper> timeKeeper);
 
+extern Application& getApp ();
+
 }
 
-extern Application& getApp ();
 
 
 #endif
