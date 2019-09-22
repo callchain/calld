@@ -619,6 +619,10 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
             lua_settable(L, -3);
         }
     }
+
+    // set global parameters
+    lua_pushstring(L, "hello from cpp");
+    lua_setglobal(L, "globalhello");
     
     lret = lua_pcall(L, 1, 1, 0);
     if (lret != LUA_OK)

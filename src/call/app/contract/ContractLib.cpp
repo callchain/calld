@@ -62,9 +62,13 @@ static int call_ledger_closed(lua_State *L)
     auto const ledger = getApp().getLedgerMaster().getClosedLedger();
     auto const info = ledger->info();
 
+    lua_getglobal(L, "globalhello");
+    const char* hello = lua_tostring(L, -1);
+    lua_pop(L, -1);
+
     call_push_integer(L, "seq", info.seq);
     call_push_integer(L, "parentCloseTime", info.parentCloseTime.time_since_epoch().count());
-    call_push_string(L, "hash", to_string(info.hash));
+    call_push_string(L, "hash", to_string(hello));
     call_push_string(L, "txHash", to_string(info.txHash));
     call_push_string(L, "accountHash", to_string(info.accountHash));
     call_push_string(L, "parentHash", to_string(info.parentHash));
