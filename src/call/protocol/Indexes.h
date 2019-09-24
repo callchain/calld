@@ -112,6 +112,9 @@ uint256
 getIssueIndex(AccountID const& a, Currency const& currency);
 
 uint256
+getParamIndex(std::string contract, std::string key);
+
+uint256
 getFeesIndex();
 
 uint256
@@ -152,6 +155,16 @@ struct invoice_t
 	}
 };
 static invoice_t const invoicet{};
+
+struct param_t
+{
+    Keylet operator()(std::string const& key) const;
+    Keylet operator()(uint256 const& key) const
+    {
+        return {ltPARAMROOT, key };
+    }
+};
+static param_t const paramt{};
 
 /** AccountID root */
 struct account_t

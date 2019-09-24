@@ -193,6 +193,17 @@ transResults()
         { terQUEUED,                 { "terQUEUED",                "Held until escalated fee drops."                                               } },
         { terBADTRUST,               { "terBADTRUST",              "Trusted Account does not issuer this funds"                                    } },
 
+        { tedINVALID_PARAM_NUMS,     { "tedINVALID_PARAM_NUMS",    "Invalid function parameter number."                                            } },
+        { tedINVALID_PARAM_TYPE,     { "tedINVALID_PARAM_TYPE",    "Invalid function parameter type."                                              } },
+        { tedINVALID_PARAM_ACCOUNT,  { "tedINVALID_PRARM_ACCOUNT", "Invalid account parameter."                                                    } },
+        { tedACCOUNT_NOT_FOUND,      { "tedACCOUNT_NOT_FOUND",     "Account not found."                                                            } },
+        { tedINVALID_KEY_TYPE,       { "tedINVALID_KEY_TYPE",      "Invalid key type."                                                             } },
+        { tedINVALID_VALUE_TYPE,     { "tedINVALID_VALUE_TYPE",    "Invalid value type."                                                           } },
+        { tedINVALID_AMOUNT,         { "tedINVALID_AMOUNT",        "Invalid amount."                                                               } },
+        { tedSEND_CONTRACT_SELF,     { "tedSEND_CONTRACT_SELF",    "Not allow to send to contract self."                                           } },
+        { tedINVALID_DESTINATION,    { "tedINVALID_DESTINATION",   "Invalid destination account."                                                  } },
+        { tedNO_SUCH_VALUE,          { "tedNO_SUCH_VALUE",         "No such value saved."                                                          } },
+
         { tesSUCCESS,                { "tesSUCCESS",               "The transaction was applied. Only final in a validated ledger."                } },
     };
     return results;

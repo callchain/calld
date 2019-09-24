@@ -257,6 +257,17 @@ enum TER
     tecINSUFFICINET_FUND        = 150,
     tecDIR_NOT_EXISTS           = 151,
     tecUNFUNDED_CONTRACT        = 152,
+
+    tedINVALID_PARAM_NUMS       = 1000,
+    tedINVALID_PARAM_TYPE       = 1001,
+    tedINVALID_PARAM_ACCOUNT    = 1002,
+    tedACCOUNT_NOT_FOUND        = 1003,
+    tedINVALID_KEY_TYPE         = 1004,
+    tedINVALID_VALUE_TYPE       = 1005,
+    tedINVALID_AMOUNT           = 1006,
+    tedSEND_CONTRACT_SELF       = 1007,
+    tedINVALID_DESTINATION      = 1008,
+    tedNO_SUCH_VALUE            = 1009,
 };
 
 inline bool isTelLocal(TER x)

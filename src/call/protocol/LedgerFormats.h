@@ -106,7 +106,9 @@ enum LedgerEntryType
     
     ltISSUEROOT         = 'i',
     ltFeeRoot           = 'F',
-    ltINVOICE           = 'v'
+    ltINVOICE           = 'v',
+
+    ltPARAMROOT         = 'p'
 };
 
 /**
@@ -137,7 +139,9 @@ enum LedgerNameSpace
     spaceNickname       = 'n',
     spaceIssue          = 'i',
     spaceFees           = 'F',
-    spaceInvoice        = 'v'
+    spaceInvoice        = 'v',
+
+    spaceParam          = 'p'
 };
 
 /**

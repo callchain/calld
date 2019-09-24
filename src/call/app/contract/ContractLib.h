@@ -21,9 +21,15 @@
 #define CALL_TX_CONTRACTLIB_H_INCLUDED
 
 #include <lua.hpp>
+#include <call/basics/StringUtilities.h>
 
 namespace call
 {
+    static void call_push_string(lua_State *L, std::string k, std::string v);
+    static void call_push_boolean(lua_State *L, std::string k, bool v);
+    static void call_push_integer(lua_State *L, std::string k, lua_Integer v);
+    static void call_push_number(lua_State *L, std::string k, lua_Number v);
+
     void RegisterContractLib(lua_State *L);
 
 } // namespace call

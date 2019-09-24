@@ -215,10 +215,21 @@ getNicknameIndex(Blob const& nickname)
 }
 
 uint256
-getIssueIndex(AccountID const& a, Currency const& currency)
+getIssueIndex(AccountID const& account, Currency const& currency)
 {
 	return sha512Half(std::uint16_t(spaceIssue),
-		a, currency, std::uint32_t(1));
+		account, currency, std::uint32_t(1));
+}
+
+uint256
+getParamIndex(std::string contract, std::string key)
+{
+    return sha512Half(
+        std::uint16_t(spaceParam),
+        contract,
+        key,
+        std::uint32_t(1)
+    );
 }
 
 uint256
@@ -256,6 +267,11 @@ Keylet invoice_t::operator()(uint256 const &id, AccountID const &issuer, Currenc
 {
     return { ltINVOICE,  getInvoiceIndex(id, issuer, currency) };
 }
+
+ Keylet param_t::operator()(std::string const& key) const
+ {
+     return { ltPARAMROOT, getParamIndex(key) };
+ }
 
 Keylet account_t::operator()(AccountID const& id) const
 {

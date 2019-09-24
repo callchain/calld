@@ -202,6 +202,10 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfInvoice,            SOE_REQUIRED)
             << SOElement (sfLowNode,            SOE_OPTIONAL)
             ;
+
+    add ("ParamRoot", ltPARAMROOT)
+            << SOElement (sfInfo,               SOE_REQUIRED)
+            ;
 }
 
 void LedgerFormats::addCommonFields (Item& item)
