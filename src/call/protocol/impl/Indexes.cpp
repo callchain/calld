@@ -268,9 +268,9 @@ Keylet invoice_t::operator()(uint256 const &id, AccountID const &issuer, Currenc
     return { ltINVOICE,  getInvoiceIndex(id, issuer, currency) };
 }
 
- Keylet param_t::operator()(std::string const& key) const
+ Keylet param_t::operator()(std::string contact, std::string const& key) const
  {
-     return { ltPARAMROOT, getParamIndex(key) };
+     return { ltPARAMROOT, getParamIndex(contract, key) };
  }
 
 Keylet account_t::operator()(AccountID const& id) const
