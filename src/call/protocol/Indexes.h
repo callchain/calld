@@ -109,10 +109,10 @@ uint256
 getNicknameIndex(Blob const & nickname);
 
 uint256
-getIssueIndex(AccountID const& a, Currency const& currency);
+getIssueIndex(AccountID const& account, Currency const& currency);
 
 uint256
-getParamIndex(std::string contract, std::string key);
+getParamIndex(std::string const& contract, std::string const& key);
 
 uint256
 getFeesIndex();
