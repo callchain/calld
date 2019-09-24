@@ -37,6 +37,7 @@
 #include <call/app/tx/impl/ApplyContext.h>
 #include <call/app/paths/CallCalc.h>
 #include <call/app/contract/ContractLib.h>
+#include <call/app/ledger/LedgerMaster.h>
 #include <call/basics/Log.h>
 #include <call/core/Config.h>
 #include <call/protocol/st.h>
@@ -47,7 +48,7 @@
 
 namespace call {
 
-// See https://call.com/wiki/Transaction_Format#Payment_.280.29
+// See https://dev.callchain.live/wiki/Transaction_Format#Payment_.280.29
 
 CALLAmount
 Payment::calculateMaxSpend(STTx const& tx)

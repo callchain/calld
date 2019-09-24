@@ -284,31 +284,6 @@ static int call_do_transfer(lua_State *L)
     return 2;
 }
 
-static int call_set_value(lua_State *L)
-{
-    int argc = lua_gettop(L);
-    if (argc != 2) { // key, value
-        return call_error(L, tedINVALID_PARAM_NUMS);
-    }
-
-    if (!lua_isstring(L, 1)) {
-        return call_error(L, tedINVALID_PARAM_TYPE);
-    }
-
-    if (!lua_isstring(L, 1)) {
-        return call_error(L, tedINVALID_KEY_TYPE);
-    }
-    if (!lua_isstring(L, 2)) {
-        return call_error(L, tedINVALID_KEY_TYPE);
-    }
-    const char *key= lua_tostring(L, 1);
-    std::string keyS = key;
-    const char *value = lua_tostring(L, 2);
-    std::string valueS = value;
-
-    return __call_set_value(L, key, strCopy(valueS));
-}
-
 static int __call_set_value(lua_State *L, std::string key, Blob value)
 {
     lua_getglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
@@ -335,6 +310,31 @@ static int __call_set_value(lua_State *L, std::string key, Blob value)
     lua_pushstring(L, key.c_str());
     lua_pushinteger(L, tesSUCCESS);
     return 2;
+}
+
+static int call_set_value(lua_State *L)
+{
+    int argc = lua_gettop(L);
+    if (argc != 2) { // key, value
+        return call_error(L, tedINVALID_PARAM_NUMS);
+    }
+
+    if (!lua_isstring(L, 1)) {
+        return call_error(L, tedINVALID_PARAM_TYPE);
+    }
+
+    if (!lua_isstring(L, 1)) {
+        return call_error(L, tedINVALID_KEY_TYPE);
+    }
+    if (!lua_isstring(L, 2)) {
+        return call_error(L, tedINVALID_KEY_TYPE);
+    }
+    const char *key= lua_tostring(L, 1);
+    std::string keyS = key;
+    const char *value = lua_tostring(L, 2);
+    std::string valueS = value;
+
+    return __call_set_value(L, key, strCopy(valueS));
 }
 
 static int call_get_value(lua_State *L)
