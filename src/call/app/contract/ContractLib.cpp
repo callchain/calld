@@ -29,8 +29,9 @@
 #include <call/rpc/impl/RPCHelpers.h>
 #include <call/protocol/AccountID.h>
 #include <call/protocol/Indexes.h>
-#include <call/protocol/TER.h>
+#include <call/protocol/Issue.h>
 #include <call/protocol/TxFlags.h>
+#include <call/protocol/TER.h>
 
 namespace call
 {
@@ -146,13 +147,13 @@ static int call_do_transfer(lua_State *L)
     if (!lua_isstring(L, 2) && !lua_istable(L, 2)) { // amount
         return call_error(L, tedINVALID_PARAM_TYPE);
     }
-    std::string currency, value, issuer;
+    
+    STAmount amount;
     if (lua_isstring(L, 2)) {
         std::string valueS = lua_tostring(L, 2);
-        currency = "CALL";
-        value = valueS;
-        issuer = "";
+        amount = amountFromString(noIssue(), valueS);
     } else {
+        std::string currency, value, issuer;
         lua_pushstring(L, "currency");
         lua_gettable(L, 2);
         currency = lua_tostring(L, -1);
@@ -165,15 +166,15 @@ static int call_do_transfer(lua_State *L)
         lua_gettable(L, 2);
         issuer = lua_tostring(L, -1);
         lua_pop(L, 1);
-    }
-    Json::Value json;
-    json["currency"] = currency;
-    json["value"] = value;
-    json["issuer"] = issuer;
-    STAmount amount;
-    if (!amountFromJsonNoThrow(amount, json))
-    {
-        return call_error(L, tedINVALID_AMOUNT);
+
+        Json::Value json;
+        json["currency"] = currency;
+        json["value"] = value;
+        json["issuer"] = issuer;
+        if (!amountFromJsonNoThrow(amount, json))
+        {
+            return call_error(L, tedINVALID_AMOUNT);
+        }
     }
 
     lua_getglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
