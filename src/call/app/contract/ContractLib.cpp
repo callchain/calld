@@ -195,7 +195,7 @@ static int call_do_transfer(lua_State *L)
     // check issue
     if (!amount.native())
     {
-        std::shared_ptr<SLE const> sle = ctx->view().read(keylet::issuet(amount));
+        std::shared_ptr<SLE const> sle = view.read(keylet::issuet(amount));
         if (!sle)
         {
             return call_error(L, temCURRENCY_NOT_ISSUE);
@@ -215,19 +215,19 @@ static int call_do_transfer(lua_State *L)
     auto const account_ = RPC::accountFromStringStrict(contractS);
 
     auto const sk = keylet::account(account_.get());
-    SLE::pointer sleSrc = ctx->view().peek (sk);
+    SLE::pointer sleSrc = view.peek (sk);
     if (!sleSrc) {
         return call_error(L, temBAD_SRC_ACCOUNT);
     }
     auto const k = keylet::account(uDstAccountID.get());
-    SLE::pointer sleDst = ctx->view().peek (k);
+    SLE::pointer sleDst = view.peek (k);
     if (!sleDst)
     {
         if (!amount.native())
         {
             return call_error(L, tecNO_DST);
         }
-        if (amount < STAmount(ctx->view().fees().accountReserve(0)))
+        if (amount < STAmount(view.fees().accountReserve(0)))
         {
             return call_error(L, tecNO_DST_INSUF_CALL);
         }
@@ -237,11 +237,11 @@ static int call_do_transfer(lua_State *L)
         sleDst->setAccountID(sfAccount, uDstAccountID.get());
         sleDst->setFieldAmount(sfBalance, 0);
         sleDst->setFieldU32(sfSequence, 1);
-        ctx->view().insert(sleDst);
+        view.insert(sleDst);
     }
     else
     {
-        ctx->view().update (sleDst);
+        view.update (sleDst);
     }
 
     TER terResult;
@@ -251,12 +251,13 @@ static int call_do_transfer(lua_State *L)
         rcInput.partialPaymentAllowed = false;
         rcInput.defaultPathsAllowed = true;
         rcInput.limitQuality = false;
-        rcInput.isLedgerOpen = ctx->view().open();
+        rcInput.isLedgerOpen = view.open();
         STPathSet const empty{};
 
         path::CallCalc::Output rc;
         {
-            PaymentSandbox pv(&ctx->view());
+            ApplyContext& context = transactor->context();
+            PaymentSandbox pv(&view);
             rc = path::CallCalc::callCalculate (
                 pv,
                 amount,
@@ -264,9 +265,9 @@ static int call_do_transfer(lua_State *L)
                 uDstAccountID.get(),
                 account_.get(),
                 empty,
-                ctx->app.logs(),
+                context.app.logs(),
                 &rcInput);
-            pv.apply(ctx->rawView());
+            pv.apply(context.rawView());
         }
         terResult = rc.result();
     }
@@ -274,7 +275,7 @@ static int call_do_transfer(lua_State *L)
     {
         // Direct CALL payment.
         auto const uOwnerCount = sleSrc->getFieldU32 (sfOwnerCount);
-        auto const reserve = ctx->view().fees().accountReserve(uOwnerCount);
+        auto const reserve = view.fees().accountReserve(uOwnerCount);
         auto const mmm = reserve;
         auto mPriorBalance = sleSrc->getFieldAmount (sfBalance);
         if (mPriorBalance < amount.call() + mmm)
@@ -284,8 +285,6 @@ static int call_do_transfer(lua_State *L)
         sleSrc->setFieldAmount (sfBalance, mPriorBalance - amount);
         sleDst->setFieldAmount (sfBalance, sleDst->getFieldAmount (sfBalance) + amount);
 
-        ctx->view().update (sleSrc);
-        ctx->view().update (sleDst);
         terResult = tesSUCCESS;
     }
 

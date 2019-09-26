@@ -116,6 +116,12 @@ public:
         return ctx_.view();
     }
 
+    ApplyContext&
+    context()
+    {
+        return ctx_;
+    }
+
     /////////////////////////////////////////////////////
     /*
     These static functions are called from invoke_preclaim<Tx>
