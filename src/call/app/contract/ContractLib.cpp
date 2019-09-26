@@ -284,7 +284,9 @@ static int call_do_transfer(lua_State *L)
         }
         sleSrc->setFieldAmount (sfBalance, mPriorBalance - amount);
         sleDst->setFieldAmount (sfBalance, sleDst->getFieldAmount (sfBalance) + amount);
-
+        
+        view.update(sleSrc);
+        view.update(sleDst);
         terResult = tesSUCCESS;
     }
 
