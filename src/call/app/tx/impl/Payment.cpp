@@ -632,6 +632,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     call_push_string(L, "sender", to_string(account_));
     call_push_string(L, "value", deliveredAmount.getJson(0).asString());
     lua_setglobal(L, "msg");
+    
     lua_newtable(L); // for block
     call_push_integer(L, "height", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
     lua_setglobal(L, "block");

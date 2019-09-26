@@ -183,7 +183,7 @@ static int call_do_transfer(lua_State *L)
     lua_pop(L, 1);
 
     lua_getglobal(L, "msg");
-    lua_pushstring(L, "address");
+    lua_getfield(L, -1, "address");
     std::string contractS = lua_tostring(L, -1);
     lua_pop(L, 2);
     if (toS == contractS) {
