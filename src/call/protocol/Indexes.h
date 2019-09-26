@@ -158,7 +158,7 @@ static invoice_t const invoicet{};
 
 struct param_t
 {
-    Keylet operator()(std::string const& key) const;
+    Keylet operator()(std::string const& contract, std::string const& key) const;
     Keylet operator()(uint256 const& key) const
     {
         return {ltPARAMROOT, key };
