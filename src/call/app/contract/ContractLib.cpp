@@ -214,6 +214,9 @@ static int call_do_transfer(lua_State *L)
 
     auto const sk = keylet::account(account_.get());
     SLE::pointer sleSrc = ctx->view().peek (sk);
+    if (!sleSrc) {
+        return call_error(L, temBAD_SRC_ACCOUNT);
+    }
     auto const k = keylet::account(uDstAccountID.get());
     SLE::pointer sleDst = ctx->view().peek (k);
     if (!sleDst)
