@@ -624,15 +624,16 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     }
 
     // set global parameters for later lua glue code internal
-    lua_pushlightuserdata(L, &ctx_);
+    lua_pushlightuserdata(L, this);
     lua_setglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
+
     // set global parameters for lua contract
     lua_newtable(L); // for msg
     call_push_string(L, "address", to_string(uDstAccountID));
     call_push_string(L, "sender", to_string(account_));
     call_push_string(L, "value", deliveredAmount.getJson(0).asString());
     lua_setglobal(L, "msg");
-    
+
     lua_newtable(L); // for block
     call_push_integer(L, "height", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
     lua_setglobal(L, "block");

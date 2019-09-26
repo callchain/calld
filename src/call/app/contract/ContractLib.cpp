@@ -19,6 +19,7 @@
 #include <BeastConfig.h>
 #include <call/app/contract/ContractLib.h>
 #include <call/app/tx/impl/ApplyContext.h>
+#include <call/app/tx/impl/Transactor.h>
 #include <call/app/main/Application.h>
 #include <call/app/paths/CallCalc.h>
 #include <call/basics/StringUtilities.h>
@@ -179,8 +180,9 @@ static int call_do_transfer(lua_State *L)
     }
 
     lua_getglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
-    ApplyContext *ctx = reinterpret_cast<ApplyContext *>(lua_touserdata(L, -1));
+    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
+    ApplyView& view = transactor->view();
 
     lua_getglobal(L, "msg");
     lua_getfield(L, -1, "address");
@@ -281,7 +283,7 @@ static int call_do_transfer(lua_State *L)
         }
         sleSrc->setFieldAmount (sfBalance, mPriorBalance - amount);
         sleDst->setFieldAmount (sfBalance, sleDst->getFieldAmount (sfBalance) + amount);
-        
+
         ctx->view().update (sleSrc);
         ctx->view().update (sleDst);
         terResult = tesSUCCESS;
@@ -295,8 +297,9 @@ static int call_do_transfer(lua_State *L)
 static int __call_set_value(lua_State *L, std::string key, Blob value)
 {
     lua_getglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
-    ApplyContext *ctx = reinterpret_cast<ApplyContext *>(lua_touserdata(L, -1));
+    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
+    ApplyView& view = transactor->view();
 
     lua_getglobal(L, "msg");
     lua_pushstring(L, "address");
@@ -305,14 +308,14 @@ static int __call_set_value(lua_State *L, std::string key, Blob value)
     lua_pop(L, 2);
 
     auto const index = getParamIndex(contractS, key);
-    auto const sle = ctx->view().peek(keylet::paramt(index));
+    auto const sle = view.peek(keylet::paramt(index));
     if (sle) {
         sle->setFieldVL(sfInfo, value);
-        ctx->view().update(sle);
+        view.update(sle);
     } else {
         auto const sle = std::make_shared<SLE>(ltPARAMROOT, index);
         sle->setFieldVL(sfInfo, value);
-        ctx->view().insert(sle);
+        view.insert(sle);
     }
 
     lua_pushstring(L, key.c_str());
@@ -360,8 +363,9 @@ static int call_get_value(lua_State *L)
     std::string keyS = key;
 
     lua_getglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
-    ApplyContext *ctx = reinterpret_cast<ApplyContext *>(lua_touserdata(L, -1));
+    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
+    ApplyView& view = transactor->view();
 
     lua_getglobal(L, "msg");
     lua_pushstring(L, "address");
@@ -370,7 +374,7 @@ static int call_get_value(lua_State *L)
     lua_pop(L, 2);
 
     auto const index = getParamIndex(contractS, key);
-    auto const sle = ctx->view().peek(keylet::paramt(index));
+    auto const sle = view.peek(keylet::paramt(index));
 
     if (!sle) {
         return call_error(L, tedNO_SUCH_VALUE);
@@ -397,8 +401,9 @@ static int call_del_value(lua_State *L)
     std::string keyS = key;
 
     lua_getglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
-    ApplyContext *ctx = reinterpret_cast<ApplyContext *>(lua_touserdata(L, -1));
+    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
+    ApplyView& view = transactor->view();
 
     lua_getglobal(L, "msg");
     lua_pushstring(L, "address");
@@ -407,13 +412,13 @@ static int call_del_value(lua_State *L)
     lua_pop(L, 2);
 
     auto const index = getParamIndex(contractS, key);
-    auto const sle = ctx->view().peek(keylet::paramt(index));
+    auto const sle = view.peek(keylet::paramt(index));
 
     if (!sle) {
         return call_error(L, tedNO_SUCH_VALUE);
     }
 
-    ctx->view().erase(sle);
+    view.erase(sle);
 
     lua_pushstring(L, keyS.c_str());
     lua_pushinteger(L, tesSUCCESS);
