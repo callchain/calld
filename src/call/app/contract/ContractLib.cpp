@@ -191,7 +191,12 @@ static int call_do_transfer(lua_State *L)
     Payment *payment = reinterpret_cast<Payment *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
 
-    TER terResult = payment->doTransfer(toS, amount);
+    auto const uDstAccountID = RPC::accountFromStringStrict(toS);
+    if (!uDstAccountID) {
+        return call_error(L, tedINVALID_DESTINATION);
+    }
+
+    TER terResult = payment->doTransfer(uDstAccountID, amount);
 
     lua_pushnil(L); // may other useful result
     lua_pushinteger(L, terResult);

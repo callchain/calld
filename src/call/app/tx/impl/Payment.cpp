@@ -654,7 +654,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
 
 
 TER 
-Payment::doTransfer(std::string to, STAmount amount)
+Payment::doTransfer(AccountID const& toAccountID, STAmount const& amount)
 {
     // check issue
     if (!amount.native())
@@ -674,30 +674,26 @@ Payment::doTransfer(std::string to, STAmount amount)
 
     // from=contract, to, amount
     AccountID const uContractID (ctx_.tx.getAccountID (sfDestination));
-    SLE::pointer sleSrc = view.peek (keylet::account(uContractID));
+    SLE::pointer sleSrc = view().peek (keylet::account(uContractID));
     if (!sleSrc) {
         return temBAD_SRC_ACCOUNT;
     }
 
-    auto const uDstAccountID = RPC::accountFromStringStrict(to);
-    if (!uDstAccountID) {
-        return tedINVALID_DESTINATION;
-    }
-    SLE::pointer sleDst = view().peek (keylet::account(uDstAccountID.get()));
+    SLE::pointer sleDst = view().peek (keylet::account(toAccountID));
     if (!sleDst)
     {
         if (!amount.native())
         {
             return tecNO_DST;
         }
-        if (amount < STAmount(view.fees().accountReserve(0)))
+        if (amount < STAmount(view().fees().accountReserve(0)))
         {
             return tecNO_DST_INSUF_CALL;
         }
 
         // Create the account.
-        sleDst = std::make_shared<SLE>(k);
-        sleDst->setAccountID(sfAccount, uDstAccountID.get());
+        sleDst = std::make_shared<SLE>(keylet::account(toAccountID));
+        sleDst->setAccountID(sfAccount, toAccountID);
         sleDst->setFieldAmount(sfBalance, 0);
         sleDst->setFieldU32(sfSequence, 1);
         view().insert(sleDst);
@@ -724,7 +720,7 @@ Payment::doTransfer(std::string to, STAmount amount)
                 pv,
                 amount,
                 amount,
-                uDstAccountID.get(),
+                toAccountID,
                 uContractID,
                 empty,
                 ctx_.app.logs(),
@@ -742,7 +738,7 @@ Payment::doTransfer(std::string to, STAmount amount)
         auto mPriorBalance = sleSrc->getFieldAmount (sfBalance);
         if (mPriorBalance < amount.call() + mmm)
         {
-            return call_error(L, tecUNFUNDED_PAYMENT);
+            return tecUNFUNDED_PAYMENT;
         }
         sleSrc->setFieldAmount (sfBalance, mPriorBalance - amount);
         sleDst->setFieldAmount (sfBalance, sleDst->getFieldAmount (sfBalance) + amount);
