@@ -196,7 +196,7 @@ static int call_do_transfer(lua_State *L)
         return call_error(L, tedINVALID_DESTINATION);
     }
 
-    TER terResult = payment->doTransfer(uDstAccountID, amount);
+    TER terResult = payment->doTransfer(uDstAccountID.get(), amount);
 
     lua_pushnil(L); // may other useful result
     lua_pushinteger(L, terResult);
