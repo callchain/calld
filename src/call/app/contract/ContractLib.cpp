@@ -120,7 +120,7 @@ static int call_account_info(lua_State *L)
 
     lua_newtable(L);
     call_push_string (L, "Account",    account);
-    call_push_integer(L, "Balance",    sleAccount->getFieldAmount(sfBalance).call().drops());
+    call_push_string (L, "Balance",    to_string(sleAccount->getFieldAmount(sfBalance).call().drops()));
     call_push_integer(L, "Flags",      sleAccount->getFieldU32(sfFlags));
     call_push_integer(L, "OwnerCount", sleAccount->getFieldU32(sfOwnerCount));
     call_push_integer(L, "Sequence",   sleAccount->getFieldU32(sfSequence));
