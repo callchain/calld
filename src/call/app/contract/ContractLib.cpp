@@ -152,8 +152,8 @@ static int call_do_transfer(lua_State *L)
     STAmount amount;
     if (lua_isstring(L, 2)) {
         std::string valueS = lua_tostring(L, 2);
-        Json::Value json(valueS);
-        amount.setJson(json);
+        CALLAmount callAmount(stoi(valueS));
+        amount = callAmount;
     } else {
         std::string currency, value, issuer;
         lua_pushstring(L, "currency");
