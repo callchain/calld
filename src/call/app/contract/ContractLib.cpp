@@ -19,7 +19,7 @@
 #include <BeastConfig.h>
 #include <call/app/contract/ContractLib.h>
 #include <call/app/tx/impl/ApplyContext.h>
-#include <call/app/tx/impl/Transactor.h>
+#include <call/app/tx/impl/Payment.h>
 #include <call/app/main/Application.h>
 #include <call/app/paths/CallCalc.h>
 #include <call/basics/StringUtilities.h>
@@ -179,11 +179,6 @@ static int call_do_transfer(lua_State *L)
         }
     }
 
-    lua_getglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
-    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
-    lua_pop(L, 1);
-    ApplyView& view = transactor->view();
-
     lua_getglobal(L, "msg");
     lua_getfield(L, -1, "address");
     std::string contractS = lua_tostring(L, -1);
@@ -191,104 +186,12 @@ static int call_do_transfer(lua_State *L)
     if (toS == contractS) {
         return call_error(L, tedSEND_CONTRACT_SELF);
     }
+    
+    lua_getglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
+    Payment *payment = reinterpret_cast<Payment *>(lua_touserdata(L, -1));
+    lua_pop(L, 1);
 
-    // check issue
-    if (!amount.native())
-    {
-        std::shared_ptr<SLE const> sle = view.read(keylet::issuet(amount));
-        if (!sle)
-        {
-            return call_error(L, temCURRENCY_NOT_ISSUE);
-        }
-        std::uint32_t const uIssueFlags = sle->getFieldU32(sfFlags);
-        if ((uIssueFlags & tfNonFungible) != 0)
-        {
-            return call_error(L, temNOT_SUPPORT);
-        }
-    }
-
-    // from=contract, to, amount
-    auto const uDstAccountID = RPC::accountFromStringStrict(toS);
-    if (!uDstAccountID) {
-        return call_error(L, tedINVALID_DESTINATION);
-    }
-    auto const account_ = RPC::accountFromStringStrict(contractS);
-
-    auto const sk = keylet::account(account_.get());
-    SLE::pointer sleSrc = view.peek (sk);
-    if (!sleSrc) {
-        return call_error(L, temBAD_SRC_ACCOUNT);
-    }
-    auto const k = keylet::account(uDstAccountID.get());
-    SLE::pointer sleDst = view.peek (k);
-    if (!sleDst)
-    {
-        if (!amount.native())
-        {
-            return call_error(L, tecNO_DST);
-        }
-        if (amount < STAmount(view.fees().accountReserve(0)))
-        {
-            return call_error(L, tecNO_DST_INSUF_CALL);
-        }
-
-        // Create the account.
-        sleDst = std::make_shared<SLE>(k);
-        sleDst->setAccountID(sfAccount, uDstAccountID.get());
-        sleDst->setFieldAmount(sfBalance, 0);
-        sleDst->setFieldU32(sfSequence, 1);
-        view.insert(sleDst);
-    }
-    else
-    {
-        view.update (sleDst);
-    }
-
-    TER terResult;
-    if (!amount.native())
-    {
-        path::CallCalc::Input rcInput;
-        rcInput.partialPaymentAllowed = false;
-        rcInput.defaultPathsAllowed = true;
-        rcInput.limitQuality = false;
-        rcInput.isLedgerOpen = view.open();
-        STPathSet const empty{};
-
-        path::CallCalc::Output rc;
-        {
-            ApplyContext& context = transactor->context();
-            PaymentSandbox pv(&view);
-            rc = path::CallCalc::callCalculate (
-                pv,
-                amount,
-                amount,
-                uDstAccountID.get(),
-                account_.get(),
-                empty,
-                context.app.logs(),
-                &rcInput);
-            pv.apply(context.rawView());
-        }
-        terResult = rc.result();
-    }
-    else
-    {
-        // Direct CALL payment.
-        auto const uOwnerCount = sleSrc->getFieldU32 (sfOwnerCount);
-        auto const reserve = view.fees().accountReserve(uOwnerCount);
-        auto const mmm = reserve;
-        auto mPriorBalance = sleSrc->getFieldAmount (sfBalance);
-        if (mPriorBalance < amount.call() + mmm)
-        {
-            return call_error(L, tecUNFUNDED_PAYMENT);
-        }
-        sleSrc->setFieldAmount (sfBalance, mPriorBalance - amount);
-        sleDst->setFieldAmount (sfBalance, sleDst->getFieldAmount (sfBalance) + amount);
-        
-        view.update(sleSrc);
-        view.update(sleDst);
-        terResult = tesSUCCESS;
-    }
+    TER terResult = payment->doTransfer(toS, amount);
 
     lua_pushnil(L); // may other useful result
     lua_pushinteger(L, terResult);

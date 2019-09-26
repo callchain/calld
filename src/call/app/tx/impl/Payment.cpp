@@ -652,4 +652,105 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     return terResult;
 }
 
+
+TER 
+Payment::doTransfer(std::string to, STAmount amount)
+{
+    // check issue
+    if (!amount.native())
+    {
+        std::shared_ptr<SLE const> sle = view().read(keylet::issuet(amount));
+        if (!sle)
+        {
+            return temCURRENCY_NOT_ISSUE;
+        }
+        std::uint32_t const uIssueFlags = sle->getFieldU32(sfFlags);
+        if ((uIssueFlags & tfNonFungible) != 0)
+        {
+            // not support invoice now
+            return temNOT_SUPPORT;
+        }
+    }
+
+    // from=contract, to, amount
+    AccountID const uContractID (ctx_.tx.getAccountID (sfDestination));
+    SLE::pointer sleSrc = view.peek (keylet::account(uContractID));
+    if (!sleSrc) {
+        return temBAD_SRC_ACCOUNT;
+    }
+
+    auto const uDstAccountID = RPC::accountFromStringStrict(to);
+    if (!uDstAccountID) {
+        return tedINVALID_DESTINATION;
+    }
+    SLE::pointer sleDst = view().peek (keylet::account(uDstAccountID.get()));
+    if (!sleDst)
+    {
+        if (!amount.native())
+        {
+            return tecNO_DST;
+        }
+        if (amount < STAmount(view.fees().accountReserve(0)))
+        {
+            return tecNO_DST_INSUF_CALL;
+        }
+
+        // Create the account.
+        sleDst = std::make_shared<SLE>(k);
+        sleDst->setAccountID(sfAccount, uDstAccountID.get());
+        sleDst->setFieldAmount(sfBalance, 0);
+        sleDst->setFieldU32(sfSequence, 1);
+        view().insert(sleDst);
+    }
+    else
+    {
+        view().update (sleDst);
+    }
+
+    TER terResult;
+    if (!amount.native())
+    {
+        path::CallCalc::Input rcInput;
+        rcInput.partialPaymentAllowed = false;
+        rcInput.defaultPathsAllowed = true;
+        rcInput.limitQuality = false;
+        rcInput.isLedgerOpen = view().open();
+        STPathSet const empty{};
+
+        path::CallCalc::Output rc;
+        {
+            PaymentSandbox pv(&view());
+            rc = path::CallCalc::callCalculate (
+                pv,
+                amount,
+                amount,
+                uDstAccountID.get(),
+                uContractID,
+                empty,
+                ctx_.app.logs(),
+                &rcInput);
+            pv.apply(ctx_.rawView());
+        }
+        terResult = rc.result();
+    }
+    else
+    {
+        // Direct CALL payment.
+        auto const uOwnerCount = sleSrc->getFieldU32 (sfOwnerCount);
+        auto const reserve = view().fees().accountReserve(uOwnerCount);
+        auto const mmm = reserve;
+        auto mPriorBalance = sleSrc->getFieldAmount (sfBalance);
+        if (mPriorBalance < amount.call() + mmm)
+        {
+            return call_error(L, tecUNFUNDED_PAYMENT);
+        }
+        sleSrc->setFieldAmount (sfBalance, mPriorBalance - amount);
+        sleDst->setFieldAmount (sfBalance, sleDst->getFieldAmount (sfBalance) + amount);
+
+        terResult = tesSUCCESS;
+    }
+
+    return terResult;
+}
+
 }  // call

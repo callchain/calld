@@ -75,6 +75,9 @@ public:
     TER doApply () override;
 
     TER doCodeCall(STAmount const& deliveredAmount);
+
+    // for lua glue functions
+    TER doTransfer(std::string to, STAmount amount);
 };
 
 } // call
