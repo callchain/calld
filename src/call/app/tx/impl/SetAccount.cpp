@@ -47,6 +47,8 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>
 
+#include <lua.hpp>
+
 namespace call {
 
 bool
@@ -211,20 +213,27 @@ SetAccount::preclaim(PreclaimContext const& ctx)
     }
 
     // check code account
-    if (sle->isFieldPresent(sfCode))
+    if (ctx.tx.isFieldPresent(sfCode))
     {
-        // TODO, use lua code analyser
-        
-        // std::string code = strCopy(sle->getFieldVL(sfCode));
-        // boost::regex reg("\\s*function\\s+main\\s*\\(\\s*[a-zA-Z_][0-9a-zA-Z_]{0,}\\s*\\)");
-        // boost::cmatch m;
-        // bool find = false;
-        // while (boost::regex_search(code.c_str(), m, reg))
-        // {
-        //     if (m.size() > 0) { find = true; break; }
-        //     code = m[0].second;
-        // }
-        // if (!find) return temNO_CODE_ENTRY;
+        std::string code = strCopy(ctx.tx.getFieldVL(sfCode));
+        lua_State *L = luaL_newstate();
+        luaL_openlibs(L);
+        // check code
+        int lret = luaL_dostring(L, codeS.c_str());
+        if (lret != LUA_OK)
+        {
+            JLOG(j_.warn()) << "invalid account code, error=" << lret;
+            return temINVALID_CODE;
+        }
+        lua_getglobal(L, "main");
+        lret = lua_isfunction(L, -1);
+        if (lret != LUA_OK)
+        {
+            JLOG(j_.warn()) << "no code entry, error=" << lret;
+            return temNO_CODE_ENTRY;
+        }
+        lua_pop(L, 1);
+        lua_close(L);
     }
 
     bool bCodeAccount  = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount);

@@ -131,6 +131,7 @@ enum TER
     temCODE_FIXED,
     temPRAMETER_KEYWORD,
     temNO_CODE_ENTRY,
+    temINVALID_CODE,
     
     // -199 .. -100: F
     //    Failure (sequence number previously used)

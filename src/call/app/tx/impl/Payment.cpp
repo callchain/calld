@@ -648,6 +648,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     // get result
     terResult = TER(lua_tointeger(L, -1));
     lua_pop(L, 1);
+    lua_close(L);
 
     return terResult;
 }
