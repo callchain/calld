@@ -211,9 +211,8 @@ static int __call_set_value(lua_State *L, std::string key, Blob value)
     ApplyView& view = transactor->view();
 
     lua_getglobal(L, "msg");
-    lua_pushstring(L, "address");
-    const char * contract = lua_tostring(L, -1);
-    const std::string contractS(contract);
+    lua_getfield(L, -1, "address");
+    std::string contractS = lua_tostring(L, -1);
     lua_pop(L, 2);
 
     auto const index = getParamIndex(contractS, key);
@@ -277,9 +276,8 @@ static int call_get_value(lua_State *L)
     ApplyView& view = transactor->view();
 
     lua_getglobal(L, "msg");
-    lua_pushstring(L, "address");
-    const char * contract = lua_tostring(L, -1);
-    std::string contractS(contract);
+    lua_getfield(L, -1, "address");
+    std::string contractS = lua_tostring(L, -1);
     lua_pop(L, 2);
 
     auto const index = getParamIndex(contractS, key);
