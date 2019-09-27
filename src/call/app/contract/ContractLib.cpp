@@ -313,9 +313,8 @@ static int call_del_value(lua_State *L)
     ApplyView& view = transactor->view();
 
     lua_getglobal(L, "msg");
-    lua_pushstring(L, "address");
-    const char * contract = lua_tostring(L, -1);
-    std::string contractS(contract);
+    lua_getfield(L, -1, "address");
+    std::string contractS = lua_tostring(L, -1);
     lua_pop(L, 2);
 
     auto const index = getParamIndex(contractS, key);
@@ -336,7 +335,9 @@ void RegisterContractLib(lua_State *L)
 {
     lua_register(L, "call_ledger_closed", call_ledger_closed);
     lua_register(L, "call_account_info",  call_account_info );
+
     lua_register(L, "call_do_transfer",   call_do_transfer  );
+
     lua_register(L, "call_set_value",     call_set_value    );
     lua_register(L, "call_get_value",     call_get_value    );
     lua_register(L, "call_del_value",     call_del_value    );
