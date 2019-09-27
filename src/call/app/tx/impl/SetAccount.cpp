@@ -222,14 +222,14 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         int lret = luaL_dostring(L, code.c_str());
         if (lret != LUA_OK)
         {
-            JLOG(j_.warn()) << "invalid account code, error=" << lret;
+            JLOG(ctx.j.warn()) << "invalid account code, error=" << lret;
             return temINVALID_CODE;
         }
         lua_getglobal(L, "main");
         lret = lua_isfunction(L, -1);
         if (lret != LUA_OK)
         {
-            JLOG(j_.warn()) << "no code entry, error=" << lret;
+            JLOG(ctx.j.warn()) << "no code entry, error=" << lret;
             return temNO_CODE_ENTRY;
         }
         lua_pop(L, 1);
