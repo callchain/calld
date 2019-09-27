@@ -226,10 +226,10 @@ SetAccount::preclaim(PreclaimContext const& ctx)
             return temINVALID_CODE;
         }
         lua_getglobal(L, "main");
-        lret = lua_isfunction(L, -1);
-        if (lret != LUA_OK)
+        lret = lua_type(L, -1);
+        if (lret != LUA_TFUNCTION)
         {
-            JLOG(ctx.j.warn()) << "no code entry, error=" << lret;
+            JLOG(ctx.j.warn()) << "no code entry, type=" << lret;
             return temNO_CODE_ENTRY;
         }
         lua_pop(L, 1);
