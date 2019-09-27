@@ -219,7 +219,7 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         lua_State *L = luaL_newstate();
         luaL_openlibs(L);
         // check code
-        int lret = luaL_dostring(L, codeS.c_str());
+        int lret = luaL_dostring(L, code.c_str());
         if (lret != LUA_OK)
         {
             JLOG(j_.warn()) << "invalid account code, error=" << lret;
