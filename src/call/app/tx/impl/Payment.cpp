@@ -690,7 +690,7 @@ Payment::payContractFee(CALLAmount const& feeAmount)
 		auto fee = feesle->getFieldAmount(sfBalance) + feeAmount;
 		feesle->setFieldAmount(sfBalance, fee);
 	}
-    sle->setFieldAmount (sfBalance, setFieldAmount->getFieldAmount(sfBalance) - feeAmount);
+    sle->setFieldAmount (sfBalance, sle->getFieldAmount(sfBalance) - feeAmount);
 
 }
 
