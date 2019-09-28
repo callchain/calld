@@ -616,7 +616,7 @@ def config_env(toolchain, variant, env):
             'boost_thread'
         ]
         env.Append(LIBS=['dl'])
-        env.Append(LIBS=['lua'])
+        env.Append(LIBS=['lua/src/liblua.a'])
         env.Append(LIBS=['boost_regex'])
 
         if should_link_static():
