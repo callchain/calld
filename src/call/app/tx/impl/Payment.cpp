@@ -663,7 +663,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     drops = lua_getdrops(L);
     CALLAmount finalAmount (drops);
     auto const feeAmount = feeLimit - finalAmount;
-    ctx_.extraFee = feeAmount;
+    ctx_.setExtraFee(feeAmount);
     payContractFee(feeAmount);
 
     // close lua state
