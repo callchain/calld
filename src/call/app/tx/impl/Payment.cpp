@@ -592,6 +592,16 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
     RegisterContractLib(L); // register cpp functions for lua contract
+
+    auto const uSrcSLE = view().read(keylet::account(account_));
+    auto const uBalance = uSrcSLE->getFieldAmount(sfBalance).call();
+    auto const uOwnerCount = uSrcSLE->getFieldU32 (sfOwnerCount);
+    // This is the total reserve in drops.
+    auto const reserve = view().fees().accountReserve(uOwnerCount);
+    auto const feeLimit = uBalance - reserve;
+    unsigned long long drops = boost::lexical_cast<unsigned long long>(feeLimit.drops());
+    lua_setdrops(L, drops);
+
     // load and call code
     int lret = luaL_dostring(L, codeS.c_str());
     if (lret != LUA_OK)
@@ -648,9 +658,40 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     // get result
     terResult = TER(lua_tointeger(L, -1));
     lua_pop(L, 1);
+
+    // pay contract feee
+    drops = lua_getdrops(L);
+    CALLAmount finalAmount (drops);
+    auto const feeAmount = feeLimit - finalAmount;
+    payContractFee(feeAmount);
+
+    // close lua state
     lua_close(L);
 
     return terResult;
+}
+
+void
+Payment::payContractFee(CALLAmount const& feeAmount)
+{
+    auto const sle = view().peek(keylet::account(account_));
+
+    auto feesle = view().peek(keylet::txfee());
+	if (!feesle)
+	{
+		auto const feeindex = getFeesIndex();
+		auto const feesle = std::make_shared<SLE>(ltFeeRoot, feeindex);
+		feesle->setFieldAmount(sfBalance, feeAmount);
+		view().insert(feesle);
+	}
+	else
+	{
+		view().update(feesle);
+		auto fee = feesle->getFieldAmount(sfBalance) + feeAmount;
+		feesle->setFieldAmount(sfBalance, fee);
+	}
+    sle->setFieldAmount (sfBalance, setFieldAmount->getFieldAmount(sfBalance) - feeAmount);
+
 }
 
 

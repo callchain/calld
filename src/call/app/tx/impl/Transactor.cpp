@@ -241,7 +241,7 @@ TER Transactor::payFee ()
 	if (!feesle)
 	{
 		auto const feeindex = getFeesIndex();
-		auto const feesle = std::make_shared<SLE>(ltFeeRoot,feeindex);
+		auto const feesle = std::make_shared<SLE>(ltFeeRoot, feeindex);
 		feesle->setFieldAmount(sfBalance, feePaid);
 		view().insert(feesle);
 		auto after = view().read(keylet::txfee());

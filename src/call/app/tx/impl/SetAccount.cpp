@@ -218,6 +218,7 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         std::string code = strCopy(ctx.tx.getFieldVL(sfCode));
         lua_State *L = luaL_newstate();
         luaL_openlibs(L);
+        lua_setdrops(L, (unsigned long long)-1);
         // check code
         int lret = luaL_dostring(L, code.c_str());
         if (lret != LUA_OK)
