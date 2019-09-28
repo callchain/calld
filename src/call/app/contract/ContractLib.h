@@ -20,7 +20,7 @@
 #ifndef CALL_TX_CONTRACTLIB_H_INCLUDED
 #define CALL_TX_CONTRACTLIB_H_INCLUDED
 
-#include <lua.hpp>
+#include <lua/src/lua.hpp>
 #include <call/basics/StringUtilities.h>
 
 namespace call
