@@ -592,13 +592,14 @@ SetAccount::doApply ()
     if (ctx_.tx.isFieldPresent (sfCode))
     {
         auto uCode = ctx_.tx[sfCode];
+        size_t diff_size = uCode.size();
         if (sle->isFieldPresent(sfCode))
         {
             auto uOldCode = sle->getFieldVL(sfCode);
-            size_t diff_size = uCode.size() - uOldCode.size();
-            auto codeCount = diff_size / view().fees().increment;
-            sle->setFieldU32(sfOwnerCount, sle->getFieldU32(sfOwnerCount) + codeCount);
+            diff_size = diff_size - uOldCode.size();
         }
+        auto codeCount = diff_size / view().fees().increment;
+        sle->setFieldU32(sfOwnerCount, sle->getFieldU32(sfOwnerCount) + codeCount);
         sle->setFieldVL(sfCode, uCode);
     }
 
