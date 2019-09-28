@@ -244,15 +244,12 @@ TER Transactor::payFee ()
 		auto const feesle = std::make_shared<SLE>(ltFeeRoot, feeindex);
 		feesle->setFieldAmount(sfBalance, feePaid);
 		view().insert(feesle);
-		auto after = view().read(keylet::txfee());
 	}
 	else
 	{
 		view().update(feesle);
 		auto fee = feesle->getFieldAmount(sfBalance) + feePaid;
 		feesle->setFieldAmount(sfBalance, fee);
-		
-		auto after = view().read(keylet::txfee());
 	}
     mSourceBalance -= feePaid;
     sle->setFieldAmount (sfBalance, mSourceBalance);
@@ -629,6 +626,8 @@ Transactor::claimFee (CALLAmount& fee, TER terResult, std::vector<uint256> const
     auto const txnAcct = view().peek(keylet::account(ctx_.tx.getAccountID(sfAccount)));
     auto const balance = txnAcct->getFieldAmount (sfBalance).call ();
 
+    fee = fee + ctx_.extraFee; // add extra contract fee
+
     // balance should have already been
     // checked in checkFee / preFlight.
     assert(balance != zero && (!view().open() || balance >= fee));
@@ -639,6 +638,20 @@ Transactor::claimFee (CALLAmount& fee, TER terResult, std::vector<uint256> const
     {
         fee = balance;
     }
+
+    auto feesle = view().peek(keylet::txfee());
+	if (!feesle)
+	{
+		auto const feesle = std::make_shared<SLE>(ltFeeRoot, getFeesIndex());
+		feesle->setFieldAmount(sfBalance, fee);
+		view().insert(feesle);
+	}
+	else
+	{
+		view().update(feesle);
+		auto feeBalance = feesle->getFieldAmount(sfBalance) + fee;
+		feesle->setFieldAmount(sfBalance, feeBalance);
+	}
         
     txnAcct->setFieldAmount (sfBalance, balance - fee);
     txnAcct->setFieldU32 (sfSequence, ctx_.tx.getSequence() + 1);

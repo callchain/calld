@@ -663,6 +663,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     drops = lua_getdrops(L);
     CALLAmount finalAmount (drops);
     auto const feeAmount = feeLimit - finalAmount;
+    ctx_.extraFee = feeAmount;
     payContractFee(feeAmount);
 
     // close lua state
@@ -691,7 +692,6 @@ Payment::payContractFee(CALLAmount const& feeAmount)
 		feesle->setFieldAmount(sfBalance, fee);
 	}
     sle->setFieldAmount (sfBalance, sle->getFieldAmount(sfBalance) - feeAmount);
-
 }
 
 

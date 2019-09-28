@@ -63,6 +63,7 @@ public:
     TER const preclaimResult;
     std::uint64_t const baseFee;
     beast::Journal const journal;
+    CALLAmount extraFee;
 
     ApplyView&
     view()
