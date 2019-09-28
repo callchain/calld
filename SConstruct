@@ -157,6 +157,7 @@ def parse_time(t):
         return time.strptime(t, '%a %b %d %H:%M:%S %Z %Y')
 
 UNITY_BUILD_DIRECTORY = 'src/call/unity/'
+LUA_PATH = os.path.abspath('./src/lua/src/')
 
 def memoize(function):
   memo = {}
@@ -616,8 +617,9 @@ def config_env(toolchain, variant, env):
             'boost_thread'
         ]
         env.Append(LIBS=['dl'])
-        env.Append(LIBS=['lua/src/liblua.a'])
         env.Append(LIBS=['boost_regex'])
+
+        add_static_libs(env, [os.path.join(LUA_PATH, 'liblua.a'));
 
         if should_link_static():
             add_static_libs(env, boost_libs)
@@ -756,7 +758,7 @@ def config_env(toolchain, variant, env):
             'uuid.lib',
             'odbc32.lib',
             'odbccp32.lib',
-	    'crypt32.lib'
+	        'crypt32.lib'
             ])
         env.Append(LINKFLAGS=[
             '/DEBUG',
