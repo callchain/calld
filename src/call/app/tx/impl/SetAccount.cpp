@@ -460,7 +460,7 @@ SetAccount::doApply ()
     {
         JLOG(j_.trace()) << "Set AccountTxnID";
         sle->makeFieldPresent (sfAccountTxnID);
-        }
+    }
 
     if ((uClearFlag == asfAccountTxnID) && sle->isFieldPresent (sfAccountTxnID))
     {
@@ -592,6 +592,13 @@ SetAccount::doApply ()
     if (ctx_.tx.isFieldPresent (sfCode))
     {
         auto uCode = ctx_.tx[sfCode];
+        if (sle->isFieldPresent(sfCode))
+        {
+            auto uOldCode = sle->getFieldVL(sfCode);
+            size_t diff_size = uCode.size() - uOldCode.size();
+            auto codeCount = diff_size / view().fees().increment;
+            sle->setFieldU32(sfOwnerCount, sle->getFieldU32(sfOwnerCount) + codeCount);
+        }
         sle->setFieldVL(sfCode, uCode);
     }
 
