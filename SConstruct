@@ -619,7 +619,7 @@ def config_env(toolchain, variant, env):
         env.Append(LIBS=['dl'])
         env.Append(LIBS=['boost_regex'])
 
-        add_static_libs(env, [os.path.join(LUA_PATH, 'liblua.a']));
+        add_static_libs(env, [os.path.join(LUA_PATH, 'liblua.a')]);
 
         if should_link_static():
             add_static_libs(env, boost_libs)
