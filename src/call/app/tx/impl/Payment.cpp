@@ -607,9 +607,8 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
                 continue;
             }
             std::string data = strCopy(memoObj->getFieldVL(sfMemoData));
-            lua_pushnumber(L, n);
             lua_pushstring(L, data.c_str());
-            lua_settable(L, -3);
+            lua_rawseti(L, -2, n);
             ++n;
         }
     }
