@@ -627,7 +627,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
                 continue;
             }
             std::string data = strCopy(memoObj->getFieldVL(sfMemoData));
-            lua_pushstring(L, name.c_str());
+            lua_pushstring(L, data.c_str());
             lua_rawseti(L, -2, n + 1);
             ++n;
         }
