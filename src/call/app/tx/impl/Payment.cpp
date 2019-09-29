@@ -335,24 +335,6 @@ Payment::preclaim(PreclaimContext const& ctx)
         }
     }
 
-    if (ctx.tx.isFieldPresent(sfMemos))
-    {
-        auto const& memos = ctx.tx.getFieldArray(sfMemos);
-        for (auto const& memo : memos)
-        {
-            auto memoObj = dynamic_cast <STObject const*> (&memo);
-            if (!memoObj->isFieldPresent(sfMemoFormat)
-                || !memoObj->isFieldPresent(sfMemoType)
-                || !memoObj->isFieldPresent(sfMemoData)) continue;
-            std::string format = strCopy(memoObj->getFieldVL(sfMemoFormat));
-            if (format != "parameters") continue;
-
-            std::string name = strCopy(memoObj->getFieldVL(sfMemoType));
-            if (name.find("GLOBAL_PATAMETER_") == 0)
-                return temPRAMETER_KEYWORD;
-        }
-    }
-
     return tesSUCCESS;
 }
 
