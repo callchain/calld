@@ -47,7 +47,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>
 
-#include <lua/src/lua.hpp>
+#include <lua-vm/src/lua.hpp>
 
 namespace call {
 

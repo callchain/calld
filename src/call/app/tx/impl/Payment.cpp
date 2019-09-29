@@ -44,7 +44,7 @@
 #include <call/protocol/TxFlags.h>
 #include <call/protocol/JsonFields.h>
 #include <call/basics/StringUtilities.h>
-#include <lua/src/lua.hpp>
+#include <lua-vm/src/lua.hpp>
 
 namespace call {
 

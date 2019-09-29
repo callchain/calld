@@ -157,7 +157,7 @@ def parse_time(t):
         return time.strptime(t, '%a %b %d %H:%M:%S %Z %Y')
 
 UNITY_BUILD_DIRECTORY = 'src/call/unity/'
-LUA_PATH = os.path.abspath('./src/lua/src/')
+LUA_PATH = os.path.abspath('./src/lua-vm/src/')
 
 def memoize(function):
   memo = {}

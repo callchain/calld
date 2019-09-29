@@ -10,3 +10,6 @@
 [submodule "src/nudb/doc/docca"]
 	path = src/nudb/doc/docca
 	url = https://github.com/vinniefalco/docca.git
+[submodule "src/lua-vm"]
+	path = src/lua-vm
+	url = https://github.com/callchain/lua-vm.git
