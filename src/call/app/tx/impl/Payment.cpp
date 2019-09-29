@@ -613,23 +613,23 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     lua_getglobal(L, "main");
     // push parameters, collect parameters if exists
     lua_newtable(L);
+    lua_pushnumber(L, -1);
+    lua_rawseti(L, -2, 0);
     if (ctx_.tx.isFieldPresent(sfMemos))
     {
         auto const& memos = ctx_.tx.getFieldArray(sfMemos);
+        int n = 0;
         for (auto const& memo : memos)
         {
             auto memoObj = dynamic_cast <STObject const*> (&memo);
-            if (!memoObj->isFieldPresent(sfMemoFormat)
-                || !memoObj->isFieldPresent(sfMemoType)
-                || !memoObj->isFieldPresent(sfMemoData)) continue;
-            std::string format = strCopy(memoObj->getFieldVL(sfMemoFormat));
-            if (format != "parameters") continue;
-
-            std::string name = strCopy(memoObj->getFieldVL(sfMemoType));
+            if (!memoObj->isFieldPresent(sfMemoData))
+            {
+                continue;
+            }
             std::string data = strCopy(memoObj->getFieldVL(sfMemoData));
             lua_pushstring(L, name.c_str());
-            lua_pushstring(L, data.c_str());
-            lua_settable(L, -3);
+            lua_rawseti(L, -2, n + 1);
+            ++n;
         }
     }
 
