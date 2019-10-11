@@ -30,6 +30,11 @@
 namespace call
 {
 
+TER
+IssueSetting::loadCode(Blob const& code)
+{
+    return tesSUCCESS;
+}
    
 
 } // namespace call

@@ -35,7 +35,6 @@ private:
     bool enabledPayment;
     bool enabledOffer;
     LedgerIndex expiredLedger;
-    
 };
 
 } // namespace call
