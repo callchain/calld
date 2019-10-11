@@ -394,6 +394,14 @@ Payment::doApply ()
 
     TER terResult;
 
+    // do call check call before
+    if (sleDst->isFieldPresent(sfCode))
+    {
+        terResult = doCodeCheckCall();
+        if (terResult != tesSUCCESS)
+            return terResult;
+    }
+
     bool const bCall = paths || sendMax || !saDstAmount.native ();
     // XXX Should sendMax be sufficient to imply call?
 
@@ -556,10 +564,87 @@ Payment::doApply ()
     // before enter code
     if (terResult != tesSUCCESS || (uTxFlags & tfNoCodeCall) != 0)
         return terResult;
-    bool hasCode = view().read(keylet::account(uDstAccountID))->isFieldPresent(sfCode);
+    bool hasCode = sleDst->isFieldPresent(sfCode);
     if (!hasCode) return terResult;
 
     return doCodeCall(deliveredAmount);
+}
+
+TER
+Payment::doCodeCheckCall()
+{
+    TER terResult = tesSUCCESS;
+    AccountID const uDstAccountID (ctx_.tx.getAccountID (sfDestination));
+
+    Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);
+    std::string codeS = strCopy(code);
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+    RegisterContractLib(L); // register cpp functions for lua contract
+
+    auto const uSrcSLE = view().read(keylet::account(account_));
+    auto const uBalance = uSrcSLE->getFieldAmount(sfBalance).call();
+    auto const uOwnerCount = uSrcSLE->getFieldU32 (sfOwnerCount);
+    // This is the total reserve in drops.
+    auto const reserve = view().fees().accountReserve(uOwnerCount);
+    auto const feeLimit = uBalance - reserve;
+    unsigned long long drops = boost::lexical_cast<unsigned long long>(feeLimit.drops());
+    lua_setdrops(L, drops);
+
+    // load and call code
+    int lret = luaL_dostring(L, codeS.c_str());
+    if (lret != LUA_OK)
+    {
+        JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
+        lua_close(L);
+        return terCODE_LOAD_FAILED;
+    }
+
+    lua_getglobal(L, "check");
+    if (!lua_isfunction(L, -1))
+    {
+        lua_close(L);
+        return terResult;
+    }
+
+    // set global parameters for later lua glue code internal
+    lua_pushlightuserdata(L, this);
+    lua_setglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
+
+    // set global parameters for lua contract
+    lua_newtable(L); // for msg
+    call_push_string(L, "address", to_string(uDstAccountID));
+    call_push_string(L, "sender", to_string(account_));
+    call_push_string(L, "value", "0");
+    lua_setglobal(L, "msg");
+
+    lua_newtable(L); // for block
+    call_push_integer(L, "height", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
+    lua_setglobal(L, "block");
+
+    lret = lua_pcall(L, 0, 1, 0);
+    if (lret != LUA_OK)
+    {
+        JLOG(j_.warn()) << "Fail to call account code check, error=" << lret;
+        lua_close(L);
+        return terCODE_CALL_FAILED;
+    }
+
+    // get result
+    terResult = TER(lua_tointeger(L, -1));
+    lua_pop(L, 1);
+
+    // pay contract feee
+    drops = lua_getdrops(L);
+    CALLAmount finalAmount (drops);
+    auto const feeAmount = feeLimit - finalAmount;
+    ctx_.setExtraFee(feeAmount);
+    payContractFee(feeAmount);
+
+    // close lua state
+    lua_close(L);
+
+    return terResult;
 }
 
 TER
@@ -589,6 +674,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     if (lret != LUA_OK)
     {
         JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
+        lua_close(L);
         return terCODE_LOAD_FAILED;
     }
 
@@ -632,6 +718,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     if (lret != LUA_OK)
     {
         JLOG(j_.warn()) << "Fail to call account code main, error=" << lret;
+        lua_close(L);
         return terCODE_CALL_FAILED;
     }
 

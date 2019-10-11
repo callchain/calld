@@ -74,6 +74,8 @@ public:
 
     TER doApply () override;
 
+    TER doCodeCheckCall();
+
     TER doCodeCall(STAmount const& deliveredAmount);
 
     // for lua glue functions
