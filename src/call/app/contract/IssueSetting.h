@@ -17,8 +17,8 @@
 */
 //==============================================================================
 
-#ifndef CALL_TX_CONTRACTLIB_H_INCLUDED
-#define CALL_TX_CONTRACTLIB_H_INCLUDED
+#ifndef CALL_TX_ISSUESETTING_H_INCLUDED
+#define CALL_TX_ISSUESETTING_H_INCLUDED
 
 #include <lua-vm/src/lua.hpp>
 #include <call/basics/StringUtilities.h>
