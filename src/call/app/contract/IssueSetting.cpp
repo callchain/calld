@@ -38,4 +38,3 @@ IssueSetting::loadCode(Blob const& code)
    
 
 } // namespace call
-#endif
