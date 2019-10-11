@@ -212,6 +212,19 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         }
     }
 
+    bool bCodeAccount  = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount);
+    if (bCodeAccount && (!sle->isFieldPresent(sfCode) && !ctx.tx.isFieldPresent(sfCode)))
+    {
+        JLOG(ctx.j.trace()) << "when set code account, code should present";
+        return temNO_CODE;
+    }
+
+    if (bCodeAccount && (uFlagsIn & lsfCodeAccount))
+    {
+        JLOG(ctx.j.trace()) << "Account is already code account";
+        return temCODE_ACCOUNT;
+    }
+
     // check code account
     if (ctx.tx.isFieldPresent(sfCode))
     {
@@ -235,19 +248,6 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         }
         lua_pop(L, 1);
         lua_close(L);
-    }
-
-    bool bCodeAccount  = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount);
-    if (bCodeAccount && (!sle->isFieldPresent(sfCode) && !ctx.tx.isFieldPresent(sfCode)))
-    {
-        JLOG(ctx.j.trace()) << "when set code account, code should present";
-        return temNO_CODE;
-    }
-
-    if (bCodeAccount && (uFlagsIn & lsfCodeAccount))
-    {
-        JLOG(ctx.j.trace()) << "Account is already code account";
-        return temCODE_ACCOUNT;
     }
 
     return tesSUCCESS;

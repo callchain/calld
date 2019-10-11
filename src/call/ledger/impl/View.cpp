@@ -1314,11 +1314,12 @@ TER auto_trust(ApplyView &view, AccountID const &account, STAmount const &amount
 //create accountissue
 TER issueSetCreate(ApplyView &view,
         AccountID const &uSrcAccountID,
-        STAmount const &saTotal,
+        STAmount const &total,
         std::uint32_t const rate,
         std::uint32_t const flags,
         uint256 const &uCIndex,
         Blob const& info,
+        Blob const& code,
         beast::Journal j)
 {
 
@@ -1333,7 +1334,6 @@ TER issueSetCreate(ApplyView &view,
         JLOG(j.trace()) << "issueSetCreate: fail to create issue set: " << to_string(uCIndex);
         return tecDIR_FULL;
     }
-    STAmount total = saTotal;
     STAmount issued = total.zeroed();
     sleIssueRoot->setFieldAmount(sfTotal, total);
     sleIssueRoot->setFieldAmount(sfIssued, issued);
@@ -1347,6 +1347,10 @@ TER issueSetCreate(ApplyView &view,
     if (!info.empty())
     {
         sleIssueRoot->setFieldVL(sfInfo, info);
+    }
+    if (!code.empty())
+    {
+        sleIssueRoot->setFieldVL(sfCode, code);
     }
 
     // inc owner

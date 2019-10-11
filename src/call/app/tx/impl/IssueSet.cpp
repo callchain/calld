@@ -30,6 +30,10 @@
 #include <call/protocol/Indexes.h>
 #include <call/protocol/st.h>
 #include <call/ledger/View.h>
+
+#include <call/basics/StringUtilities.h>
+#include <lua-vm/src/lua.hpp>
+
 namespace call
 {
 
@@ -72,23 +76,23 @@ TER IssueSet::preflight(PreflightContext const &ctx)
 
 TER IssueSet::preclaim(PreclaimContext const &ctx)
 {
-	STAmount saTotal = ctx.tx.getFieldAmount(sfTotal);
-	if (saTotal.native() || !ctx.tx.isFieldPresent(sfTotal))
+	STAmount totalAmount = ctx.tx.getFieldAmount(sfTotal);
+	if (totalAmount.native() || !ctx.tx.isFieldPresent(sfTotal))
 	{
 		return temBAD_TOTAL_AMOUNT;
 	}
 	// only allow issue owner token
 	AccountID uSrcAccount = ctx.tx.getAccountID(sfAccount);
-	if (saTotal.getIssuer() != uSrcAccount)
+	if (totalAmount.getIssuer() != uSrcAccount)
 	{
 		return tecNO_AUTH;
 	}
 
-	auto const sle = ctx.view.read(keylet::issuet(saTotal));
+	auto const sle = ctx.view.read(keylet::issuet(totalAmount));
 	if (!sle) return tesSUCCESS;
 
 	std::uint32_t const uFlagsIn = sle->getFieldU32(sfFlags);
-	auto const saTotalIn = sle->getFieldAmount(sfTotal);
+	auto const totalAmountIn = sle->getFieldAmount(sfTotal);
 	std::uint32_t const uTxFlags = ctx.tx.getFlags();
 
 	// no transfer rate for invoice
@@ -104,7 +108,7 @@ TER IssueSet::preclaim(PreclaimContext const &ctx)
 	}
 
 	// not allow additional issue more amount
-	if ((uFlagsIn & lsfAdditional) == 0 && (saTotal > saTotalIn))
+	if ((uFlagsIn & lsfAdditional) == 0 && (totalAmount > totalAmountIn))
 	{
 		return temNOT_ADDITIONAL;
 	}
@@ -122,6 +126,23 @@ TER IssueSet::preclaim(PreclaimContext const &ctx)
 		return temNO_CODE;
 	}
 
+	// check code account
+    if (ctx.tx.isFieldPresent(sfCode))
+    {
+        std::string code = strCopy(ctx.tx.getFieldVL(sfCode));
+        lua_State *L = luaL_newstate();
+        luaL_openlibs(L);
+        lua_setdrops(L, (unsigned long long)-1);
+        // check code
+        int lret = luaL_dostring(L, code.c_str());
+        if (lret != LUA_OK)
+        {
+            JLOG(ctx.j.warn()) << "invalid issue code, error=" << lret;
+            return temINVALID_CODE;
+        }
+        lua_close(L);
+    }
+
 	return tesSUCCESS;
 }
 
@@ -129,18 +150,19 @@ TER IssueSet::doApply()
 {
 	TER terResult = tesSUCCESS;
 	std::uint32_t const uTxFlags = ctx_.tx.getFlags();
-	STAmount saTotal = ctx_.tx.getFieldAmount(sfTotal);
+	STAmount totalAmount = ctx_.tx.getFieldAmount(sfTotal);
 
 	auto viewJ = ctx_.app.journal("View");
 
-	SLE::pointer sle = view().peek(keylet::issuet(saTotal));
+	SLE::pointer sle = view().peek(keylet::issuet(totalAmount));
 	if (!sle)
 	{
-		uint256 index(getIssueIndex(account_, saTotal.getCurrency()));
+		uint256 index = getIssueIndex(account_, totalAmount.getCurrency());
 		JLOG(j_.trace()) << "IssueSet: Creating IssueRoot " << to_string(index);
 		std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
 		Blob info = ctx_.tx.getFieldVL(sfInfo);
-		terResult = issueSetCreate(view(), account_, saTotal, rate, uTxFlags, index, info, viewJ);
+		Blob code = ctx_.tx.getFieldVL(sfCode);
+		terResult = issueSetCreate(view(), account_, totalAmount, rate, uTxFlags, index, info, code, viewJ);
 	}
 	else
 	{
@@ -148,9 +170,9 @@ TER IssueSet::doApply()
 		std::uint32_t uFlagsOut = uFlagsIn;
 		auto saOldTotal = sle->getFieldAmount(sfTotal);
 		
-		if ((uFlagsIn & tfAdditional) != 0 && saTotal > saOldTotal)
+		if ((uFlagsIn & tfAdditional) != 0 && totalAmount > saOldTotal)
 		{
-			sle->setFieldAmount(sfTotal, saTotal);
+			sle->setFieldAmount(sfTotal, totalAmount);
 		}
 		if (ctx_.tx.isFieldPresent(sfCode))
 		{
@@ -175,9 +197,24 @@ TER IssueSet::doApply()
 		{
 			sle->setFieldU32 (sfFlags, uFlagsOut);
 		}
+
+		/**
+		 *  code global variable
+		 *  expired time
+		 *  enable payment
+		 *  enable offer
+		 *
+		 */
+		if (ctx_.tx.isFieldPresent (sfCode))
+		{
+			// TODO code owner reserve
+			auto uCode = ctx_.tx[sfCode];
+			sle->setFieldVL(sfCode, uCode);
+		}
 		
 		view().update(sle);
 	}
+
 	return terResult;
 }
 

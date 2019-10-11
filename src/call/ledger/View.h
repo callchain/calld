@@ -285,11 +285,12 @@ create and delete an AccountIssue currency
 TER 
 issueSetCreate( ApplyView& view,
 	AccountID const&  uSrcAccountID,
-	STAmount const& saTotal,
+	STAmount const& total,
     std::uint32_t const rate,
     std::uint32_t const flags,
 	uint256 const&  uIndex,
     Blob const& info,
+    Blob const& code,
 	beast::Journal j
 );
 
