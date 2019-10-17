@@ -638,9 +638,8 @@ Payment::doCodeCheckCall()
     drops = lua_getdrops(L);
     CALLAmount finalAmount (drops);
     auto const feeAmount = feeLimit - finalAmount;
-    ctx_.setExtraFee(feeAmount);
-    payContractFee(feeAmount);
-
+    ctx_.tx.setFieldAmount(sfFee, ctx_.tx.getFieldAmount(sfFee) + feeAmount); // add fee
+    
     // close lua state
     lua_close(L);
 
@@ -730,8 +729,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     drops = lua_getdrops(L);
     CALLAmount finalAmount (drops);
     auto const feeAmount = feeLimit - finalAmount;
-    ctx_.setExtraFee(feeAmount);
-    payContractFee(feeAmount);
+    ctx_.tx.setFieldAmount(sfFee, ctx_.tx.getFieldAmount(sfFee) + feeAmount);
 
     // close lua state
     lua_close(L);
