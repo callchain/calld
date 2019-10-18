@@ -259,6 +259,9 @@ enum TER
     tecDIR_NOT_EXISTS           = 151,
     tecUNFUNDED_CONTRACT        = 152,
 
+    // [500-1000) reserved for map error < tesSUCCESS
+    // for error + 1000 -> contract error
+
     tedINVALID_PARAM_NUMS       = 1000,
     tedINVALID_PARAM_TYPE       = 1001,
     tedINVALID_PARAM_ACCOUNT    = 1002,
@@ -300,6 +303,16 @@ inline bool isTesSuccess(TER x)
 inline bool isTecClaim(TER x)
 {
     return ((x) >= tecCLAIM);
+}
+
+inline bool isNotSuccess(TER x)
+{
+    return ((x) < tesSUCCESS);
+}
+
+inline bool isMapError(TER x)
+{
+    return ((x) < 1000) && ((x) >= 500);
 }
 
 // VFALCO TODO group these into a shell class along with the defines above.

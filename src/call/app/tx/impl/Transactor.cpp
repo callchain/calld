@@ -807,6 +807,11 @@ Transactor::operator()()
 
     JLOG(j_.trace()) << "apply: " << transToken(terResult) << ", " << (didApply ? "true" : "false");
 
+    if (isMapError(terResult))
+    {
+        terResult = terResult - 1000;
+    }
+
     return { terResult, didApply };
 }
 

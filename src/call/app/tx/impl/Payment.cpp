@@ -635,6 +635,10 @@ Payment::doCodeCheckCall()
     lua_pop(L, 1);
     // close lua state
     lua_close(L);
+    if (isNotSuccess(terResult))
+    {
+        terResult = terResult + 1000;
+    }
 
     // pay contract feee
     drops = lua_getdrops(L);
@@ -728,6 +732,10 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     lua_pop(L, 1);
     // close lua state
     lua_close(L);
+    if (isNotSuccess(terResult))
+    {
+        terResult = terResult + 1000;
+    }
 
     // pay contract feee
     drops = lua_getdrops(L);
