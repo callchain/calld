@@ -119,18 +119,6 @@ public:
     TER
     checkInvariants(TER);
 
-    void
-    setExtraFee(CALLAmount const& fee)
-    {
-        extraFee = fee;
-    }
-
-    CALLAmount const&
-    getExtraFee()
-    {
-        return extraFee;
-    }
-
 private:
     template<std::size_t... Is>
     TER checkInvariantsHelper(TER terResult, std::index_sequence<Is...>);
@@ -138,7 +126,6 @@ private:
     OpenView& base_;
     ApplyFlags flags_;
     boost::optional<ApplyViewImpl> view_;
-    CALLAmount extraFee;
 };
 
 } // call

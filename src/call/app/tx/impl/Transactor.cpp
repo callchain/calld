@@ -343,6 +343,7 @@ TER Transactor::apply ()
     assert(sle != nullptr || account_ == zero);
 
     mFeeDue = calculateFee(ctx_.app, ctx_.baseFee, view().fees(), view().flags());
+    mFeeLimit = calculateFeePaid(ctx_.tx) - mFeeDue;
 
     if (sle)
     {
@@ -377,6 +378,12 @@ Transactor::checkSign (PreclaimContext const& ctx)
     return checkSingleSign (ctx);
 }
 
+bool
+Transactor::isFeeOut(CALLAmount const& fee)
+{
+    mFeeLimit = mFeeLimit - fee;
+    return mFeeLimit < beast::zero;
+}
 
 /**
  * Check if amount issuet set exists and check it's non nft flags

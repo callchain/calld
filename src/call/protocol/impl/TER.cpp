@@ -204,6 +204,7 @@ transResults()
         { tedSEND_CONTRACT_SELF,     { "tedSEND_CONTRACT_SELF",    "Not allow to send to contract self."                                           } },
         { tedINVALID_DESTINATION,    { "tedINVALID_DESTINATION",   "Invalid destination account."                                                  } },
         { tedNO_SUCH_VALUE,          { "tedNO_SUCH_VALUE",         "No such value saved."                                                          } },
+        { tedCODE_FEE_OUT,           { "tedCODE_FEE_OUT",          "Fee run out in code execute"                                                   } },
 
         { tesSUCCESS,                { "tesSUCCESS",               "The transaction was applied. Only final in a validated ledger."                } },
     };

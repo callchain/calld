@@ -78,10 +78,10 @@ public:
 
     TER doCodeCall(STAmount const& deliveredAmount);
 
+    void payContractFee(CALLAmount const& feeAmount);
+
     // for lua glue functions
     TER doTransfer(AccountID const& toAccountID, STAmount const& amount);
-
-    void payContractFee(CALLAmount const& feeAmount);
 };
 
 } // call

@@ -55,7 +55,6 @@ ApplyContext::ApplyContext(Application& app_,
     , journal(journal_)
     , base_ (base)
     , flags_(flags)
-    , extraFee(0)
 {
     view_.emplace(&base_, flags_);
 }

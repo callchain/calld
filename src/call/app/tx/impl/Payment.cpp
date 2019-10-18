@@ -633,16 +633,18 @@ Payment::doCodeCheckCall()
     // get result
     terResult = TER(lua_tointeger(L, -1));
     lua_pop(L, 1);
+    // close lua state
+    lua_close(L);
 
     // pay contract feee
     drops = lua_getdrops(L);
     CALLAmount finalAmount (drops);
     auto const feeAmount = feeLimit - finalAmount;
-    ctx_.tx.setFieldAmount(sfFee, ctx_.tx.getFieldAmount(sfFee) + feeAmount); // add fee
+    if (isFeeOut(feeAmount))
+    {
+        terResult = tedCODE_FEE_OUT;
+    }
     
-    // close lua state
-    lua_close(L);
-
     return terResult;
 }
 
@@ -724,15 +726,17 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     // get result
     terResult = TER(lua_tointeger(L, -1));
     lua_pop(L, 1);
+    // close lua state
+    lua_close(L);
 
     // pay contract feee
     drops = lua_getdrops(L);
     CALLAmount finalAmount (drops);
     auto const feeAmount = feeLimit - finalAmount;
-    ctx_.tx.setFieldAmount(sfFee, ctx_.tx.getFieldAmount(sfFee) + feeAmount);
-
-    // close lua state
-    lua_close(L);
+    if (isFeeOut(feeAmount))
+    {
+        terResult = tedCODE_FEE_OUT;
+    }
 
     return terResult;
 }

@@ -95,9 +95,10 @@ protected:
     beast::Journal j_;
 
     AccountID      account_;
-    CALLAmount     mFeeDue;
+    CALLAmount     mFeeDue;   // base fee due
     CALLAmount     mPriorBalance;  // Balance before fees.
     CALLAmount     mSourceBalance; // Balance after fees.
+    CALLAmount     mFeeLimit; // fee limit include base and contract
 
 public:
     /** Process the transaction. */
@@ -189,6 +190,8 @@ protected:
     virtual void preCompute();
 
     virtual TER doApply () = 0;
+
+    bool isFeeOut(CALLAmount const& fee);
 
 private:
     void setSeq ();
