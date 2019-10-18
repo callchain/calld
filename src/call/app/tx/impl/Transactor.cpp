@@ -633,8 +633,6 @@ Transactor::claimFee (CALLAmount& fee, TER terResult, std::vector<uint256> const
     auto const txnAcct = view().peek(keylet::account(ctx_.tx.getAccountID(sfAccount)));
     auto const balance = txnAcct->getFieldAmount (sfBalance).call ();
 
-    fee = fee + ctx_.getExtraFee(); // add extra contract fee
-
     // balance should have already been
     // checked in checkFee / preFlight.
     assert(balance != zero && (!view().open() || balance >= fee));
