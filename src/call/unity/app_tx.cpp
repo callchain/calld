@@ -58,4 +58,3 @@
 #include <call/app/tx/impl/IssueSet.cpp>
 
 #include <call/app/contract/ContractLib.cpp>
-#include <call/app/contract/IssueSetting.cpp>
