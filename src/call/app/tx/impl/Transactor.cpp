@@ -809,7 +809,8 @@ Transactor::operator()()
 
     if (isMapError(terResult))
     {
-        terResult = terResult - 1000;
+        int r = terResult;
+        terResult = TER(r - 1000);
     }
 
     return { terResult, didApply };
