@@ -401,12 +401,12 @@ Transactor::checkIssue (PreclaimContext const& ctx, STAmount const& amount, bool
     }
     std::uint32_t const uIssueFlags = sle->getFieldU32(sfFlags);
     // check non now
-    if (non_invoice && ((uIssueFlags & tfNonFungible) != 0))
+    if (non_invoice && ((uIssueFlags & tfInvoiceEnable) != 0))
     {
         // not support invoice now
         return temNOT_SUPPORT;
     }
-    if (uIssueFlags & tfNonFungible) 
+    if (uIssueFlags & tfInvoiceEnable) 
     {
          STAmount one(amount.issue(), 1);
          // invoice amount value should be one

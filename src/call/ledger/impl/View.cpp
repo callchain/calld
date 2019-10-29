@@ -497,7 +497,7 @@ Rate transferRate (ReadView const& view, AccountID const& issuer, Currency const
     if (sle)
     {
         std::uint32_t const uIssueFlags = sle->getFieldU32(sfFlags);
-        bool const is_nft = ((uIssueFlags & tfNonFungible) != 0);
+        bool const is_nft = ((uIssueFlags & tfInvoiceEnable) != 0);
         if (is_nft)
             return parityRate; // no fee for nft token
 

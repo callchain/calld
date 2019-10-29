@@ -171,20 +171,20 @@ CreateOffer::preclaim(PreclaimContext const& ctx)
     auto takerGetsIssueRoot = ctx.view.read(keylet::issuet(saTakerPays));
     std::uint32_t const takerPaysIssueFlags = takerPaysIssueRoot->getFieldU32(sfFlags);
     std::uint32_t const takerGetsIssueFlags = takerGetsIssueRoot->getFieldU32(sfFlags);
-    if ((takerPaysIssueFlags & tfNonFungible) != 0 && (takerGetsIssueFlags & tfNonFungible) != 0)
+    if ((takerPaysIssueFlags & tfInvoiceEnable) != 0 && (takerGetsIssueFlags & tfInvoiceEnable) != 0)
     {
         // not support invoice exchange invoice
         return temNOT_SUPPORT;
     }
 
-    if ((takerPaysIssueFlags & tfNonFungible) != 0)
+    if ((takerPaysIssueFlags & tfInvoiceEnable) != 0)
     {
         if (!ctx.tx.isFieldPresent(sfInvoiceID))
         {
             return temBAD_INVOICEID;
         }
     }
-    if ((takerGetsIssueFlags & tfNonFungible) != 0)
+    if ((takerGetsIssueFlags & tfInvoiceEnable) != 0)
     {
         if (!ctx.tx.isFieldPresent(sfInvoiceID))
         {

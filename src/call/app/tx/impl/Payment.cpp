@@ -247,11 +247,12 @@ Payment::preclaim(PreclaimContext const& ctx)
     }
 
     // check invoice id
+    // TODO, fix when dstAmount's issuer is source account
     auto issueRoot = ctx.view.read(keylet::issuet(saDstAmount));
     if (issueRoot)
     {
         std::uint32_t const issueFlags = issueRoot->getFieldU32(sfFlags);
-        if ((issueFlags & tfNonFungible) != 0 && !ctx.tx.isFieldPresent(sfInvoiceID))
+        if ((issueFlags & tfInvoiceEnable) != 0 && !ctx.tx.isFieldPresent(sfInvoiceID))
         {
             JLOG(ctx.j.trace()) << "doPayment: preclaim, invoice id not present";
             return temBAD_INVOICEID;
@@ -415,7 +416,7 @@ Payment::doApply ()
         SLE::pointer sleIssueRoot = view().peek(keylet::issuet(saDstAmount));
         STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
         std::uint32_t const uIssueFlags = sleIssueRoot->getFieldU32(sfFlags);
-        bool const is_nft = ((uIssueFlags & tfNonFungible) != 0);
+        bool const is_nft = ((uIssueFlags & tfInvoiceEnable) != 0);
        
         // source account is issue account, its issuing operation
         if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
@@ -755,7 +756,7 @@ Payment::doTransfer(AccountID const& toAccountID, STAmount const& amount)
             return temCURRENCY_NOT_ISSUE;
         }
         std::uint32_t const uIssueFlags = sle->getFieldU32(sfFlags);
-        if ((uIssueFlags & tfNonFungible) != 0)
+        if ((uIssueFlags & tfInvoiceEnable) != 0)
         {
             // not support invoice now
             return temNOT_SUPPORT;

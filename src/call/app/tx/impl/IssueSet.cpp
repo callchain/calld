@@ -96,7 +96,7 @@ TER IssueSet::preclaim(PreclaimContext const &ctx)
 	std::uint32_t const uTxFlags = ctx.tx.getFlags();
 
 	// no transfer rate for invoice
-	if ((uTxFlags & tfNonFungible) != 0 && ctx.tx.isFieldPresent(sfTransferRate))
+	if ((uTxFlags & tfInvoiceEnable) != 0 && ctx.tx.isFieldPresent(sfTransferRate))
 	{
 		return temINVOICE_NO_FEE;
 	}
