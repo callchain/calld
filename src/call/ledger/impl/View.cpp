@@ -1319,7 +1319,7 @@ TER issueSetCreate(ApplyView &view,
         std::uint32_t const flags,
         uint256 const &uCIndex,
         Blob const& info,
-        Blob const& code,
+        // Blob const& code,
         beast::Journal j)
 {
 
@@ -1348,10 +1348,11 @@ TER issueSetCreate(ApplyView &view,
     {
         sleIssueRoot->setFieldVL(sfInfo, info);
     }
-    if (!code.empty())
-    {
-        sleIssueRoot->setFieldVL(sfCode, code);
-    }
+    
+    // if (!code.empty())
+    // {
+    //     sleIssueRoot->setFieldVL(sfCode, code);
+    // }
 
     // inc owner
     SLE::pointer accountRoot = view.peek (keylet::account(uSrcAccountID));

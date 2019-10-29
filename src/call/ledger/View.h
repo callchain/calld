@@ -290,7 +290,7 @@ issueSetCreate( ApplyView& view,
     std::uint32_t const flags,
 	uint256 const&  uIndex,
     Blob const& info,
-    Blob const& code,
+    // Blob const& code,
 	beast::Journal j
 );
 

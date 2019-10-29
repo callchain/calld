@@ -113,6 +113,8 @@ TER IssueSet::preclaim(PreclaimContext const &ctx)
 		return temNOT_ADDITIONAL;
 	}
 
+	/*
+	 * TODO, add back next version
 	// forbidden double code set when code fixed
 	if (ctx.tx.isFieldPresent(sfCode) && (uFlagsIn & lsfCodeFixed) != 0)
 	{
@@ -142,6 +144,7 @@ TER IssueSet::preclaim(PreclaimContext const &ctx)
         }
         lua_close(L);
     }
+	*/
 
 	return tesSUCCESS;
 }
@@ -161,8 +164,11 @@ TER IssueSet::doApply()
 		JLOG(j_.trace()) << "IssueSet: Creating IssueRoot " << to_string(index);
 		std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
 		Blob info = ctx_.tx.getFieldVL(sfInfo);
+		/*
+		 * TODO, add back next version
 		Blob code = ctx_.tx.getFieldVL(sfCode);
-		terResult = issueSetCreate(view(), account_, totalAmount, rate, uTxFlags, index, info, code, viewJ);
+		*/
+		terResult = issueSetCreate(view(), account_, totalAmount, rate, uTxFlags, index, info, viewJ);
 	}
 	else
 	{
@@ -174,10 +180,12 @@ TER IssueSet::doApply()
 		{
 			sle->setFieldAmount(sfTotal, totalAmount);
 		}
-		if (ctx_.tx.isFieldPresent(sfCode))
-		{
-			sle->setFieldVL(sfCode, ctx_.tx.getFieldVL(sfCode));
-		}
+		
+		// if (ctx_.tx.isFieldPresent(sfCode))
+		// {
+		// 	sle->setFieldVL(sfCode, ctx_.tx.getFieldVL(sfCode));
+		// }
+
 		if ((uFlagsIn & lsfNonFungible) == 0 && ctx_.tx.isFieldPresent(sfTransferRate))
 		{
 			sle->setFieldU32(sfTransferRate, ctx_.tx.getFieldU32(sfTransferRate));
@@ -187,11 +195,15 @@ TER IssueSet::doApply()
 		{
 			uFlagsOut &= ~lsfAdditional;
 		}
+
+		/*
+		 * TODO, add back next version
 		// non code fixed -> code fixed
 		if ((uFlagsIn & lsfCodeFixed) == 0 && (uTxFlags & tfCodeFixed) != 0)
 		{
 			uFlagsOut |= lsfCodeFixed;
 		}
+		*/
 		
 		if (uFlagsIn != uFlagsOut)
 		{
@@ -205,12 +217,15 @@ TER IssueSet::doApply()
 		 *  enable offer
 		 *
 		 */
+		/*
+		 * TODO, add back next version
 		if (ctx_.tx.isFieldPresent (sfCode))
 		{
 			// TODO code owner reserve
 			auto uCode = ctx_.tx[sfCode];
 			sle->setFieldVL(sfCode, uCode);
 		}
+		*/
 		
 		view().update(sle);
 	}
