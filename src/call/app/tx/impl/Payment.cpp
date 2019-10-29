@@ -633,7 +633,8 @@ Payment::doCodeCheckCall()
     lua_close(L);
     if (isNotSuccess(terResult))
     {
-        terResult = terResult + 1000;
+        int r = terResult;
+        terResult = TER(r + 1000);
     }
 
     // pay contract feee
@@ -725,7 +726,8 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     lua_close(L);
     if (isNotSuccess(terResult))
     {
-        terResult = terResult + 1000;
+        int r = terResult;
+        terResult = TER(r + 1000);
     }
 
     // pay contract feee
