@@ -379,7 +379,7 @@ Transactor::checkSign (PreclaimContext const& ctx)
 }
 
 bool
-Transactor::isFeeOut(CALLAmount const& fee)
+Transactor::isFeeRunOut(CALLAmount const& fee)
 {
     mFeeLimit = mFeeLimit - fee;
     return mFeeLimit < beast::zero;

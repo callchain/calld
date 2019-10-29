@@ -191,7 +191,13 @@ protected:
 
     virtual TER doApply () = 0;
 
-    bool isFeeOut(CALLAmount const& fee);
+    bool isFeeRunOut(CALLAmount const& fee);
+    
+    CALLAmount const&
+    feeLimit()
+    {
+        return mFeeLimit;
+    }
 
 private:
     void setSeq ();

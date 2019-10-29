@@ -394,7 +394,7 @@ Payment::doApply ()
 
     TER terResult;
 
-    // do call check call before
+    // 1. do call check call before
     if (sleDst->isFieldPresent(sfCode))
     {
         terResult = doCodeCheckCall();
@@ -405,6 +405,7 @@ Payment::doApply ()
     bool const bCall = paths || sendMax || !saDstAmount.native ();
     // XXX Should sendMax be sufficient to imply call?
 
+    // 2. do payment
     if (bCall)
     {
         // Call payment with at least one intermediate step and uses
@@ -561,7 +562,7 @@ Payment::doApply ()
         }
     }
 
-    // before enter code
+    // 3. call account code
     if (terResult != tesSUCCESS || (uTxFlags & tfNoCodeCall) != 0)
         return terResult;
     bool hasCode = sleDst->isFieldPresent(sfCode);
@@ -582,13 +583,8 @@ Payment::doCodeCheckCall()
     luaL_openlibs(L);
     RegisterContractLib(L); // register cpp functions for lua contract
 
-    auto const uSrcSLE = view().read(keylet::account(account_));
-    auto const uBalance = uSrcSLE->getFieldAmount(sfBalance).call();
-    auto const uOwnerCount = uSrcSLE->getFieldU32 (sfOwnerCount);
-    // This is the total reserve in drops.
-    auto const reserve = view().fees().accountReserve(uOwnerCount);
-    auto const feeLimit = uBalance - reserve;
-    unsigned long long drops = boost::lexical_cast<unsigned long long>(feeLimit.drops());
+    auto const beforeFeeLimit = feeLimit();
+    unsigned long long drops = boost::lexical_cast<unsigned long long>(beforeFeeLimit.drops());
     lua_setdrops(L, drops);
 
     // load and call code
@@ -615,7 +611,7 @@ Payment::doCodeCheckCall()
     lua_newtable(L); // for msg
     call_push_string(L, "address", to_string(uDstAccountID));
     call_push_string(L, "sender", to_string(account_));
-    call_push_string(L, "value", "0");
+    call_push_string(L, "value", "0"); // for check it's 0
     lua_setglobal(L, "msg");
 
     lua_newtable(L); // for block
@@ -642,9 +638,9 @@ Payment::doCodeCheckCall()
 
     // pay contract feee
     drops = lua_getdrops(L);
-    CALLAmount finalAmount (drops);
-    auto const feeAmount = feeLimit - finalAmount;
-    if (isFeeOut(feeAmount))
+    CALLAmount leftAmount (drops);
+    auto const feeAmount = beforeFeeLimit - leftAmount;
+    if (isFeeRunOut(feeAmount))
     {
         terResult = tedCODE_FEE_OUT;
     }
@@ -665,13 +661,8 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     luaL_openlibs(L);
     RegisterContractLib(L); // register cpp functions for lua contract
 
-    auto const uSrcSLE = view().read(keylet::account(account_));
-    auto const uBalance = uSrcSLE->getFieldAmount(sfBalance).call();
-    auto const uOwnerCount = uSrcSLE->getFieldU32 (sfOwnerCount);
-    // This is the total reserve in drops.
-    auto const reserve = view().fees().accountReserve(uOwnerCount);
-    auto const feeLimit = uBalance - reserve;
-    unsigned long long drops = boost::lexical_cast<unsigned long long>(feeLimit.drops());
+    auto const beforeFeeLimit = feeLimit();
+    unsigned long long drops = boost::lexical_cast<unsigned long long>(beforeFeeLimit.drops());
     lua_setdrops(L, drops);
 
     // load and call code
@@ -739,9 +730,9 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
 
     // pay contract feee
     drops = lua_getdrops(L);
-    CALLAmount finalAmount (drops);
-    auto const feeAmount = feeLimit - finalAmount;
-    if (isFeeOut(feeAmount))
+    CALLAmount leftAmount (drops);
+    auto const feeAmount = beforeFeeLimit - leftAmount;
+    if (isFeeRunOut(feeAmount))
     {
         terResult = tedCODE_FEE_OUT;
     }
@@ -749,29 +740,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     return terResult;
 }
 
-void
-Payment::payContractFee(CALLAmount const& feeAmount)
-{
-    auto const sle = view().peek(keylet::account(account_));
-
-    auto feesle = view().peek(keylet::txfee());
-	if (!feesle)
-	{
-		auto const feeindex = getFeesIndex();
-		auto const feesle = std::make_shared<SLE>(ltFeeRoot, feeindex);
-		feesle->setFieldAmount(sfBalance, feeAmount);
-		view().insert(feesle);
-	}
-	else
-	{
-		view().update(feesle);
-		auto fee = feesle->getFieldAmount(sfBalance) + feeAmount;
-		feesle->setFieldAmount(sfBalance, fee);
-	}
-    sle->setFieldAmount (sfBalance, sle->getFieldAmount(sfBalance) - feeAmount);
-}
-
-
+// --- callchain sytem call for lua contract ---
 TER 
 Payment::doTransfer(AccountID const& toAccountID, STAmount const& amount)
 {
