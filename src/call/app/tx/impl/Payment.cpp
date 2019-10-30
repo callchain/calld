@@ -379,7 +379,6 @@ Payment::doApply ()
     bool const defaultPathsAllowed = !(uTxFlags & tfNoCallDirect);
     auto const paths = ctx_.tx.isFieldPresent(sfPaths);
     auto const sendMax = ctx_.tx[~sfSendMax];
-    bool issuing = false;
 
     AccountID const uDstAccountID (ctx_.tx.getAccountID (sfDestination));
     STAmount const saDstAmount (ctx_.tx.getFieldAmount (sfAmount));
