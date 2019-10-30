@@ -258,8 +258,8 @@ Payment::preclaim(PreclaimContext const& ctx)
             return temBAD_INVOICEID;
         }
         auto const issued = issueRoot->getFieldAmount(sfIssued);
-        auto const id = ctx_.tx.getFieldH256 (sfInvoiceID);
-        auto const sleInvoice = view().peek(keylet::invoicet(id, srcAccountID, issued.issue().curency));
+        auto const id = ctx.tx.getFieldH256 (sfInvoiceID);
+        auto const sleInvoice = ctx.view.read(keylet::invoicet(id, srcAccountID, issued.issue().curency));
         if (issued.issue().account == srcAccountID)
         {
             // issue, check invoice field present
