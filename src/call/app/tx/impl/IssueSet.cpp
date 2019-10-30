@@ -113,39 +113,6 @@ TER IssueSet::preclaim(PreclaimContext const &ctx)
 		return temNOT_ADDITIONAL;
 	}
 
-	/*
-	 * TODO, add back next version
-	// forbidden double code set when code fixed
-	if (ctx.tx.isFieldPresent(sfCode) && (uFlagsIn & lsfCodeFixed) != 0)
-	{
-		return temCODE_FIXED;
-	}
-
-	// when set code fixed, but no code present
-	if ((uTxFlags & tfCodeFixed) != 0 
-			&& (!ctx.tx.isFieldPresent(sfCode) && !sle->isFieldPresent(sfCode)))
-	{
-		return temNO_CODE;
-	}
-
-	// check code account
-    if (ctx.tx.isFieldPresent(sfCode))
-    {
-        std::string code = strCopy(ctx.tx.getFieldVL(sfCode));
-        lua_State *L = luaL_newstate();
-        luaL_openlibs(L);
-        lua_setdrops(L, (unsigned long long)-1);
-        // check code
-        int lret = luaL_dostring(L, code.c_str());
-        if (lret != LUA_OK)
-        {
-            JLOG(ctx.j.warn()) << "invalid issue code, error=" << lret;
-            return temINVALID_CODE;
-        }
-        lua_close(L);
-    }
-	*/
-
 	return tesSUCCESS;
 }
 
@@ -162,12 +129,16 @@ TER IssueSet::doApply()
 	{
 		uint256 index = getIssueIndex(account_, totalAmount.getCurrency());
 		JLOG(j_.trace()) << "IssueSet: Creating IssueRoot " << to_string(index);
-		std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
-		Blob info = ctx_.tx.getFieldVL(sfInfo);
-		/*
-		 * TODO, add back next version
-		Blob code = ctx_.tx.getFieldVL(sfCode);
-		*/
+		std::uint32_t rate = 0;
+		if (ctx_.tx.isFieldPresent(sfTransferRate))
+		{
+			rate = ctx_.tx.getFieldU32(sfTransferRate);
+		}
+		Blob info;
+		if (ctx_.tx.isFieldPresent(sfInfo))
+		{
+			info = ctx_.tx.getFieldVL(sfInfo);
+		}
 		terResult = issueSetCreate(view(), account_, totalAmount, rate, uTxFlags, index, info, viewJ);
 	}
 	else
@@ -180,11 +151,6 @@ TER IssueSet::doApply()
 		{
 			sle->setFieldAmount(sfTotal, totalAmount);
 		}
-		
-		// if (ctx_.tx.isFieldPresent(sfCode))
-		// {
-		// 	sle->setFieldVL(sfCode, ctx_.tx.getFieldVL(sfCode));
-		// }
 
 		if ((uFlagsIn & lsfNonFungible) == 0 && ctx_.tx.isFieldPresent(sfTransferRate))
 		{
@@ -195,37 +161,11 @@ TER IssueSet::doApply()
 		{
 			uFlagsOut &= ~lsfAdditional;
 		}
-
-		/*
-		 * TODO, add back next version
-		// non code fixed -> code fixed
-		if ((uFlagsIn & lsfCodeFixed) == 0 && (uTxFlags & tfCodeFixed) != 0)
-		{
-			uFlagsOut |= lsfCodeFixed;
-		}
-		*/
 		
 		if (uFlagsIn != uFlagsOut)
 		{
 			sle->setFieldU32 (sfFlags, uFlagsOut);
 		}
-
-		/**
-		 *  code global variable
-		 *  expired time
-		 *  enable payment
-		 *  enable offer
-		 *
-		 */
-		/*
-		 * TODO, add back next version
-		if (ctx_.tx.isFieldPresent (sfCode))
-		{
-			// TODO code owner reserve
-			auto uCode = ctx_.tx[sfCode];
-			sle->setFieldVL(sfCode, uCode);
-		}
-		*/
 		
 		view().update(sle);
 	}
