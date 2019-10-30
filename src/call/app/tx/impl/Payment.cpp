@@ -259,7 +259,7 @@ Payment::preclaim(PreclaimContext const& ctx)
         }
         auto const issued = issueRoot->getFieldAmount(sfIssued);
         auto const id = ctx.tx.getFieldH256 (sfInvoiceID);
-        auto const sleInvoice = ctx.view.read(keylet::invoicet(id, srcAccountID, issued.issue().curency));
+        auto const sleInvoice = ctx.view.read(keylet::invoicet(id, issued.issue().account, issued.issue().currency));
         if (issued.issue().account == srcAccountID)
         {
             // issue, check invoice field present
@@ -499,8 +499,8 @@ Payment::doApply ()
             {
                 // create invoice
                 Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
-                JLOG(j_.trace()) << "doPayment: Creating InvoiceRoot: " << to_string(index);
-                terResult = invoiceCreate(view(), uDstAccountID, id, invoice, index, saDstAmount, j_); 
+                JLOG(j_.trade()) << "doPayment: create invoice root, index=" << to_string(index);
+                terResult = invoiceCreate(view(), uDstAccountID, id, invoice, index, saDstAmount, j_);
             }
             else
             {
