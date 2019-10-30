@@ -1252,7 +1252,7 @@ TER trustCreate(ApplyView &view,
     view.creditHook(uSrcAccountID, uDstAccountID, saBalance, saBalance.zeroed());
 
     // update issue set and fans
-    SLE::pointer sleIssueSet = view.peek(keylet::issuet(saLimit));
+    auto sleIssueSet = view.peek(keylet::issuet(uDstAccountID, saLimit.getCurrency()));
     sleIssueSet->setFieldU64(sfFans, sleIssueSet->getFieldU64(sfFans) + 1);
     view.update(sleIssueSet);
 
