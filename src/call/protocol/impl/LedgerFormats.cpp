@@ -189,7 +189,6 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfDecimal,           SOE_OPTIONAL) // not used yet
             << SOElement (sfTransferRate,      SOE_OPTIONAL)
             << SOElement (sfInfo,              SOE_OPTIONAL)
-            << SOElement (sfCode,              SOE_OPTIONAL)
 	    ;
 
     add ("FeeRoot", ltFeeRoot)
