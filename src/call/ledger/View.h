@@ -315,7 +315,7 @@ invoiceTransfer(ApplyView &view,
 );
 
 TER
-updateIssueSet(ApplyView& view,
+checkIssueSet(ApplyView& view,
     AccountID const& issuer,
     Currency const& currency,
     STAmount const& amount,
