@@ -1481,8 +1481,8 @@ TER trustDelete(ApplyView &view,
 
     if (currency != badCurrency())
     {
-        auto sle = view.peek(keylet::issuet(uDstAccountID, currency));
-        sle->setFieldU64(sfFans, sle->getFieldU64(sfFans) - 1);
+        auto sle = view.peek(keylet::issuet(uDstAccountID, currency));
+        sle->setFieldU64(sfFans, sle->getFieldU64(sfFans) - 1);
         view.update(sle);
     }
 
