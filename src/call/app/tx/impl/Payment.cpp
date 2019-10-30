@@ -225,6 +225,7 @@ Payment::preclaim(PreclaimContext const& ctx)
 
 
     // Check currency's issue set
+    // TODO, fix when dstAmount's issuer is source account
     TER ter1 = checkIssue(ctx, saDstAmount, false);
     if (ter1 != tesSUCCESS)
     {
@@ -247,15 +248,41 @@ Payment::preclaim(PreclaimContext const& ctx)
     }
 
     // check invoice id
-    // TODO, fix when dstAmount's issuer is source account
-    auto issueRoot = ctx.view.read(keylet::issuet(saDstAmount));
-    if (issueRoot)
+    auto const issueRoot = ctx.view.read(keylet::issuet(saDstAmount));
+    std::uint32_t const issueFlags = issueRoot->getFieldU32(sfFlags);
+    if ((issueFlags & tfInvoiceEnable) != 0)
     {
-        std::uint32_t const issueFlags = issueRoot->getFieldU32(sfFlags);
-        if ((issueFlags & tfInvoiceEnable) != 0 && !ctx.tx.isFieldPresent(sfInvoiceID))
+        if (!ctx.tx.isFieldPresent(sfInvoiceID))
         {
             JLOG(ctx.j.trace()) << "doPayment: preclaim, invoice id not present";
             return temBAD_INVOICEID;
+        }
+        auto const issued = issueRoot->getFieldAmount(sfIssued);
+        auto const id = ctx_.tx.getFieldH256 (sfInvoiceID);
+        auto const sleInvoice = view().peek(keylet::invoicet(id, srcAccountID, issued.issue().curency));
+        if (issued.issue().account == srcAccountID)
+        {
+            // issue, check invoice field present
+            if (!ctx.tx.isFieldPresent(sfInvoice))
+            {
+                JLOG(ctx.j.trace()) << "doPayment: issue invoice, but invoice not present";
+                return temBAD_INVOICE;
+            }
+            // check invoice not exists
+            if (sleInvoice)
+            {
+                JLOG(ctx.j.trace()) << "doPayment: invoice id exists, id=" << to_string(id);
+                return temID_EXISTED;
+            }
+        }
+        else
+        {
+            // transfer, check invoice id exists
+            if (!sleInvoice)
+            {
+                JLOG(ctx.j.trace()) << "doPayment, invoice not exists, id=" << to_string(id);
+                return temINVOICE_NOT_EXISTS;
+            }
         }
     }
 
@@ -409,48 +436,8 @@ Payment::doApply ()
     // 2. do payment
     if (bCall)
     {
-        // Call payment with at least one intermediate step and uses
-        AccountID AIssuer = saDstAmount.getIssuer();
-        Currency currency = saDstAmount.getCurrency();
+        // Call payment with at least one intermediate step and uses transitive balances.
 
-        SLE::pointer sleIssueRoot = view().peek(keylet::issuet(saDstAmount));
-        STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
-        std::uint32_t const uIssueFlags = sleIssueRoot->getFieldU32(sfFlags);
-        bool const is_nft = ((uIssueFlags & tfInvoiceEnable) != 0);
-       
-        // source account is issue account, its issuing operation
-        if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
-        {
-            // when issuer issue new one, check if id exists already return error else create one
-            if (is_nft)
-            {
-                issuing = true;
-                uint256 id = ctx_.tx.getFieldH256 (sfInvoiceID);
-                SLE::pointer sleInvoiceRoot = view().peek(keylet::invoicet(id, account_, currency));
-                // issue should not create same id invoice
-                if (sleInvoiceRoot) 
-                {
-                    JLOG(j_.trace()) << "doPayment: invoice id exists " << id;
-                    return temID_EXISTED;
-                }
-                auto const isInvoice = ctx_.tx.isFieldPresent(sfInvoice);
-                if (!isInvoice)
-                {
-                    JLOG(j_.trace()) << "doPayment: issue invoice, but invoice not present";
-                    return temBAD_INVOICE;
-                }
- 
-                Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
-                uint256 uCIndex(getInvoiceIndex(id, account_, currency)); // issuer, currency, id
-	            JLOG(j_.trace()) << "doPayment: Creating InvoiceRoot: " << to_string(uCIndex);
-	            terResult = invoiceCreate(view(), uDstAccountID, id, invoice, uCIndex, saDstAmount, j_);                    
-                if (terResult != tesSUCCESS)
-                {
-                    return terResult;
-                }
-            }
-        }
-        
         // Copy paths into an editable class.
         STPathSet spsPaths = ctx_.tx.getFieldPathSet (sfPaths);
 
@@ -501,13 +488,26 @@ Payment::doApply ()
             terResult = tecPATH_DRY;
         }
 
-        // update token owner, when not issue
-        if (terResult == tesSUCCESS && is_nft && !issuing)
+        // if invoice, process invoice create or transfer
+        auto const sleIssueRoot = view().peek(keylet::issuet(saDstAmount));
+        auto const uIssueFlags = sleIssueRoot->getFieldU32(sfFlags);
+        if (isTesSuccess(terResult) && (uIssueFlags & tfInvoiceEnable) != 0)
         {
             uint256 id = ctx_.tx.getFieldH256 (sfInvoiceID);
-            uint256 uCIndex(getInvoiceIndex(id, AIssuer, currency));
-            terResult = invoiceTransfer(view(), account_, uDstAccountID, 
-                    uCIndex, uDstAccountID == AIssuer, j_);
+            uint256 index(getInvoiceIndex(id, saDstAmount.issue().account, saDstAmount.issue().currency));
+            if (account_ == saDstAmount.issue().account) // issue invoice
+            {
+                // create invoice
+                Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
+                JLOG(j_.trace()) << "doPayment: Creating InvoiceRoot: " << to_string(index);
+                terResult = invoiceCreate(view(), uDstAccountID, id, invoice, index, saDstAmount, j_); 
+            }
+            else
+            {
+                // transfer invoice
+                terResult = invoiceTransfer(view(), account_, uDstAccountID, index,
+                        uDstAccountID == saDstAmount.issue().account, j_);
+            }
         }
     }
     else
