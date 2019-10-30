@@ -499,7 +499,7 @@ Payment::doApply ()
             {
                 // create invoice
                 Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
-                JLOG(j_.trade()) << "doPayment: create invoice root, index=" << to_string(index);
+                JLOG(j_.trace()) << "doPayment: create invoice root, index=" << to_string(index);
                 terResult = invoiceCreate(view(), uDstAccountID, id, invoice, index, saDstAmount, j_);
             }
             else
