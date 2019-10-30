@@ -316,10 +316,9 @@ invoiceTransfer(ApplyView &view,
 
 TER
 updateIssueSet(ApplyView& view,
-    AccountID const& uIssuer,
+    AccountID const& issuer,
     Currency const& currency,
-    STAmount saIssued,
-    int fans,
+    STAmount const& amount,
     beast::Journal j);
 
 /** Create a trust line
@@ -345,14 +344,20 @@ trustCreate (ApplyView& view,
     beast::Journal j);
 
 //issuer auto trust fans
-TER auto_trust(ApplyView& view, AccountID const&  account, STAmount const &amount, beast::Journal j);
+TER
+auto_trust(ApplyView& view, 
+    AccountID const&  account, 
+    STAmount const &amount, 
+    beast::Journal j);
 
 TER
 trustDelete (ApplyView& view,
     std::shared_ptr<SLE> const& sleCallState,
-        AccountID const& uLowAccountID,
-            AccountID const& uHighAccountID,
-                beast::Journal j);
+    AccountID const& uLowAccountID,
+    AccountID const& uHighAccountID,
+    AccountID const& uDstAccountID,
+    Currency const& currency,
+    beast::Journal j);
 
 /** Delete an offer.
 

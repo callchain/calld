@@ -1251,36 +1251,45 @@ TER trustCreate(ApplyView &view,
 
     view.creditHook(uSrcAccountID, uDstAccountID, saBalance, saBalance.zeroed());
 
+    // update issue set and fans
+    SLE::pointer sleIssueSet = view.peek(keylet::issuet(saLimit));
+    sleIssueSet->setFieldU64(sfFans, sleIssueSet->getFieldU64(sfFans) + 1);
+    view.update(sleIssueSet);
+
     return tesSUCCESS;
 }
 
 
 TER
 updateIssueSet(ApplyView& view,
-        AccountID const& uIssuer,
+        AccountID const& issuer,
         Currency const& currency,
-        STAmount saIssued,
-        int fans,
+        STAmount const& amount,
         beast::Journal j)
 {
     JLOG(j.trace())
-        << "updateIssueSet: issuer=" << to_string(uIssuer) << ", currency=" << to_string(currency)
-        << ", issued=" << saIssued.getFullText() << ", fans=" << fans;
+        << "updateIssueSet: issuer=" << to_string(issuer) << ", currency=" << to_string(currency)
+        << ", issued=" << amount.getFullText();
 
-    SLE::pointer sle = view.peek(keylet::issuet(uIssuer, currency));
-    if (saIssued) {
-        sle->setFieldAmount(sfIssued, sle->getFieldAmount(sfIssued) + saIssued);
+    SLE::pointer sle = view.peek(keylet::issuet(issuer, currency));
+    auto issuedAmount = sle->getFieldAmount(sfIssued);
+    if (issuedAmount + amount > sle->getFieldAmount(sfTotal))
+    {
+        JLOG(j.warn()) << "updateIssueSet: issue overflow amount: " << amount.getFullText();
+        return tecOVERISSUED_AMOUNT;
     }
-    if (fans) {
-        sle->setFieldU64(sfFans, sle->getFieldU64(sfFans) + fans);
-    }
+
+    sle->setFieldAmount(sfIssued, issuedAmount + amount);
     view.update(sle);
 
     return tesSUCCESS;
 }
 
 //auto issue
-TER auto_trust(ApplyView &view, AccountID const &account, STAmount const &amount, beast::Journal j)
+TER
+auto_trust(ApplyView &view,
+    AccountID const &account,
+    STAmount const &amount, beast::Journal j)
 {
     TER terResult = tesSUCCESS;
     AccountID srcAccount = account;
@@ -1445,6 +1454,8 @@ TER trustDelete(ApplyView &view,
         std::shared_ptr<SLE> const &sleCallState,
         AccountID const &uLowAccountID,
         AccountID const &uHighAccountID,
+        AccountID const& uDstAccountID,
+        Currency const& currency,
         beast::Journal j)
 {
     // Detect legacy dirs.
@@ -1467,6 +1478,13 @@ TER trustDelete(ApplyView &view,
 
     JLOG(j.trace()) << "trustDelete: Deleting call line: state";
     view.erase(sleCallState);
+
+    if (currency != badCurrency())
+    {
+        auto sle = view.peek(keylet::issuet(uDstAccountID, currency));
+        sle->setFieldU64(sfFans, sle->getFieldU64(sfFans) - 1);
+        view.update(sle);
+    }
 
     return tesSUCCESS;
 }
@@ -1516,21 +1534,20 @@ TER callCredit(ApplyView &view,
     // Disallow sending to self.
     assert(uSenderID != uReceiverID);
 
-   JLOG(j.debug()) << "callCredit: uSenderID=" << to_string(uSenderID)
-	<< ", uReceiverID=" << to_string(uReceiverID)
-	<< ", saAmount=" << saAmount.getFullText()
-	<< ", checkIssuer=" << bCheckIssuer;
+    JLOG(j.debug()) << "callCredit: uSenderID=" << to_string(uSenderID)
+        << ", uReceiverID=" << to_string(uReceiverID)
+        << ", saAmount=" << saAmount.getFullText()
+        << ", checkIssuer=" << bCheckIssuer;
 
     bool bSenderHigh = uSenderID > uReceiverID;
     uint256 uIndex = getCallStateIndex(uSenderID, uReceiverID, saAmount.getCurrency());
     auto sleCallState = view.peek(keylet::line(uIndex));
 
-    TER terResult;
+    TER terResult = tesSUCCESS;
 
     assert(!isCALL(uSenderID) && uSenderID != noAccount());
     assert(!isCALL(uReceiverID) && uReceiverID != noAccount());
 
-    std::uint32_t uFlags = 0;
     if (!sleCallState)
     {
         STAmount saReceiverLimit({currency, uReceiverID});
@@ -1546,11 +1563,9 @@ TER callCredit(ApplyView &view,
 
         terResult = trustCreate(view, bSenderHigh, uSenderID, uReceiverID, uIndex, sleAccount,
             false, noCall, false, saBalance, saReceiverLimit, 0, 0, j);
-        if (terResult == tesSUCCESS) 
+        if (isTesSuccess(terResult))
         {
-            sleCallState = view.peek(keylet::line(uIndex));
-            uFlags = sleCallState->getFieldU32(sfFlags);
-            terResult = updateIssueSet(view, uSenderID, currency, saAmount, 1, j);
+            terResult = updateIssueSet(view, uSenderID, currency, saAmount, j);
         }
     }
     else
@@ -1575,7 +1590,7 @@ TER callCredit(ApplyView &view,
             << to_string(uReceiverID) << " : before=" << saBefore.getFullText() 
             << " amount=" << saAmount.getFullText() << " after=" << saBalance.getFullText();
 
-        uFlags = sleCallState->getFieldU32(sfFlags);
+        std::uint32_t uFlags = sleCallState->getFieldU32(sfFlags);
         bool bDelete = false;
 
         // YYY Could skip this if calling in reverse.
@@ -1624,33 +1639,39 @@ TER callCredit(ApplyView &view,
         if (bDelete)
         {
             terResult = trustDelete(view, sleCallState, bSenderHigh ? uReceiverID : uSenderID,
-                !bSenderHigh ? uReceiverID : uSenderID, j);
+                !bSenderHigh ? uReceiverID : uSenderID,
+                issuer1_ != noAccount() ? issuer1_ : issuer2_, currency, j);
         }
         else
         {
             view.update(sleCallState);
-            terResult = tesSUCCESS;
         }
 
         assert(issuer1_ != noAccount() || issuer2_ != noAccount());
-        if (terResult == tesSUCCESS)
+        if (isTesSuccess(terResult))
         {
+            AccountID issuer_;
+            STAmount amount_;
             if (issuer1_ == issuer2_)
             {
-                terResult = updateIssueSet(view, issuer1_, currency, issuer1_ == uSenderID ? saAmount : -saAmount, 0, j);
+                issuer_ = issuer1_;
+                amount_ = issuer1_ == uSenderID ? saAmount : -saAmount;
             }
             else
             {
                 if (issuer1_ != noAccount())
                 {
-                    terResult = updateIssueSet(view, issuer1_, currency, issuer1_ == uSenderID ? saBefore : -saBefore, bDelete ? -1 : 0, j);
+                    issuer_ = issuer1_;
+                    amount_ = issuer1_ == uSenderID ? saBefore : -saBefore;
                 }
                 if (issuer2_ != noAccount()) 
                 {
+                    issuer_ = issuer2_;
                     STAmount saAmountFinal = saAmount - saBefore;
-                    terResult = updateIssueSet(view, issuer2_, currency, issuer2_ == uSenderID ? saAmountFinal : -saAmountFinal, bDelete ? -1 : 0, j);
+                    amount_ = issuer2_ == uSenderID ? saAmountFinal : -saAmountFinal;
                 }
             }
+            terResult = updateIssueSet(view, issuer_, currency, amount_, j);
         }
     }
 
@@ -1911,7 +1932,6 @@ TER issueIOU(ApplyView &view,
     auto state = view.peek(keylet::line(index));
 
     TER terResult = tesSUCCESS;
-    int fans = 0;
     if (!state)
     {
         // NIKB TODO: The limit uses the receiver's account as the issuer and
@@ -1928,7 +1948,6 @@ TER issueIOU(ApplyView &view,
 
         terResult = trustCreate(view, bSenderHigh, issue.account, account, index,
                 receiverAccount, false, noCall, false, final_balance, limit, 0, 0, j);
-        if (terResult == tesSUCCESS) fans += 1;
     }
     else
     {
@@ -1961,16 +1980,17 @@ TER issueIOU(ApplyView &view,
         if (must_delete) 
         {
             terResult = trustDelete(view, state,
-                            bSenderHigh ? account : issue.account,
-                            bSenderHigh ? issue.account : account, j);
-            if (terResult == tesSUCCESS) fans -= 1;
+                    bSenderHigh ? account : issue.account,
+                    bSenderHigh ? issue.account : account,
+                    issue.account, issue.currency, j);
         } else {
             view.update(state);
         }
     }
 
-    if (terResult == tesSUCCESS) {
-        terResult =  updateIssueSet(view, issue.account, issue.currency, amount, fans, j);
+    if (isTesSuccess(terResult))
+    {
+        terResult = updateIssueSet(view, issue.account, issue.currency, amount, j);
     }
 
     return terResult;
@@ -2032,19 +2052,19 @@ TER redeemIOU(ApplyView &view,
     state->setFieldAmount(sfBalance, final_balance);
 
     TER terResult = tesSUCCESS;
-    int fans = 0;
     if (must_delete)
     {
         terResult= trustDelete(view, state,
                 bSenderHigh ? issue.account : account,
-                bSenderHigh ? account : issue.account, j);
-        if (terResult == tesSUCCESS) fans -= 1;
+                bSenderHigh ? account : issue.account,
+                issue.account, issue.currency, j);
     } else {
         view.update(state);
     }
-    
-     if (terResult == tesSUCCESS) {
-        terResult =  updateIssueSet(view, issue.account, issue.currency, -amount, fans, j);
+
+    if (isTesSuccess(terResult))
+    {
+        terResult = updateIssueSet(view, issue.account, issue.currency, -amount, j);
     }
    
     return terResult;

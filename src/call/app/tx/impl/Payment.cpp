@@ -421,13 +421,6 @@ Payment::doApply ()
         // source account is issue account, its issuing operation
         if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
         {
-            // update issue set
-            if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
-            {
-                JLOG(j_.trace()) << "doPayment: issue over amount: " << saDstAmount.getFullText();
-                return tecOVERISSUED_AMOUNT;
-            }
-
             // when issuer issue new one, check if id exists already return error else create one
             if (is_nft)
             {

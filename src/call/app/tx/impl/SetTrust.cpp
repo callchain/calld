@@ -140,10 +140,9 @@ SetTrust::doApply ()
 {
     TER terResult = tesSUCCESS;
 
-    STAmount   saLimitAmount (ctx_.tx.getFieldAmount (sfLimitAmount));
+    STAmount saLimitAmount (ctx_.tx.getFieldAmount (sfLimitAmount));
     bool const bQualityIn (ctx_.tx.isFieldPresent (sfQualityIn));
     bool const bQualityOut (ctx_.tx.isFieldPresent (sfQualityOut));
-    int fans = 0;
 
     Currency const currency (saLimitAmount.getCurrency ());
     AccountID uDstAccountID (saLimitAmount.getIssuer ());
@@ -264,14 +263,12 @@ SetTrust::doApply ()
         if (!bQualityIn)
         {
             // Not setting. Just get it.
-
             uLowQualityIn   = sleCallState->getFieldU32 (sfLowQualityIn);
             uHighQualityIn  = sleCallState->getFieldU32 (sfHighQualityIn);
         }
         else if (uQualityIn)
         {
             // Setting.
-
             sleCallState->setFieldU32 (!bHigh ? sfLowQualityIn : sfHighQualityIn, uQualityIn);
 
             uLowQualityIn   = !bHigh ? uQualityIn : sleCallState->getFieldU32 (sfLowQualityIn);
@@ -280,7 +277,6 @@ SetTrust::doApply ()
         else
         {
             // Clearing.
-
             sleCallState->makeFieldAbsent (!bHigh ? sfLowQualityIn : sfHighQualityIn);
 
             uLowQualityIn   = !bHigh ? 0 : sleCallState->getFieldU32 (sfLowQualityIn);
@@ -294,18 +290,15 @@ SetTrust::doApply ()
         //
         // Quality out
         //
-
         if (!bQualityOut)
         {
             // Not setting. Just get it.
-
             uLowQualityOut  = sleCallState->getFieldU32 (sfLowQualityOut);
             uHighQualityOut = sleCallState->getFieldU32 (sfHighQualityOut);
         }
         else if (uQualityOut)
         {
             // Setting.
-
             sleCallState->setFieldU32 (!bHigh ? sfLowQualityOut : sfHighQualityOut, uQualityOut);
 
             uLowQualityOut  = !bHigh ? uQualityOut : sleCallState->getFieldU32 (sfLowQualityOut);
@@ -314,7 +307,6 @@ SetTrust::doApply ()
         else
         {
             // Clearing.
-
             sleCallState->makeFieldAbsent (!bHigh ? sfLowQualityOut : sfHighQualityOut);
 
             uLowQualityOut  = !bHigh ? 0 : sleCallState->getFieldU32 (sfLowQualityOut);
@@ -349,19 +341,19 @@ SetTrust::doApply ()
         bool const bLowDefCall = sleLowAccount->getFlags() & lsfDefaultCall;
         bool const bHighDefCall = sleHighAccount->getFlags() & lsfDefaultCall;
 
-        bool const  bLowReserveSet      = uLowQualityIn || uLowQualityOut ||
-                                            ((uFlagsOut & lsfLowNoCall) == 0) != bLowDefCall ||
-                                            (uFlagsOut & lsfLowFreeze) ||
-                                            saLowLimit || saLowBalance > zero;
-        bool const  bLowReserveClear    = !bLowReserveSet;
+        bool const  bLowReserveSet = uLowQualityIn || uLowQualityOut || 
+                                    ((uFlagsOut & lsfLowNoCall) == 0) != bLowDefCall ||
+                                    (uFlagsOut & lsfLowFreeze) ||
+                                    saLowLimit || saLowBalance > zero;
+        bool const  bLowReserveClear = !bLowReserveSet;
 
-        bool const  bHighReserveSet     = uHighQualityIn || uHighQualityOut ||
-                                            ((uFlagsOut & lsfHighNoCall) == 0) != bHighDefCall ||
-                                            (uFlagsOut & lsfHighFreeze) ||
-                                            saHighLimit || saHighBalance > zero;
-        bool const  bHighReserveClear   = !bHighReserveSet;
+        bool const  bHighReserveSet = uHighQualityIn || uHighQualityOut ||
+                                    ((uFlagsOut & lsfHighNoCall) == 0) != bHighDefCall ||
+                                    (uFlagsOut & lsfHighFreeze) ||
+                                    saHighLimit || saHighBalance > zero;
+        bool const  bHighReserveClear = !bHighReserveSet;
 
-        bool const  bDefault            = bLowReserveClear && bHighReserveClear;
+        bool const  bDefault = bLowReserveClear && bHighReserveClear;
 
         bool const  bLowReserved = (uFlagsIn & lsfLowReserve);
         bool const  bHighReserved = (uFlagsIn & lsfHighReserve);
@@ -413,8 +405,8 @@ SetTrust::doApply ()
         if (bDefault || badCurrency() == currency)
         {
             // Delete.
-            terResult = trustDelete (view(), sleCallState, uLowAccountID, uHighAccountID, viewJ);
-            if (terResult == tesSUCCESS) fans -= 1;
+            terResult = trustDelete (view(), sleCallState, uLowAccountID, uHighAccountID, 
+                    uDstAccountID, currency, viewJ);
         }
         // Reserve is not scaled by load.
         else if (bReserveIncrease && mPriorBalance < reserveCreate)
@@ -470,11 +462,6 @@ SetTrust::doApply ()
             saLimitAllow,       // Limit for who is being charged.
             uQualityIn,
             uQualityOut, viewJ);
-        if (terResult == tesSUCCESS) fans += 1;
-    }
-    if (terResult == tesSUCCESS && fans != 0) 
-    {
-        terResult = updateIssueSet(view(), uDstAccountID, saLimitAllow.getCurrency(), 0, fans, j_);
     }
 
     return terResult;
