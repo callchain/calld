@@ -272,7 +272,7 @@ Payment::preclaim(PreclaimContext const& ctx)
             if (sleInvoice)
             {
             JLOG(ctx.j.trace()) << "doPayment: invoice id exists already, id=" << to_string(id);
-            return temID_EXISTSED;
+            return temID_EXISTED;
             }
         }
         else
@@ -493,13 +493,13 @@ Payment::doApply ()
         auto const uIssueFlags = sleIssueRoot->getFieldU32(sfFlags);
         if (isTesSuccess(terResult) && (uIssueFlags & tfInvoiceEnable) != 0)
         {
-        uint256 id = ctx_.tx.getFieldH256(sfInvoiceID);
-        uint256 index = getInvoiceIndex(id, saDstAmount.issue().account, saDstAmount.issue().currency);
+            uint256 id = ctx_.tx.getFieldH256(sfInvoiceID);
+            uint256 index = getInvoiceIndex(id, saDstAmount.issue().account, saDstAmount.issue().currency);
             if (account_ == saDstAmount.issue().account) // issue invoice
             {
                 // create invoice
-            Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
-            JLOG(j_.trace()) << "doPayment: create invoice root, index=" << to_string(index);
+                Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
+                JLOG(j_.trace()) << "doPayment: create invoice root, index=" << to_string(index);
                 terResult = invoiceCreate(view(), uDstAccountID, id, invoice, index, saDstAmount, j_);
             }
             else
