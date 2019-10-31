@@ -354,12 +354,12 @@ int hexchar2int(char c)
 
 std::vector<char> hex2bytes(const std::string s)
 {
-    std::vector<char> v;
     int sz = s.length();
+    char buf[sz/2];
     for (int i = 0 ; i < sz ; i += 2) {
-        char c = (char) ((hexchar2int(s.at(i)) << 4) | hexchar2int(s.at(i+1)));
-        v.push_back(c);
+        buf[i/2] = (char) ((hexchar2int(s.at(i)) << 4) | hexchar2int(s.at(i+1)));
     }
+    std::vector<char> v(buf, buf + sz/2);
     return v;
 }
 
@@ -381,7 +381,7 @@ std::string bytes2hex(char* bytes, int length)
 std::string code_compress(const std::vector<char> input)
 {
     int max_size = LZ4_compressBound(input.size());
-    char *output_buf = new char[max_size];
+    char output_buf[max_size];
     int actual_size = LZ4_compress_default(&input[0], output_buf, input.size(), max_size);
     std::string result = bytes2hex(output_buf, actual_size);
     return result;
@@ -392,10 +392,9 @@ std::vector<char> code_uncompress(const std::string input)
     std::vector<char> bytes = hex2bytes(input);
     int size = bytes.size();
     int max_size = size*2 + 8;
-    char *output_buf = new char[max_size];
+    char output_buf[max_size];
     int actual_size = LZ4_decompress_safe(&bytes[0], output_buf, size, max_size);
-    std::vector<char> v(actual_size);
-    std::copy(output_buf, output_buf + actual_size, v.begin());
+    std::vector<char> v(output_buf , output_buf + actual_size);
     return v;
 }
 

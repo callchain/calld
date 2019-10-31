@@ -23,8 +23,8 @@
 #include <lua-vm/src/lua.hpp>
 #include <call/basics/StringUtilities.h>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace call
 {
