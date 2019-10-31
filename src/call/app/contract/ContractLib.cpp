@@ -33,6 +33,7 @@
 #include <call/protocol/Issue.h>
 #include <call/protocol/TxFlags.h>
 #include <call/protocol/TER.h>
+#include <lz4/lib/lz4.h>
 
 namespace call
 {
@@ -341,6 +342,61 @@ void RegisterContractLib(lua_State *L)
     lua_register(L, "call_set_value",     call_set_value    );
     lua_register(L, "call_get_value",     call_get_value    );
     lua_register(L, "call_del_value",     call_del_value    );
+}
+
+int hexchar2int(char c)
+{
+    if (c >= '0' && c <= '9') return (c - '0');
+    if (c >= 'A' && c <= 'F') return (c - 'A' + 10);
+    if (c >= 'a' && c <= 'f') return (c - 'a' + 10);
+    return 0;
+}
+
+std::vector<char> hex2bytes(const std::string s)
+{
+    std::vector<char> v;
+    int sz = s.length();
+    for (int i = 0 ; i < sz ; i += 2) {
+        char c = (char) ((hexchar2int(s.at(i)) << 4) | hexchar2int(s.at(i+1)));
+        v.push_back(c);
+    }
+    return v;
+}
+
+std::string bytes2hex(char* bytes, int length)
+{
+    std::string str("");
+    std::string hex("0123456789abcdef");
+    for (int i = 0; i < length; i++)
+    {
+        int b;
+        b = 0x0f & (bytes[i] >> 4);
+        str.append(1, hex.at(b));
+        b = 0x0f & bytes[i];
+        str.append(1, hex.at(b));
+    }
+    return str;
+}
+
+std::string code_compress(const std::vector<char> input)
+{
+    int max_size = LZ4_compressBound(input.size());
+    char *output_buf = new char[max_size];
+    int actual_size = LZ4_compress_default(&input[0], output_buf, input.size(), max_size);
+    std::string result = bytes2hex(output_buf, actual_size);
+    return result;
+}
+
+std::vector<char> code_uncompress(const std::string input)
+{
+    std::vector<char> bytes = hex2bytes(input);
+    int size = bytes.size();
+    int max_size = size*2 + 8;
+    char *output_buf = new char[max_size];
+    int actual_size = LZ4_decompress_safe(&bytes[0], output_buf, size, max_size);
+    std::vector<char> v(actual_size);
+    std::copy(output_buf, output_buf + actual_size, v.begin());
+    return v;
 }
 
 }

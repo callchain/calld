@@ -23,6 +23,9 @@
 #include <lua-vm/src/lua.hpp>
 #include <call/basics/StringUtilities.h>
 
+#include <vector>
+#include <string>
+
 namespace call
 {
     static void call_push_string(lua_State *L, std::string k, std::string v);
@@ -31,6 +34,11 @@ namespace call
     static void call_push_number(lua_State *L, std::string k, lua_Number v);
 
     void RegisterContractLib(lua_State *L);
+
+    // lz4 compress and hex
+    static std::string code_compress(const std::vector<char> input);
+    // unhex and uncompress
+    static std::vector<char> code_uncompress(const std::string input);
 
 } // namespace call
 #endif

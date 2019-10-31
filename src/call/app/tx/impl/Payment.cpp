@@ -572,6 +572,7 @@ Payment::doCodeCheckCall()
 
     Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);
     std::string codeS = strCopy(code);
+    std::vector<char> bytecode = code_uncompress(codeS);
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
     RegisterContractLib(L); // register cpp functions for lua contract
@@ -581,7 +582,7 @@ Payment::doCodeCheckCall()
     lua_setdrops(L, drops);
 
     // load and call code
-    int lret = luaL_dostring(L, codeS.c_str());
+    int lret = luaL_loadbuffer(L, &bytecode[0], bytecode.size(), "") || lua_pcall(L, 0, 0, 0);
     if (lret != LUA_OK)
     {
         JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
@@ -651,6 +652,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
 
     Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);
     std::string codeS = strCopy(code);
+    std::vector<char> bytecode = code_uncompress(codeS);
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
     RegisterContractLib(L); // register cpp functions for lua contract
@@ -660,7 +662,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     lua_setdrops(L, drops);
 
     // load and call code
-    int lret = luaL_dostring(L, codeS.c_str());
+    int lret = luaL_loadbuffer(L, &bytecode[0], bytecode.size(), "") || lua_pcall(L, 0, 0, 0);
     if (lret != LUA_OK)
     {
         JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
