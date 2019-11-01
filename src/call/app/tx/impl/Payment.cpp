@@ -248,43 +248,47 @@ Payment::preclaim(PreclaimContext const& ctx)
     }
 
     // check invoice id
-    auto const issueRoot = ctx.view.read(keylet::issuet(saDstAmount));
-    std::uint32_t const issueFlags = issueRoot->getFieldU32(sfFlags);
-    if ((issueFlags & tfInvoiceEnable) != 0)
+    if (!saDstAmount.native())
     {
-        if (!ctx.tx.isFieldPresent(sfInvoiceID))
+        auto const issueRoot = ctx.view.read(keylet::issuet(saDstAmount));
+        std::uint32_t const issueFlags = issueRoot->getFieldU32(sfFlags);
+        if ((issueFlags & tfInvoiceEnable) != 0)
         {
-            JLOG(ctx.j.trace()) << "doPayment: preclaim, invoice id not present";
-            return temBAD_INVOICEID;
-        }
-        auto const issued = issueRoot->getFieldAmount(sfIssued);
-        auto const id = ctx.tx.getFieldH256 (sfInvoiceID);
-        auto const sleInvoice = ctx.view.read(keylet::invoicet(id, issued.issue().account, issued.issue().currency));
-        if (issued.issue().account == srcAccountID)
-        {
-            // issue, check invoice field present
-            if (!ctx.tx.isFieldPresent(sfInvoice))
+            if (!ctx.tx.isFieldPresent(sfInvoiceID))
             {
-            JLOG(ctx.j.trace()) << "doPayment: issue invoice but invoice field not present";
-            return temBAD_INVOICE;
+                JLOG(ctx.j.trace()) << "doPayment: preclaim, invoice id not present";
+                return temBAD_INVOICEID;
             }
-            // check invoice not exists
-            if (sleInvoice)
+            auto const issued = issueRoot->getFieldAmount(sfIssued);
+            auto const id = ctx.tx.getFieldH256 (sfInvoiceID);
+            auto const sleInvoice = ctx.view.read(keylet::invoicet(id, issued.issue().account, issued.issue().currency));
+            if (issued.issue().account == srcAccountID)
             {
-            JLOG(ctx.j.trace()) << "doPayment: invoice id exists already, id=" << to_string(id);
-            return temID_EXISTED;
+                // issue, check invoice field present
+                if (!ctx.tx.isFieldPresent(sfInvoice))
+                {
+                JLOG(ctx.j.trace()) << "doPayment: issue invoice but invoice field not present";
+                return temBAD_INVOICE;
+                }
+                // check invoice not exists
+                if (sleInvoice)
+                {
+                JLOG(ctx.j.trace()) << "doPayment: invoice id exists already, id=" << to_string(id);
+                return temID_EXISTED;
+                }
             }
-        }
-        else
-        {
-            // transfer, check invoice id exists
-            if (!sleInvoice)
+            else
             {
-                JLOG(ctx.j.trace()) << "doPayment, invoice not exists, id=" << to_string(id);
-                return temINVOICE_NOT_EXISTS;
+                // transfer, check invoice id exists
+                if (!sleInvoice)
+                {
+                    JLOG(ctx.j.trace()) << "doPayment, invoice not exists, id=" << to_string(id);
+                    return temINVOICE_NOT_EXISTS;
+                }
             }
-        }
+        }       
     }
+    
 
     auto const srck = keylet::account(srcAccountID);
     auto const sleSrc = ctx.view.read(srck);
