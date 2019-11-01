@@ -626,6 +626,7 @@ Payment::doCodeCheckCall()
     lua_pop(L, 1);
     // close lua state
     lua_close(L);
+    bytecode.clear();
     if (isNotSuccess(terResult))
     {
         int r = terResult;
@@ -721,6 +722,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     lua_pop(L, 1);
     // close lua state
     lua_close(L);
+    bytecode.clear();
     if (isNotSuccess(terResult))
     {
         int r = terResult;

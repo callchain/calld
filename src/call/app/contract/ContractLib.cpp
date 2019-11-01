@@ -396,6 +396,7 @@ void code_uncompress(const std::string input, std::vector<char> &output)
     int max_size = size*2 + 8;
     char output_buf[max_size];
     int actual_size = LZ4_decompress_safe(&bytes[0], output_buf, size, max_size);
+    bytes.clear();
     output.reserve(actual_size);
     std::copy(output_buf, output_buf + actual_size, output.begin());
 }

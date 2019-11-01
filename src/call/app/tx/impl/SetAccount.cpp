@@ -252,6 +252,7 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         }
         lua_pop(L, 1);
         lua_close(L);
+        bytecode.clear();
     }
 
     return tesSUCCESS;
