@@ -236,7 +236,7 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         // TODO replace with fee limit, and check fee cost
         lua_setdrops(L, (unsigned long long)-1);
         // check code
-        int lret = luaL_loadbuffer(L, uncompress_code.data(), bytecode.size(), "") || lua_pcall(L, 0, 0, 0);
+        int lret = luaL_loadbuffer(L, uncompress_code.data(), uncompress_code.size(), "") || lua_pcall(L, 0, 0, 0);
         if (lret != LUA_OK)
         {
             JLOG(ctx.j.warn()) << "invalid account code, error=" << lret;

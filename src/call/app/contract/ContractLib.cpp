@@ -33,7 +33,7 @@
 #include <call/protocol/Issue.h>
 #include <call/protocol/TxFlags.h>
 #include <call/protocol/TER.h>
-#include <snappy/snappy/snappy.h>
+#include <snappy.h>
 
 namespace call
 {
@@ -363,7 +363,7 @@ std::vector<char> hex2bytes(std::string s)
     return v;
 }
 
-string bytes2hex(std::string bytes)
+std::string bytes2hex(std::string bytes)
 {
     std::string str("");
     std::string hex("0123456789abcdef");

@@ -572,7 +572,7 @@ Payment::doCodeCheckCall()
 
     Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);
     std::string codeS = strCopy(code);
-    std::string bytecode = code_compress(codeS);
+    std::string bytecode = code_uncompress(codeS);
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
     RegisterContractLib(L); // register cpp functions for lua contract
