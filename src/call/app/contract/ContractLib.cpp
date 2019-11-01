@@ -389,8 +389,9 @@ std::string code_compress(const std::vector<char> input)
 
 std::string code_uncompress(const std::string input)
 {
-    std::vector<char> bytes = hex2bytes(input);
-    std::string byte_str = std::string(bytes.begin(), bytes.end());
+    // std::vector<char> bytes = hex2bytes(input);
+    // std::string byte_str = std::string(bytes.begin(), bytes.end());
+    std::string byte_str = input;
     std::string output;
     snappy::Uncompress(byte_str.data(), byte_str.size(), &output);
     return output;
