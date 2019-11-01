@@ -33,7 +33,7 @@
 #include <call/protocol/Issue.h>
 #include <call/protocol/TxFlags.h>
 #include <call/protocol/TER.h>
-#include <snappy.h>
+#include <snappy/snappy/snappy.h>
 
 namespace call
 {
