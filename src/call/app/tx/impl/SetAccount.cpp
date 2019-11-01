@@ -230,14 +230,13 @@ SetAccount::preclaim(PreclaimContext const& ctx)
     if (ctx.tx.isFieldPresent(sfCode))
     {
         std::string code = strCopy(ctx.tx.getFieldVL(sfCode));
-        std::vector<char> bytecode;
-        code_uncompress(code, bytecode);
+        std::string uncompress_code = code_uncompress(code);
         lua_State *L = luaL_newstate();
         luaL_openlibs(L);
         // TODO replace with fee limit, and check fee cost
         lua_setdrops(L, (unsigned long long)-1);
         // check code
-        int lret = luaL_loadbuffer(L, &bytecode[0], bytecode.size(), "") || lua_pcall(L, 0, 0, 0);
+        int lret = luaL_loadbuffer(L, uncompress_code.data(), bytecode.size(), "") || lua_pcall(L, 0, 0, 0);
         if (lret != LUA_OK)
         {
             JLOG(ctx.j.warn()) << "invalid account code, error=" << lret;

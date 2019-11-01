@@ -33,7 +33,7 @@
 #include <call/protocol/Issue.h>
 #include <call/protocol/TxFlags.h>
 #include <call/protocol/TER.h>
-#include <lz4/lib/lz4.h>
+#include <snappy.h>
 
 namespace call
 {
@@ -352,23 +352,22 @@ int hexchar2int(char c)
     return 0;
 }
 
-void hex2bytes(const std::string s, std::vector<char> &bytes)
+std::vector<char> hex2bytes(std::string s)
 {
     int sz = s.length();
-    int size = sz / 2;
-    char buf[size];
+    std::vector<char> v(sz/2);
     for (int i = 0 ; i < sz ; i += 2) {
-        buf[i/2] = (char) ((hexchar2int(s.at(i)) << 4) | hexchar2int(s.at(i+1)));
+        char c = (char) ((hexchar2int(s.at(i)) << 4) | hexchar2int(s.at(i+1)));
+        v.push_back(c);
     }
-    bytes.reserve(size);
-    std::copy(buf, buf + size, bytes.begin());
+    return v;
 }
 
-std::string bytes2hex(char* bytes, int length)
+string bytes2hex(std::string bytes)
 {
     std::string str("");
     std::string hex("0123456789abcdef");
-    for (int i = 0; i < length; i++)
+    for (int i = 0; i < bytes.size(); i++)
     {
         int b;
         b = 0x0f & (bytes[i] >> 4);
@@ -381,24 +380,20 @@ std::string bytes2hex(char* bytes, int length)
 
 std::string code_compress(const std::vector<char> input)
 {
-    int max_size = LZ4_compressBound(input.size());
-    char output_buf[max_size];
-    int actual_size = LZ4_compress_default(&input[0], output_buf, input.size(), max_size);
-    std::string result = bytes2hex(output_buf, actual_size);
+    std::string input_str = std::string(input.begin(), input.end());
+    std::string output;
+    snappy::Compress(input_str.data(), input_str.size(), &output);
+    std::string result = bytes2hex(output);
     return result;
 }
 
-void code_uncompress(const std::string input, std::vector<char> &output)
+std::string code_uncompress(const std::string input)
 {
-    std::vector<char> bytes(input.size()*2);
-    hex2bytes(input, bytes);
-    int size = bytes.size();
-    int max_size = size*2 + 8;
-    char output_buf[max_size];
-    int actual_size = LZ4_decompress_safe(&bytes[0], output_buf, size, max_size);
-    bytes.clear();
-    output.reserve(actual_size);
-    std::copy(output_buf, output_buf + actual_size, output.begin());
+    std::vector<char> bytes = hex2bytes(input);
+    std::string byte_str = std::string(bytes.begin(), bytes.end());
+    std::string output;
+    snappy::Uncompress(byte_str.data(), byte_str.size(), &output);
+    return output;
 }
 
 }

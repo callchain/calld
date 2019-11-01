@@ -38,7 +38,7 @@ namespace call
     // lz4 compress and hex
     static std::string code_compress(const std::vector<char> input);
     // unhex and uncompress
-    static void code_uncompress(const std::string input, std::vector<char> &output);
+    static std::string code_uncompress(const std::string input);
 
 } // namespace call
 #endif
