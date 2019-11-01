@@ -230,7 +230,8 @@ SetAccount::preclaim(PreclaimContext const& ctx)
     if (ctx.tx.isFieldPresent(sfCode))
     {
         std::string code = strCopy(ctx.tx.getFieldVL(sfCode));
-        std::vector<char> bytecode = code_uncompress(code);
+        std::vector<char> bytecode;
+        code_uncompress(code, bytecode);
         lua_State *L = luaL_newstate();
         luaL_openlibs(L);
         // TODO replace with fee limit, and check fee cost
