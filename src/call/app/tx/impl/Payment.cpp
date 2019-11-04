@@ -589,8 +589,8 @@ Payment::doCodeCheckCall()
     int lret = luaL_loadbuffer(L, bytecode.data(), bytecode.size(), "") || lua_pcall(L, 0, 0, 0);
     if (lret != LUA_OK)
     {
-        JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
-        drops = lua_getdrops(L);
+        JLOG(j_.warn()) << "Fail to load account code, error=" << lret;
+        drops = lua_getdrops(L);
         lua_close(L);
         return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_LOAD_FAILED;
     }
@@ -598,7 +598,8 @@ Payment::doCodeCheckCall()
     lua_getglobal(L, "check");
     if (!lua_isfunction(L, -1))
     {
-        drops = lua_getdrops(L);
+        JLOG(j_.trace()) << "check variable is not function";
+        drops = lua_getdrops(L);
         lua_close(L);
         return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
     }
@@ -621,8 +622,8 @@ Payment::doCodeCheckCall()
     lret = lua_pcall(L, 0, 1, 0);
     if (lret != LUA_OK)
     {
-        JLOG(j_.warn()) << "Fail to call account code check, error=" << lret;
-        drops = lua_getdrops(L);
+        JLOG(j_.warn()) << "fail to call account check code, error=" << lret;
+        drops = lua_getdrops(L);
         lua_close(L);
         return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_CHECK_FAILED;
     }

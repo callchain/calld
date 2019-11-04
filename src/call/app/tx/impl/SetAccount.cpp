@@ -581,7 +581,7 @@ SetAccount::doApply ()
         if (lret != LUA_OK)
         {
             JLOG(j_.warn()) << "invalid account code, error=" << lret;
-            drops = lua_getdrops(L);
+            drops = lua_getdrops(L);
             lua_close(L);
             return isFeeRunOut(drops) ? tedCODE_FEE_OUT : temINVALID_CODE;
         }
@@ -590,7 +590,7 @@ SetAccount::doApply ()
         if (lret != LUA_TFUNCTION)
         {
             JLOG(j_.warn()) << "no code entry, type=" << lret;
-            drops = lua_getdrops(L);
+            drops = lua_getdrops(L);
             lua_close(L);
             return isFeeRunOut(drops) ? tedCODE_FEE_OUT : temNO_CODE_ENTRY;
         }
