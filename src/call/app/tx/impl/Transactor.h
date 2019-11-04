@@ -191,7 +191,7 @@ protected:
 
     virtual TER doApply () = 0;
 
-    bool isFeeRunOut(CALLAmount const& fee);
+    bool isFeeRunOut(std::int64_t drops);
     
     CALLAmount const&
     feeLimit()

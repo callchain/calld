@@ -582,7 +582,7 @@ Payment::doCodeCheckCall()
     RegisterContractLib(L); // register cpp functions for lua contract
 
     auto const beforeFeeLimit = feeLimit();
-    unsigned long long drops = boost::lexical_cast<unsigned long long>(beforeFeeLimit.drops());
+    std::int64_t drops = beforeFeeLimit.drops();
     lua_setdrops(L, drops);
 
     // load and call code
@@ -590,15 +590,17 @@ Payment::doCodeCheckCall()
     if (lret != LUA_OK)
     {
         JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
+        drops = lua_getdrops(L);
         lua_close(L);
-        return terCODE_LOAD_FAILED;
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_LOAD_FAILED;
     }
 
     lua_getglobal(L, "check");
     if (!lua_isfunction(L, -1))
     {
+        drops = lua_getdrops(L);
         lua_close(L);
-        return terResult;
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
     }
 
     // set global parameters for later lua glue code internal
@@ -620,13 +622,15 @@ Payment::doCodeCheckCall()
     if (lret != LUA_OK)
     {
         JLOG(j_.warn()) << "Fail to call account code check, error=" << lret;
+        drops = lua_getdrops(L);
         lua_close(L);
-        return terCODE_CHECK_FAILED;
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_CHECK_FAILED;
     }
 
     // get result
     terResult = TER(lua_tointeger(L, -1));
     lua_pop(L, 1);
+    drops = lua_getdrops(L);
     // close lua state
     lua_close(L);
     if (isNotSuccess(terResult))
@@ -635,16 +639,7 @@ Payment::doCodeCheckCall()
         terResult = TER(r + 1000);
     }
 
-    // pay contract feee
-    drops = lua_getdrops(L);
-    CALLAmount leftAmount (drops);
-    auto const feeAmount = beforeFeeLimit - leftAmount;
-    if (isFeeRunOut(feeAmount))
-    {
-        terResult = tedCODE_FEE_OUT;
-    }
-    
-    return terResult;
+    return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
 }
 
 TER
@@ -662,7 +657,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     RegisterContractLib(L); // register cpp functions for lua contract
 
     auto const beforeFeeLimit = feeLimit();
-    unsigned long long drops = boost::lexical_cast<unsigned long long>(beforeFeeLimit.drops());
+    std::int64_t drops = beforeFeeLimit.drops();
     lua_setdrops(L, drops);
 
     // load and call code
@@ -670,8 +665,9 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     if (lret != LUA_OK)
     {
         JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
+        drops = lua_getdrops(L);
         lua_close(L);
-        return terCODE_LOAD_FAILED;
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_LOAD_FAILED;
     }
 
     lua_getglobal(L, "main");
@@ -714,13 +710,15 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     if (lret != LUA_OK)
     {
         JLOG(j_.warn()) << "Fail to call account code main, error=" << lret;
+        drops = lua_getdrops(L);
         lua_close(L);
-        return terCODE_CALL_FAILED;
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_CALL_FAILED;
     }
 
     // get result
     terResult = TER(lua_tointeger(L, -1));
     lua_pop(L, 1);
+    drops = lua_getdrops(L);
     // close lua state
     lua_close(L);
     if (isNotSuccess(terResult))
@@ -729,16 +727,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
         terResult = TER(r + 1000);
     }
 
-    // pay contract feee
-    drops = lua_getdrops(L);
-    CALLAmount leftAmount (drops);
-    auto const feeAmount = beforeFeeLimit - leftAmount;
-    if (isFeeRunOut(feeAmount))
-    {
-        terResult = tedCODE_FEE_OUT;
-    }
-
-    return terResult;
+    return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
 }
 
 // --- callchain sytem call for lua contract ---
@@ -792,7 +781,7 @@ Payment::doTransfer(AccountID const& toAccountID, STAmount const& amount)
         view().update (sleDst);
     }
 
-    TER terResult;
+    TER terResult = tesSUCCESS;
     if (!amount.native())
     {
         path::CallCalc::Input rcInput;
@@ -831,8 +820,6 @@ Payment::doTransfer(AccountID const& toAccountID, STAmount const& amount)
         }
         sleSrc->setFieldAmount (sfBalance, mPriorBalance - amount);
         sleDst->setFieldAmount (sfBalance, sleDst->getFieldAmount (sfBalance) + amount);
-
-        terResult = tesSUCCESS;
     }
 
     return terResult;

@@ -226,33 +226,6 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         return temCODE_ACCOUNT;
     }
 
-    // check code account
-    if (ctx.tx.isFieldPresent(sfCode))
-    {
-        std::string code = strCopy(ctx.tx.getFieldVL(sfCode));
-        std::string uncompress_code = code_uncompress(code);
-        lua_State *L = luaL_newstate();
-        luaL_openlibs(L);
-        // TODO replace with fee limit, and check fee cost
-        lua_setdrops(L, (unsigned long long)-1);
-        // check code
-        int lret = luaL_loadbuffer(L, uncompress_code.data(), uncompress_code.size(), "") || lua_pcall(L, 0, 0, 0);
-        if (lret != LUA_OK)
-        {
-            JLOG(ctx.j.warn()) << "invalid account code, error=" << lret;
-            return temINVALID_CODE;
-        }
-        lua_getglobal(L, "main");
-        lret = lua_type(L, -1);
-        if (lret != LUA_TFUNCTION)
-        {
-            JLOG(ctx.j.warn()) << "no code entry, type=" << lret;
-            return temNO_CODE_ENTRY;
-        }
-        lua_pop(L, 1);
-        lua_close(L);
-    }
-
     return tesSUCCESS;
 }
 
@@ -594,7 +567,37 @@ SetAccount::doApply ()
     // code account code
     if (ctx_.tx.isFieldPresent (sfCode))
     {
-        auto uCode = ctx_.tx[sfCode];
+        std::string code = strCopy(ctx_.tx.getFieldVL(sfCode));
+        std::string uncompress_code = code_uncompress(code);
+        lua_State *L = luaL_newstate();
+        luaL_openlibs(L);
+        // set fee limit
+        auto const beforeFeeLimit = feeLimit();
+        std::int64_t drops = beforeFeeLimit.drops();
+        lua_setdrops(L, drops);
+
+        // check code main function exists
+        int lret = luaL_loadbuffer(L, uncompress_code.data(), uncompress_code.size(), "") || lua_pcall(L, 0, 0, 0);
+        if (lret != LUA_OK)
+        {
+            JLOG(j_.warn()) << "invalid account code, error=" << lret;
+            drops = lua_getdrops(L);
+            lua_close(L);
+            return isFeeRunOut(drops) ? tedCODE_FEE_OUT : temINVALID_CODE;
+        }
+        lua_getglobal(L, "main");
+        lret = lua_type(L, -1);
+        if (lret != LUA_TFUNCTION)
+        {
+            JLOG(j_.warn()) << "no code entry, type=" << lret;
+            drops = lua_getdrops(L);
+            lua_close(L);
+            return isFeeRunOut(drops) ? tedCODE_FEE_OUT : temNO_CODE_ENTRY;
+        }
+        lua_pop(L, 1);
+        lua_close(L);
+
+        auto uCode = strCopy(code);
         std::int32_t diff_size = uCode.size();
         if (sle->isFieldPresent(sfCode))
         {
