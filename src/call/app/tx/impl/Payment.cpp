@@ -666,7 +666,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     if (lret != LUA_OK)
     {
         JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
-        drops = lua_getdrops(L);
+        drops = lua_getdrops(L);
         lua_close(L);
         return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_LOAD_FAILED;
     }
@@ -711,7 +711,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     if (lret != LUA_OK)
     {
         JLOG(j_.warn()) << "Fail to call account code main, error=" << lret;
-        drops = lua_getdrops(L);
+        drops = lua_getdrops(L);
         lua_close(L);
         return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_CALL_FAILED;
     }
