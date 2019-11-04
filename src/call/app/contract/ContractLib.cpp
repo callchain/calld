@@ -73,7 +73,7 @@ void call_push_number(lua_State *L, std::string k, lua_Number v)
     lua_settable(L, -3);
 }
 
-static int call_ledger_closed(lua_State *L)
+static int syscall_ledger(lua_State *L)
 {
     int argc = lua_gettop(L);
     if (argc != 0) {
@@ -97,7 +97,7 @@ static int call_ledger_closed(lua_State *L)
     return 2;
 }
 
-static int call_account_info(lua_State *L)
+static int syscall_account(lua_State *L)
 {
     int argc = lua_gettop(L);
     if (argc != 1) { // account
@@ -133,7 +133,7 @@ static int call_account_info(lua_State *L)
     return 2;
 }
 
-static int call_do_transfer(lua_State *L)
+static int syscall_transfer(lua_State *L)
 {
     int argc = lua_gettop(L);
     if (argc != 2) { // to, amount
@@ -232,7 +232,7 @@ static int __call_set_value(lua_State *L, std::string key, Blob value)
     return 2;
 }
 
-static int call_set_value(lua_State *L)
+static int syscall_set_value(lua_State *L)
 {
     int argc = lua_gettop(L);
     if (argc != 2) { // key, value
@@ -257,7 +257,7 @@ static int call_set_value(lua_State *L)
     return __call_set_value(L, key, strCopy(valueS));
 }
 
-static int call_get_value(lua_State *L)
+static int syscall_get_value(lua_State *L)
 {
     int argc = lua_gettop(L);
     if (argc != 1) { // key
@@ -294,7 +294,7 @@ static int call_get_value(lua_State *L)
     return 2;
 }
 
-static int call_del_value(lua_State *L)
+static int syscall_del_value(lua_State *L)
 {
     int argc = lua_gettop(L);
     if (argc != 1) { // key
@@ -334,14 +334,14 @@ static int call_del_value(lua_State *L)
 
 void RegisterContractLib(lua_State *L)
 {
-    lua_register(L, "call_ledger_closed", call_ledger_closed);
-    lua_register(L, "call_account_info",  call_account_info );
+    lua_register(L, "syscall_ledger",    syscall_ledger  );
+    lua_register(L, "syscall_account",   syscall_account );
 
-    lua_register(L, "call_do_transfer",   call_do_transfer  );
+    lua_register(L, "syscall_transfer",  syscall_transfer);
 
-    lua_register(L, "call_set_value",     call_set_value    );
-    lua_register(L, "call_get_value",     call_get_value    );
-    lua_register(L, "call_del_value",     call_del_value    );
+    lua_register(L, "syscall_set_value", syscall_set_value);
+    lua_register(L, "syscall_get_value", syscall_get_value);
+    lua_register(L, "syscall_del_value", syscall_del_value);
 }
 
 int hexchar2int(char c)
