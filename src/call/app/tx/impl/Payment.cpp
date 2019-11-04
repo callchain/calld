@@ -621,7 +621,7 @@ Payment::doCodeCheckCall()
     {
         JLOG(j_.warn()) << "Fail to call account code check, error=" << lret;
         lua_close(L);
-        return terCODE_CALL_FAILED;
+        return terCODE_CHECK_FAILED;
     }
 
     // get result

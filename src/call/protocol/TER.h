@@ -165,6 +165,7 @@ enum TER
     tefINVARIANT_FAILED,
     terCODE_LOAD_FAILED,
     terCODE_CALL_FAILED,
+    terCODE_CHECK_FAILED,
 
     // -99 .. -1: R Retry
     //   sequence too high, no funds for txn fee, originating -account

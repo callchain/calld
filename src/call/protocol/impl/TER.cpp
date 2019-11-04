@@ -113,6 +113,7 @@ transResults()
         { tefINVARIANT_FAILED,       { "tefINVARIANT_FAILED",      "Fee claim violated invariants for the transaction."                            } },
         { terCODE_LOAD_FAILED,       { "terCODE_LOAD_FAILED",      "Fail to load account code."                                                    } },
         { terCODE_CALL_FAILED,       { "terCODE_CALL_FAILED",      "Call account code main function failed."                                       } },
+        { terCODE_CHECK_FAILED,      { "terCODE_CHECK_FAILED",     "Call account code check function failed."                                      } },
 
         { telLOCAL_ERROR,            { "telLOCAL_ERROR",           "Local failure."                                                                } },
         { telBAD_DOMAIN,             { "telBAD_DOMAIN",            "Domain too long."                                                              } },
