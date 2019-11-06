@@ -604,9 +604,10 @@ Payment::doCodeCheckCall()
         return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
     }
 
-    // set global parameters for later lua glue code internal
+    // set currency transactor in registry table
+    lua_pushlightuserdata(L, (void *)&ctx_.app);
     lua_pushlightuserdata(L, this);
-    lua_setglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
+    lua_settable(L, LUA_REGISTRYINDEX);
 
     // set global parameters for lua contract
     lua_newtable(L); // for msg
@@ -692,9 +693,10 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
         }
     }
 
-    // set global parameters for later lua glue code internal
+    // set currency transactor in registry table
+    lua_pushlightuserdata(L, (void *)&ctx_.app);
     lua_pushlightuserdata(L, this);
-    lua_setglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
+    lua_settable(L, LUA_REGISTRYINDEX);
 
     // set global parameters for lua contract
     lua_newtable(L); // for msg

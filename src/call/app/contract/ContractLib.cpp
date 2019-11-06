@@ -188,7 +188,8 @@ static int syscall_transfer(lua_State *L)
         return call_error(L, tedSEND_CONTRACT_SELF);
     }
     
-    lua_getglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
+    lua_pushlightuserdata(L, (void *)&getApp());
+    lua_gettable(L, LUA_REGISTRYINDEX);
     Payment *payment = reinterpret_cast<Payment *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
 
@@ -206,7 +207,8 @@ static int syscall_transfer(lua_State *L)
 
 static int __call_set_value(lua_State *L, std::string key, Blob value)
 {
-    lua_getglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
+    lua_pushlightuserdata(L, (void *)&getApp());
+    lua_gettable(L, LUA_REGISTRYINDEX);
     Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
     ApplyView& view = transactor->view();
@@ -271,7 +273,8 @@ static int syscall_get_value(lua_State *L)
     const char* key = lua_tostring(L, 1);
     std::string keyS = key;
 
-    lua_getglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
+    lua_pushlightuserdata(L, (void *)&getApp());
+    lua_gettable(L, LUA_REGISTRYINDEX);
     Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
     ApplyView& view = transactor->view();
@@ -308,7 +311,8 @@ static int syscall_del_value(lua_State *L)
     const char* key = lua_tostring(L, 1);
     std::string keyS = key;
 
-    lua_getglobal(L, "__APPLY_CONTEXT_FOR_CALL_CODE");
+    lua_pushlightuserdata(L, (void *)&getApp());
+    lua_gettable(L, LUA_REGISTRYINDEX);
     Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
     ApplyView& view = transactor->view();
