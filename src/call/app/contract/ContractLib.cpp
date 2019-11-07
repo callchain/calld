@@ -315,32 +315,24 @@ void __restore_lua_table(lua_State *L, Json::Value const &root)
         }
         else if (root[*it].type() == Json::stringValue)
         {
-            lua_pushstring(L, key.c_str());
-            lua_pushstring(L, root[*it].asString().c_str());
-            lua_settable(L, -3);
+            call_push_string(L, key, root[*it].asString());
         }
         else if (root[*it].type() == Json::realValue)
         {
-            lua_pushstring(L, key.c_str());
-            lua_pushnumber(L, root[*it].asDouble());
-            lua_settable(L, -3);
+            call_push_number(L, key, root[*it].asDouble());
         }
         else if (root[*it].type() == Json::uintValue)
         {
-            lua_pushstring(L, key.c_str());
-            lua_pushnumber(L, root[*it].asUInt());
-            lua_settable(L, -3);
+            // TODO, fix unsigned convert
+            call_push_integer(L, key, root[*it].asUInt());
         }
         else if (root[*it].type() == Json::booleanValue)
         {
-            lua_pushstring(L, key.c_str());
-            lua_pushnumber(L, root[*it].asBool());
+            call_push_boolean(L, key, root[*it].asBool());
         }
         else if (root[*it].type() == Json::intValue)
         {
-            lua_pushstring(L, key.c_str());
-            lua_pushnumber(L, root[*it].asInt());
-            lua_settable(L, -3);
+            call_push_integer(L, key, root[*it].asInt());
         }
     }
 }
