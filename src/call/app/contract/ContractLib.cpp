@@ -205,198 +205,168 @@ static int syscall_transfer(lua_State *L)
     return 2;
 }
 
-static int __call_set_value(lua_State *L, std::string key, Blob value)
-{
-    lua_pushlightuserdata(L, (void *)&getApp());
-    lua_gettable(L, LUA_REGISTRYINDEX);
-    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
-    lua_pop(L, 1);
-    ApplyView& view = transactor->view();
-
-    lua_getglobal(L, "msg");
-    lua_getfield(L, -1, "address");
-    std::string contractS = lua_tostring(L, -1);
-    lua_pop(L, 2);
-
-    auto const index = getParamIndex(contractS, key);
-    auto const sle = view.peek(keylet::paramt(index));
-    if (sle) {
-        sle->setFieldVL(sfInfo, value);
-        view.update(sle);
-    } else {
-        auto const sle = std::make_shared<SLE>(ltPARAMROOT, index);
-        sle->setFieldVL(sfInfo, value);
-        view.insert(sle);
-    }
-
-    lua_pushstring(L, key.c_str());
-    lua_pushinteger(L, tesSUCCESS);
-    return 2;
-}
-
-static int syscall_set_value(lua_State *L)
-{
-    int argc = lua_gettop(L);
-    if (argc != 2) { // key, value
-        return call_error(L, tedINVALID_PARAM_NUMS);
-    }
-
-    if (!lua_isstring(L, 1)) {
-        return call_error(L, tedINVALID_PARAM_TYPE);
-    }
-
-    if (!lua_isstring(L, 1)) {
-        return call_error(L, tedINVALID_KEY_TYPE);
-    }
-    if (!lua_isstring(L, 2)) {
-        return call_error(L, tedINVALID_KEY_TYPE);
-    }
-    const char *key= lua_tostring(L, 1);
-    std::string keyS = key;
-    const char *value = lua_tostring(L, 2);
-    std::string valueS = value;
-
-    return __call_set_value(L, key, strCopy(valueS));
-}
-
-static int syscall_get_value(lua_State *L)
-{
-    int argc = lua_gettop(L);
-    if (argc != 1) { // key
-        return call_error(L, tedINVALID_PARAM_NUMS);
-    }
-
-    if (!lua_isstring(L, 1)) {
-        return call_error(L, tedINVALID_PARAM_TYPE);
-    }
-
-    const char* key = lua_tostring(L, 1);
-    std::string keyS = key;
-
-    lua_pushlightuserdata(L, (void *)&getApp());
-    lua_gettable(L, LUA_REGISTRYINDEX);
-    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
-    lua_pop(L, 1);
-    ApplyView& view = transactor->view();
-
-    lua_getglobal(L, "msg");
-    lua_getfield(L, -1, "address");
-    std::string contractS = lua_tostring(L, -1);
-    lua_pop(L, 2);
-
-    auto const index = getParamIndex(contractS, key);
-    auto const sle = view.peek(keylet::paramt(index));
-
-    if (!sle) {
-        return call_error(L, tedNO_SUCH_VALUE);
-    }
-    Blob const value = sle->getFieldVL(sfInfo);
-
-    lua_pushstring(L, strCopy(value).c_str());
-    lua_pushinteger(L, tesSUCCESS);
-    return 2;
-}
-
-static int syscall_del_value(lua_State *L)
-{
-    int argc = lua_gettop(L);
-    if (argc != 1) { // key
-        return call_error(L, tedINVALID_PARAM_NUMS);
-    }
-
-    if (!lua_isstring(L, 1)) {
-        return call_error(L, tedINVALID_PARAM_TYPE);
-    }
-
-    const char* key = lua_tostring(L, 1);
-    std::string keyS = key;
-
-    lua_pushlightuserdata(L, (void *)&getApp());
-    lua_gettable(L, LUA_REGISTRYINDEX);
-    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
-    lua_pop(L, 1);
-    ApplyView& view = transactor->view();
-
-    lua_getglobal(L, "msg");
-    lua_getfield(L, -1, "address");
-    std::string contractS = lua_tostring(L, -1);
-    lua_pop(L, 2);
-
-    auto const index = getParamIndex(contractS, key);
-    auto const sle = view.peek(keylet::paramt(index));
-
-    if (!sle) {
-        return call_error(L, tedNO_SUCH_VALUE);
-    }
-
-    view.erase(sle);
-
-    lua_pushstring(L, keyS.c_str());
-    lua_pushinteger(L, tesSUCCESS);
-    return 2;
-}
-
 void RegisterContractLib(lua_State *L)
 {
     lua_register(L, "syscall_ledger",    syscall_ledger  );
     lua_register(L, "syscall_account",   syscall_account );
 
     lua_register(L, "syscall_transfer",  syscall_transfer);
-
-    lua_register(L, "syscall_set_value", syscall_set_value);
-    lua_register(L, "syscall_get_value", syscall_get_value);
-    lua_register(L, "syscall_del_value", syscall_del_value);
 }
 
-int hexchar2int(char c)
+std::string CompressData(const std::string input)
 {
-    if (c >= '0' && c <= '9') return (c - '0');
-    if (c >= 'A' && c <= 'F') return (c - 'A' + 10);
-    if (c >= 'a' && c <= 'f') return (c - 'a' + 10);
-    return 0;
-}
-
-std::vector<char> hex2bytes(std::string s)
-{
-    int sz = s.length();
-    std::vector<char> v(sz/2);
-    for (int i = 0 ; i < sz ; i += 2) {
-        char c = (char) ((hexchar2int(s.at(i)) << 4) | hexchar2int(s.at(i+1)));
-        v.push_back(c);
-    }
-    return v;
-}
-
-std::string bytes2hex(std::string bytes)
-{
-    std::string str("");
-    std::string hex("0123456789abcdef");
-    for (int i = 0; i < bytes.size(); i++)
-    {
-        int b;
-        b = 0x0f & (bytes[i] >> 4);
-        str.append(1, hex.at(b));
-        b = 0x0f & bytes[i];
-        str.append(1, hex.at(b));
-    }
-    return str;
-}
-
-std::string code_compress(const std::vector<char> input)
-{
-    std::string input_str = std::string(input.begin(), input.end());
     std::string output;
-    snappy::Compress(input_str.data(), input_str.size(), &output);
-    std::string result = bytes2hex(output);
-    return result;
-}
-
-std::string code_uncompress(const std::string input)
-{
-    std::string byte_str = input;
-    std::string output;
-    snappy::Uncompress(byte_str.data(), byte_str.size(), &output);
+    snappy::Compress(input.data(), input.size(), &output);
     return output;
+}
+
+std::string UncompressData(const std::string input)
+{
+    std::string output;
+    snappy::Uncompress(input.data(), input.size(), &output);
+    return output;
+}
+
+void __save_lua_table(lua_State *L, Json::Value root)
+{
+    lua_pushnil(L);
+    while (lua_next(L, -2) != 0)
+    {
+        // only save table data where key type is string
+        // other data is ignore
+        if (lua_type(L, -2) == LUA_TSTRING)
+        {
+            const char *key = lua_tostring(L, -2);
+            if (lua_isstring(L, -1))
+            {
+                root[key] = lua_tostring(L, -1);
+            }
+            else if (lua_isnumber(L, -1))
+            {
+                root[key] = lua_tonumber(L, -1);
+            }
+            else if (lua_isboolean(L, -1))
+            {
+                root[key] = lua_toboolean(L, -1);
+            }
+            else if (lua_istable(L, -1))
+            {
+                Json::Value sub_root;
+                __save_lua_table(L, sub_root);
+                root[key] = sub_root;
+            }
+            // only save string->{string, number, boolean, table}
+            // function, lightdata, thread is all ignore
+        }
+        lua_pop(L, 1);
+    }
+}
+
+void SaveLuaTable(lua_State *L, AccountID const &contract_address)
+{
+    lua_getglobal(L, "contract"); // contract global variable
+    Json::Value root;
+    __save_lua_table(L, root);
+
+    Json::FastWriter fastWriter;
+    std::string output = fastWriter.write(root);
+    std::string data = CompressData(output); // compress it
+
+    // get transactor
+    lua_pushlightuserdata(L, (void *)&getApp());
+    lua_gettable(L, LUA_REGISTRYINDEX);
+    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
+    lua_pop(L, 1);
+    ApplyView& view = transactor->view();
+
+    // save or update data
+    auto const index = getParamIndex(to_string(contract_address), "CONTRACT-DATA");
+    auto const sle = view.peek(keylet::paramt(index));
+    if (sle) {
+        if (root.size() == 0)
+        {
+            view.erase(sle); // when no fields in contract just delete it
+        }
+        else
+        {
+            sle->setFieldVL(sfInfo, strCopy(data));
+            view.update(sle);
+        }
+    } else {
+        auto const sle = std::make_shared<SLE>(ltPARAMROOT, index);
+        sle->setFieldVL(sfInfo, strCopy(data));
+        view.insert(sle);
+    }
+}
+
+void __restore_lua_table(lua_State *L, Json::Value const &root)
+{
+    Json::Value::Members members = root.getMemberNames();
+    for (auto it = members.begin(); it != members.end(); ++it)
+    {
+        // only for key is string
+        std::string key = *it;
+        if (root[*it].type() == Json::objectValue)
+        {
+            lua_pushstring(L, key.c_str());
+            lua_newtable(L);
+            __restore_lua_table(L, root[*it]);
+            lua_settable(L, -3);
+        }
+        else if (root[*it].type() == Json::stringValue)
+        {
+            lua_pushstring(L, key.c_str());
+            lua_pushstring(L, root[*it].asString().c_str());
+            lua_settable(L, -3);
+        }
+        else if (root[*it].type() == Json::realValue)
+        {
+            lua_pushstring(L, key.c_str());
+            lua_pushnumber(L, root[*it].asDouble());
+            lua_settable(L, -3);
+        }
+        else if (root[*it].type() == Json::uintValue)
+        {
+            lua_pushstring(L, key.c_str());
+            lua_pushnumber(L, root[*it].asUInt());
+            lua_settable(L, -3);
+        }
+        else if (root[*it].type() == Json::booleanValue)
+        {
+            lua_pushstring(L, key.c_str());
+            lua_pushnumber(L, root[*it].asBool());
+        }
+        else if (root[*it].type() == Json::intValue)
+        {
+            lua_pushstring(L, key.c_str());
+            lua_pushnumber(L, root[*it].asInt());
+            lua_settable(L, -3);
+        }
+    }
+}
+
+void RestoreLuaTable(lua_State *L, AccountID const &contract_address)
+{
+    lua_pushlightuserdata(L, (void *)&getApp());
+    lua_gettable(L, LUA_REGISTRYINDEX);
+    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
+    lua_pop(L, 1);
+    ApplyView& view = transactor->view();
+
+    // read data from saved
+    auto const index = getParamIndex(to_string(contract_address), "CONTRACT-DATA");
+    auto const sle = view.peek(keylet::paramt(index));
+    if (!sle || !sle->isFieldPresent(sfInfo)) return; // no contract data saved
+
+    Blob data = sle->getFieldVL(sfInfo);
+    std::string input = UncompressData(strCopy(data)); // uncompress it
+    Json::Value root;
+    Json::Reader reader;
+    if (!reader.parse(input, root)) return; // invalid json data
+
+    lua_newtable(L);
+    __restore_lua_table(L, root); // root should not empty
+    lua_setglobal(L, "contract");
 }
 
 }

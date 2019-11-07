@@ -568,7 +568,7 @@ SetAccount::doApply ()
     if (ctx_.tx.isFieldPresent (sfCode))
     {
         std::string code = strCopy(ctx_.tx.getFieldVL(sfCode));
-        std::string uncompress_code = code_uncompress(code);
+        std::string uncompress_code = UncompressData(code);
         lua_State *L = luaL_newstate();
         luaL_openlibs(L);
         // set fee limit

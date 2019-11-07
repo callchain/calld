@@ -576,7 +576,7 @@ Payment::doCodeCheckCall()
 
     Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);
     std::string codeS = strCopy(code);
-    std::string bytecode = code_uncompress(codeS);
+    std::string bytecode = UncompressData(codeS);
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
     RegisterContractLib(L); // register cpp functions for lua contract
@@ -620,6 +620,9 @@ Payment::doCodeCheckCall()
     call_push_integer(L, "height", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
     lua_setglobal(L, "block");
 
+    // restore lua contract variable
+    RestoreLuaTable(L, uDstAccountID);
+
     lret = lua_pcall(L, 0, 1, 0);
     if (lret != LUA_OK)
     {
@@ -632,16 +635,23 @@ Payment::doCodeCheckCall()
     // get result
     terResult = TER(lua_tointeger(L, -1));
     lua_pop(L, 1);
-    drops = lua_getdrops(L);
-    // close lua state
-    lua_close(L);
     if (isNotSuccess(terResult))
     {
         int r = terResult;
         terResult = TER(r + 1000);
     }
 
-    return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+    drops = lua_getdrops(L);
+    terResult = isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+    if (isTesSuccess())
+    {
+        // save lua contract variable
+        SaveLuaTable(L, uDstAccountID);
+    }
+
+    // close lua state
+    lua_close(L);
+    return terResult;
 }
 
 TER
@@ -653,7 +663,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
 
     Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);
     std::string codeS = strCopy(code);
-    std::string bytecode = code_uncompress(codeS);
+    std::string bytecode = UncompressData(codeS);
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
     RegisterContractLib(L); // register cpp functions for lua contract
@@ -709,6 +719,9 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     call_push_integer(L, "height", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
     lua_setglobal(L, "block");
 
+    // restore lua contract variable
+    RestoreLuaTable(L, uDstAccountID);
+
     lret = lua_pcall(L, 1, 1, 0);
     if (lret != LUA_OK)
     {
@@ -721,16 +734,24 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     // get result
     terResult = TER(lua_tointeger(L, -1));
     lua_pop(L, 1);
-    drops = lua_getdrops(L);
-    // close lua state
-    lua_close(L);
     if (isNotSuccess(terResult))
     {
         int r = terResult;
         terResult = TER(r + 1000);
     }
 
-    return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+    drops = lua_getdrops(L);
+    terResult = isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+
+    if (isTesSuccess())
+    {
+        // save lua contract variable
+        SaveLuaTable(L, uDstAccountID);
+    }
+
+    // close lua state
+    lua_close(L);
+    return terResult;
 }
 
 // --- callchain sytem call for lua contract ---

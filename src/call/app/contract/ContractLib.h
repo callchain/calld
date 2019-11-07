@@ -22,6 +22,7 @@
 
 #include <lua-vm/src/lua.hpp>
 #include <call/basics/StringUtilities.h>
+#include <call/protocol/AccountID.h>
 
 #include <string>
 #include <vector>
@@ -35,10 +36,12 @@ namespace call
 
     void RegisterContractLib(lua_State *L);
 
-    // lz4 compress and hex
-    static std::string code_compress(const std::vector<char> input);
-    // unhex and uncompress
-    static std::string code_uncompress(const std::string input);
+    // using snappy compress and uncompress data
+    static std::string CompressData(const std::string input);
+    static std::string UncompressData(const std::string input);
+
+    static void SaveLuaTable(lua_State *L, AccountID const &contract_address);
+    static void RestoreLuaTable(lua_State *L, AccountID const &contract_address);
 
 } // namespace call
 #endif
