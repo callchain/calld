@@ -643,7 +643,7 @@ Payment::doCodeCheckCall()
 
     drops = lua_getdrops(L);
     terResult = isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
-    if (isTesSuccess())
+    if (isTesSuccess(terResult))
     {
         // save lua contract variable
         SaveLuaTable(L, uDstAccountID);
@@ -743,7 +743,7 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     drops = lua_getdrops(L);
     terResult = isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
 
-    if (isTesSuccess())
+    if (isTesSuccess(terResult))
     {
         // save lua contract variable
         SaveLuaTable(L, uDstAccountID);
