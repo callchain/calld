@@ -227,7 +227,7 @@ std::string UncompressData(const std::string input)
     return output;
 }
 
-void __save_lua_table(lua_State *L, Json::Value root)
+void __save_lua_table(lua_State *L, Json::Value &root)
 {
     lua_pushnil(L);
     while (lua_next(L, -2) != 0)
@@ -269,6 +269,7 @@ void SaveLuaTable(lua_State *L, AccountID const &contract_address)
 
     Json::Value root;
     __save_lua_table(L, root);
+    if (root.size() == 0) return; // empty table
 
     Json::FastWriter fastWriter;
     std::string output = fastWriter.write(root);

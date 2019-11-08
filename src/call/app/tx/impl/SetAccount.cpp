@@ -567,51 +567,131 @@ SetAccount::doApply ()
     // code account code
     if (ctx_.tx.isFieldPresent (sfCode))
     {
-        std::string code = strCopy(ctx_.tx.getFieldVL(sfCode));
-        std::string uncompress_code = UncompressData(code);
-        lua_State *L = luaL_newstate();
-        luaL_openlibs(L);
-        // set fee limit
-        auto const beforeFeeLimit = feeLimit();
-        std::int64_t drops = beforeFeeLimit.drops();
-        lua_setdrops(L, drops);
-
-        // check code main function exists
-        int lret = luaL_loadbuffer(L, uncompress_code.data(), uncompress_code.size(), "") || lua_pcall(L, 0, 0, 0);
-        if (lret != LUA_OK)
-        {
-            JLOG(j_.warn()) << "invalid account code, error=" << lret;
-            drops = lua_getdrops(L);
-            lua_close(L);
-            return isFeeRunOut(drops) ? tedCODE_FEE_OUT : temINVALID_CODE;
-        }
-        lua_getglobal(L, "main");
-        lret = lua_type(L, -1);
-        if (lret != LUA_TFUNCTION)
-        {
-            JLOG(j_.warn()) << "no code entry, type=" << lret;
-            drops = lua_getdrops(L);
-            lua_close(L);
-            return isFeeRunOut(drops) ? tedCODE_FEE_OUT : temNO_CODE_ENTRY;
-        }
-        lua_pop(L, 1);
-        lua_close(L);
-
-        auto uCode = strCopy(code);
-        std::int32_t diff_size = uCode.size();
-        if (sle->isFieldPresent(sfCode))
-        {
-            auto uOldCode = sle->getFieldVL(sfCode);
-            diff_size = diff_size - uOldCode.size();
-        }
-        std::int32_t increment = view().fees().increment;
-        std::int32_t codeCount = diff_size / increment;
-        sle->setFieldU32(sfOwnerCount, sle->getFieldU32(sfOwnerCount) + codeCount);
-        sle->setFieldVL(sfCode, uCode);
+        TER terResult = doInitCall();
+        if (!isTesSuccess(terResult)) return terResult;
     }
 
     if (uFlagsIn != uFlagsOut)
         sle->setFieldU32 (sfFlags, uFlagsOut);
+
+    return tesSUCCESS;
+}
+
+TER
+SetAccount::doInitCall ()
+{
+    std::string code = strCopy(ctx_.tx.getFieldVL(sfCode));
+    std::string uncompress_code = UncompressData(code);
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+    // set fee limit
+    auto const beforeFeeLimit = feeLimit();
+    std::int64_t drops = beforeFeeLimit.drops();
+    lua_setdrops(L, drops);
+
+    // check code main function exists
+    int lret = luaL_loadbuffer(L, uncompress_code.data(), uncompress_code.size(), "") || lua_pcall(L, 0, 0, 0);
+    if (lret != LUA_OK)
+    {
+        JLOG(j_.warn()) << "invalid account code, error=" << lret;
+        drops = lua_getdrops(L);
+        lua_close(L);
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : temINVALID_CODE;
+    }
+    lua_getglobal(L, "main");
+    lret = lua_type(L, -1);
+    if (lret != LUA_TFUNCTION)
+    {
+        JLOG(j_.warn()) << "no code entry, type=" << lret;
+        drops = lua_getdrops(L);
+        lua_close(L);
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : temNO_CODE_ENTRY;
+    }
+    lua_pop(L, 1);
+
+    // call init
+    lua_getglobal(L, "init");
+    if (lua_isfunction(L, -1))
+    {
+        // push parameters, collect parameters if exists
+        lua_newtable(L);
+        if (ctx_.tx.isFieldPresent(sfMemos))
+        {
+            auto const& memos = ctx_.tx.getFieldArray(sfMemos);
+            int n = 0;
+            for (auto const& memo : memos)
+            {
+                auto memoObj = dynamic_cast <STObject const*> (&memo);
+                if (!memoObj->isFieldPresent(sfMemoData))
+                {
+                    continue;
+                }
+                std::string data = strCopy(memoObj->getFieldVL(sfMemoData));
+                lua_pushstring(L, data.c_str());
+                lua_rawseti(L, -2, n);
+                ++n;
+            }
+        }
+        // set currency transactor in registry table
+        lua_pushlightuserdata(L, (void *)&ctx_.app);
+        lua_pushlightuserdata(L, this);
+        lua_settable(L, LUA_REGISTRYINDEX);
+
+        // set global parameters for lua contract
+        lua_newtable(L); // for msg
+        call_push_string(L, "address", to_string(uDstAccountID));
+        call_push_string(L, "sender", to_string(account_));
+        call_push_string(L, "value", deliveredAmount.getJson(0).asString());
+        lua_setglobal(L, "msg");
+
+        lua_newtable(L); // for block
+        call_push_integer(L, "height", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
+        lua_setglobal(L, "block");
+
+        lret = lua_pcall(L, 1, 1, 0);
+        if (lret != LUA_OK)
+        {
+            JLOG(j_.warn()) << "Fail to call account code main, error=" << lret;
+            drops = lua_getdrops(L);
+            lua_close(L);
+            return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_CALL_FAILED;
+        }
+        // get result
+        TER terResult = TER(lua_tointeger(L, -1));
+        lua_pop(L, 1);
+        if (isNotSuccess(terResult))
+        {
+            int r = terResult;
+            terResult = TER(r + 1000);
+        }
+
+        rops = lua_getdrops(L);
+        terResult = isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+
+        if (isTesSuccess(terResult))
+        {
+            // save lua contract variable
+            SaveLuaTable(L, uDstAccountID);
+        }
+        else
+        {
+            lua_close(L);
+            return terResult;
+        }
+    }
+    lua_close(L);
+
+    auto uCode = strCopy(code);
+    std::int32_t diff_size = uCode.size();
+    if (sle->isFieldPresent(sfCode))
+    {
+        auto uOldCode = sle->getFieldVL(sfCode);
+        diff_size = diff_size - uOldCode.size();
+    }
+    std::int32_t increment = view().fees().increment;
+    std::int32_t codeCount = diff_size / increment;
+    sle->setFieldU32(sfOwnerCount, sle->getFieldU32(sfOwnerCount) + codeCount);
+    sle->setFieldVL(sfCode, uCode);
 
     return tesSUCCESS;
 }

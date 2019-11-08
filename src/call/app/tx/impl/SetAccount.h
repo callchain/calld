@@ -68,6 +68,8 @@ public:
     preclaim(PreclaimContext const& ctx);
 
     TER doApply () override;
+
+    TER doInitCall();
 };
 
 } // call
