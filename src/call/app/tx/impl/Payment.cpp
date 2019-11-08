@@ -439,6 +439,26 @@ Payment::doApply ()
     // 2. do payment
     if (bCall)
     {
+        auto const sleIssue = view().peek(keylet::issuet(saDstAmount));
+        // not send back to issuer and AutoTrust is flags set
+        if (saDstAmount.getIssuer() != uDstAccountID && (sleDst->getFieldU32 (sfFlags) & lsfAutoTrust) != 0)
+        {
+            auto const sleState = view().peek(keylet::line(saDstAmount.getIssuer(), uDstAccountID, currency));
+            if (!sleState)
+            {
+                terResult = auto_trust(view(), uDstAccountID, sleIssue->getFieldAmount(sfTotal), j_);
+                if (!isTesSuccess(terResult))
+                {
+                    if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
+                    {
+                        // has code, call check already, not success, should deduct fee still
+                        int r = terResult;
+                        terResult = TER(r + 1000);
+                    }
+                    return terResult;
+                }
+            }
+        }
         // Call payment with at least one intermediate step and uses transitive balances.
 
         // Copy paths into an editable class.
@@ -492,8 +512,7 @@ Payment::doApply ()
         }
 
         // if invoice, process invoice create or transfer
-        auto const sleIssueRoot = view().peek(keylet::issuet(saDstAmount));
-        auto const uIssueFlags = sleIssueRoot->getFieldU32(sfFlags);
+        auto const uIssueFlags = sleIssue->getFieldU32(sfFlags);
         if (isTesSuccess(terResult) && (uIssueFlags & tfInvoiceEnable) != 0)
         {
             uint256 id = ctx_.tx.getFieldH256(sfInvoiceID);

@@ -131,6 +131,14 @@ SetAccount::preflight (PreflightContext const& ctx)
         return temINVALID_FLAG;
     }
 
+    bool bSetAutoTrust    = (uTxFlags & tfRequireAutoTrust) || (uSetFlag == asfAutoTrust);
+    bool bClearAutoTrust  = (uTxFlags & tfOptionalAutoTrust) || (uClearFlag == asfAutoTrust);
+    if (bSetAutoTrust && bClearAutoTrust)
+    {
+        JLOG(j.trace()) << "Malformed transaction: Contradictory flags set.";
+        return temINVALID_FLAG;
+    }
+
     // TransferRate
     if (tx.isFieldPresent (sfTransferRate))
     {
@@ -213,14 +221,14 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         }
     }
 
-    bool bCodeAccount  = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount);
-    if (bCodeAccount && (!sle->isFieldPresent(sfCode) && !ctx.tx.isFieldPresent(sfCode)))
+    bool bSetCodeAccount  = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount);
+    if (bSetCodeAccount && (!sle->isFieldPresent(sfCode) && !ctx.tx.isFieldPresent(sfCode)))
     {
         JLOG(ctx.j.trace()) << "when set code account, code should present";
         return temNO_CODE;
     }
 
-    if (bCodeAccount && (uFlagsIn & lsfCodeAccount))
+    if (bSetCodeAccount && (uFlagsIn & lsfCodeAccount))
     {
         JLOG(ctx.j.trace()) << "Account is already code account";
         return temCODE_ACCOUNT;
@@ -249,7 +257,9 @@ SetAccount::doApply ()
     bool bClearRequireAuth = (uTxFlags & tfOptionalAuth) || (uClearFlag == asfRequireAuth);
     bool bSetDisallowCALL   = (uTxFlags & tfDisallowCALL) || (uSetFlag == asfDisallowCALL);
     bool bClearDisallowCALL = (uTxFlags & tfAllowCALL) || (uClearFlag == asfDisallowCALL);
-    bool bCodeAccount       = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount); // no clear
+    bool bSetCodeAccount       = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount); // no clear
+    bool bSetAutoTrust         = (uTxFlags & tfRequireAutoTrust) || (uSetFlag == asfAutoTrust);
+    bool bClearAutoTrust       = (uTxFlags & tfOptionalAutoTrust) || (uClearFlag == asfAutoTrust);
 
     bool sigWithMaster = false;
 
@@ -320,6 +330,22 @@ SetAccount::doApply ()
 			}
 		}
 	}
+
+    //
+    // AutoTrustTag
+    //
+
+    if (bSetAutoTrust && !(uFlagsIn & lsfAutoTrust))
+    {
+        JLOG(j_.trace()) << "Set lsfAutoTrust.";
+        uFlagsOut |= lsfAutoTrust;
+    }
+
+    if (bClearAutoTrust && (uFlagsIn & lsfAutoTrust))
+    {
+        JLOG(j_.trace()) << "Clear lsfAutoTrust.";
+        uFlagsOut &= ~lsfAutoTrust;
+    }
 
     //
     // RequireDestTag
@@ -558,7 +584,7 @@ SetAccount::doApply ()
     }
 
     // code account flag
-    if (bCodeAccount && !(uFlagsIn & lsfCodeAccount))
+    if (bSetCodeAccount && !(uFlagsIn & lsfCodeAccount))
     {
         JLOG(j_.trace()) << "Set lsfCodeAccount.";
         uFlagsOut |= lsfCodeAccount;
