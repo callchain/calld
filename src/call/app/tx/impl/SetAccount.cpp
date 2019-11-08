@@ -686,7 +686,7 @@ SetAccount::doInitCall ()
         if (isTesSuccess(terResult))
         {
             // save lua contract variable
-            SaveLuaTable(L, uDstAccountID);
+            SaveLuaTable(L, account_);
         }
         else
         {

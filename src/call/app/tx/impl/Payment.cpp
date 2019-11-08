@@ -428,7 +428,7 @@ Payment::doApply ()
     // 1. do call check call before
     if (sleDst->isFieldPresent(sfCode))
     {
-        terResult = doCodeCheckCall();
+        terResult = doCodeCheckCall(saDstAmount);
         if (terResult != tesSUCCESS)
             return terResult;
     }
