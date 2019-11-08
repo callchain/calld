@@ -569,6 +569,21 @@ SetAccount::doApply ()
     {
         TER terResult = doInitCall();
         if (!isTesSuccess(terResult)) return terResult;
+        else
+        {
+            std::string code = strCopy(ctx_.tx.getFieldVL(sfCode));
+            auto uCode = strCopy(code);
+            std::int32_t diff_size = uCode.size();
+            if (sle->isFieldPresent(sfCode))
+            {
+                auto uOldCode = sle->getFieldVL(sfCode);
+                diff_size = diff_size - uOldCode.size();
+            }
+            std::int32_t increment = view().fees().increment;
+            std::int32_t codeCount = diff_size / increment;
+            sle->setFieldU32(sfOwnerCount, sle->getFieldU32(sfOwnerCount) + codeCount);
+            sle->setFieldVL(sfCode, uCode);
+        }
     }
 
     if (uFlagsIn != uFlagsOut)
@@ -639,9 +654,9 @@ SetAccount::doInitCall ()
 
         // set global parameters for lua contract
         lua_newtable(L); // for msg
-        call_push_string(L, "address", to_string(uDstAccountID));
+        call_push_string(L, "address", to_string(account_));
         call_push_string(L, "sender", to_string(account_));
-        call_push_string(L, "value", deliveredAmount.getJson(0).asString());
+        call_push_string(L, "value", "0");
         lua_setglobal(L, "msg");
 
         lua_newtable(L); // for block
@@ -665,7 +680,7 @@ SetAccount::doInitCall ()
             terResult = TER(r + 1000);
         }
 
-        rops = lua_getdrops(L);
+        drops = lua_getdrops(L);
         terResult = isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
 
         if (isTesSuccess(terResult))
@@ -680,18 +695,6 @@ SetAccount::doInitCall ()
         }
     }
     lua_close(L);
-
-    auto uCode = strCopy(code);
-    std::int32_t diff_size = uCode.size();
-    if (sle->isFieldPresent(sfCode))
-    {
-        auto uOldCode = sle->getFieldVL(sfCode);
-        diff_size = diff_size - uOldCode.size();
-    }
-    std::int32_t increment = view().fees().increment;
-    std::int32_t codeCount = diff_size / increment;
-    sle->setFieldU32(sfOwnerCount, sle->getFieldU32(sfOwnerCount) + codeCount);
-    sle->setFieldVL(sfCode, uCode);
 
     return tesSUCCESS;
 }

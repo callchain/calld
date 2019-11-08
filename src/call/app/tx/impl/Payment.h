@@ -74,7 +74,7 @@ public:
 
     TER doApply () override;
 
-    TER doCodeCheckCall();
+    TER doCodeCheckCall(STAmount const& amount);
 
     TER doCodeCall(STAmount const& deliveredAmount);
 

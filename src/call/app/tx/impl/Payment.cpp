@@ -569,7 +569,7 @@ Payment::doApply ()
 }
 
 TER
-Payment::doCodeCheckCall()
+Payment::doCodeCheckCall(STAmount const& amount)
 {
     TER terResult = tesSUCCESS;
     AccountID const uDstAccountID (ctx_.tx.getAccountID (sfDestination));
@@ -613,7 +613,7 @@ Payment::doCodeCheckCall()
     lua_newtable(L); // for msg
     call_push_string(L, "address", to_string(uDstAccountID));
     call_push_string(L, "sender", to_string(account_));
-    call_push_string(L, "value", "0"); // for check it's 0
+    call_push_string(L, "value", amount.getJson(0).asString());
     lua_setglobal(L, "msg");
 
     lua_newtable(L); // for block
