@@ -227,7 +227,6 @@ getParamIndex(AccountID const& contract)
     return sha512Half(
         std::uint16_t(spaceParam),
         contract,
-        key,
         std::uint32_t(1)
     );
 }
