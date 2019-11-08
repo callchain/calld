@@ -222,7 +222,7 @@ getIssueIndex(AccountID const& account, Currency const& currency)
 }
 
 uint256
-getParamIndex(std::string const& contract, std::string const& key)
+getParamIndex(AccountID const& contract)
 {
     return sha512Half(
         std::uint16_t(spaceParam),
@@ -268,9 +268,9 @@ Keylet invoice_t::operator()(uint256 const &id, AccountID const &issuer, Currenc
     return { ltINVOICE,  getInvoiceIndex(id, issuer, currency) };
 }
 
- Keylet param_t::operator()(std::string const& contract, std::string const& key) const
+ Keylet param_t::operator()(AccountID const& contract) const
  {
-     return { ltPARAMROOT, getParamIndex(contract, key) };
+     return { ltPARAMROOT, getParamIndex(contract) };
  }
 
 Keylet account_t::operator()(AccountID const& id) const

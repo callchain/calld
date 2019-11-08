@@ -282,7 +282,7 @@ void SaveLuaTable(lua_State *L, AccountID const &contract_address)
     ApplyView& view = transactor->view();
 
     // save or update data
-    auto const index = getParamIndex(to_string(contract_address), "CONTRACT-DATA");
+    auto const index = getParamIndex(contract_address);
     auto const sle = view.peek(keylet::paramt(index));
     if (sle) {
         if (root.size() == 0)
@@ -348,7 +348,7 @@ void RestoreLuaTable(lua_State *L, AccountID const &contract_address)
     ApplyView& view = transactor->view();
 
     // read data from saved
-    auto const index = getParamIndex(to_string(contract_address), "CONTRACT-DATA");
+    auto const index = getParamIndex(contract_address);
     auto const sle = view.peek(keylet::paramt(index));
     if (!sle || !sle->isFieldPresent(sfInfo)) return; // no contract data saved
 

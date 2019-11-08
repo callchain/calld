@@ -279,6 +279,7 @@ LedgerEntryTypesMatch::visitEntry(
         case ltISSUEROOT:
         case ltFeeRoot:
         case ltINVOICE:
+        case ltPARAMROOT:
             break;
         default:
             invalidTypeAdded_ = true;
