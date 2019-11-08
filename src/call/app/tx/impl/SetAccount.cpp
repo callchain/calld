@@ -567,7 +567,7 @@ SetAccount::doApply ()
     // code account code
     if (ctx_.tx.isFieldPresent (sfCode))
     {
-        TER terResult = doInitCall();
+        TER terResult = doInitCall(sle);
         if (!isTesSuccess(terResult)) return terResult;
         else
         {
@@ -593,7 +593,7 @@ SetAccount::doApply ()
 }
 
 TER
-SetAccount::doInitCall ()
+SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
 {
     std::string code = strCopy(ctx_.tx.getFieldVL(sfCode));
     std::string uncompress_code = UncompressData(code);
@@ -627,6 +627,7 @@ SetAccount::doInitCall ()
     // call init
     lua_getglobal(L, "init");
     if (lua_isfunction(L, -1))
+    // if (lua_isfunction(L, -1) && !sle->isFieldPresent(sfCode)) // only can init one time
     {
         // push parameters, collect parameters if exists
         lua_newtable(L);
@@ -666,10 +667,10 @@ SetAccount::doInitCall ()
         lret = lua_pcall(L, 1, 1, 0);
         if (lret != LUA_OK)
         {
-            JLOG(j_.warn()) << "Fail to call account code main, error=" << lret;
+            JLOG(j_.warn()) << "Fail to call account code init, error=" << lret;
             drops = lua_getdrops(L);
             lua_close(L);
-            return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_CALL_FAILED;
+            return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_INIT_FAILED;
         }
         // get result
         TER terResult = TER(lua_tointeger(L, -1));

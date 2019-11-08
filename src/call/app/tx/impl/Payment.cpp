@@ -426,7 +426,7 @@ Payment::doApply ()
     TER terResult;
 
     // 1. do call check call before
-    if (sleDst->isFieldPresent(sfCode))
+    if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
     {
         terResult = doCodeCheckCall(saDstAmount);
         if (terResult != tesSUCCESS)
@@ -560,12 +560,30 @@ Payment::doApply ()
     }
 
     // 3. call account code
-    if (terResult != tesSUCCESS || (uTxFlags & tfNoCodeCall) != 0)
+    if (!isTesSuccess(terResult))
+    {
+        if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
+        {
+            // has code, call check already, not success, should deduct fee still
+            int r = terResult;
+            terResult = TER(r + 1000);
+        }
         return terResult;
-    bool hasCode = sleDst->isFieldPresent(sfCode);
-    if (!hasCode) return terResult;
+    }
+    // success but no do call code
+    if ((uTxFlags & tfNoCodeCall) != 0)
+    {
+        return terResult; // should be tesSUCCESS
+    }
 
-    return doCodeCall(deliveredAmount);
+    if (sleDst->isFieldPresent(sfCode))
+    {
+        return doCodeCall(deliveredAmount);
+    }
+    else
+    {
+        return terResult; // should be tesSUCCESS
+    }
 }
 
 TER

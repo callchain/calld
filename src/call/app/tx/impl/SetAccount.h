@@ -69,7 +69,7 @@ public:
 
     TER doApply () override;
 
-    TER doInitCall();
+    TER doInitCall(std::shared_ptr<SLE> const &sle);
 };
 
 } // call
