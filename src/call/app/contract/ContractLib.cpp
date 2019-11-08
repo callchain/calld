@@ -265,6 +265,8 @@ void __save_lua_table(lua_State *L, Json::Value root)
 void SaveLuaTable(lua_State *L, AccountID const &contract_address)
 {
     lua_getglobal(L, "contract"); // contract global variable
+    if (!lua_istable(L, -1))  return; // no variable table
+
     Json::Value root;
     __save_lua_table(L, root);
 
