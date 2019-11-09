@@ -275,6 +275,7 @@ enum TER
     tedINVALID_DESTINATION      = 1008,
     tedNO_SUCH_VALUE            = 1009,
     tedCODE_FEE_OUT             = 1010,
+    tedINVALID_PARAM_ISSUER     = 1011,
 };
 
 inline bool isTelLocal(TER x)

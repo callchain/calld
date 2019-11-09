@@ -207,6 +207,7 @@ transResults()
         { tedINVALID_DESTINATION,    { "tedINVALID_DESTINATION",   "Invalid destination account."                                                  } },
         { tedNO_SUCH_VALUE,          { "tedNO_SUCH_VALUE",         "No such value saved."                                                          } },
         { tedCODE_FEE_OUT,           { "tedCODE_FEE_OUT",          "Fee run out in code execute"                                                   } },
+        { tedINVALID_PARAM_ISSUER,   { "tedINVALID_PARAM_ISSUER",  "Invalid function parameter issuer."                                            } },
 
         { tesSUCCESS,                { "tesSUCCESS",               "The transaction was applied. Only final in a validated ledger."                } },
     };

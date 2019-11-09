@@ -133,6 +133,63 @@ static int syscall_account(lua_State *L)
     return 2;
 }
 
+static int syscall_callstate(lua_State *L)
+{
+    int argc = lua_gettop(L);
+    if (argc != 3) { // account, issuer, currency
+        return call_error(L, tedINVALID_PARAM_NUMS);
+    }
+    if (!lua_isstring(L, 1) || !lua_isstring(L, 2) || !lua_isstring(L, 3))
+    {
+        return call_error(L, tedINVALID_PARAM_TYPE);
+    }
+    const char* account = lua_tostring(L, 1);
+    std::string accountS = account;
+    auto const accountID = RPC::accountFromStringStrict(accountS).get();
+    if (!accountID) {
+        return call_error(L, tedINVALID_PARAM_ACCOUNT);
+    }
+    const char* issuer = lua_tostring(L, 2);
+    std::string issuerS = issuer;
+    auto const issuerID = RPC::accountFromStringStrict(issuerS).get();
+    if (!issuerID) {
+        return call_error(L, tedINVALID_PARAM_ISSUER);
+    }
+    if (accountID == issuerID) {
+        return call_error(L, temDST_IS_SRC);
+    }
+    const char* currency = lua_tostring(L, 2);
+    std::string currencyS = currency;
+    auto const currencyObj = to_currency(currencyS);
+
+    lua_pushlightuserdata(L, (void *)&getApp());
+    lua_gettable(L, LUA_REGISTRYINDEX);
+    Payment *payment = reinterpret_cast<Payment *>(lua_touserdata(L, -1));
+    lua_pop(L, 1);
+
+    auto const sle = payment->view().peek(keylet::line(issuerID, accountID, currencyObj));
+    if (!sle) {
+        return call_error(L, terNO_LINE);
+    }
+
+    lua_newtable(L);
+    call_push_string (L, "Account",    account);
+    if (accountID > issuerID)
+    {
+        call_push_string (L, "Balance", sle->getFieldAmount(sfBalance).negative().getText());
+        call_push_string (L, "Limit",   sle->getFieldAmount(sfHighLimit).getText());
+    }
+    else
+    {
+        call_push_string (L, "Balance", sle->getFieldAmount(sfBalance).getText());
+        call_push_string (L, "Limit",   sle->getFieldAmount(sfLowLimit).getText());
+    }
+
+    lua_pushinteger(L, tesSUCCESS);
+
+    return 2;
+}
+
 static int syscall_transfer(lua_State *L)
 {
     int argc = lua_gettop(L);
