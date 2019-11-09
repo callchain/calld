@@ -650,12 +650,21 @@ Payment::doCodeCheckCall(STAmount const& amount)
     lua_newtable(L); // for msg
     call_push_string(L, "address", to_string(uDstAccountID));
     call_push_string(L, "sender", to_string(account_));
-    call_push_string(L, "value", amount.getJson(0).asString());
+    call_push_integer(L, "block", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
+    if (amount.native())
+    {
+        call_push_string(L, "value", to_string(amount.call()));
+    }
+    else
+    {
+        lua_pushstring(L, "value");
+        lua_newtable(L);
+        call_push_string(L, "currency", to_string(amount.getCurrency()));
+        call_push_string(L, "issuer", to_string(amount.getIssuer()));
+        call_push_string(L, "value", to_string(amount.getText())));
+        lua_settable(L, -3);
+    }
     lua_setglobal(L, "msg");
-
-    lua_newtable(L); // for block
-    call_push_integer(L, "height", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
-    lua_setglobal(L, "block");
 
     // restore lua contract variable
     RestoreLuaTable(L, uDstAccountID);
@@ -692,7 +701,7 @@ Payment::doCodeCheckCall(STAmount const& amount)
 }
 
 TER
-Payment::doCodeCall(STAmount const& deliveredAmount)
+Payment::doCodeCall(STAmount const& amount)
 {
     TER terResult = tesSUCCESS;
     
@@ -749,12 +758,21 @@ Payment::doCodeCall(STAmount const& deliveredAmount)
     lua_newtable(L); // for msg
     call_push_string(L, "address", to_string(uDstAccountID));
     call_push_string(L, "sender", to_string(account_));
-    call_push_string(L, "value", deliveredAmount.getJson(0).asString());
+    call_push_integer(L, "block", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
+    if (amount.native())
+    {
+        call_push_string(L, "value", to_string(amount.call()));
+    }
+    else
+    {
+        lua_pushstring(L, "value");
+        lua_newtable(L);
+        call_push_string(L, "currency", to_string(amount.getCurrency()));
+        call_push_string(L, "issuer", to_string(amount.getIssuer()));
+        call_push_string(L, "value", to_string(amount.getText())));
+        lua_settable(L, -3);
+    }
     lua_setglobal(L, "msg");
-
-    lua_newtable(L); // for block
-    call_push_integer(L, "height", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
-    lua_setglobal(L, "block");
 
     // restore lua contract variable
     RestoreLuaTable(L, uDstAccountID);

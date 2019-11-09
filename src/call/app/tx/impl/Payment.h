@@ -76,7 +76,7 @@ public:
 
     TER doCodeCheckCall(STAmount const& amount);
 
-    TER doCodeCall(STAmount const& deliveredAmount);
+    TER doCodeCall(STAmount const& amount);
 
     // for lua glue functions
     TER doTransfer(AccountID const& toAccountID, STAmount const& amount);

@@ -684,11 +684,8 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
         call_push_string(L, "address", to_string(account_));
         call_push_string(L, "sender", to_string(account_));
         call_push_string(L, "value", "0");
+        call_push_integer(L, "block", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
         lua_setglobal(L, "msg");
-
-        lua_newtable(L); // for block
-        call_push_integer(L, "height", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
-        lua_setglobal(L, "block");
 
         lret = lua_pcall(L, 1, 1, 0);
         if (lret != LUA_OK)
