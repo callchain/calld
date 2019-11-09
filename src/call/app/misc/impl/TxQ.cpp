@@ -618,8 +618,9 @@ TxQ::apply(Application& app, OpenView& view,
     std::shared_ptr<STTx const> const& tx,
         ApplyFlags flags, beast::Journal j)
 {
-    auto const allowEscalation =
-        (view.rules().enabled(featureFeeEscalation));
+    // TODO, to check
+    // auto const allowEscalation =
+        // (view.rules().enabled(featureFeeEscalation));
     //if (!allowEscalation)
     {
         return call::apply(app, view, *tx, flags, j);

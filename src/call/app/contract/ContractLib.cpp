@@ -176,7 +176,9 @@ static int syscall_callstate(lua_State *L)
     call_push_string (L, "Account",    account);
     if (accountID > issuerID)
     {
-        call_push_string (L, "Balance", sle->getFieldAmount(sfBalance).negative().getText());
+        auto amount = sle->getFieldAmount(sfBalance);
+        amount.negate();
+        call_push_string (L, "Balance", amount.getText());
         call_push_string (L, "Limit",   sle->getFieldAmount(sfHighLimit).getText());
     }
     else
@@ -266,6 +268,7 @@ void RegisterContractLib(lua_State *L)
 {
     lua_register(L, "syscall_ledger",    syscall_ledger  );
     lua_register(L, "syscall_account",   syscall_account );
+    lua_register(L, "syscall_callstate", syscall_callstate);
 
     lua_register(L, "syscall_transfer",  syscall_transfer);
 }
