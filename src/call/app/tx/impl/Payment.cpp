@@ -443,7 +443,7 @@ Payment::doApply ()
         // not send back to issuer and AutoTrust is flags set
         if (saDstAmount.getIssuer() != uDstAccountID && (sleDst->getFieldU32 (sfFlags) & lsfAutoTrust) != 0)
         {
-            auto const sleState = view().peek(keylet::line(saDstAmount.getIssuer(), uDstAccountID, currency));
+            auto const sleState = view().peek(keylet::line(saDstAmount.getIssuer(), uDstAccountID, saDstAmount.getCurrency()));
             if (!sleState)
             {
                 terResult = auto_trust(view(), uDstAccountID, sleIssue->getFieldAmount(sfTotal), j_);
