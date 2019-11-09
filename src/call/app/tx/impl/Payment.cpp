@@ -440,7 +440,7 @@ Payment::doApply ()
     if (bCall)
     {
         auto const sleIssue = view().peek(keylet::issuet(saDstAmount));
-        // not send back to issuer and AutoTrust is flags set
+        // not send back to issuer and AutoTrust is flags set, do autotrust
         if (saDstAmount.getIssuer() != uDstAccountID && (sleDst->getFieldU32 (sfFlags) & lsfAutoTrust) != 0)
         {
             auto const sleState = view().peek(keylet::line(saDstAmount.getIssuer(), uDstAccountID, saDstAmount.getCurrency()));
@@ -863,6 +863,21 @@ Payment::doTransfer(AccountID const& toAccountID, STAmount const& amount)
     TER terResult = tesSUCCESS;
     if (!amount.native())
     {
+        // not send back to issuer and AutoTrust is flags set, do autotrust
+        if (amount.getIssuer() != toAccountID && (sleDst->getFieldU32 (sfFlags) & lsfAutoTrust) != 0)
+        {
+            auto const sleState = view().peek(keylet::line(amount.getIssuer(), toAccountID, amount.getCurrency()));
+            if (!sleState)
+            {
+                auto const sleIssue = view().peek(keylet::issuet(amount));
+                terResult = auto_trust(view(), toAccountID, sleIssue->getFieldAmount(sfTotal), j_);
+                if (!isTesSuccess(terResult))
+                {
+                    return terResult;
+                }
+            }
+        }
+
         path::CallCalc::Input rcInput;
         rcInput.partialPaymentAllowed = false;
         rcInput.defaultPathsAllowed = true;
