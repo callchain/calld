@@ -661,7 +661,7 @@ Payment::doCodeCheckCall(STAmount const& amount)
         lua_newtable(L);
         call_push_string(L, "currency", to_string(amount.getCurrency()));
         call_push_string(L, "issuer", to_string(amount.getIssuer()));
-        call_push_string(L, "value", to_string(amount.getText())));
+        call_push_string(L, "value", amount.getText()));
         lua_settable(L, -3);
     }
     lua_setglobal(L, "msg");
@@ -769,7 +769,7 @@ Payment::doCodeCall(STAmount const& amount)
         lua_newtable(L);
         call_push_string(L, "currency", to_string(amount.getCurrency()));
         call_push_string(L, "issuer", to_string(amount.getIssuer()));
-        call_push_string(L, "value", to_string(amount.getText())));
+        call_push_string(L, "value", amount.getText()));
         lua_settable(L, -3);
     }
     lua_setglobal(L, "msg");
