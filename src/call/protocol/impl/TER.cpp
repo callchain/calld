@@ -111,10 +111,6 @@ transResults()
         { tefWRONG_PRIOR,            { "tefWRONG_PRIOR",           "This previous transaction does not match."                                     } },
         { tefBAD_AUTH_MASTER,        { "tefBAD_AUTH_MASTER",       "Auth for unclaimed account needs correct master key."                          } },
         { tefINVARIANT_FAILED,       { "tefINVARIANT_FAILED",      "Fee claim violated invariants for the transaction."                            } },
-        { terCODE_LOAD_FAILED,       { "terCODE_LOAD_FAILED",      "Fail to load account code."                                                    } },
-        { terCODE_CALL_FAILED,       { "terCODE_CALL_FAILED",      "Call account code main function failed."                                       } },
-        { terCODE_CHECK_FAILED,      { "terCODE_CHECK_FAILED",     "Call account code check function failed."                                      } },
-        { terCODE_INIT_FAILED,       { "terCODE_INIT_FAILED",      "Call account code init function failed."                                       } },
 
         { telLOCAL_ERROR,            { "telLOCAL_ERROR",           "Local failure."                                                                } },
         { telBAD_DOMAIN,             { "telBAD_DOMAIN",            "Domain too long."                                                              } },
@@ -208,6 +204,10 @@ transResults()
         { tedNO_SUCH_VALUE,          { "tedNO_SUCH_VALUE",         "No such value saved."                                                          } },
         { tedCODE_FEE_OUT,           { "tedCODE_FEE_OUT",          "Fee run out in code execute"                                                   } },
         { tedINVALID_PARAM_ISSUER,   { "tedINVALID_PARAM_ISSUER",  "Invalid function parameter issuer."                                            } },
+        { tedCODE_LOAD_FAILED,       { "tedCODE_LOAD_FAILED",      "Fail to load account code."                                                    } },
+        { tedCODE_CALL_FAILED,       { "tedCODE_CALL_FAILED",      "Call account code main function failed."                                       } },
+        { tedCODE_CHECK_FAILED,      { "tedCODE_CHECK_FAILED",     "Call account code check function failed."                                      } },
+        { tedCODE_INIT_FAILED,       { "tedCODE_INIT_FAILED",      "Call account code init function failed."                                       } },
 
         { tesSUCCESS,                { "tesSUCCESS",               "The transaction was applied. Only final in a validated ledger."                } },
     };

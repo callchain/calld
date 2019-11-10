@@ -163,10 +163,6 @@ enum TER
     tefNOT_MULTI_SIGNING,
     tefBAD_AUTH_MASTER,
     tefINVARIANT_FAILED,
-    terCODE_LOAD_FAILED,
-    terCODE_CALL_FAILED,
-    terCODE_CHECK_FAILED,
-    terCODE_INIT_FAILED,
 
     // -99 .. -1: R Retry
     //   sequence too high, no funds for txn fee, originating -account
@@ -276,6 +272,10 @@ enum TER
     tedNO_SUCH_VALUE            = 1009,
     tedCODE_FEE_OUT             = 1010,
     tedINVALID_PARAM_ISSUER     = 1011,
+    tedCODE_LOAD_FAILED         = 1012,
+    tedCODE_CALL_FAILED         = 1013,
+    tedCODE_CHECK_FAILED        = 1014,
+    tedCODE_INIT_FAILED         = 1015,
 };
 
 inline bool isTelLocal(TER x)

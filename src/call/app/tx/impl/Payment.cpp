@@ -629,7 +629,7 @@ Payment::doCodeCheckCall(STAmount const& amount)
         JLOG(j_.warn()) << "Fail to load account code, error=" << lret;
         drops = lua_getdrops(L);
         lua_close(L);
-        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_LOAD_FAILED;
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_LOAD_FAILED;
     }
 
     lua_getglobal(L, "check");
@@ -675,7 +675,7 @@ Payment::doCodeCheckCall(STAmount const& amount)
         JLOG(j_.warn()) << "fail to call account check code, error=" << lret;
         drops = lua_getdrops(L);
         lua_close(L);
-        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_CHECK_FAILED;
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_CHECK_FAILED;
     }
 
     // get result
@@ -725,7 +725,7 @@ Payment::doCodeCall(STAmount const& amount)
         JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
         drops = lua_getdrops(L);
         lua_close(L);
-        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_LOAD_FAILED;
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_LOAD_FAILED;
     }
 
     lua_getglobal(L, "main");
@@ -783,7 +783,7 @@ Payment::doCodeCall(STAmount const& amount)
         JLOG(j_.warn()) << "Fail to call account code main, error=" << lret;
         drops = lua_getdrops(L);
         lua_close(L);
-        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_CALL_FAILED;
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_CALL_FAILED;
     }
 
     // get result

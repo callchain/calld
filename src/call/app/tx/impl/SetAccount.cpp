@@ -693,7 +693,7 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
             JLOG(j_.warn()) << "Fail to call account code init, error=" << lret;
             drops = lua_getdrops(L);
             lua_close(L);
-            return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terCODE_INIT_FAILED;
+            return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_INIT_FAILED;
         }
         // get result
         TER terResult = TER(lua_tointeger(L, -1));
