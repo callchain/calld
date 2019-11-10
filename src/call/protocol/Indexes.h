@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -109,7 +109,10 @@ uint256
 getNicknameIndex(Blob const & nickname);
 
 uint256
-getIssueIndex(AccountID const& a, Currency const& currency);
+getIssueIndex(AccountID const& account, Currency const& currency);
+
+uint256
+getParamIndex(AccountID const& contract);
 
 uint256
 getFeesIndex();
@@ -133,7 +136,8 @@ namespace keylet {
 /** An issueroot for an account*/
 struct issue_t
 {
-	Keylet operator()(AccountID const& a, Currency const& currency) const;
+	Keylet operator()(AccountID const& issuer, Currency const& currency) const;
+    Keylet operator()(STAmount const& amount) const;
 	Keylet operator()(uint256 const& key) const
 	{
 		return { ltISSUEROOT, key };
@@ -144,13 +148,23 @@ static issue_t const issuet{};
 /** An token root info for id, account, currency */
 struct invoice_t
 {
-    Keylet operator()(uint256 const &id, AccountID const &a, Currency const& currency) const;
+    Keylet operator()(uint256 const &id, AccountID const &issuer, Currency const& currency) const;
     Keylet operator()(uint256 const& key) const
 	{
 		return { ltINVOICE, key };
 	}
 };
 static invoice_t const invoicet{};
+
+struct param_t
+{
+    Keylet operator()(AccountID const& contract) const;
+    Keylet operator()(uint256 const& key) const
+    {
+        return {ltPARAMROOT, key };
+    }
+};
+static param_t const paramt{};
 
 /** AccountID root */
 struct account_t

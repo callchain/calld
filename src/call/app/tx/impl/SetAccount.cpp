@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -43,6 +43,13 @@
 #include <call/protocol/st.h>
 #include <call/ledger/View.h>
 #include <call/basics/StringUtilities.h>
+#include <call/app/contract/ContractLib.h>
+
+#include <boost/algorithm/string.hpp>
+#include <boost/regex.hpp>
+
+#include <lua-vm/src/lua.hpp>
+
 namespace call {
 
 bool
@@ -53,15 +60,12 @@ SetAccount::affectsSubsequentTransactionAuth(STTx const& tx)
         return true;
 
     auto const uSetFlag = tx[~sfSetFlag];
-    if(uSetFlag && (*uSetFlag == asfRequireAuth ||
-        *uSetFlag == asfDisableMaster ||
-            *uSetFlag == asfAccountTxnID))
-                return true;
+    if(uSetFlag && (*uSetFlag == asfRequireAuth || *uSetFlag == asfDisableMaster || *uSetFlag == asfAccountTxnID))
+        return true;
 
     auto const uClearFlag = tx[~sfClearFlag];
-    return uClearFlag && (*uClearFlag == asfRequireAuth ||
-        *uClearFlag == asfDisableMaster ||
-            *uClearFlag == asfAccountTxnID);
+    return uClearFlag 
+        && (*uClearFlag == asfRequireAuth || *uClearFlag == asfDisableMaster || *uClearFlag == asfAccountTxnID);
 }
 
 TER
@@ -127,6 +131,14 @@ SetAccount::preflight (PreflightContext const& ctx)
         return temINVALID_FLAG;
     }
 
+    bool bSetAutoTrust    = (uTxFlags & tfRequireAutoTrust) || (uSetFlag == asfAutoTrust);
+    bool bClearAutoTrust  = (uTxFlags & tfOptionalAutoTrust) || (uClearFlag == asfAutoTrust);
+    if (bSetAutoTrust && bClearAutoTrust)
+    {
+        JLOG(j.trace()) << "Malformed transaction: Contradictory flags set.";
+        return temINVALID_FLAG;
+    }
+
     // TransferRate
     if (tx.isFieldPresent (sfTransferRate))
     {
@@ -187,8 +199,7 @@ SetAccount::preclaim(PreclaimContext const& ctx)
 
     std::uint32_t const uTxFlags = ctx.tx.getFlags();
 
-    auto const sle = ctx.view.read(
-        keylet::account(id));
+    auto const sle = ctx.view.read(keylet::account(id));
 
     std::uint32_t const uFlagsIn = sle->getFieldU32(sfFlags);
 
@@ -210,6 +221,19 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         }
     }
 
+    bool bSetCodeAccount  = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount);
+    if (bSetCodeAccount && (!sle->isFieldPresent(sfCode) && !ctx.tx.isFieldPresent(sfCode)))
+    {
+        JLOG(ctx.j.trace()) << "when set code account, code should present";
+        return temNO_CODE;
+    }
+
+    if (bSetCodeAccount && (uFlagsIn & lsfCodeAccount))
+    {
+        JLOG(ctx.j.trace()) << "Account is already code account";
+        return temCODE_ACCOUNT;
+    }
+
     return tesSUCCESS;
 }
 
@@ -218,8 +242,7 @@ SetAccount::doApply ()
 {
     std::uint32_t const uTxFlags = ctx_.tx.getFlags ();
 
-    auto const sle = view().peek(
-        keylet::account(account_));
+    auto const sle = view().peek(keylet::account(account_));
 
     std::uint32_t const uFlagsIn = sle->getFieldU32 (sfFlags);
     std::uint32_t uFlagsOut = uFlagsIn;
@@ -234,6 +257,9 @@ SetAccount::doApply ()
     bool bClearRequireAuth = (uTxFlags & tfOptionalAuth) || (uClearFlag == asfRequireAuth);
     bool bSetDisallowCALL   = (uTxFlags & tfDisallowCALL) || (uSetFlag == asfDisallowCALL);
     bool bClearDisallowCALL = (uTxFlags & tfAllowCALL) || (uClearFlag == asfDisallowCALL);
+    bool bSetCodeAccount       = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount); // no clear
+    bool bSetAutoTrust         = (uTxFlags & tfRequireAutoTrust) || (uSetFlag == asfAutoTrust);
+    bool bClearAutoTrust       = (uTxFlags & tfOptionalAutoTrust) || (uClearFlag == asfAutoTrust);
 
     bool sigWithMaster = false;
 
@@ -270,12 +296,10 @@ SetAccount::doApply ()
 	//
 	if (ctx_.tx.isFieldPresent(sfNickName))
 	{
-		Blob nick = ctx_.tx.getFieldVL(sfNickName);
-        std::string tmp3=strHex(nick);
-        Blob nick3= strCopy(tmp3);
-
-		auto const nickname = view().peek(keylet::nick(nick3));
-		if (nickname)
+		Blob name = ctx_.tx.getFieldVL(sfNickName);
+        Blob nameHex = strCopy(strHex(name));
+		auto const nameSLE = view().peek(keylet::nick(nameHex));
+		if (nameSLE)
 		{
 			return temNICKNAMEEXISTED;
 		}
@@ -284,36 +308,44 @@ SetAccount::doApply ()
 			if (sle->isFieldPresent(sfNickName))
 			{
 				Blob oldname = sle->getFieldVL(sfNickName);
-				//auto oldindex = getNicknameIndex(oldname);
-                std::string tmp=strHex(oldname);
-				Blob oldname1= strCopy(tmp);
-				auto oldnicksle = view().peek(keylet::nick(oldname1));
-                if(oldnicksle)
+				auto oldnameSLE = view().peek(keylet::nick(strCopy(strHex(oldname))));
+                if(oldnameSLE)
                 {
-                    JLOG(j_.trace()) <<"nick name account: "<<toBase58(oldnicksle->getAccountID(sfAccount));
-                    view().erase(oldnicksle);
+                    JLOG(j_.trace()) << "nick name account: " << toBase58(oldnameSLE->getAccountID(sfAccount));
+                    view().erase(oldnameSLE);
                 }
-                std::string tmp1=strHex(nick);
-				Blob nick1= strCopy(tmp1);
-
-				auto newindex = getNicknameIndex(nick1);
-				auto const newslenick = std::make_shared<SLE>(ltNICKNAME, newindex);
-				newslenick->setAccountID(sfAccount, sle->getAccountID(sfAccount));
-				sle->setFieldVL(sfNickName, nick);
-				view().insert(newslenick);	
+				auto newindex = getNicknameIndex(nameHex);
+				auto const newnameSLE = std::make_shared<SLE>(ltNICKNAME, newindex);
+				newnameSLE->setAccountID(sfAccount, sle->getAccountID(sfAccount));
+				sle->setFieldVL(sfNickName, name);
+				view().insert(newnameSLE);	
 			}
 			else
 			{
-                std::string tmp2=strHex(nick);
-				Blob nick2= strCopy(tmp2);
-				auto index = getNicknameIndex(nick2);
-				auto const slenick = std::make_shared<SLE>(ltNICKNAME, index);
-				slenick->setAccountID(sfAccount,sle->getAccountID(sfAccount));
-				sle->setFieldVL(sfNickName, nick);
-				view().insert(slenick);
+				auto index = getNicknameIndex(nameHex);
+				auto const nameSLE2 = std::make_shared<SLE>(ltNICKNAME, index);
+				nameSLE2->setAccountID(sfAccount,sle->getAccountID(sfAccount));
+				sle->setFieldVL(sfNickName, name);
+				view().insert(nameSLE2);
 			}
 		}
 	}
+
+    //
+    // AutoTrustTag
+    //
+
+    if (bSetAutoTrust && !(uFlagsIn & lsfAutoTrust))
+    {
+        JLOG(j_.trace()) << "Set lsfAutoTrust.";
+        uFlagsOut |= lsfAutoTrust;
+    }
+
+    if (bClearAutoTrust && (uFlagsIn & lsfAutoTrust))
+    {
+        JLOG(j_.trace()) << "Clear lsfAutoTrust.";
+        uFlagsOut &= ~lsfAutoTrust;
+    }
 
     //
     // RequireDestTag
@@ -430,7 +462,7 @@ SetAccount::doApply ()
     {
         JLOG(j_.trace()) << "Set AccountTxnID";
         sle->makeFieldPresent (sfAccountTxnID);
-        }
+    }
 
     if ((uClearFlag == asfAccountTxnID) && sle->isFieldPresent (sfAccountTxnID))
     {
@@ -551,8 +583,141 @@ SetAccount::doApply ()
         }
     }
 
+    // code account flag
+    if (bSetCodeAccount && !(uFlagsIn & lsfCodeAccount))
+    {
+        JLOG(j_.trace()) << "Set lsfCodeAccount.";
+        uFlagsOut |= lsfCodeAccount;
+    }
+
+    // code account code
+    if (ctx_.tx.isFieldPresent (sfCode))
+    {
+        TER terResult = doInitCall(sle);
+        if (!isTesSuccess(terResult)) return terResult;
+        else
+        {
+            auto const uCode = ctx_.tx.getFieldVL(sfCode);
+            std::int32_t diff_size = uCode.size();
+            if (sle->isFieldPresent(sfCode))
+            {
+                auto uOldCode = sle->getFieldVL(sfCode);
+                diff_size = diff_size - uOldCode.size();
+            }
+            std::int32_t increment = view().fees().increment;
+            std::int32_t codeCount = diff_size / increment;
+            sle->setFieldU32(sfOwnerCount, sle->getFieldU32(sfOwnerCount) + codeCount);
+            sle->setFieldVL(sfCode, uCode);
+        }
+    }
+
     if (uFlagsIn != uFlagsOut)
         sle->setFieldU32 (sfFlags, uFlagsOut);
+
+    return tesSUCCESS;
+}
+
+TER
+SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
+{
+    std::string code = strCopy(ctx_.tx.getFieldVL(sfCode));
+    std::string uncompress_code = UncompressData(code);
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+    // set fee limit
+    auto const beforeFeeLimit = feeLimit();
+    std::int64_t drops = beforeFeeLimit.drops();
+    lua_setdrops(L, drops);
+
+    // check code main function exists
+    int lret = luaL_loadbuffer(L, uncompress_code.data(), uncompress_code.size(), "") || lua_pcall(L, 0, 0, 0);
+    if (lret != LUA_OK)
+    {
+        JLOG(j_.warn()) << "invalid account code, error=" << lret;
+        drops = lua_getdrops(L);
+        lua_close(L);
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : temINVALID_CODE;
+    }
+    lua_getglobal(L, "main");
+    lret = lua_type(L, -1);
+    if (lret != LUA_TFUNCTION)
+    {
+        JLOG(j_.warn()) << "no code entry, type=" << lret;
+        drops = lua_getdrops(L);
+        lua_close(L);
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : temNO_CODE_ENTRY;
+    }
+    lua_pop(L, 1);
+
+    // call init
+    lua_getglobal(L, "init");
+    if (lua_isfunction(L, -1))
+    // if (lua_isfunction(L, -1) && !sle->isFieldPresent(sfCode)) // only can init one time
+    {
+        // push parameters, collect parameters if exists
+        lua_newtable(L);
+        if (ctx_.tx.isFieldPresent(sfMemos))
+        {
+            auto const& memos = ctx_.tx.getFieldArray(sfMemos);
+            int n = 0;
+            for (auto const& memo : memos)
+            {
+                auto memoObj = dynamic_cast <STObject const*> (&memo);
+                if (!memoObj->isFieldPresent(sfMemoData))
+                {
+                    continue;
+                }
+                std::string data = strCopy(memoObj->getFieldVL(sfMemoData));
+                lua_pushstring(L, data.c_str());
+                lua_rawseti(L, -2, n);
+                ++n;
+            }
+        }
+        // set currency transactor in registry table
+        lua_pushlightuserdata(L, (void *)&ctx_.app);
+        lua_pushlightuserdata(L, this);
+        lua_settable(L, LUA_REGISTRYINDEX);
+
+        // set global parameters for lua contract
+        lua_newtable(L); // for msg
+        call_push_string(L, "address", to_string(account_));
+        call_push_string(L, "sender", to_string(account_));
+        call_push_string(L, "value", "0");
+        call_push_integer(L, "block", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
+        lua_setglobal(L, "msg");
+
+        lret = lua_pcall(L, 1, 1, 0);
+        if (lret != LUA_OK)
+        {
+            JLOG(j_.warn()) << "Fail to call account code init, error=" << lret;
+            drops = lua_getdrops(L);
+            lua_close(L);
+            return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_INIT_FAILED;
+        }
+        // get result
+        TER terResult = TER(lua_tointeger(L, -1));
+        lua_pop(L, 1);
+        if (isNotSuccess(terResult))
+        {
+            int r = terResult;
+            terResult = TER(r + 1000);
+        }
+
+        drops = lua_getdrops(L);
+        terResult = isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+
+        if (isTesSuccess(terResult))
+        {
+            // save lua contract variable
+            SaveLuaTable(L, account_);
+        }
+        else
+        {
+            lua_close(L);
+            return terResult;
+        }
+    }
+    lua_close(L);
 
     return tesSUCCESS;
 }

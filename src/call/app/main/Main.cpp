@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -143,14 +143,14 @@ void printHelp (const po::options_description& desc)
            "     account_lines <account> <account>|\"\" [<ledger>]\n"
            "     account_issues <account> <account>|\"\" [<ledger>]\n"
            "     account_invoices <account> <account>|\"\" [<ledger>]\n"
-           "     account_channels <account> <account>|\"\" [<ledger>]\n"
+        //    "     account_channels <account> <account>|\"\" [<ledger>]\n"
            "     account_objects <account> [<ledger>] [strict]\n"
            "     account_offers <account>|<account_public_key> [<ledger>]\n"
            "     account_tx accountID [ledger_min [ledger_max [limit [offset]]]] [binary] [count] [descending]\n"
            "     book_offers <taker_pays> <taker_gets> [<taker [<ledger> [<limit> [<proof> [<marker>]]]]]\n"
            "     can_delete [<ledgerid>|<ledgerhash>|now|always|never]\n"
-           "     channel_authorize <private_key> <channel_id> <drops>\n"
-           "     channel_verify <public_key> <channel_id> <drops> <signature>\n"
+        //    "     channel_authorize <private_key> <channel_id> <drops>\n"
+        //    "     channel_verify <public_key> <channel_id> <drops> <signature>\n"
            "     connect <ip> [<port>]\n"
            "     consensus_info\n"
            "     feature [<feature> [accept|reject]]\n"
@@ -176,7 +176,7 @@ void printHelp (const po::options_description& desc)
            "     sign_for <signer_address> <signer_private_key> <tx_json> [offline]\n"
            "     stop\n"
            "     submit <tx_blob>|[<private_key> <tx_json>]\n"
-           "     submit_multisigned <tx_json>\n"
+        //    "     submit_multisigned <tx_json>\n"
            "     tx <id>\n"
            "     validation_create [<seed>|<pass_phrase>|<key>]\n"
            "     validation_seed [<seed>|<pass_phrase>|<key>]\n"

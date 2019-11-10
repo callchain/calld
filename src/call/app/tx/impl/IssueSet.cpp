@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -30,6 +30,10 @@
 #include <call/protocol/Indexes.h>
 #include <call/protocol/st.h>
 #include <call/ledger/View.h>
+
+#include <call/basics/StringUtilities.h>
+#include <lua-vm/src/lua.hpp>
+
 namespace call
 {
 
@@ -72,6 +76,43 @@ TER IssueSet::preflight(PreflightContext const &ctx)
 
 TER IssueSet::preclaim(PreclaimContext const &ctx)
 {
+	STAmount totalAmount = ctx.tx.getFieldAmount(sfTotal);
+	if (totalAmount.native() || !ctx.tx.isFieldPresent(sfTotal))
+	{
+		return temBAD_TOTAL_AMOUNT;
+	}
+	// only allow issue owner token
+	AccountID uSrcAccount = ctx.tx.getAccountID(sfAccount);
+	if (totalAmount.getIssuer() != uSrcAccount)
+	{
+		return tecNO_AUTH;
+	}
+
+	auto const sle = ctx.view.read(keylet::issuet(totalAmount));
+	if (!sle) return tesSUCCESS;
+
+	std::uint32_t const uFlagsIn = sle->getFieldU32(sfFlags);
+	auto const totalAmountIn = sle->getFieldAmount(sfTotal);
+	std::uint32_t const uTxFlags = ctx.tx.getFlags();
+
+	// no transfer rate for invoice
+	if ((uTxFlags & tfInvoiceEnable) != 0 && ctx.tx.isFieldPresent(sfTransferRate))
+	{
+		return temINVOICE_NO_FEE;
+	}
+
+	// not allow additional want to set be additional
+	if ((uTxFlags & tfAdditional) != 0 && (uFlagsIn & lsfAdditional) ==0)
+	{
+		return temNOT_ADDITIONAL;
+	}
+
+	// not allow additional issue more amount
+	if ((uFlagsIn & lsfAdditional) == 0 && (totalAmount > totalAmountIn))
+	{
+		return temNOT_ADDITIONAL;
+	}
+
 	return tesSUCCESS;
 }
 
@@ -79,78 +120,56 @@ TER IssueSet::doApply()
 {
 	TER terResult = tesSUCCESS;
 	std::uint32_t const uTxFlags = ctx_.tx.getFlags();
-
-	if (!ctx_.tx.isFieldPresent(sfTotal))
-	{
-		return temBAD_AMOUNT;
-	}
-
-	STAmount satotal = ctx_.tx.getFieldAmount(sfTotal);
-	Currency currency = satotal.getCurrency();
-	if (satotal.native())
-	{
-		return temBAD_CURRENCY;
-	}
-	if (satotal.getIssuer() != account_)
-	{
-		return tecNO_AUTH;
-	}
-
-	bool const is_nft = (uTxFlags & tfNonFungible) != 0;
-	if (is_nft && ctx_.tx.isFieldPresent(sfTransferRate))
-	{
-		return temNOT_SUPPORT;
-	}
+	STAmount totalAmount = ctx_.tx.getFieldAmount(sfTotal);
 
 	auto viewJ = ctx_.app.journal("View");
 
-	SLE::pointer sleIssueRoot = view().peek(keylet::issuet(account_, currency));
-	// not isused yet
-	if (!sleIssueRoot)
+	SLE::pointer sle = view().peek(keylet::issuet(totalAmount));
+	if (!sle)
 	{
-		uint256 uCIndex(getIssueIndex(account_, currency));
-		JLOG(j_.trace()) << "IssueSet: Creating IssueRoot " << to_string(uCIndex);
-		std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
-		terResult = issueSetCreate(view(), account_, satotal, rate, uTxFlags, uCIndex, viewJ);
-		if (terResult == tesSUCCESS) {
-			SLE::pointer sleRoot = view().peek (keylet::account(account_));
-			adjustOwnerCount(view(), sleRoot, 1, viewJ);
+		uint256 index = getIssueIndex(account_, totalAmount.getCurrency());
+		JLOG(j_.trace()) << "IssueSet: Creating IssueRoot " << to_string(index);
+		std::uint32_t rate = 0;
+		if (ctx_.tx.isFieldPresent(sfTransferRate))
+		{
+			rate = ctx_.tx.getFieldU32(sfTransferRate);
 		}
+		Blob info;
+		if (ctx_.tx.isFieldPresent(sfInfo))
+		{
+			info = ctx_.tx.getFieldVL(sfInfo);
+		}
+		terResult = issueSetCreate(view(), account_, totalAmount, rate, uTxFlags, index, info, viewJ);
 	}
-	// old issue setting
 	else
 	{
-		auto oldtotal = sleIssueRoot->getFieldAmount(sfTotal);
-		std::uint32_t const flags = sleIssueRoot->getFieldU32(sfFlags);
-		bool const editable = (flags & tfEnaddition) != 0;
-		bool const is_nft2 = (flags & tfNonFungible) != 0;
-		// not allow to edit total
-		if (!editable && (satotal > oldtotal))
+		std::uint32_t const uFlagsIn = sle->getFieldU32(sfFlags);
+		std::uint32_t uFlagsOut = uFlagsIn;
+		auto saOldTotal = sle->getFieldAmount(sfTotal);
+		
+		if ((uFlagsIn & tfAdditional) != 0 && totalAmount > saOldTotal)
 		{
-			return tecNO_AUTH;
+			sle->setFieldAmount(sfTotal, totalAmount);
 		}
 
-		// allow to edit and total is bigger than old total
-		if (editable && (satotal > oldtotal))
+		if ((uFlagsIn & lsfNonFungible) == 0 && ctx_.tx.isFieldPresent(sfTransferRate))
 		{
-			sleIssueRoot->setFieldAmount(sfTotal, satotal);
+			sle->setFieldU32(sfTransferRate, ctx_.tx.getFieldU32(sfTransferRate));
+		}
+		// Additional -> non additional
+		if ((uFlagsIn & lsfAdditional) != 0 && (uTxFlags & tfAdditional) == 0)
+		{
+			uFlagsOut &= ~lsfAdditional;
 		}
 		
-		// if has transfer rate, update it
-		const bool has_rate = ctx_.tx.isFieldPresent(sfTransferRate);
-		if (has_rate && is_nft2) 
+		if (uFlagsIn != uFlagsOut)
 		{
-			return tecNO_AUTH;
-		}
-		if (has_rate && !is_nft2) 
-		{
-			std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
-			sleIssueRoot->setFieldU32(sfTransferRate, rate);
+			sle->setFieldU32 (sfFlags, uFlagsOut);
 		}
 		
-		view().update(sleIssueRoot);
-		JLOG(j_.trace()) << "apendent the total";
+		view().update(sle);
 	}
+
 	return terResult;
 }
 

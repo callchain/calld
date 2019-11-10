@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -34,16 +34,21 @@
 
 #include <BeastConfig.h>
 #include <call/app/tx/impl/Payment.h>
+#include <call/app/tx/impl/ApplyContext.h>
 #include <call/app/paths/CallCalc.h>
+#include <call/app/contract/ContractLib.h>
+#include <call/app/ledger/LedgerMaster.h>
 #include <call/basics/Log.h>
 #include <call/core/Config.h>
 #include <call/protocol/st.h>
 #include <call/protocol/TxFlags.h>
 #include <call/protocol/JsonFields.h>
+#include <call/basics/StringUtilities.h>
+#include <lua-vm/src/lua.hpp>
 
 namespace call {
 
-// See https://call.com/wiki/Transaction_Format#Payment_.280.29
+// See https://dev.callchain.live/wiki/Transaction_Format#Payment_.280.29
 
 CALLAmount
 Payment::calculateMaxSpend(STTx const& tx)
@@ -210,7 +215,7 @@ Payment::preclaim(PreclaimContext const& ctx)
 
     // Call if source or destination is non-native or if there are paths.
     std::uint32_t const uTxFlags = ctx.tx.getFlags();
-    // bool const partialPaymentAllowed = uTxFlags & tfPartialPayment;
+    bool const partialPaymentAllowed = uTxFlags & tfPartialPayment;
     auto const paths = ctx.tx.isFieldPresent(sfPaths);
     auto const sendMax = ctx.tx[~sfSendMax];
 
@@ -218,56 +223,117 @@ Payment::preclaim(PreclaimContext const& ctx)
     AccountID const uDstAccountID(ctx.tx[sfDestination]);
     STAmount const saDstAmount(ctx.tx[sfAmount]);
 
+
+    // Check currency's issue set
+    // TODO, fix when dstAmount's issuer is source account
+    TER ter1 = checkIssue(ctx, saDstAmount, false);
+    if (ter1 != tesSUCCESS)
+    {
+        JLOG(ctx.j.trace()) << "doPayment: preclaim, issue set not exists or not valid, dstAmount: " 
+            << saDstAmount.getFullText();
+        return ter1;
+    }
+
+    // sendMax not support invoice token
+    if (sendMax)
+    {
+        // TODO, when sendMax issuer is account_
+        TER ter2 = checkIssue(ctx, *sendMax, true);
+        if (ter2 != tesSUCCESS)
+        {
+            JLOG(ctx.j.trace()) << "doPayment: preclaim, issue set not exists or not valid, sendMax: " 
+                << (*sendMax).getFullText();
+            return ter2;
+        }
+    }
+
+    // check invoice id
+    if (!saDstAmount.native())
+    {
+        auto const issueRoot = ctx.view.read(keylet::issuet(saDstAmount));
+        std::uint32_t const issueFlags = issueRoot->getFieldU32(sfFlags);
+        if ((issueFlags & tfInvoiceEnable) != 0)
+        {
+            if (!ctx.tx.isFieldPresent(sfInvoiceID))
+            {
+                JLOG(ctx.j.trace()) << "doPayment: preclaim, invoice id not present";
+                return temBAD_INVOICEID;
+            }
+            auto const issued = issueRoot->getFieldAmount(sfIssued);
+            auto const id = ctx.tx.getFieldH256 (sfInvoiceID);
+            auto const sleInvoice = ctx.view.read(keylet::invoicet(id, issued.issue().account, issued.issue().currency));
+            if (issued.issue().account == srcAccountID)
+            {
+                // issue, check invoice field present
+                if (!ctx.tx.isFieldPresent(sfInvoice))
+                {
+                JLOG(ctx.j.trace()) << "doPayment: issue invoice but invoice field not present";
+                return temBAD_INVOICE;
+                }
+                // check invoice not exists
+                if (sleInvoice)
+                {
+                JLOG(ctx.j.trace()) << "doPayment: invoice id exists already, id=" << to_string(id);
+                return temID_EXISTED;
+                }
+            }
+            else
+            {
+                // transfer, check invoice id exists
+                if (!sleInvoice)
+                {
+                    JLOG(ctx.j.trace()) << "doPayment, invoice not exists, id=" << to_string(id);
+                    return temINVOICE_NOT_EXISTS;
+                }
+            }
+        }       
+    }
+    
+
     auto const srck = keylet::account(srcAccountID);
     auto const sleSrc = ctx.view.read(srck);
 
     auto const k = keylet::account(uDstAccountID);
     auto const sleDst = ctx.view.read(k);
 
-    // if (!sleDst)
-    // {
-    //     // Destination account does not exist.
-    //     if (!saDstAmount.native())
-    //     {
-    //         JLOG(ctx.j.trace()) <<
-    //             "Delay transaction: Destination account does not exist.";
+    if (!sleDst)
+    {
+        // Destination account does not exist.
+        if (!saDstAmount.native())
+        {
+            JLOG(ctx.j.trace()) << "Delay transaction: Destination account does not exist.";
+            // Another transaction could create the account and then this
+            // transaction would succeed.
+            return tecNO_DST;
+        }
+        else if (ctx.view.open() && partialPaymentAllowed)
+        {
+            // You cannot fund an account with a partial payment.
+            // Make retry work smaller, by rejecting this.
+            JLOG(ctx.j.trace()) << "Delay transaction: Partial payment not allowed to create account.";
+            // Another transaction could create the account and then this
+            // transaction would succeed.
+            return telNO_DST_PARTIAL;
+        }
+        else if (saDstAmount < STAmount(ctx.view.fees().accountReserve(0)))
+        {
+            // accountReserve is the minimum amount that an account can have.
+            // Reserve is not scaled by load.
+            JLOG(ctx.j.trace()) <<
+                "Delay transaction: Destination account does not exist. " <<
+                "Insufficent payment to create account.";
 
-    //         // Another transaction could create the account and then this
-    //         // transaction would succeed.
-    //         return tecNO_DST;
-    //     }
-    //     else if (ctx.view.open()
-    //         && partialPaymentAllowed)
-    //     {
-    //         // You cannot fund an account with a partial payment.
-    //         // Make retry work smaller, by rejecting this.
-    //         JLOG(ctx.j.trace()) <<
-    //             "Delay transaction: Partial payment not allowed to create account.";
-
-
-    //         // Another transaction could create the account and then this
-    //         // transaction would succeed.
-    //         return telNO_DST_PARTIAL;
-    //     }
-    //     else if (saDstAmount < STAmount(ctx.view.fees().accountReserve(0)))
-    //     {
-    //         // accountReserve is the minimum amount that an account can have.
-    //         // Reserve is not scaled by load.
-    //         JLOG(ctx.j.trace()) <<
-    //             "Delay transaction: Destination account does not exist. " <<
-    //             "Insufficent payment to create account.";
-
-    //         // TODO: dedupe
-    //         // Another transaction could create the account and then this
-    //         // transaction would succeed.
-    //         return tecNO_DST_INSUF_CALL;
-    //     }
-    // }
-
-    if (sleDst != NULL && (sleDst->getFlags() & lsfRequireDestTag) && !ctx.tx.isFieldPresent(sfDestinationTag))
+            // TODO: dedupe
+            // Another transaction could create the account and then this
+            // transaction would succeed.
+            return tecNO_DST_INSUF_CALL;
+        }
+    } 
+    else if ((sleDst->getFlags() & lsfRequireDestTag) && !ctx.tx.isFieldPresent(sfDestinationTag))
     {
         // The tag is basically account-specific information we don't
         // understand, but we can require someone to fill it in.
+
         // We didn't make this test for a newly-formed account because there's
         // no way for this field to be set.
         JLOG(ctx.j.trace()) << "Malformed transaction: DestinationTag required.";
@@ -317,25 +383,11 @@ Payment::doApply ()
     bool const defaultPathsAllowed = !(uTxFlags & tfNoCallDirect);
     auto const paths = ctx_.tx.isFieldPresent(sfPaths);
     auto const sendMax = ctx_.tx[~sfSendMax];
-    bool issuing = false;
 
     AccountID const uDstAccountID (ctx_.tx.getAccountID (sfDestination));
     STAmount const saDstAmount (ctx_.tx.getFieldAmount (sfAmount));
     STAmount maxSourceAmount;
-
-    // Check issue set exists
-    if (!checkIssue(ctx_, saDstAmount, false))
-    {
-        JLOG(j_.trace()) << "doPayment: checkIssue, issue set not exists or not valid, dstAmount: " 
-            << saDstAmount.getFullText();
-        return temBAD_FUNDS;
-    }
-    if (sendMax && !checkIssue(ctx_, *sendMax, false))
-    {
-        JLOG(j_.trace()) << "doPayment: checkIssue, issue set not exists or not valid, sendMax: " 
-            << (*sendMax).getFullText();
-        return temBAD_FUNDS;
-    }
+    STAmount deliveredAmount = saDstAmount;
 
     if (sendMax)
         maxSourceAmount = *sendMax;
@@ -373,95 +425,42 @@ Payment::doApply ()
 
     TER terResult;
 
+    // 1. do call check call before
+    if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
+    {
+        terResult = doCodeCheckCall(saDstAmount);
+        if (terResult != tesSUCCESS)
+            return terResult;
+    }
+
     bool const bCall = paths || sendMax || !saDstAmount.native ();
     // XXX Should sendMax be sufficient to imply call?
 
+    // 2. do payment
     if (bCall)
     {
-        // Call payment with at least one intermediate step and uses
-        AccountID AIssuer = saDstAmount.getIssuer();
-        Currency currency = saDstAmount.getCurrency();
-
-        SLE::pointer sleIssueRoot = view().peek(keylet::issuet(AIssuer, currency));
-        STAmount issued = sleIssueRoot->getFieldAmount(sfIssued);
-        std::uint32_t const uIssueFlags = sleIssueRoot->getFieldU32(sfFlags);
-        bool const is_nft = ((uIssueFlags & tfNonFungible) != 0);
-        if (is_nft)
+        auto const sleIssue = view().peek(keylet::issuet(saDstAmount));
+        // not send back to issuer and AutoTrust is flags set, do autotrust
+        if (saDstAmount.getIssuer() != uDstAccountID && (sleDst->getFieldU32 (sfFlags) & lsfAutoTrust) != 0)
         {
-            // id not present
-            if (!ctx_.tx.isFieldPresent(sfInvoiceID))
+            auto const sleState = view().peek(keylet::line(saDstAmount.getIssuer(), uDstAccountID, saDstAmount.getCurrency()));
+            if (!sleState)
             {
-                JLOG(j_.trace()) << "doPayment: invoice id not present";
-                return temBAD_INVOICEID;
-            }
-            // amount not 1
-            STAmount one(saDstAmount.issue(), 1);
-            if (saDstAmount != one)
-            {
-                 JLOG(j_.trace()) << "doPayment: invoice amount should be 1: " << saDstAmount.getFullText();
-                return temBAD_AMOUNT;
-            }
-        }
-
-        // source account is issue account, its issuing operation
-        if (AIssuer == account_ && issued.issue() == saDstAmount.issue())
-        {
-            // update issue set
-            if (issued + saDstAmount > sleIssueRoot->getFieldAmount(sfTotal))
-            {
-                JLOG(j_.trace()) << "doPayment: issue over amount: " << saDstAmount.getFullText();
-                return tecOVERISSUED_AMOUNT;
-            }
-
-            // when issuer issue new one, check if id exists already return error else create one
-            if (is_nft)
-            {
-                issuing = true;
-                uint256 id = ctx_.tx.getFieldH256 (sfInvoiceID);
-                SLE::pointer sleInvoiceRoot = view().peek(keylet::invoicet(id, account_, currency));
-                // issue should not create same id invoice
-                if (sleInvoiceRoot) 
+                terResult = auto_trust(view(), uDstAccountID, sleIssue->getFieldAmount(sfTotal), j_);
+                if (!isTesSuccess(terResult))
                 {
-                    JLOG(j_.trace()) << "doPayment: invoice id exists " << id;
-                    return temID_EXISTED;
-                }
-                auto const isInvoice = ctx_.tx.isFieldPresent(sfInvoice);
-                if (!isInvoice)
-                {
-                    JLOG(j_.trace()) << "doPayment: issue invoice, but invoice id not present";
-                    return temBAD_INVOICE;
-                }
- 
-                Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
-                uint256 uCIndex(getInvoiceIndex(id, account_, currency)); // issuer, currency, id
-	            JLOG(j_.trace()) << "doPayment: Creating InvoiceRoot: " << to_string(uCIndex);
-	            terResult = invoiceCreate(view(), uDstAccountID, id, invoice, uCIndex, saDstAmount, j_);                    
-                if (terResult != tesSUCCESS)
-                {
+                    if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
+                    {
+                        // has code, call check already, not success, should deduct fee still
+                        int r = terResult;
+                        terResult = TER(r + 1000);
+                    }
                     return terResult;
                 }
             }
         }
+        // Call payment with at least one intermediate step and uses transitive balances.
 
-        //  update uDst balance
-        if (mActivation != 0)
-		{
-		    sleDst->setFieldAmount(sfBalance, sleDst->getFieldAmount(sfBalance) + mActivation);
-		}
-
-	    STAmount total = sleIssueRoot->getFieldAmount(sfTotal);
-        if (saDstAmount.getIssuer() != uDstAccountID)
-        {
-		    SLE::pointer sleCallState = view().peek(keylet::line(saDstAmount.getIssuer(), uDstAccountID, currency));
-		    if (!sleCallState)
-		    {
-			    auto result = auto_trust(view(), uDstAccountID, total, j_);
-			    if (result != tesSUCCESS)
-                {
-                    return result;
-                }
-		    }
-        }
         // Copy paths into an editable class.
         STPathSet spsPaths = ctx_.tx.getFieldPathSet (sfPaths);
 
@@ -495,8 +494,10 @@ Payment::doApply ()
         {
             if (deliverMin && rc.actualAmountOut < *deliverMin)
                 rc.setResult (tecPATH_PARTIAL);
-            else
+            else {
                 ctx_.deliver (rc.actualAmountOut);
+                deliveredAmount = rc.actualAmountOut;
+            }
         }
 
         terResult = rc.result ();
@@ -510,13 +511,25 @@ Payment::doApply ()
             terResult = tecPATH_DRY;
         }
 
-        // update token owner, when not issue
-        if (terResult == tesSUCCESS && is_nft && !issuing)
+        // if invoice, process invoice create or transfer
+        auto const uIssueFlags = sleIssue->getFieldU32(sfFlags);
+        if (isTesSuccess(terResult) && (uIssueFlags & tfInvoiceEnable) != 0)
         {
-            uint256 id = ctx_.tx.getFieldH256 (sfInvoiceID);
-            uint256 uCIndex(getInvoiceIndex(id, AIssuer, currency));
-            terResult = invoiceTransfer(view(), account_, uDstAccountID, 
-                    uCIndex, uDstAccountID == AIssuer, j_);
+            uint256 id = ctx_.tx.getFieldH256(sfInvoiceID);
+            uint256 index = getInvoiceIndex(id, saDstAmount.issue().account, saDstAmount.issue().currency);
+            if (account_ == saDstAmount.issue().account) // issue invoice
+            {
+                // create invoice
+                Blob invoice = ctx_.tx.getFieldVL(sfInvoice);
+                JLOG(j_.trace()) << "doPayment: create invoice root, index=" << to_string(index);
+                terResult = invoiceCreate(view(), uDstAccountID, id, invoice, index, saDstAmount, j_);
+            }
+            else
+            {
+                // transfer invoice
+                terResult = invoiceTransfer(view(), account_, uDstAccountID, index,
+                        uDstAccountID == saDstAmount.issue().account, j_);
+            }
         }
     }
     else
@@ -563,6 +576,344 @@ Payment::doApply ()
 
             terResult = tesSUCCESS;
         }
+    }
+
+    // 3. call account code
+    if (!isTesSuccess(terResult))
+    {
+        if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
+        {
+            // has code, call check already, not success, should deduct fee still
+            int r = terResult;
+            terResult = TER(r + 1000);
+        }
+        return terResult;
+    }
+    // success but no do call code
+    if ((uTxFlags & tfNoCodeCall) != 0)
+    {
+        return terResult; // should be tesSUCCESS
+    }
+
+    if (sleDst->isFieldPresent(sfCode))
+    {
+        return doCodeCall(deliveredAmount);
+    }
+    else
+    {
+        return terResult; // should be tesSUCCESS
+    }
+}
+
+TER
+Payment::doCodeCheckCall(STAmount const& amount)
+{
+    TER terResult = tesSUCCESS;
+    AccountID const uDstAccountID (ctx_.tx.getAccountID (sfDestination));
+
+    Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);
+    std::string codeS = strCopy(code);
+    std::string bytecode = UncompressData(codeS);
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+    RegisterContractLib(L); // register cpp functions for lua contract
+
+    auto const beforeFeeLimit = feeLimit();
+    std::int64_t drops = beforeFeeLimit.drops();
+    lua_setdrops(L, drops);
+
+    // load and call code
+    int lret = luaL_loadbuffer(L, bytecode.data(), bytecode.size(), "") || lua_pcall(L, 0, 0, 0);
+    if (lret != LUA_OK)
+    {
+        JLOG(j_.warn()) << "Fail to load account code, error=" << lret;
+        drops = lua_getdrops(L);
+        lua_close(L);
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_LOAD_FAILED;
+    }
+
+    lua_getglobal(L, "check");
+    if (!lua_isfunction(L, -1))
+    {
+        JLOG(j_.trace()) << "check variable is not function";
+        drops = lua_getdrops(L);
+        lua_close(L);
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+    }
+
+    // set currency transactor in registry table
+    lua_pushlightuserdata(L, (void *)&ctx_.app);
+    lua_pushlightuserdata(L, this);
+    lua_settable(L, LUA_REGISTRYINDEX);
+
+    // set global parameters for lua contract
+    lua_newtable(L); // for msg
+    call_push_string(L, "address", to_string(uDstAccountID));
+    call_push_string(L, "sender", to_string(account_));
+    call_push_integer(L, "block", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
+    if (amount.native())
+    {
+        call_push_string(L, "value", to_string(amount.call()));
+    }
+    else
+    {
+        lua_pushstring(L, "value");
+        lua_newtable(L);
+        call_push_string(L, "currency", to_string(amount.getCurrency()));
+        call_push_string(L, "issuer", to_string(amount.getIssuer()));
+        call_push_string(L, "value", amount.getText());
+        lua_settable(L, -3);
+    }
+    lua_setglobal(L, "msg");
+
+    // restore lua contract variable
+    RestoreLuaTable(L, uDstAccountID);
+
+    lret = lua_pcall(L, 0, 1, 0);
+    if (lret != LUA_OK)
+    {
+        JLOG(j_.warn()) << "fail to call account check code, error=" << lret;
+        drops = lua_getdrops(L);
+        lua_close(L);
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_CHECK_FAILED;
+    }
+
+    // get result
+    terResult = TER(lua_tointeger(L, -1));
+    lua_pop(L, 1);
+    if (isNotSuccess(terResult))
+    {
+        int r = terResult;
+        terResult = TER(r + 1000);
+    }
+
+    drops = lua_getdrops(L);
+    terResult = isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+    if (isTesSuccess(terResult))
+    {
+        // save lua contract variable
+        SaveLuaTable(L, uDstAccountID);
+    }
+
+    // close lua state
+    lua_close(L);
+    return terResult;
+}
+
+TER
+Payment::doCodeCall(STAmount const& amount)
+{
+    TER terResult = tesSUCCESS;
+    
+    AccountID const uDstAccountID (ctx_.tx.getAccountID (sfDestination));
+
+    Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);
+    std::string codeS = strCopy(code);
+    std::string bytecode = UncompressData(codeS);
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+    RegisterContractLib(L); // register cpp functions for lua contract
+
+    auto const beforeFeeLimit = feeLimit();
+    std::int64_t drops = beforeFeeLimit.drops();
+    lua_setdrops(L, drops);
+
+    // load and call code
+    int lret = luaL_loadbuffer(L, bytecode.data(), bytecode.size(), "") || lua_pcall(L, 0, 0, 0);
+    if (lret != LUA_OK)
+    {
+        JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
+        drops = lua_getdrops(L);
+        lua_close(L);
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_LOAD_FAILED;
+    }
+
+    lua_getglobal(L, "main");
+    // push parameters, collect parameters if exists
+    lua_newtable(L);
+    if (ctx_.tx.isFieldPresent(sfMemos))
+    {
+        auto const& memos = ctx_.tx.getFieldArray(sfMemos);
+        int n = 0;
+        for (auto const& memo : memos)
+        {
+            auto memoObj = dynamic_cast <STObject const*> (&memo);
+            if (!memoObj->isFieldPresent(sfMemoData))
+            {
+                continue;
+            }
+            std::string data = strCopy(memoObj->getFieldVL(sfMemoData));
+            lua_pushstring(L, data.c_str());
+            lua_rawseti(L, -2, n);
+            ++n;
+        }
+    }
+
+    // set currency transactor in registry table
+    lua_pushlightuserdata(L, (void *)&ctx_.app);
+    lua_pushlightuserdata(L, this);
+    lua_settable(L, LUA_REGISTRYINDEX);
+
+    // set global parameters for lua contract
+    lua_newtable(L); // for msg
+    call_push_string(L, "address", to_string(uDstAccountID));
+    call_push_string(L, "sender", to_string(account_));
+    call_push_integer(L, "block", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
+    if (amount.native())
+    {
+        call_push_string(L, "value", to_string(amount.call()));
+    }
+    else
+    {
+        lua_pushstring(L, "value");
+        lua_newtable(L);
+        call_push_string(L, "currency", to_string(amount.getCurrency()));
+        call_push_string(L, "issuer", to_string(amount.getIssuer()));
+        call_push_string(L, "value", amount.getText());
+        lua_settable(L, -3);
+    }
+    lua_setglobal(L, "msg");
+
+    // restore lua contract variable
+    RestoreLuaTable(L, uDstAccountID);
+
+    lret = lua_pcall(L, 1, 1, 0);
+    if (lret != LUA_OK)
+    {
+        JLOG(j_.warn()) << "Fail to call account code main, error=" << lret;
+        drops = lua_getdrops(L);
+        lua_close(L);
+        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_CALL_FAILED;
+    }
+
+    // get result
+    terResult = TER(lua_tointeger(L, -1));
+    lua_pop(L, 1);
+    if (isNotSuccess(terResult))
+    {
+        int r = terResult;
+        terResult = TER(r + 1000);
+    }
+
+    drops = lua_getdrops(L);
+    terResult = isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+
+    if (isTesSuccess(terResult))
+    {
+        // save lua contract variable
+        SaveLuaTable(L, uDstAccountID);
+    }
+
+    // close lua state
+    lua_close(L);
+    return terResult;
+}
+
+// --- callchain sytem call for lua contract ---
+TER 
+Payment::doTransfer(AccountID const& toAccountID, STAmount const& amount)
+{
+    // check issue
+    if (!amount.native())
+    {
+        std::shared_ptr<SLE const> sle = view().read(keylet::issuet(amount));
+        if (!sle)
+        {
+            return temCURRENCY_NOT_ISSUE;
+        }
+        std::uint32_t const uIssueFlags = sle->getFieldU32(sfFlags);
+        if ((uIssueFlags & tfInvoiceEnable) != 0)
+        {
+            // not support invoice now
+            return temNOT_SUPPORT;
+        }
+    }
+
+    // from=contract, to, amount
+    AccountID const uContractID (ctx_.tx.getAccountID (sfDestination));
+    SLE::pointer sleSrc = view().peek (keylet::account(uContractID));
+    if (!sleSrc) {
+        return temBAD_SRC_ACCOUNT;
+    }
+
+    SLE::pointer sleDst = view().peek (keylet::account(toAccountID));
+    if (!sleDst)
+    {
+        if (!amount.native())
+        {
+            return tecNO_DST;
+        }
+        if (amount < STAmount(view().fees().accountReserve(0)))
+        {
+            return tecNO_DST_INSUF_CALL;
+        }
+
+        // Create the account.
+        sleDst = std::make_shared<SLE>(keylet::account(toAccountID));
+        sleDst->setAccountID(sfAccount, toAccountID);
+        sleDst->setFieldAmount(sfBalance, 0);
+        sleDst->setFieldU32(sfSequence, 1);
+        view().insert(sleDst);
+    }
+    else
+    {
+        view().update (sleDst);
+    }
+
+    TER terResult = tesSUCCESS;
+    if (!amount.native())
+    {
+        // not send back to issuer and AutoTrust is flags set, do autotrust
+        if (amount.getIssuer() != toAccountID && (sleDst->getFieldU32 (sfFlags) & lsfAutoTrust) != 0)
+        {
+            auto const sleState = view().peek(keylet::line(amount.getIssuer(), toAccountID, amount.getCurrency()));
+            if (!sleState)
+            {
+                auto const sleIssue = view().peek(keylet::issuet(amount));
+                terResult = auto_trust(view(), toAccountID, sleIssue->getFieldAmount(sfTotal), j_);
+                if (!isTesSuccess(terResult))
+                {
+                    return terResult;
+                }
+            }
+        }
+
+        path::CallCalc::Input rcInput;
+        rcInput.partialPaymentAllowed = false;
+        rcInput.defaultPathsAllowed = true;
+        rcInput.limitQuality = false;
+        rcInput.isLedgerOpen = view().open();
+        STPathSet const empty{};
+
+        path::CallCalc::Output rc;
+        {
+            PaymentSandbox pv(&view());
+            rc = path::CallCalc::callCalculate (
+                pv,
+                amount,
+                amount,
+                toAccountID,
+                uContractID,
+                empty,
+                ctx_.app.logs(),
+                &rcInput);
+            pv.apply(ctx_.rawView());
+        }
+        terResult = rc.result();
+    }
+    else
+    {
+        // Direct CALL payment.
+        auto const uOwnerCount = sleSrc->getFieldU32 (sfOwnerCount);
+        auto const reserve = view().fees().accountReserve(uOwnerCount);
+        auto const mmm = reserve;
+        auto mPriorBalance = sleSrc->getFieldAmount (sfBalance);
+        if (mPriorBalance < amount.call() + mmm)
+        {
+            return tecUNFUNDED_PAYMENT;
+        }
+        sleSrc->setFieldAmount (sfBalance, mPriorBalance - amount);
+        sleDst->setFieldAmount (sfBalance, sleDst->getFieldAmount (sfBalance) + amount);
     }
 
     return terResult;

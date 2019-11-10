@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -106,7 +106,9 @@ enum LedgerEntryType
     
     ltISSUEROOT         = 'i',
     ltFeeRoot           = 'F',
-    ltINVOICE           = 'v'
+    ltINVOICE           = 'v',
+
+    ltPARAMROOT         = 'p'
 };
 
 /**
@@ -137,7 +139,9 @@ enum LedgerNameSpace
     spaceNickname       = 'n',
     spaceIssue          = 'i',
     spaceFees           = 'F',
-    spaceInvoice        = 'v'
+    spaceInvoice        = 'v',
+
+    spaceParam          = 'p'
 };
 
 /**
@@ -153,7 +157,9 @@ enum LedgerSpecificFlags
     lsfDisableMaster    = 0x00100000,   // True, force regular key
     lsfNoFreeze         = 0x00200000,   // True, cannot freeze call states
     lsfGlobalFreeze     = 0x00400000,   // True, all assets frozen
-    lsfDefaultCall      = 0x00800000,   // True, trust lines allow rippling by default
+    lsfDefaultCall      = 0x00800000,   // True, trust lines allow calling by default
+    lsfCodeAccount      = 0x01000000,   // True, code account cannot be modified
+    lsfAutoTrust        = 0x02000000,   // True, auto create trust line
 
     // ltOFFER
     lsfPassive          = 0x00010000,
@@ -168,6 +174,11 @@ enum LedgerSpecificFlags
     lsfHighNoCall       = 0x00200000,
     lsfLowFreeze        = 0x00400000,   // True, low side has set freeze flag
     lsfHighFreeze       = 0x00800000,   // True, high side has set freeze flag
+
+    // ltISSUE_ROOT
+    lsfAdditional       = 0x00010000,
+    lsfCodeFixed        = 0x00020000,
+    lsfNonFungible      = 0x00001000
 };
 
 //------------------------------------------------------------------------------

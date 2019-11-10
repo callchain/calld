@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -68,8 +68,7 @@ CreateOffer::preflight (PreflightContext const& ctx)
 
     if (uTxFlags & tfOfferCreateMask)
     {
-        JLOG(j.debug()) <<
-            "Malformed transaction: Invalid flags set.";
+        JLOG(j.debug()) << "Malformed transaction: Invalid flags set.";
         return temINVALID_FLAG;
     }
 
@@ -78,8 +77,7 @@ CreateOffer::preflight (PreflightContext const& ctx)
 
     if (bImmediateOrCancel && bFillOrKill)
     {
-        JLOG(j.debug()) <<
-            "Malformed transaction: both IoC and FoK set.";
+        JLOG(j.debug()) << "Malformed transaction: both IoC and FoK set.";
         return temINVALID_FLAG;
     }
 
@@ -87,8 +85,7 @@ CreateOffer::preflight (PreflightContext const& ctx)
 
     if (bHaveExpiration && (tx.getFieldU32 (sfExpiration) == 0))
     {
-        JLOG(j.debug()) <<
-            "Malformed offer: bad expiration";
+        JLOG(j.debug()) << "Malformed offer: bad expiration";
         return temBAD_EXPIRATION;
     }
 
@@ -96,8 +93,7 @@ CreateOffer::preflight (PreflightContext const& ctx)
 
     if (bHaveCancel && (tx.getFieldU32 (sfOfferSequence) == 0))
     {
-        JLOG(j.debug()) <<
-            "Malformed offer: bad cancel sequence";
+        JLOG(j.debug()) << "Malformed offer: bad cancel sequence";
         return temBAD_SEQUENCE;
     }
 
@@ -109,14 +105,12 @@ CreateOffer::preflight (PreflightContext const& ctx)
 
     if (saTakerPays.native () && saTakerGets.native ())
     {
-        JLOG(j.debug()) <<
-            "Malformed offer: redundant (CALL for CALL)";
+        JLOG(j.debug()) << "Malformed offer: redundant (CALL for CALL)";
         return temBAD_OFFER;
     }
     if (saTakerPays <= zero || saTakerGets <= zero)
     {
-        JLOG(j.debug()) <<
-            "Malformed offer: bad amount";
+        JLOG(j.debug()) << "Malformed offer: bad amount";
         return temBAD_OFFER;
     }
 
@@ -128,23 +122,20 @@ CreateOffer::preflight (PreflightContext const& ctx)
 
     if (uPaysCurrency == uGetsCurrency && uPaysIssuerID == uGetsIssuerID)
     {
-        JLOG(j.debug()) <<
-            "Malformed offer: redundant (IOU for IOU)";
+        JLOG(j.debug()) << "Malformed offer: redundant (IOU for IOU)";
         return temREDUNDANT;
     }
     // We don't allow a non-native currency to use the currency code CALL.
     if (badCurrency() == uPaysCurrency || badCurrency() == uGetsCurrency)
     {
-        JLOG(j.debug()) <<
-            "Malformed offer: bad currency";
+        JLOG(j.debug()) << "Malformed offer: bad currency";
         return temBAD_CURRENCY;
     }
 
     if (saTakerPays.native () != !uPaysIssuerID ||
         saTakerGets.native () != !uGetsIssuerID)
     {
-        JLOG(j.warn()) <<
-            "Malformed offer: bad issuer";
+        JLOG(j.warn()) << "Malformed offer: bad issuer";
         return temBAD_ISSUER;
     }
 
@@ -168,6 +159,40 @@ CreateOffer::preclaim(PreclaimContext const& ctx)
 
     auto const sleCreator = ctx.view.read(keylet::account(id));
 
+     // Check currency's issue sets
+    TER ter1 = checkIssue(ctx, saTakerPays, true); // no invoice now
+    if (ter1 != tesSUCCESS) return ter1;
+
+    TER ter2 = checkIssue(ctx, saTakerGets, true); // no invoice now
+    if (ter2 != tesSUCCESS)  return ter2;
+
+    // check only support one invoice id
+    auto takerPaysIssueRoot = ctx.view.read(keylet::issuet(saTakerPays));
+    auto takerGetsIssueRoot = ctx.view.read(keylet::issuet(saTakerPays));
+    std::uint32_t const takerPaysIssueFlags = takerPaysIssueRoot->getFieldU32(sfFlags);
+    std::uint32_t const takerGetsIssueFlags = takerGetsIssueRoot->getFieldU32(sfFlags);
+    if ((takerPaysIssueFlags & tfInvoiceEnable) != 0 && (takerGetsIssueFlags & tfInvoiceEnable) != 0)
+    {
+        // not support invoice exchange invoice
+        return temNOT_SUPPORT;
+    }
+
+    if ((takerPaysIssueFlags & tfInvoiceEnable) != 0)
+    {
+        if (!ctx.tx.isFieldPresent(sfInvoiceID))
+        {
+            return temBAD_INVOICEID;
+        }
+    }
+    if ((takerGetsIssueFlags & tfInvoiceEnable) != 0)
+    {
+        if (!ctx.tx.isFieldPresent(sfInvoiceID))
+        {
+            return temBAD_INVOICEID;
+        }
+        // TODO, check user have such invoice
+    }
+
     std::uint32_t const uAccountSequence = sleCreator->getFieldU32(sfSequence);
 
     auto viewJ = ctx.app.journal("View");
@@ -175,16 +200,14 @@ CreateOffer::preclaim(PreclaimContext const& ctx)
     if (isGlobalFrozen(ctx.view, uPaysIssuerID) ||
         isGlobalFrozen(ctx.view, uGetsIssuerID))
     {
-        JLOG(ctx.j.warn()) <<
-            "Offer involves frozen asset";
+        JLOG(ctx.j.warn()) << "Offer involves frozen asset";
 
         return tecFROZEN;
     }
     else if (accountFunds(ctx.view, id, saTakerGets,
         fhZERO_IF_FROZEN, viewJ) <= zero)
     {
-        JLOG(ctx.j.debug()) <<
-            "delay: Offers must be at least partially funded.";
+        JLOG(ctx.j.debug()) << "delay: Offers must be at least partially funded.";
 
         return tecUNFUNDED_OFFER;
     }
@@ -1077,12 +1100,6 @@ CreateOffer::applyGuts (Sandbox& sb, Sandbox& sbCancel)
 
     auto saTakerPays = ctx_.tx[sfTakerPays];
     auto saTakerGets = ctx_.tx[sfTakerGets];
-
-    // Check issue set exists
-    if (!checkIssue(ctx_, saTakerPays, true) || !checkIssue(ctx_, saTakerGets, true))
-    {
-        return { temNOT_SUPPORT, false };
-    }
 
     auto const cancelSequence = ctx_.tx[~sfOfferSequence];
 

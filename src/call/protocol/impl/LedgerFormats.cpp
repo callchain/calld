@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -64,6 +64,7 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfIssued,              SOE_OPTIONAL) // not used
             << SOElement (sfNickName,            SOE_OPTIONAL) // not used
             << SOElement (sfFreezed,             SOE_OPTIONAL)
+            << SOElement (sfCode,                SOE_OPTIONAL)
             ;
 
     add ("DirectoryNode", ltDIR_NODE)
@@ -89,6 +90,7 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfOwnerNode,           SOE_REQUIRED)
             << SOElement (sfPreviousTxnID,       SOE_REQUIRED)
             << SOElement (sfPreviousTxnLgrSeq,   SOE_REQUIRED)
+            << SOElement (sfInvoiceID,           SOE_OPTIONAL)
             << SOElement (sfExpiration,          SOE_OPTIONAL)
             ;
 
@@ -186,7 +188,7 @@ LedgerFormats::LedgerFormats ()
 	    << SOElement (sfLowNode,           SOE_OPTIONAL)
             << SOElement (sfDecimal,           SOE_OPTIONAL) // not used yet
             << SOElement (sfTransferRate,      SOE_OPTIONAL)
-            << SOElement (sfInfo,              SOE_OPTIONAL) // todo
+            << SOElement (sfInfo,              SOE_OPTIONAL)
 	    ;
 
     add ("FeeRoot", ltFeeRoot)
@@ -198,6 +200,10 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfAmount,             SOE_REQUIRED)
             << SOElement (sfInvoice,            SOE_REQUIRED)
             << SOElement (sfLowNode,            SOE_OPTIONAL)
+            ;
+
+    add ("ParamRoot", ltPARAMROOT)
+            << SOElement (sfInfo,               SOE_REQUIRED)
             ;
 }
 

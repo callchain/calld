@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -477,6 +477,7 @@ extern SF_Blob const sfCondition;
 extern SF_Blob const sfMasterSignature;
 extern SF_Blob const sfNickName;
 extern SF_Blob const sfInvoice;
+extern SF_Blob const sfCode;
 
 // account
 extern SF_Account const sfAccount;

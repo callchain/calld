@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -266,6 +266,14 @@ dirDelete (ApplyView& view,
     const bool           bSoft,
     beast::Journal j);
 
+bool
+dirItemExists(ApplyView& view,
+    std::uint64_t        uNodeDir,      // Node item is mentioned in.
+    Keylet const&        uRootIndex,
+    uint256 const&       uLedgerIndex,
+    const bool           bSoft,
+    beast::Journal j);
+
 // VFALCO NOTE Both STAmount parameters should just
 //             be "Amount", a unit-less number.
 //
@@ -277,10 +285,12 @@ create and delete an AccountIssue currency
 TER 
 issueSetCreate( ApplyView& view,
 	AccountID const&  uSrcAccountID,
-	STAmount const& saTotal,
+	STAmount const& total,
     std::uint32_t const rate,
     std::uint32_t const flags,
 	uint256 const&  uIndex,
+    Blob const& info,
+    // Blob const& code,
 	beast::Journal j
 );
 
@@ -305,12 +315,10 @@ invoiceTransfer(ApplyView &view,
 );
 
 TER
-updateIssueSet(ApplyView& view,
-    std::shared_ptr<SLE> const& sleCallState,
-    AccountID const& uLowAccountID,
-    AccountID const& uHighAccountID,
-    STAmount saIssued,
-    int fans,
+checkIssueSet(ApplyView& view,
+    AccountID const& issuer,
+    Currency const& currency,
+    STAmount const& amount,
     beast::Journal j);
 
 /** Create a trust line
@@ -336,14 +344,20 @@ trustCreate (ApplyView& view,
     beast::Journal j);
 
 //issuer auto trust fans
-TER auto_trust(ApplyView& view, AccountID const&  account, STAmount const &amount, beast::Journal j);
+TER
+auto_trust(ApplyView& view, 
+    AccountID const&  account, 
+    STAmount const &amount, 
+    beast::Journal j);
 
 TER
 trustDelete (ApplyView& view,
     std::shared_ptr<SLE> const& sleCallState,
-        AccountID const& uLowAccountID,
-            AccountID const& uHighAccountID,
-                beast::Journal j);
+    AccountID const& uLowAccountID,
+    AccountID const& uHighAccountID,
+    AccountID const& uDstAccountID,
+    Currency const& currency,
+    beast::Journal j);
 
 /** Delete an offer.
 

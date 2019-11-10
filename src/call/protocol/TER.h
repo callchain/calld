@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -118,6 +118,20 @@ enum TER
     temBAD_INVOICEID,
     temBAD_INVOICE,
     temNOT_SUPPORT,
+    temINVOICE_NO_FEE,
+    temCURRENCY_NOT_ISSUE,
+    temSELF_TRUST,
+    temNOT_ADDITIONAL,
+    temBAD_INVOICE_AMOUNT,
+    temINVOICE_NOT_ACCOUNT,
+    temINVOICE_NOT_EXISTS,
+    temNO_CODE,
+    temCODE_ACCOUNT,
+    temBAD_TOTAL_AMOUNT,
+    temCODE_FIXED,
+    temPRAMETER_KEYWORD,
+    temNO_CODE_ENTRY,
+    temINVALID_CODE,
     
     // -199 .. -100: F
     //    Failure (sequence number previously used)
@@ -241,6 +255,27 @@ enum TER
     tecBADTOTAL                 = 149,
     tecINSUFFICINET_FUND        = 150,
     tecDIR_NOT_EXISTS           = 151,
+    tecUNFUNDED_CONTRACT        = 152,
+
+    // [500-1000) reserved for map error < tesSUCCESS
+    // for error + 1000 -> contract error
+
+    tedINVALID_PARAM_NUMS       = 1000,
+    tedINVALID_PARAM_TYPE       = 1001,
+    tedINVALID_PARAM_ACCOUNT    = 1002,
+    tedACCOUNT_NOT_FOUND        = 1003,
+    tedINVALID_KEY_TYPE         = 1004,
+    tedINVALID_VALUE_TYPE       = 1005,
+    tedINVALID_AMOUNT           = 1006,
+    tedSEND_CONTRACT_SELF       = 1007,
+    tedINVALID_DESTINATION      = 1008,
+    tedNO_SUCH_VALUE            = 1009,
+    tedCODE_FEE_OUT             = 1010,
+    tedINVALID_PARAM_ISSUER     = 1011,
+    tedCODE_LOAD_FAILED         = 1012,
+    tedCODE_CALL_FAILED         = 1013,
+    tedCODE_CHECK_FAILED        = 1014,
+    tedCODE_INIT_FAILED         = 1015,
 };
 
 inline bool isTelLocal(TER x)
@@ -271,6 +306,16 @@ inline bool isTesSuccess(TER x)
 inline bool isTecClaim(TER x)
 {
     return ((x) >= tecCLAIM);
+}
+
+inline bool isNotSuccess(TER x)
+{
+    return ((x) < tesSUCCESS);
+}
+
+inline bool isMapError(TER x)
+{
+    return ((x) < 1000) && ((x) >= 500);
 }
 
 // VFALCO TODO group these into a shell class along with the defines above.

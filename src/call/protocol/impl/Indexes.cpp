@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -215,10 +215,20 @@ getNicknameIndex(Blob const& nickname)
 }
 
 uint256
-getIssueIndex(AccountID const& a, Currency const& currency)
+getIssueIndex(AccountID const& account, Currency const& currency)
 {
 	return sha512Half(std::uint16_t(spaceIssue),
-		a, currency, std::uint32_t(1));
+		account, currency, std::uint32_t(1));
+}
+
+uint256
+getParamIndex(AccountID const& contract)
+{
+    return sha512Half(
+        std::uint16_t(spaceParam),
+        contract,
+        std::uint32_t(1)
+    );
 }
 
 uint256
@@ -240,21 +250,31 @@ getInvoiceIndex(uint256 const& id, AccountID const& a, Currency const& currency)
 
 namespace keylet {
 
-Keylet issue_t::operator()(AccountID const& a, Currency const& currency) const
+Keylet issue_t::operator()(AccountID const& issuer, Currency const& currency) const
 {
-	return { ltISSUEROOT, getIssueIndex(a, currency) };
+	return { ltISSUEROOT, getIssueIndex(issuer, currency) };
 }
 
-Keylet invoice_t::operator()(uint256 const &id, AccountID const &a, Currency const& currency) const
+Keylet issue_t::operator()(STAmount const& amount) const
 {
-    return { ltINVOICE,  getInvoiceIndex(id, a, currency) };
+    AccountID issuer = amount.getIssuer();
+    Currency currency = amount.getCurrency();
+    return { ltISSUEROOT, getIssueIndex(issuer, currency) };
 }
 
-Keylet account_t::operator()(
-    AccountID const& id) const
+Keylet invoice_t::operator()(uint256 const &id, AccountID const &issuer, Currency const& currency) const
 {
-    return { ltACCOUNT_ROOT,
-        getAccountRootIndex(id) };
+    return { ltINVOICE,  getInvoiceIndex(id, issuer, currency) };
+}
+
+ Keylet param_t::operator()(AccountID const& contract) const
+ {
+     return { ltPARAMROOT, getParamIndex(contract) };
+ }
+
+Keylet account_t::operator()(AccountID const& id) const
+{
+    return { ltACCOUNT_ROOT, getAccountRootIndex(id) };
 }
 
 Keylet child (uint256 const& key)
@@ -264,26 +284,22 @@ Keylet child (uint256 const& key)
 
 Keylet skip_t::operator()() const
 {
-    return { ltLEDGER_HASHES,
-        getLedgerHashIndex() };
+    return { ltLEDGER_HASHES, getLedgerHashIndex() };
 }
 
 Keylet skip_t::operator()(LedgerIndex ledger) const
 {
-    return { ltLEDGER_HASHES,
-        getLedgerHashIndex(ledger) };
+    return { ltLEDGER_HASHES, getLedgerHashIndex(ledger) };
 }
 
 Keylet amendments_t::operator()() const
 {
-    return { ltAMENDMENTS,
-        getLedgerAmendmentIndex() };
+    return { ltAMENDMENTS, getLedgerAmendmentIndex() };
 }
 
 Keylet fees_t::operator()() const
 {
-    return { ltFEE_SETTINGS,
-        getLedgerFeeIndex() };
+    return { ltFEE_SETTINGS, getLedgerFeeIndex() };
 }
 
 
@@ -293,57 +309,49 @@ Keylet txfee_t::operator()() const
 }
 Keylet book_t::operator()(Book const& b) const
 {
-    return { ltDIR_NODE,
-        getBookBase(b) };
+    return { ltDIR_NODE, getBookBase(b) };
 }
 
 Keylet line_t::operator()(AccountID const& id0,
     AccountID const& id1, Currency const& currency) const
 {
-    return { ltCALL_STATE,
-        getCallStateIndex(id0, id1, currency) };
+    return { ltCALL_STATE, getCallStateIndex(id0, id1, currency) };
 }
 
 Keylet line_t::operator()(AccountID const& id,
     Issue const& issue) const
 {
-    return { ltCALL_STATE,
-        getCallStateIndex(id, issue) };
+    return { ltCALL_STATE, getCallStateIndex(id, issue) };
 }
 
 Keylet offer_t::operator()(AccountID const& id,
     std::uint32_t seq) const
 {
-    return { ltOFFER,
-        getOfferIndex(id, seq) };
+    return { ltOFFER, getOfferIndex(id, seq) };
 }
 
 Keylet quality_t::operator()(Keylet const& k,
     std::uint64_t q) const
 {
     assert(k.type == ltDIR_NODE);
-    return { ltDIR_NODE,
-        getQualityIndex(k.key, q) };
+    return { ltDIR_NODE, getQualityIndex(k.key, q) };
 }
 
 Keylet next_t::operator()(Keylet const& k) const
 {
     assert(k.type == ltDIR_NODE);
-    return { ltDIR_NODE,
-        getQualityNext(k.key) };
+    return { ltDIR_NODE, getQualityNext(k.key) };
 }
 
 Keylet ticket_t::operator()(AccountID const& id,
     std::uint32_t seq) const
 {
-    return { ltTICKET,
-        getTicketIndex(id, seq) };
+    return { ltTICKET, getTicketIndex(id, seq) };
 }
 
 Keylet signers_t::operator()(AccountID const& id) const
 {
-    return { ltSIGNER_LIST,
-        getSignerListIndex(id) };
+    return { ltSIGNER_LIST, getSignerListIndex(id) };
 }
 
 Keylet nickname_t::operator()(Blob const & nickname) const
@@ -359,15 +367,13 @@ Keylet unchecked (uint256 const& key)
 
 Keylet ownerDir(AccountID const& id)
 {
-    return { ltDIR_NODE,
-        getOwnerDirIndex(id) };
+    return { ltDIR_NODE, getOwnerDirIndex(id) };
 }
 
 Keylet page(uint256 const& key,
     std::uint64_t index)
 {
-    return { ltDIR_NODE,
-        getDirNodeIndex(key, index) };
+    return { ltDIR_NODE, getDirNodeIndex(key, index) };
 }
 
 Keylet page(Keylet const& root,

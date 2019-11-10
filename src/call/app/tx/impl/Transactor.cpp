@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -43,11 +43,15 @@
 #include <call/core/Config.h>
 #include <call/json/to_string.h>
 #include <call/ledger/View.h>
+#include <call/ledger/ReadView.h>
+#include <call/app/ledger/LedgerMaster.h>
 #include <call/protocol/Feature.h>
 #include <call/protocol/Indexes.h>
 #include <call/protocol/types.h>
 #include <call/protocol/Protocol.h>
 #include <call/protocol/TxFlags.h>
+#include <call/protocol/CALLAmount.h>
+#include <call/protocol/Quality.h>
 
 
 namespace call {
@@ -236,20 +240,16 @@ TER Transactor::payFee ()
     auto feesle = view().peek(keylet::txfee());
 	if (!feesle)
 	{
-		auto feeindex = getFeesIndex();
-		auto const feesle = std::make_shared<SLE>(
-		ltFeeRoot,feeindex);
-		feesle->setFieldAmount(sfBalance, feePaid - mActivation);
+		auto const feeindex = getFeesIndex();
+		auto const feesle = std::make_shared<SLE>(ltFeeRoot, feeindex);
+		feesle->setFieldAmount(sfBalance, feePaid);
 		view().insert(feesle);
-		auto after = view().read(keylet::txfee());
 	}
 	else
 	{
 		view().update(feesle);
-		auto fee = feesle->getFieldAmount(sfBalance) + feePaid - mActivation;
+		auto fee = feesle->getFieldAmount(sfBalance) + feePaid;
 		feesle->setFieldAmount(sfBalance, fee);
-		
-		auto after = view().read(keylet::txfee());
 	}
     mSourceBalance -= feePaid;
     sle->setFieldAmount (sfBalance, mSourceBalance);
@@ -343,6 +343,7 @@ TER Transactor::apply ()
     assert(sle != nullptr || account_ == zero);
 
     mFeeDue = calculateFee(ctx_.app, ctx_.baseFee, view().fees(), view().flags());
+    mFeeLimit = calculateFeePaid(ctx_.tx) - mFeeDue;
 
     if (sle)
     {
@@ -377,30 +378,44 @@ Transactor::checkSign (PreclaimContext const& ctx)
     return checkSingleSign (ctx);
 }
 
+bool
+Transactor::isFeeRunOut(std::int64_t drops)
+{
+    if (drops < 0) return true;
+
+    CALLAmount leftAmount (drops);
+    mFeeLimit = leftAmount;
+    return false;
+}
 
 /**
  * Check if amount issuet set exists and check it's non nft flags
  */
-bool
-Transactor::checkIssue (ApplyContext const& ctx, STAmount const& amount, bool const check_non_nft)
+TER
+Transactor::checkIssue (PreclaimContext const& ctx, STAmount const& amount, bool const non_invoice)
 {
     if (amount.native())
-        return true;
-    AccountID AIssuer = amount.getIssuer();
-    Currency currency = amount.getCurrency();
-    std::shared_ptr<SLE const> sle = ctx.view().read(keylet::issuet(AIssuer, currency));
+        return tesSUCCESS;
+    
+    std::shared_ptr<SLE const> sle = ctx.view.read(keylet::issuet(amount));
     if (!sle)
     {
-        return false;
+        return temCURRENCY_NOT_ISSUE;
     }
     std::uint32_t const uIssueFlags = sle->getFieldU32(sfFlags);
-    // check non nft
-    if (check_non_nft)
+    // check non now
+    if (non_invoice && ((uIssueFlags & tfInvoiceEnable) != 0))
     {
-        // should no nft flags
-        return (uIssueFlags & tfNonFungible) == 0;
+        // not support invoice now
+        return temNOT_SUPPORT;
     }
-    return true;
+    if (uIssueFlags & tfInvoiceEnable) 
+    {
+         STAmount one(amount.issue(), 1);
+         // invoice amount value should be one
+         if (amount != one) return temBAD_INVOICE_AMOUNT;
+    }
+    return tesSUCCESS;
 }
 
 TER
@@ -631,6 +646,20 @@ Transactor::claimFee (CALLAmount& fee, TER terResult, std::vector<uint256> const
     {
         fee = balance;
     }
+
+    auto feesle = view().peek(keylet::txfee());
+	if (!feesle)
+	{
+		auto const feesle = std::make_shared<SLE>(ltFeeRoot, getFeesIndex());
+		feesle->setFieldAmount(sfBalance, fee);
+		view().insert(feesle);
+	}
+	else
+	{
+		view().update(feesle);
+		auto feeBalance = feesle->getFieldAmount(sfBalance) + fee;
+		feesle->setFieldAmount(sfBalance, feeBalance);
+	}
         
     txnAcct->setFieldAmount (sfBalance, balance - fee);
     txnAcct->setFieldU32 (sfSequence, ctx_.tx.getSequence() + 1);
@@ -652,36 +681,6 @@ Transactor::operator()()
     auto const txID = ctx_.tx.getTransactionID ();
 
     JLOG(j_.debug()) << "Transactor for id: " << txID;
-    mActivation = 0;
-	auto txtype = ctx_.tx.getTxnType();
-
-	if (txtype == ttPAYMENT)
-	{
-		STAmount const saDstAmount(ctx_.tx.getFieldAmount(sfAmount));
-		AccountID const uDstAccountID(ctx_.tx.getAccountID(sfDestination));
-
-		if (!saDstAmount.native())
-		{
-			auto const uDstsle = view().peek(keylet::account(uDstAccountID));
-			if (!uDstsle)
-			{
-				mActivation = 2;
-            } else {
-                if (uDstAccountID != saDstAmount.getIssuer())
-                {
-			        SLE::pointer sleCallState = view().peek(keylet::line(uDstAccountID, 
-                            saDstAmount.getIssuer(), saDstAmount.getCurrency()));
-                    std::uint32_t ownerCount = uDstsle->getFieldU32(sfOwnerCount);
-                    STAmount reserve = STAmount(view().fees().accountReserve(ownerCount));
-                    STAmount balance = uDstsle->getFieldAmount(sfBalance);
-                 	if (!sleCallState && balance == reserve)
- 		        	{
-			         	mActivation = 1;
-				    }
-                }
-		    }
-		 }
-	}
 
 #ifdef BEAST_DEBUG
     {
@@ -797,7 +796,7 @@ Transactor::operator()()
             }
 
             if (fee != zero)
-                ctx_.destroyCALL (fee - mActivation);
+                ctx_.destroyCALL (fee);
         }
 
         ctx_.apply(terResult);
@@ -810,6 +809,12 @@ Transactor::operator()()
     }
 
     JLOG(j_.trace()) << "apply: " << transToken(terResult) << ", " << (didApply ? "true" : "false");
+
+    if (isMapError(terResult))
+    {
+        int r = terResult;
+        terResult = TER(r - 1000);
+    }
 
     return { terResult, didApply };
 }

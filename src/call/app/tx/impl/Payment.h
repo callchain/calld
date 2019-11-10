@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -53,6 +53,7 @@ class Payment
     /* The longest path we allow */
     static std::size_t const MaxPathLength = 8;
 
+
 public:
     Payment (ApplyContext& ctx)
         : Transactor(ctx)
@@ -72,6 +73,13 @@ public:
     preclaim(PreclaimContext const& ctx);
 
     TER doApply () override;
+
+    TER doCodeCheckCall(STAmount const& amount);
+
+    TER doCodeCall(STAmount const& amount);
+
+    // for lua glue functions
+    TER doTransfer(AccountID const& toAccountID, STAmount const& amount);
 };
 
 } // call

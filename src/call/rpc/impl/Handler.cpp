@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -120,15 +120,15 @@ Handler handlerArray[] {
     {   "account_lines",        byRef (&doAccountLines),        Role::USER,  NO_CONDITION       },
     {   "account_issues",       byRef (&doAccountIssues),       Role::USER,  NO_CONDITION       },
     {   "account_invoices",     byRef (&doAccountInvoices),     Role::USER,  NO_CONDITION       },
-    {   "account_channels",     byRef (&doAccountChannels),     Role::USER,  NO_CONDITION       },
+    // {   "account_channels",     byRef (&doAccountChannels),     Role::USER,  NO_CONDITION       },
     {   "account_objects",      byRef (&doAccountObjects),      Role::USER,  NO_CONDITION       },
     {   "account_offers",       byRef (&doAccountOffers),       Role::USER,  NO_CONDITION       },
     {   "account_tx",           byRef (&doAccountTxSwitch),     Role::USER,  NO_CONDITION       },
     {   "blacklist",            byRef (&doBlackList),           Role::ADMIN,   NO_CONDITION     },
     {   "book_offers",          byRef (&doBookOffers),          Role::USER,  NO_CONDITION       },
     {   "can_delete",           byRef (&doCanDelete),           Role::ADMIN,   NO_CONDITION     },
-    {   "channel_authorize",    byRef (&doChannelAuthorize),    Role::USER,  NO_CONDITION       },
-    {   "channel_verify",       byRef (&doChannelVerify),       Role::USER,  NO_CONDITION       },
+    // {   "channel_authorize",    byRef (&doChannelAuthorize),    Role::USER,  NO_CONDITION       },
+    // {   "channel_verify",       byRef (&doChannelVerify),       Role::USER,  NO_CONDITION       },
     {   "connect",              byRef (&doConnect),             Role::ADMIN,   NO_CONDITION     },
     {   "consensus_info",       byRef (&doConsensusInfo),       Role::ADMIN,   NO_CONDITION     },
     {   "gateway_balances",     byRef (&doGatewayBalances),     Role::USER,  NO_CONDITION       },
@@ -158,7 +158,7 @@ Handler handlerArray[] {
     {   "sign",                 byRef (&doSign),                Role::USER,  NO_CONDITION       },
     {   "sign_for",             byRef (&doSignFor),             Role::USER,  NO_CONDITION       },
     {   "submit",               byRef (&doSubmit),              Role::USER,  NEEDS_CURRENT_LEDGER  },
-    {   "submit_multisigned",   byRef (&doSubmitMultiSigned),   Role::USER,  NEEDS_CURRENT_LEDGER  },
+    // {   "submit_multisigned",   byRef (&doSubmitMultiSigned),   Role::USER,  NEEDS_CURRENT_LEDGER  },
     {   "server_info",          byRef (&doServerInfo),          Role::USER,  NO_CONDITION       },
     {   "server_state",         byRef (&doServerState),         Role::USER,  NO_CONDITION       },
     {   "stop",                 byRef (&doStop),                Role::ADMIN,   NO_CONDITION     },

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -71,7 +71,10 @@ const std::uint32_t tfRequireAuth = 0x00040000;
 const std::uint32_t tfOptionalAuth = 0x00080000;
 const std::uint32_t tfDisallowCALL = 0x00100000;
 const std::uint32_t tfAllowCALL = 0x00200000;
-const std::uint32_t tfAccountSetMask = ~(tfUniversal | TxFlag::requireDestTag | tfOptionalDestTag | tfRequireAuth | tfOptionalAuth | tfDisallowCALL | tfAllowCALL);
+const std::uint32_t tfCodeAccount = 0x00400000;
+const std::uint32_t tfRequireAutoTrust = 0x00800000;
+const std::uint32_t tfOptionalAutoTrust = 0x01000000;
+const std::uint32_t tfAccountSetMask = ~(tfUniversal | TxFlag::requireDestTag | tfOptionalDestTag | tfRequireAuth | tfOptionalAuth | tfDisallowCALL | tfAllowCALL | tfCodeAccount | tfRequireAutoTrust | tfOptionalAutoTrust);
 
 // AccountSet SetFlag/ClearFlag values
 const std::uint32_t asfRequireDest = 1;
@@ -82,6 +85,10 @@ const std::uint32_t asfAccountTxnID = 5;
 const std::uint32_t asfNoFreeze = 6;
 const std::uint32_t asfGlobalFreeze = 7;
 const std::uint32_t asfDefaultCall = 8;
+// when set code account, account cannot be controlled by account self secret
+// it can only be access by code
+const std::uint32_t asfCodeAccount = 9; // not allow clear
+const std::uint32_t asfAutoTrust = 10; // auto create trust line
 
 // OfferCreate flags:
 const std::uint32_t tfPassive = 0x00010000;
@@ -94,7 +101,8 @@ const std::uint32_t tfOfferCreateMask = ~(tfUniversal | tfPassive | tfImmediateO
 const std::uint32_t tfNoCallDirect = 0x00010000;
 const std::uint32_t tfPartialPayment = 0x00020000;
 const std::uint32_t tfLimitQuality = 0x00040000;
-const std::uint32_t tfPaymentMask = ~(tfUniversal | tfPartialPayment | tfLimitQuality | tfNoCallDirect);
+const std::uint32_t tfNoCodeCall = 0x00080000;
+const std::uint32_t tfPaymentMask = ~(tfUniversal | tfPartialPayment | tfLimitQuality | tfNoCallDirect | tfNoCodeCall);
 
 // TrustSet flags:
 const std::uint32_t tfSetfAuth = 0x00010000;
@@ -112,10 +120,12 @@ const std::uint32_t tfLostMajority = 0x00020000;
 const std::uint32_t tfRenew = 0x00010000;
 const std::uint32_t tfClose = 0x00020000;
 
-//IssueSet flags:
-const std::uint32_t tfEnaddition =  0x00010000; // only for total amount field
-const std::uint32_t tfNonFungible = 0x00001000;
-const std::uint32_t tfIssueSetMask = ~(tfEnaddition | tfNonFungible);
+//IssueSet tx flags:
+const std::uint32_t tfAdditional    = 0x00010000; // only for total amount field
+const std::uint32_t tfCodeFixed     = 0x00020000;
+const std::uint32_t tfInvoiceEnable = 0x00001000;
+
+const std::uint32_t tfIssueSetMask = ~(tfAdditional | tfCodeFixed | tfInvoiceEnable);
 } // namespace call
 
 #endif

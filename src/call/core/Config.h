@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -168,8 +168,8 @@ public:
     boost::optional<std::size_t> VALIDATION_QUORUM;     // validations to consider ledger authoritative
 
     std::uint64_t                      FEE_DEFAULT = 10;
-    std::uint64_t                      FEE_ACCOUNT_RESERVE =1;
-    std::uint64_t                      FEE_OWNER_RESERVE = 1;
+    std::uint64_t                      FEE_ACCOUNT_RESERVE =10000;
+    std::uint64_t                      FEE_OWNER_RESERVE = 100;
     std::uint64_t                      FEE_OFFER = 10;
 
     // Node storage configuration

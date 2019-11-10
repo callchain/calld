@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -49,9 +49,8 @@ TxFormats::TxFormats ()
         << SOElement (sfSetFlag,             SOE_OPTIONAL)
         << SOElement (sfClearFlag,           SOE_OPTIONAL)
         << SOElement (sfTickSize,            SOE_OPTIONAL)
-        << SOElement (sfTotal,               SOE_OPTIONAL) // not used
-	    << SOElement (sfIssued,              SOE_OPTIONAL) // not used
-        << SOElement (sfNickName,            SOE_OPTIONAL) // not used
+        << SOElement (sfNickName,            SOE_OPTIONAL)
+        << SOElement (sfCode,                SOE_OPTIONAL)
         ;
 
     add ("TrustSet", ttTRUST_SET)
@@ -63,6 +62,7 @@ TxFormats::TxFormats ()
     add ("OfferCreate", ttOFFER_CREATE)
         << SOElement (sfTakerPays,           SOE_REQUIRED)
         << SOElement (sfTakerGets,           SOE_REQUIRED)
+        << SOElement (sfInvoiceID,           SOE_OPTIONAL)
         << SOElement (sfExpiration,          SOE_OPTIONAL)
         << SOElement (sfOfferSequence,       SOE_OPTIONAL)
         ;
@@ -83,26 +83,29 @@ TxFormats::TxFormats ()
         << SOElement (sfInvoiceID,           SOE_OPTIONAL)
         << SOElement (sfDestinationTag,      SOE_OPTIONAL)
         << SOElement (sfDeliverMin,          SOE_OPTIONAL)
-        << SOElement (sfInvoice,             SOE_OPTIONAL); // for invoice token create
+        << SOElement (sfInvoice,             SOE_OPTIONAL)
         ;
 
-    add ("EscrowCreate", ttESCROW_CREATE) <<
-        SOElement (sfDestination,       SOE_REQUIRED) <<
-        SOElement (sfAmount,            SOE_REQUIRED) <<
-        SOElement (sfCondition,         SOE_OPTIONAL) <<
-        SOElement (sfCancelAfter,       SOE_OPTIONAL) <<
-        SOElement (sfFinishAfter,       SOE_OPTIONAL) <<
-        SOElement (sfDestinationTag,    SOE_OPTIONAL);
+    add ("EscrowCreate", ttESCROW_CREATE) 
+        << SOElement (sfDestination,       SOE_REQUIRED) 
+        << SOElement (sfAmount,            SOE_REQUIRED) 
+        << SOElement (sfCondition,         SOE_OPTIONAL) 
+        << SOElement (sfCancelAfter,       SOE_OPTIONAL) 
+        << SOElement (sfFinishAfter,       SOE_OPTIONAL) 
+        << SOElement (sfDestinationTag,    SOE_OPTIONAL)
+        ;
 
-    add ("EscrowFinish", ttESCROW_FINISH) <<
-        SOElement (sfOwner,               SOE_REQUIRED) <<
-        SOElement (sfOfferSequence,       SOE_REQUIRED) <<
-        SOElement (sfFulfillment,         SOE_OPTIONAL) <<
-        SOElement (sfCondition,           SOE_OPTIONAL);
+    add ("EscrowFinish", ttESCROW_FINISH)
+        << SOElement (sfOwner,               SOE_REQUIRED) 
+        << SOElement (sfOfferSequence,       SOE_REQUIRED) 
+        << SOElement (sfFulfillment,         SOE_OPTIONAL) 
+        << SOElement (sfCondition,           SOE_OPTIONAL)
+        ;
 
-    add ("EscrowCancel", ttESCROW_CANCEL) <<
-        SOElement (sfOwner,               SOE_REQUIRED) <<
-        SOElement (sfOfferSequence,       SOE_REQUIRED);
+    add ("EscrowCancel", ttESCROW_CANCEL) 
+        << SOElement (sfOwner,               SOE_REQUIRED) 
+        << SOElement (sfOfferSequence,       SOE_REQUIRED)
+        ;
 
     add ("EnableAmendment", ttAMENDMENT)
         << SOElement (sfLedgerSequence,      SOE_REQUIRED)
@@ -133,31 +136,35 @@ TxFormats::TxFormats ()
         << SOElement (sfSignerEntries,       SOE_OPTIONAL)
         ;
 
-    add ("PaymentChannelCreate", ttPAYCHAN_CREATE) <<
-            SOElement (sfDestination,       SOE_REQUIRED) <<
-            SOElement (sfAmount,            SOE_REQUIRED) <<
-            SOElement (sfSettleDelay,       SOE_REQUIRED) <<
-            SOElement (sfPublicKey,         SOE_REQUIRED) <<
-            SOElement (sfCancelAfter,       SOE_OPTIONAL) <<
-            SOElement (sfDestinationTag,    SOE_OPTIONAL);
+    add ("PaymentChannelCreate", ttPAYCHAN_CREATE) 
+        << SOElement (sfDestination,       SOE_REQUIRED) 
+        << SOElement (sfAmount,            SOE_REQUIRED) 
+        << SOElement (sfSettleDelay,       SOE_REQUIRED) 
+        << SOElement (sfPublicKey,         SOE_REQUIRED) 
+        << SOElement (sfCancelAfter,       SOE_OPTIONAL) 
+        << SOElement (sfDestinationTag,    SOE_OPTIONAL)
+        ;
 
-    add ("PaymentChannelFund", ttPAYCHAN_FUND) <<
-            SOElement (sfPayChannel,        SOE_REQUIRED) <<
-            SOElement (sfAmount,            SOE_REQUIRED) <<
-            SOElement (sfExpiration,        SOE_OPTIONAL);
+    add ("PaymentChannelFund", ttPAYCHAN_FUND) 
+        << SOElement (sfPayChannel,        SOE_REQUIRED) 
+        << SOElement (sfAmount,            SOE_REQUIRED) 
+        << SOElement (sfExpiration,        SOE_OPTIONAL)
+        ;
 
-    add ("PaymentChannelClaim", ttPAYCHAN_CLAIM) <<
-            SOElement (sfPayChannel,        SOE_REQUIRED) <<
-            SOElement (sfAmount,            SOE_OPTIONAL) <<
-            SOElement (sfBalance,           SOE_OPTIONAL) <<
-            SOElement (sfSignature,         SOE_OPTIONAL) <<
-            SOElement (sfPublicKey,         SOE_OPTIONAL);
+    add ("PaymentChannelClaim", ttPAYCHAN_CLAIM) 
+        << SOElement (sfPayChannel,        SOE_REQUIRED) 
+        << SOElement (sfAmount,            SOE_OPTIONAL) 
+        << SOElement (sfBalance,           SOE_OPTIONAL) 
+        << SOElement (sfSignature,         SOE_OPTIONAL) 
+        << SOElement (sfPublicKey,         SOE_OPTIONAL)
+        ;
 
-    add ("IssueSet", ttISSUE_SET) <<
-		    SOElement (sfTotal,             SOE_REQUIRED) <<
-            SOElement (sfTransferRate,      SOE_OPTIONAL) <<
-            SOElement (sfExpiration,        SOE_OPTIONAL)
-            ;
+    add ("IssueSet", ttISSUE_SET) 
+        << SOElement (sfTotal,             SOE_REQUIRED) 
+        << SOElement (sfTransferRate,      SOE_OPTIONAL) 
+        << SOElement (sfCode,              SOE_OPTIONAL)
+        ;
+
 }
 
 void TxFormats::addCommonFields (Item& item)

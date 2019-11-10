@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -233,6 +233,7 @@ SF_Blob const sfCondition       = make::one<SF_Blob::type>(&sfCondition,       S
 SF_Blob const sfMasterSignature = make::one<SF_Blob::type>(&sfMasterSignature, STI_VL, 18, "MasterSignature", SField::sMD_Default, SField::notSigning);
 SF_Blob const sfNickName        = make::one<SF_Blob::type>(&sfNickName,        STI_VL, 19, "NickName");
 SF_Blob const sfInvoice         = make::one<SF_Blob::type>(&sfInvoice,         STI_VL, 20, "Invoice");
+SF_Blob const sfCode            = make::one<SF_Blob::type>(&sfCode,            STI_VL, 21, "Code");
 
 // account
 SF_Account const sfAccount     = make::one<SF_Account::type>(&sfAccount,     STI_ACCOUNT, 1, "Account");
@@ -262,11 +263,13 @@ SField const sfNewFields           = make::one(&sfNewFields,           STI_OBJEC
 SField const sfTemplateEntry       = make::one(&sfTemplateEntry,       STI_OBJECT,  9, "TemplateEntry");
 SField const sfMemo                = make::one(&sfMemo,                STI_OBJECT, 10, "Memo");
 SField const sfSignerEntry         = make::one(&sfSignerEntry,         STI_OBJECT, 11, "SignerEntry");
+SField const sfArg                 = make::one(&sfArg,                 STI_OBJECT, 12, "Parameter");
 
 // inner object (uncommon)
 SField const sfSigner              = make::one(&sfSigner,              STI_OBJECT, 16, "Signer");
 //                                                                                 17 has not been used yet...
 SField const sfMajority            = make::one(&sfMajority,            STI_OBJECT, 18, "Majority");
+
 
 // array of objects
 // ARRAY/1 is reserved for end of array

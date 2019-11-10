@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -95,10 +95,10 @@ protected:
     beast::Journal j_;
 
     AccountID      account_;
-    CALLAmount     mFeeDue;
+    CALLAmount     mFeeDue;   // base fee due
     CALLAmount     mPriorBalance;  // Balance before fees.
     CALLAmount     mSourceBalance; // Balance after fees.
-    CALLAmount     mActivation;
+    CALLAmount     mFeeLimit; // fee limit include base and contract
 
 public:
     /** Process the transaction. */
@@ -115,6 +115,12 @@ public:
     view() const
     {
         return ctx_.view();
+    }
+
+    ApplyContext&
+    context()
+    {
+        return ctx_;
     }
 
     /////////////////////////////////////////////////////
@@ -167,15 +173,16 @@ public:
         // after checkSeq/Fee/Sign.
         return tesSUCCESS;
     }
+
+    // chech issue exists and check non invoice support
+    static
+    TER
+    checkIssue (PreclaimContext const& ctx, STAmount const& amount, bool const non_invoice);
     /////////////////////////////////////////////////////
 
 protected:
     TER
     apply();
-
-    // chech issue exists and check non nft
-    bool
-    checkIssue (ApplyContext const& ctx, STAmount const& amount, bool const check_non_nft);
 
     explicit
     Transactor (ApplyContext& ctx);
@@ -183,6 +190,14 @@ protected:
     virtual void preCompute();
 
     virtual TER doApply () = 0;
+
+    bool isFeeRunOut(std::int64_t drops);
+    
+    CALLAmount const&
+    feeLimit()
+    {
+        return mFeeLimit;
+    }
 
 private:
     void setSeq ();

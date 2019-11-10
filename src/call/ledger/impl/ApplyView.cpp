@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -284,6 +284,26 @@ ApplyView::dirRemove (
             erase(prev);
     }
 
+    return true;
+}
+
+bool
+ApplyView::dirItemExists(
+    Keylet const& directory,
+    std::uint64_t page,
+    uint256 const& key)
+{
+    auto node = peek(keylet::page(directory, page));
+    if (!node) return false;
+
+    // std::uint64_t constexpr rootPage = 0;
+    auto entries = node->getFieldV256(sfIndexes);
+
+    auto it = std::find(entries.begin(), entries.end(), key);
+
+    if (entries.end () == it)
+        return false;
+        
     return true;
 }
 

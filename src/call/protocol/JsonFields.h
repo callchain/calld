@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -108,7 +108,7 @@ JSS ( balance );                    // out: AccountLines
 JSS ( balances );                   // out: GatewayBalances
 JSS ( base );                       // out: LogLevel
 JSS ( base_fee );                   // out: NetworkOPs
-JSS ( base_fee_CALL );               // out: NetworkOPs
+JSS ( base_fee_call );               // out: NetworkOPs
 JSS ( bids );                       // out: Subscribe
 JSS ( binary );                     // in: AccountTX, LedgerEntry,
                                     //     AccountTxOld, Tx LedgerData
@@ -369,9 +369,9 @@ JSS ( regular_seed );               // in/out: LedgerEntry
 JSS ( remote );                     // out: Logic.h
 JSS ( request );                    // RPC
 JSS ( reserve_base );               // out: NetworkOPs
-JSS ( reserve_base_CALL );           // out: NetworkOPs
+JSS ( reserve_base_call );           // out: NetworkOPs
 JSS ( reserve_inc );                // out: NetworkOPs
-JSS ( reserve_inc_CALL );            // out: NetworkOPs
+JSS ( reserve_inc_call );            // out: NetworkOPs
 JSS ( response );                   // websocket
 JSS ( result );                     // RPC
 JSS ( call_lines );               // out: NetworkOPs

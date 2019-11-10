@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -618,8 +618,9 @@ TxQ::apply(Application& app, OpenView& view,
     std::shared_ptr<STTx const> const& tx,
         ApplyFlags flags, beast::Journal j)
 {
-    auto const allowEscalation =
-        (view.rules().enabled(featureFeeEscalation));
+    // TODO, to check
+    // auto const allowEscalation =
+        // (view.rules().enabled(featureFeeEscalation));
     //if (!allowEscalation)
     {
         return call::apply(app, view, *tx, flags, j);

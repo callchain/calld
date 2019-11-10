@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -57,8 +57,7 @@ SetTrust::preflight (PreflightContext const& ctx)
 
     if (uTxFlags & tfTrustSetMask)
     {
-        JLOG(j.trace()) <<
-            "Malformed transaction: Invalid flags set.";
+        JLOG(j.trace()) << "Malformed transaction: Invalid flags set.";
         return temINVALID_FLAG;
     }
 
@@ -69,23 +68,19 @@ SetTrust::preflight (PreflightContext const& ctx)
 
     if (saLimitAmount.native ())
     {
-        JLOG(j.trace()) <<
-            "Malformed transaction: specifies native limit " <<
-            saLimitAmount.getFullText ();
+        JLOG(j.trace()) << "Malformed transaction: specifies native limit " << saLimitAmount.getFullText ();
         return temBAD_LIMIT;
     }
 
     if (badCurrency() == saLimitAmount.getCurrency ())
     {
-        JLOG(j.trace()) <<
-            "Malformed transaction: specifies CALL as IOU";
+        JLOG(j.trace()) << "Malformed transaction: specifies CALL as IOU";
         return temBAD_CURRENCY;
     }
 
     if (saLimitAmount < zero)
     {
-        JLOG(j.trace()) <<
-            "Malformed transaction: Negative credit limit.";
+        JLOG(j.trace()) << "Malformed transaction: Negative credit limit.";
         return temBAD_LIMIT;
     }
 
@@ -94,8 +89,7 @@ SetTrust::preflight (PreflightContext const& ctx)
 
     if (!issuer || issuer == noAccount())
     {
-        JLOG(j.trace()) <<
-            "Malformed transaction: no destination account.";
+        JLOG(j.trace()) << "Malformed transaction: no destination account.";
         return temDST_NEEDED;
     }
 
@@ -107,8 +101,7 @@ SetTrust::preclaim(PreclaimContext const& ctx)
 {
     auto const id = ctx.tx[sfAccount];
 
-    auto const sle = ctx.view.read(
-        keylet::account(id));
+    auto const sle = ctx.view.read(keylet::account(id));
 
     std::uint32_t const uTxFlags = ctx.tx.getFlags();
 
@@ -116,8 +109,7 @@ SetTrust::preclaim(PreclaimContext const& ctx)
 
     if (bSetAuth && !(sle->getFieldU32(sfFlags) & lsfRequireAuth))
     {
-        JLOG(ctx.j.trace()) <<
-            "Retry: Auth not required.";
+        JLOG(ctx.j.trace()) << "Retry: Auth not required.";
         return tefNO_AUTH_REQUIRED;
     }
 
@@ -131,13 +123,11 @@ SetTrust::preclaim(PreclaimContext const& ctx)
         // Prevent trustline to self from being created,
         // unless one has somehow already been created
         // (in which case doApply will clean it up).
-        auto const sleDelete = ctx.view.read(
-            keylet::line(id, uDstAccountID, currency));
+        auto const sleDelete = ctx.view.read(keylet::line(id, uDstAccountID, currency));
 
         if (!sleDelete)
         {
-            JLOG(ctx.j.trace()) <<
-                "Malformed transaction: Can not extend credit to self.";
+            JLOG(ctx.j.trace()) << "Malformed transaction: Can not extend credit to self.";
             return temDST_IS_SRC;
         }
     }
@@ -150,7 +140,7 @@ SetTrust::doApply ()
 {
     TER terResult = tesSUCCESS;
 
-    STAmount   saLimitAmount (ctx_.tx.getFieldAmount (sfLimitAmount));
+    STAmount saLimitAmount (ctx_.tx.getFieldAmount (sfLimitAmount));
     bool const bQualityIn (ctx_.tx.isFieldPresent (sfQualityIn));
     bool const bQualityOut (ctx_.tx.isFieldPresent (sfQualityOut));
 
@@ -163,20 +153,20 @@ SetTrust::doApply ()
 	{
 		return  temBAD_ISSUER;
 	}
-    if (Dessle->isFieldPresent(sfTotal))
-	{
-		STAmount saTotallimt = Dessle->getFieldAmount(sfTotal);
-		if (saLimitAmount.getCurrency() == saTotallimt.getCurrency())
-		{
-			if (saLimitAmount > saTotallimt)
-				saLimitAmount = saTotallimt;
-		}
-	}
+
+    AccountID const& issuer = uDstAccountID;
+    SLE::pointer sleIssueRoot = view().peek(keylet::issuet(issuer, currency));
+    if (!sleIssueRoot)
+    {
+        JLOG(j_.warn()) << "Issuer not issue such currency";
+        return temCURRENCY_NOT_ISSUE;
+    }
+    STAmount saTotalLimit = sleIssueRoot->getFieldAmount(sfTotal);
+
     // true, iff current is high account.
     bool const bHigh = account_ > uDstAccountID;
 
-    auto const sle = view().peek(
-        keylet::account(account_));
+    auto const sle = view().peek(keylet::account(account_));
 
     std::uint32_t const uOwnerCount = sle->getFieldU32 (sfOwnerCount);
 
@@ -220,27 +210,17 @@ SetTrust::doApply ()
 
     if (account_ == uDstAccountID)
     {
-        // The only purpose here is to allow a mistakenly created
-        // trust line to oneself to be deleted. If no such trust
-        // lines exist now, why not remove this code and simply
-        // return an error?
-        SLE::pointer sleDelete = view().peek (keylet::line(account_, uDstAccountID, currency));
-
-        JLOG(j_.warn()) <<
-            "Clearing redundant line.";
-
-        return trustDelete (view(), sleDelete, account_, uDstAccountID, viewJ);
+        return temSELF_TRUST;
     }
 
     SLE::pointer sleDst = view().peek (keylet::account(uDstAccountID));
-
     if (!sleDst)
     {
         JLOG(j_.trace()) << "Delay transaction: Destination account does not exist.";
         return tecNO_DST;
     }
 
-    STAmount saLimitAllow = saLimitAmount;
+    STAmount saLimitAllow = saLimitAmount > saTotalLimit ? saTotalLimit : saLimitAmount;
     saLimitAllow.setIssuer (account_);
 
     SLE::pointer sleCallState = view().peek (keylet::line(account_, uDstAccountID, currency));
@@ -283,14 +263,12 @@ SetTrust::doApply ()
         if (!bQualityIn)
         {
             // Not setting. Just get it.
-
             uLowQualityIn   = sleCallState->getFieldU32 (sfLowQualityIn);
             uHighQualityIn  = sleCallState->getFieldU32 (sfHighQualityIn);
         }
         else if (uQualityIn)
         {
             // Setting.
-
             sleCallState->setFieldU32 (!bHigh ? sfLowQualityIn : sfHighQualityIn, uQualityIn);
 
             uLowQualityIn   = !bHigh ? uQualityIn : sleCallState->getFieldU32 (sfLowQualityIn);
@@ -299,7 +277,6 @@ SetTrust::doApply ()
         else
         {
             // Clearing.
-
             sleCallState->makeFieldAbsent (!bHigh ? sfLowQualityIn : sfHighQualityIn);
 
             uLowQualityIn   = !bHigh ? 0 : sleCallState->getFieldU32 (sfLowQualityIn);
@@ -313,18 +290,15 @@ SetTrust::doApply ()
         //
         // Quality out
         //
-
         if (!bQualityOut)
         {
             // Not setting. Just get it.
-
             uLowQualityOut  = sleCallState->getFieldU32 (sfLowQualityOut);
             uHighQualityOut = sleCallState->getFieldU32 (sfHighQualityOut);
         }
         else if (uQualityOut)
         {
             // Setting.
-
             sleCallState->setFieldU32 (!bHigh ? sfLowQualityOut : sfHighQualityOut, uQualityOut);
 
             uLowQualityOut  = !bHigh ? uQualityOut : sleCallState->getFieldU32 (sfLowQualityOut);
@@ -333,7 +307,6 @@ SetTrust::doApply ()
         else
         {
             // Clearing.
-
             sleCallState->makeFieldAbsent (!bHigh ? sfLowQualityOut : sfHighQualityOut);
 
             uLowQualityOut  = !bHigh ? 0 : sleCallState->getFieldU32 (sfLowQualityOut);
@@ -354,33 +327,33 @@ SetTrust::doApply ()
 
         if (bSetFreeze && !bClearFreeze && !sle->isFlag  (lsfNoFreeze))
         {
-            uFlagsOut           |= (bHigh ? lsfHighFreeze : lsfLowFreeze);
+            uFlagsOut |= (bHigh ? lsfHighFreeze : lsfLowFreeze);
         }
         else if (bClearFreeze && !bSetFreeze)
         {
-            uFlagsOut           &= ~(bHigh ? lsfHighFreeze : lsfLowFreeze);
+            uFlagsOut &= ~(bHigh ? lsfHighFreeze : lsfLowFreeze);
         }
 
         if (QUALITY_ONE == uLowQualityOut)  uLowQualityOut  = 0;
 
         if (QUALITY_ONE == uHighQualityOut) uHighQualityOut = 0;
 
-        bool const bLowDefCall        = sleLowAccount->getFlags() & lsfDefaultCall;
-        bool const bHighDefCall       = sleHighAccount->getFlags() & lsfDefaultCall;
+        bool const bLowDefCall = sleLowAccount->getFlags() & lsfDefaultCall;
+        bool const bHighDefCall = sleHighAccount->getFlags() & lsfDefaultCall;
 
-        bool const  bLowReserveSet      = uLowQualityIn || uLowQualityOut ||
-                                            ((uFlagsOut & lsfLowNoCall) == 0) != bLowDefCall ||
-                                            (uFlagsOut & lsfLowFreeze) ||
-                                            saLowLimit || saLowBalance > zero;
-        bool const  bLowReserveClear    = !bLowReserveSet;
+        bool const  bLowReserveSet = uLowQualityIn || uLowQualityOut || 
+                                    ((uFlagsOut & lsfLowNoCall) == 0) != bLowDefCall ||
+                                    (uFlagsOut & lsfLowFreeze) ||
+                                    saLowLimit || saLowBalance > zero;
+        bool const  bLowReserveClear = !bLowReserveSet;
 
-        bool const  bHighReserveSet     = uHighQualityIn || uHighQualityOut ||
-                                            ((uFlagsOut & lsfHighNoCall) == 0) != bHighDefCall ||
-                                            (uFlagsOut & lsfHighFreeze) ||
-                                            saHighLimit || saHighBalance > zero;
-        bool const  bHighReserveClear   = !bHighReserveSet;
+        bool const  bHighReserveSet = uHighQualityIn || uHighQualityOut ||
+                                    ((uFlagsOut & lsfHighNoCall) == 0) != bHighDefCall ||
+                                    (uFlagsOut & lsfHighFreeze) ||
+                                    saHighLimit || saHighBalance > zero;
+        bool const  bHighReserveClear = !bHighReserveSet;
 
-        bool const  bDefault            = bLowReserveClear && bHighReserveClear;
+        bool const  bDefault = bLowReserveClear && bHighReserveClear;
 
         bool const  bLowReserved = (uFlagsIn & lsfLowReserve);
         bool const  bHighReserved = (uFlagsIn & lsfHighReserve);
@@ -395,8 +368,7 @@ SetTrust::doApply ()
         if (bLowReserveSet && !bLowReserved)
         {
             // Set reserve for low account.
-            adjustOwnerCount(view(),
-                sleLowAccount, 1, viewJ);
+            adjustOwnerCount(view(), sleLowAccount, 1, viewJ);
             uFlagsOut |= lsfLowReserve;
 
             if (!bHigh)
@@ -433,7 +405,8 @@ SetTrust::doApply ()
         if (bDefault || badCurrency() == currency)
         {
             // Delete.
-            terResult = trustDelete (view(), sleCallState, uLowAccountID, uHighAccountID, viewJ);
+            terResult = trustDelete (view(), sleCallState, uLowAccountID, uHighAccountID, 
+                    uDstAccountID, currency, viewJ);
         }
         // Reserve is not scaled by load.
         else if (bReserveIncrease && mPriorBalance < reserveCreate)

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -56,3 +56,5 @@
 #include <call/app/tx/impl/ApplyContext.cpp>
 #include <call/app/tx/impl/Transactor.cpp>
 #include <call/app/tx/impl/IssueSet.cpp>
+
+#include <call/app/contract/ContractLib.cpp>

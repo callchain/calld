@@ -97,3 +97,9 @@ src/protobuf/java/.settings/
 src/protobuf/java/target/
 src/protobuf/java/.project
 
+src/lua/src/*.o
+src/lua/src/*.a
+src/lua/src/lua
+src/lua/src/luac
+
+

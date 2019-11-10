@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 /*
     This file is part of calld: https://github.com/callchain/calld
-    Copyright (c) 2018, 2019 Callchain Fundation.
+    Copyright (c) 2018, 2019 Callchain Foundation.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose  with  or without fee is hereby granted, provided that the above
@@ -71,7 +71,7 @@ void addIssue(Json::Value &jsonIssued,  std::shared_ptr<SLE const> sleIssue, STA
 
 	jPeer["Total"] = sleIssue->getFieldAmount(sfTotal).getJson(0);
 	jPeer["Issued"] = sleIssue->getFieldAmount(sfIssued).getJson(0);
-	jPeer["Freeze"] = freeze.getJson(0);
+	// jPeer["Freeze"] = freeze.getJson(0);
 	jPeer["Flags"] = boost::lexical_cast<std::string>(sleIssue->getFieldU32(sfFlags));
 	jPeer["Fans"] = boost::lexical_cast<std::string>(sleIssue->getFieldU64(sfFans));
 	jPeer["TransferRate"] = boost::lexical_cast<std::string>(sleIssue->getFieldU32(sfTransferRate));
@@ -522,13 +522,13 @@ Json::Value doAccountIssues(RPC::Context &context)
 	}
 
 	//get offers
-	std::vector<std::shared_ptr<SLE const>> offers;
-	forEachItem(*ledger, accountID, [&offers](std::shared_ptr<SLE const> const &sle) {
-		if (sle->getType() == ltOFFER) 
-		{
-			offers.emplace_back(sle);
-		}
-	});
+	// std::vector<std::shared_ptr<SLE const>> offers;
+	// forEachItem(*ledger, accountID, [&offers](std::shared_ptr<SLE const> const &sle) {
+	// 	if (sle->getType() == ltOFFER) 
+	// 	{
+	// 		offers.emplace_back(sle);
+	// 	}
+	// });
 
 	unsigned int limit;
 	if (auto err = readLimitField(limit, RPC::Tuning::accountLines, context))
@@ -562,14 +562,15 @@ Json::Value doAccountIssues(RPC::Context &context)
 		STAmount freeze;
 		freeze = zero;
 		freeze.setIssue(saBalance.issue());
-		for (auto const &offer : offers)
-		{
-			STAmount takergets = offer->getFieldAmount(sfTakerGets);
-			if ((freeze.getCurrency() == takergets.getCurrency()) && (freeze.getIssuer() == takergets.getIssuer()))
-			{
-				freeze += takergets;
-			}
-		}
+
+		// for (auto const &offer : offers)
+		// {
+		// 	STAmount takergets = offer->getFieldAmount(sfTakerGets);
+		// 	if ((freeze.getCurrency() == takergets.getCurrency()) && (freeze.getIssuer() == takergets.getIssuer()))
+		// 	{
+		// 		freeze += takergets;
+		// 	}
+		// }
 
 		addIssue(jsonIssues, sleIssue, freeze);
 		visitData.items.reserve(reserve);
@@ -614,14 +615,14 @@ Json::Value doAccountIssues(RPC::Context &context)
 		freeze = zero;
 		freeze.setIssue(saBalance.issue());
 
-		for (auto const &offer : offers)
-		{
-			STAmount takergets = offer->getFieldAmount(sfTakerGets);
-			if ((freeze.getCurrency() == takergets.getCurrency()) && (freeze.getIssuer() == takergets.getIssuer()))
-			{
-				freeze += takergets;
-			}
-		}
+		// for (auto const &offer : offers)
+		// {
+		// 	STAmount takergets = offer->getFieldAmount(sfTakerGets);
+		// 	if ((freeze.getCurrency() == takergets.getCurrency()) && (freeze.getIssuer() == takergets.getIssuer()))
+		// 	{
+		// 		freeze += takergets;
+		// 	}
+		// }
 		addIssue(jsonIssues, item, freeze);
 	}
 
