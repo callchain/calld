@@ -158,7 +158,7 @@ static int syscall_callstate(lua_State *L)
     if (accountID == issuerID) {
         return call_error(L, temDST_IS_SRC);
     }
-    const char* currency = lua_tostring(L, 2);
+    const char* currency = lua_tostring(L, 3);
     std::string currencyS = currency;
     auto const currencyObj = to_currency(currencyS);
 
