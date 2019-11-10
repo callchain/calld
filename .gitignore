@@ -91,3 +91,9 @@ Builds/VisualStudio2015/*.sdf
 # MSVC
 *.pdb
 .vs/
+
+src/protobuf/java/.classpath
+src/protobuf/java/.settings/
+src/protobuf/java/target/
+src/protobuf/java/.project
+
