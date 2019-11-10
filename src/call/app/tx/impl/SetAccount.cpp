@@ -597,8 +597,7 @@ SetAccount::doApply ()
         if (!isTesSuccess(terResult)) return terResult;
         else
         {
-            std::string code = strCopy(ctx_.tx.getFieldVL(sfCode));
-            auto uCode = strCopy(code);
+            auto const uCode = ctx_.tx.getFieldVL(sfCode);
             std::int32_t diff_size = uCode.size();
             if (sle->isFieldPresent(sfCode))
             {
