@@ -63,7 +63,7 @@ namespace call {
 // }
 
 // TODO(tom): what is that "default"?
-Json::Value	doNickSearch(RPC::Context& context)
+Json::Value	doNicknameInfo(RPC::Context& context)
 {
 	std::string nick;
 	Json::Value result;
@@ -77,6 +77,7 @@ Json::Value	doNickSearch(RPC::Context& context)
 		RPC::inject_error(rpcINVALID_PARAMS, result);
 		return result;
 	}
+
 	std::shared_ptr<ReadView const> ledger;
 	result = RPC::lookupLedger(ledger, context);
 
@@ -84,22 +85,18 @@ Json::Value	doNickSearch(RPC::Context& context)
 		return result;
 	
 	Blob blobname = strCopy(nick);
-     std::shared_ptr<SLE const> slenick = cachedRead(*ledger,
-		getNicknameIndex(blobname),ltNICKNAME);
-//	auto const slenick = ledger->read(keylet::nick(blobname));
+    std::shared_ptr<SLE const> sle = cachedRead(*ledger, getNicknameIndex(blobname), ltNICKNAME);
 
-	if (!slenick)
+	if (!sle)
 	{
 		RPC::inject_error(rpcNICKACCOUNT_NOT_FOUND, result);
 		return result;
 	}
-		
-	auto nickaccount = toBase58(slenick->getAccountID(sfAccount));
-        context.params[jss::account]= nickaccount;
-	result=doAccountInfo(context);
-	//result[jss::Account] = nickaccount;
-	return result;
 
+	auto nickaccount = toBase58(sle->getAccountID(sfAccount));
+    context.params[jss::account] = nickaccount;
+	result = doAccountInfo(context);
+	return result;
 }
 Json::Value doAccountInfo (RPC::Context& context)
 {

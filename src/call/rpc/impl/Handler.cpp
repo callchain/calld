@@ -172,7 +172,10 @@ Handler handlerArray[] {
     {   "validator_list_sites", byRef (&doValidatorListSites),  Role::ADMIN,   NO_CONDITION     },
     {   "wallet_propose",       byRef (&doWalletPropose),       Role::ADMIN,   NO_CONDITION     },
     {   "wallet_seed",          byRef (&doWalletSeed),          Role::ADMIN,   NO_CONDITION     },
-    {   "nick_search",          byRef (&doNickSearch),          Role::USER,  NO_CONDITION       },
+    // DEPRECATED
+    {   "nick_search",          byRef (&doNicknameInfo),        Role::USER,  NO_CONDITION       },
+
+    {   "nickname_info",        byRef (&doNicknameInfo),        Role::USER,  NO_CONDITION       },
     // Evented methods
     {   "subscribe",            byRef (&doSubscribe),           Role::USER,  NO_CONDITION       },
     {   "unsubscribe",          byRef (&doUnsubscribe),         Role::USER,  NO_CONDITION       },
