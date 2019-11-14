@@ -260,22 +260,22 @@ enum TER
     // [500-1000) reserved for map error < tesSUCCESS
     // for error + 1000 -> contract error
 
-    tedINVALID_PARAM_NUMS       = 1000,
-    tedINVALID_PARAM_TYPE       = 1001,
-    tedINVALID_PARAM_ACCOUNT    = 1002,
-    tedACCOUNT_NOT_FOUND        = 1003,
-    tedINVALID_KEY_TYPE         = 1004,
-    tedINVALID_VALUE_TYPE       = 1005,
-    tedINVALID_AMOUNT           = 1006,
-    tedSEND_CONTRACT_SELF       = 1007,
-    tedINVALID_DESTINATION      = 1008,
-    tedNO_SUCH_VALUE            = 1009,
-    tedCODE_FEE_OUT             = 1010,
-    tedINVALID_PARAM_ISSUER     = 1011,
-    tedCODE_LOAD_FAILED         = 1012,
-    tedCODE_CALL_FAILED         = 1013,
-    tedCODE_CHECK_FAILED        = 1014,
-    tedCODE_INIT_FAILED         = 1015,
+    tecINVALID_PARAM_NUMS       = 1000,
+    tecINVALID_PARAM_TYPE       = 1001,
+    tecINVALID_PARAM_ACCOUNT    = 1002,
+    tecACCOUNT_NOT_FOUND        = 1003,
+    tecINVALID_KEY_TYPE         = 1004,
+    tecINVALID_VALUE_TYPE       = 1005,
+    tecINVALID_AMOUNT           = 1006,
+    tecSEND_CONTRACT_SELF       = 1007,
+    tecINVALID_DESTINATION      = 1008,
+    tecNO_SUCH_VALUE            = 1009,
+    tecCODE_FEE_OUT             = 1010,
+    tecINVALID_PARAM_ISSUER     = 1011,
+    tecCODE_LOAD_FAILED         = 1012,
+    tecCODE_CALL_FAILED         = 1013,
+    tecCODE_CHECK_FAILED        = 1014,
+    tecCODE_INIT_FAILED         = 1015,
 };
 
 inline bool isTelLocal(TER x)

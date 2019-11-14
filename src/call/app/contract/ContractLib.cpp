@@ -77,7 +77,7 @@ static int syscall_ledger(lua_State *L)
 {
     int argc = lua_gettop(L);
     if (argc != 0) {
-        return call_error(L, tedINVALID_PARAM_NUMS);
+        return call_error(L, tecINVALID_PARAM_NUMS);
     }
 
     auto const ledger = getApp().getLedgerMaster().getClosedLedger();
@@ -101,24 +101,24 @@ static int syscall_account(lua_State *L)
 {
     int argc = lua_gettop(L);
     if (argc != 1) { // account
-        return call_error(L, tedINVALID_PARAM_NUMS);
+        return call_error(L, tecINVALID_PARAM_NUMS);
     }
 
     if (!lua_isstring(L, 1)) {
-        return call_error(L, tedINVALID_PARAM_TYPE);
+        return call_error(L, tecINVALID_PARAM_TYPE);
     }
 
     const char* account = lua_tostring(L, 1);
     std::string accountS = account;
     auto const accountID = RPC::accountFromStringStrict(accountS);
     if (!accountID) {
-        return call_error(L, tedINVALID_PARAM_ACCOUNT);
+        return call_error(L, tecINVALID_PARAM_ACCOUNT);
     }
 
     auto const ledger = getApp().getLedgerMaster().getClosedLedger();
     auto const sleAccount = ledger->read(keylet::account(accountID.get()));
     if (!sleAccount) {
-        return call_error(L, tedACCOUNT_NOT_FOUND);
+        return call_error(L, tecACCOUNT_NOT_FOUND);
     }
 
     lua_newtable(L);
@@ -137,23 +137,23 @@ static int syscall_callstate(lua_State *L)
 {
     int argc = lua_gettop(L);
     if (argc != 3) { // account, issuer, currency
-        return call_error(L, tedINVALID_PARAM_NUMS);
+        return call_error(L, tecINVALID_PARAM_NUMS);
     }
     if (!lua_isstring(L, 1) || !lua_isstring(L, 2) || !lua_isstring(L, 3))
     {
-        return call_error(L, tedINVALID_PARAM_TYPE);
+        return call_error(L, tecINVALID_PARAM_TYPE);
     }
     const char* account = lua_tostring(L, 1);
     std::string accountS = account;
     auto const accountID = RPC::accountFromStringStrict(accountS).get();
     if (!accountID) {
-        return call_error(L, tedINVALID_PARAM_ACCOUNT);
+        return call_error(L, tecINVALID_PARAM_ACCOUNT);
     }
     const char* issuer = lua_tostring(L, 2);
     std::string issuerS = issuer;
     auto const issuerID = RPC::accountFromStringStrict(issuerS).get();
     if (!issuerID) {
-        return call_error(L, tedINVALID_PARAM_ISSUER);
+        return call_error(L, tecINVALID_PARAM_ISSUER);
     }
     if (accountID == issuerID) {
         return call_error(L, temDST_IS_SRC);
@@ -196,17 +196,17 @@ static int syscall_transfer(lua_State *L)
 {
     int argc = lua_gettop(L);
     if (argc != 2) { // to, amount
-        return call_error(L, tedINVALID_PARAM_NUMS);
+        return call_error(L, tecINVALID_PARAM_NUMS);
     }
 
     if (!lua_isstring(L, 1)) { // to
-        return call_error(L, tedINVALID_PARAM_TYPE);
+        return call_error(L, tecINVALID_PARAM_TYPE);
     }
     const char* to = lua_tostring(L, 1);
     std::string toS = to;
 
     if (!lua_isstring(L, 2) && !lua_istable(L, 2)) { // amount
-        return call_error(L, tedINVALID_PARAM_TYPE);
+        return call_error(L, tecINVALID_PARAM_TYPE);
     }
     
     STAmount amount;
@@ -235,7 +235,7 @@ static int syscall_transfer(lua_State *L)
         json["issuer"] = issuer;
         if (!amountFromJsonNoThrow(amount, json))
         {
-            return call_error(L, tedINVALID_AMOUNT);
+            return call_error(L, tecINVALID_AMOUNT);
         }
     }
 
@@ -244,7 +244,7 @@ static int syscall_transfer(lua_State *L)
     std::string contractS = lua_tostring(L, -1);
     lua_pop(L, 2);
     if (toS == contractS) {
-        return call_error(L, tedSEND_CONTRACT_SELF);
+        return call_error(L, tecSEND_CONTRACT_SELF);
     }
     
     lua_pushlightuserdata(L, (void *)&getApp());
@@ -254,7 +254,7 @@ static int syscall_transfer(lua_State *L)
 
     auto const uDstAccountID = RPC::accountFromStringStrict(toS);
     if (!uDstAccountID) {
-        return call_error(L, tedINVALID_DESTINATION);
+        return call_error(L, tecINVALID_DESTINATION);
     }
 
     TER terResult = payment->doTransfer(uDstAccountID.get(), amount);

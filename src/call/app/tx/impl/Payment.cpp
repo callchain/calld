@@ -629,7 +629,7 @@ Payment::doCodeCheckCall(STAmount const& amount)
         JLOG(j_.warn()) << "Fail to load account code, error=" << lret;
         drops = lua_getdrops(L);
         lua_close(L);
-        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_LOAD_FAILED;
+        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecCODE_LOAD_FAILED;
     }
 
     lua_getglobal(L, "check");
@@ -638,7 +638,7 @@ Payment::doCodeCheckCall(STAmount const& amount)
         JLOG(j_.trace()) << "check variable is not function";
         drops = lua_getdrops(L);
         lua_close(L);
-        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : terResult;
     }
 
     // set currency transactor in registry table
@@ -675,7 +675,7 @@ Payment::doCodeCheckCall(STAmount const& amount)
         JLOG(j_.warn()) << "fail to call account check code, error=" << lret;
         drops = lua_getdrops(L);
         lua_close(L);
-        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_CHECK_FAILED;
+        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecCODE_CHECK_FAILED;
     }
 
     // get result
@@ -688,7 +688,7 @@ Payment::doCodeCheckCall(STAmount const& amount)
     }
 
     drops = lua_getdrops(L);
-    terResult = isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+    terResult = isFeeRunOut(drops) ? tecCODE_FEE_OUT : terResult;
     if (isTesSuccess(terResult))
     {
         // save lua contract variable
@@ -725,7 +725,7 @@ Payment::doCodeCall(STAmount const& amount)
         JLOG(j_.warn()) << "Fail to call load account code, error=" << lret;
         drops = lua_getdrops(L);
         lua_close(L);
-        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_LOAD_FAILED;
+        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecCODE_LOAD_FAILED;
     }
 
     lua_getglobal(L, "main");
@@ -783,7 +783,7 @@ Payment::doCodeCall(STAmount const& amount)
         JLOG(j_.warn()) << "Fail to call account code main, error=" << lret;
         drops = lua_getdrops(L);
         lua_close(L);
-        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_CALL_FAILED;
+        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecCODE_CALL_FAILED;
     }
 
     // get result
@@ -796,7 +796,7 @@ Payment::doCodeCall(STAmount const& amount)
     }
 
     drops = lua_getdrops(L);
-    terResult = isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+    terResult = isFeeRunOut(drops) ? tecCODE_FEE_OUT : terResult;
 
     if (isTesSuccess(terResult))
     {

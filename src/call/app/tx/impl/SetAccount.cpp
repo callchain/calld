@@ -636,7 +636,7 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
         JLOG(j_.warn()) << "invalid account code, error=" << lret;
         drops = lua_getdrops(L);
         lua_close(L);
-        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : temINVALID_CODE;
+        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : temINVALID_CODE;
     }
     lua_getglobal(L, "main");
     lret = lua_type(L, -1);
@@ -645,7 +645,7 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
         JLOG(j_.warn()) << "no code entry, type=" << lret;
         drops = lua_getdrops(L);
         lua_close(L);
-        return isFeeRunOut(drops) ? tedCODE_FEE_OUT : temNO_CODE_ENTRY;
+        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : temNO_CODE_ENTRY;
     }
     lua_pop(L, 1);
 
@@ -692,7 +692,7 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
             JLOG(j_.warn()) << "Fail to call account code init, error=" << lret;
             drops = lua_getdrops(L);
             lua_close(L);
-            return isFeeRunOut(drops) ? tedCODE_FEE_OUT : tedCODE_INIT_FAILED;
+            return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecCODE_INIT_FAILED;
         }
         // get result
         TER terResult = TER(lua_tointeger(L, -1));
@@ -704,7 +704,7 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
         }
 
         drops = lua_getdrops(L);
-        terResult = isFeeRunOut(drops) ? tedCODE_FEE_OUT : terResult;
+        terResult = isFeeRunOut(drops) ? tecCODE_FEE_OUT : terResult;
 
         if (isTesSuccess(terResult))
         {
