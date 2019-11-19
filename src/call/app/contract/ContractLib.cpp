@@ -80,6 +80,11 @@ static int syscall_ledger(lua_State *L)
         return call_error(L, tecINVALID_PARAM_NUMS);
     }
 
+    long long left_drops = lua_getdrops(L);
+    if (!lua_setdrops(L, left_drops - LEDGER_INFO_DROP_COST)) {
+        return call_error(L, tecCODE_FEE_OUT);
+    }
+
     auto const ledger = getApp().getLedgerMaster().getClosedLedger();
     auto const info = ledger->info();
 
@@ -113,6 +118,11 @@ static int syscall_account(lua_State *L)
     auto const accountID = RPC::accountFromStringStrict(accountS);
     if (!accountID) {
         return call_error(L, tecINVALID_PARAM_ACCOUNT);
+    }
+
+    long long left_drops = lua_getdrops(L);
+    if (!lua_setdrops(L, left_drops - ACCOUNT_INFO_DROP_COST)) {
+        return call_error(L, tecCODE_FEE_OUT);
     }
 
     auto const ledger = getApp().getLedgerMaster().getClosedLedger();
@@ -158,6 +168,12 @@ static int syscall_callstate(lua_State *L)
     if (accountID == issuerID) {
         return call_error(L, temDST_IS_SRC);
     }
+
+    long long left_drops = lua_getdrops(L);
+    if (!lua_setdrops(L, left_drops - CALLSTATE_INFO_DROP_COST)) {
+        return call_error(L, tecCODE_FEE_OUT);
+    }
+
     const char* currency = lua_tostring(L, 3);
     std::string currencyS = currency;
     auto const currencyObj = to_currency(currencyS);
@@ -207,6 +223,11 @@ static int syscall_transfer(lua_State *L)
 
     if (!lua_isstring(L, 2) && !lua_istable(L, 2)) { // amount
         return call_error(L, tecINVALID_PARAM_TYPE);
+    }
+
+    long long left_drops = lua_getdrops(L);
+    if (!lua_setdrops(L, left_drops - TRANSFER_DROP_COST)) {
+        return call_error(L, tecCODE_FEE_OUT);
     }
     
     STAmount amount;

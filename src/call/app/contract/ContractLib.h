@@ -27,6 +27,11 @@
 #include <string>
 #include <vector>
 
+#define LEDGER_INFO_DROP_COST    10
+#define ACCOUNT_INFO_DROP_COST   10
+#define CALLSTATE_INFO_DROP_COST 10
+#define TRANSFER_DROP_COST       100
+
 namespace call
 {
     static void call_push_string(lua_State *L, std::string k, std::string v);
