@@ -23,7 +23,7 @@
 #include <lua-vm/src/lua.hpp>
 #include <call/basics/StringUtilities.h>
 #include <call/protocol/AccountID.h>
-#include <call/protocal/TER.h>
+#include <call/protocol/TER.h>
 
 #include <string>
 #include <vector>
