@@ -649,6 +649,8 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
     std::string uncompress_code = UncompressData(code);
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
+    RegisterContractLib(L); // register cpp functions for lua contract
+
     // set fee limit
     auto const beforeFeeLimit = feeLimit();
     std::int64_t drops = beforeFeeLimit.drops();
