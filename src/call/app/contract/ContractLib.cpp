@@ -288,11 +288,11 @@ static int syscall_transfer(lua_State *L)
 static int syscall_print(lua_State *L)
 {
     int argc = lua_gettop(L);
-    if (argc != 1) { // to, amount
+    if (argc != 1) {
         return call_error(L, tecINVALID_PARAM_NUMS);
     }
 
-    if (!lua_isstring(L, 1)) { // to
+    if (!lua_isstring(L, 1)) {
         return call_error(L, tecINVALID_PARAM_TYPE);
     }
     const char* data = lua_tostring(L, 1);
@@ -300,10 +300,10 @@ static int syscall_print(lua_State *L)
 
     lua_pushlightuserdata(L, (void *)&getApp());
     lua_gettable(L, LUA_REGISTRYINDEX);
-    Payment *payment = reinterpret_cast<Payment *>(lua_touserdata(L, -1));
+    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
 
-    payment->doPrint(data);
+    transactor->doContractPrint(data);
 
     lua_pushnil(L);
     lua_pushinteger(L, tesSUCCESS);

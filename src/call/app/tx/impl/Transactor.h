@@ -123,6 +123,10 @@ public:
         return ctx_;
     }
 
+    void
+    doContractPrint(std::string const& data);
+
+
     /////////////////////////////////////////////////////
     /*
     These static functions are called from invoke_preclaim<Tx>
@@ -179,6 +183,7 @@ public:
     TER
     checkIssue (PreclaimContext const& ctx, STAmount const& amount, bool const non_invoice);
     /////////////////////////////////////////////////////
+
 
 protected:
     TER
