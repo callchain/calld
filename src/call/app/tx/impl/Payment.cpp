@@ -923,4 +923,6 @@ void
 Payment::doPrint(std::string const& data)
 {
     JLOG(j_.warn()) << "Contract Data: " << data;
+}
+
 }  // call
