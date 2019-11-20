@@ -419,6 +419,10 @@ TER SaveLuaTable(lua_State *L, AccountID const &contract_address)
             view.update(sle);
         }
     } else {
+        if (root.size() == 0) {
+            // add empty data
+            return tesSUCCESS;
+        }
         auto const sle = std::make_shared<SLE>(ltPARAMROOT, index);
         sle->setFieldVL(sfInfo, strCopy(data));
         view.insert(sle);
@@ -489,16 +493,20 @@ void RestoreLuaTable(lua_State *L, AccountID const &contract_address)
     // read data from saved
     auto const index = getParamIndex(contract_address);
     auto const sle = view.peek(keylet::paramt(index));
-    if (!sle || !sle->isFieldPresent(sfInfo)) return; // no contract data saved
-
-    Blob data = sle->getFieldVL(sfInfo);
-    std::string input = UncompressData(strCopy(data)); // uncompress it
-    Json::Value root;
-    Json::Reader reader;
-    if (!reader.parse(input, root)) return; // invalid json data
 
     lua_newtable(L);
-    __restore_lua_table(L, root); // root should not empty
+    if (sle && sle->isFieldPresent(sfInfo))
+    {
+        // have contract data saved
+        Blob data = sle->getFieldVL(sfInfo);
+        std::string input = UncompressData(strCopy(data)); // uncompress it
+        Json::Value root;
+        Json::Reader reader;
+        if (reader.parse(input, root))
+        {
+            __restore_lua_table(L, root); // restore data
+        }
+    }
     lua_setglobal(L, "contract");
 }
 
