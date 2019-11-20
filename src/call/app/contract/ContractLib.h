@@ -23,6 +23,7 @@
 #include <lua-vm/src/lua.hpp>
 #include <call/basics/StringUtilities.h>
 #include <call/protocol/AccountID.h>
+#include <call/protocal/TER.h>
 
 #include <string>
 #include <vector>
@@ -31,6 +32,12 @@
 #define ACCOUNT_INFO_DROP_COST   10
 #define CALLSTATE_INFO_DROP_COST 10
 #define TRANSFER_DROP_COST       100
+
+#define CODE_MAX_SIZE            8192
+#define CODE_UNIT_SIZE           16
+#define CODE_DATA_UNIT_SIZE      32
+#define CODE_DATA_MAX_SIZE       16384
+#define MAX_TABLE_NESTED_SIZE    10
 
 namespace call
 {
@@ -45,7 +52,7 @@ namespace call
     static std::string CompressData(const std::string input);
     static std::string UncompressData(const std::string input);
 
-    static void SaveLuaTable(lua_State *L, AccountID const &contract_address);
+    static TER SaveLuaTable(lua_State *L, AccountID const &contract_address);
     static void RestoreLuaTable(lua_State *L, AccountID const &contract_address);
 
 } // namespace call

@@ -308,8 +308,12 @@ std::string UncompressData(const std::string input)
     return output;
 }
 
-void __save_lua_table(lua_State *L, Json::Value &root)
+bool __save_lua_table(lua_State *L, Json::Value &root, int nested)
 {
+    nested += 1;
+    if (nested > MAX_TABLE_NESTED_SIZE)
+        return false;
+
     lua_pushnil(L);
     while (lua_next(L, -2) != 0)
     {
@@ -333,7 +337,8 @@ void __save_lua_table(lua_State *L, Json::Value &root)
             else if (lua_istable(L, -1))
             {
                 Json::Value sub_root;
-                __save_lua_table(L, sub_root);
+                if (!__save_lua_table(L, sub_root, nested))
+                    return false;
                 root[key] = sub_root;
             }
             // only save string->{string, number, boolean, table}
@@ -341,16 +346,18 @@ void __save_lua_table(lua_State *L, Json::Value &root)
         }
         lua_pop(L, 1);
     }
+    return true;
 }
 
-void SaveLuaTable(lua_State *L, AccountID const &contract_address)
+TER SaveLuaTable(lua_State *L, AccountID const &contract_address)
 {
     lua_getglobal(L, "contract"); // contract global variable
-    if (!lua_istable(L, -1))  return; // no variable table
+    if (!lua_istable(L, -1))  return tesSUCCESS; // no variable table
 
     Json::Value root;
-    __save_lua_table(L, root);
-    if (root.size() == 0) return; // empty table
+    int nested = 0;
+    if (!__save_lua_table(L, root, nested))
+        return tecDATA_EXCEED_MAX_NEST;
 
     Json::FastWriter fastWriter;
     std::string output = fastWriter.write(root);
@@ -366,7 +373,15 @@ void SaveLuaTable(lua_State *L, AccountID const &contract_address)
     // save or update data
     auto const index = getParamIndex(contract_address);
     auto const sle = view.peek(keylet::paramt(index));
+    std::int32_t diff_size = data.size();
+    if (diff_size > CODE_DATA_MAX_SIZE)
+    {
+        return tecDATA_EXCEED_MAX_SIZE;
+    }
+
     if (sle) {
+        auto const oldData = sle->getFieldVL(sfInfo);
+        diff_size = diff_size - oldData.size();
         if (root.size() == 0)
         {
             view.erase(sle); // when no fields in contract just delete it
@@ -381,6 +396,21 @@ void SaveLuaTable(lua_State *L, AccountID const &contract_address)
         sle->setFieldVL(sfInfo, strCopy(data));
         view.insert(sle);
     }
+
+    // check reserve owner ok
+    auto const sleAccount = view.peek(keylet::account(contract_address));
+    std::int32_t dataCount = sleAccount->getFieldU32(sfOwnerCount) + (diff_size / CODE_DATA_UNIT_SIZE);
+    auto const reserve = view.fees().accountReserve(dataCount);
+    auto const balance = sleAccount->getFieldAmount(sfBalance);
+    if (reserve > balance)
+    {
+        // reserved not enough
+        return tecINSUFFICIENT_RESERVE;
+    }
+    sleAccount->setFieldU32(sfOwnerCount, dataCount);
+    view.update(sleAccount);
+
+    return tesSUCCESS;
 }
 
 void __restore_lua_table(lua_State *L, Json::Value const &root)

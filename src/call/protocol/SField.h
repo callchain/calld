@@ -429,7 +429,7 @@ extern SF_U256 const sfAccountTxnID;
 // 256-bit (uncommon)
 extern SF_U256 const sfBookDirectory;
 extern SF_U256 const sfInvoiceID;
-extern SF_U256 const sfNickname;
+extern SF_U256 const sfNickname; // not used, use sfNickName
 extern SF_U256 const sfAmendment;
 extern SF_U256 const sfTicketID;
 extern SF_U256 const sfDigest;

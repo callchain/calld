@@ -158,7 +158,9 @@ transResults()
         { temUNKNOWN,                { "temUNKNOWN",               "The transaction requires logic that is not implemented yet."                   } },
         { temDISABLED,               { "temDISABLED",              "The transaction requires logic that is currently disabled."                    } },
         { temBAD_TICK_SIZE,          { "temBAD_TICK_SIZE",         "Malformed: Tick size out of range."                                            } },
-        { temNICKNAMEEXISTED,        { "temNICKNAMEEXISTED",       "This name is existed"                                                          } },
+        { temNICKNAMEEXISTED,        { "temNICKNAMEEXISTED",       "This name has existed already."                                                } },
+        { temNICKNAME_TOO_LONG,      { "temNICKNAME_TOO_LONG",     "This name exceeds the maximum allowed size."                                   } },
+        { temCODE_EXCEED_MAX_SIZE,   { "temCODE_EXCEED_MAX_SIZE",  "This code exceeds the maximum allowed size."                                   } },
         { temBAD_FUNDS,              { "temBAD_FUNDS",             "this currency not issued set yet"                                              } },
         { temID_EXISTED,             { "temID_EXISTED",            "Invoice id exists already"                                                     } },
         { temBAD_INVOICEID,          { "temBAD_INVOICEID",         "Invoice id not present for invoice transfer"                                   } },
@@ -208,6 +210,8 @@ transResults()
         { tecCODE_CALL_FAILED,       { "tecCODE_CALL_FAILED",      "Call account code main function failed."                                       } },
         { tecCODE_CHECK_FAILED,      { "tecCODE_CHECK_FAILED",     "Call account code check function failed."                                      } },
         { tecCODE_INIT_FAILED,       { "tecCODE_INIT_FAILED",      "Call account code init function failed."                                       } },
+        { tecDATA_EXCEED_MAX_NEST,   { "tecDATA_EXCEED_MAX_NEST",  "Contract data exceed max allowed nested size."                                 } },
+        { tecDATA_EXCEED_MAX_SIZE,   { "tecDATA_EXCEED_MAX_SIZE",  "Contract data exceed max allowed size."                                        } },
 
         { tesSUCCESS,                { "tesSUCCESS",               "The transaction was applied. Only final in a validated ledger."                } },
     };

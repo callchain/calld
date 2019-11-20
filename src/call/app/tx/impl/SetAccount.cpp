@@ -234,6 +234,24 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         return temCODE_ACCOUNT;
     }
 
+    if (ctx.tx.isFieldPresent(sfNickName))
+    {
+        auto const& nickname = ctx.tx.getFieldVL(sfNickName);
+        if (nickname.size() > 512) // collect const in one files
+        {
+            return temNICKNAME_TOO_LONG;
+        }
+    }
+
+    if (ctx.tx.isFieldPresent(sfCode))
+    {
+        auto const& code = ctx.tx.getFieldVL(sfCode);
+        if (code.size() > CODE_MAX_SIZE) // collect const in one files
+        {
+            return temNICKNAME_TOO_LONG;
+        }
+    }
+
     return tesSUCCESS;
 }
 
@@ -590,6 +608,9 @@ SetAccount::doApply ()
         uFlagsOut |= lsfCodeAccount;
     }
 
+    if (uFlagsIn != uFlagsOut)
+        sle->setFieldU32 (sfFlags, uFlagsOut);
+
     // code account code
     if (ctx_.tx.isFieldPresent (sfCode))
     {
@@ -604,15 +625,19 @@ SetAccount::doApply ()
                 auto uOldCode = sle->getFieldVL(sfCode);
                 diff_size = diff_size - uOldCode.size();
             }
-            std::int32_t increment = view().fees().increment;
-            std::int32_t codeCount = diff_size / increment;
-            sle->setFieldU32(sfOwnerCount, sle->getFieldU32(sfOwnerCount) + codeCount);
+            std::int32_t codeCount = sle->getFieldU32(sfOwnerCount) + (diff_size / CODE_UNIT_SIZE);
+            auto const reserve = view().fees().accountReserve(codeCount);
+            auto const balance = sle->getFieldAmount(sfBalance);
+            if (reserve > balance)
+            {
+                // reserved not enough
+                return tecINSUFFICIENT_RESERVE;
+            }
+
+            sle->setFieldU32(sfOwnerCount, codeCount);
             sle->setFieldVL(sfCode, uCode);
         }
     }
-
-    if (uFlagsIn != uFlagsOut)
-        sle->setFieldU32 (sfFlags, uFlagsOut);
 
     return tesSUCCESS;
 }
@@ -706,19 +731,17 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
         drops = lua_getdrops(L);
         terResult = isFeeRunOut(drops) ? tecCODE_FEE_OUT : terResult;
 
+        // save lua contract variable
         if (isTesSuccess(terResult))
         {
-            // save lua contract variable
-            SaveLuaTable(L, account_);
+            terResult = SaveLuaTable(L, account_);
         }
-        else
-        {
-            lua_close(L);
-            return terResult;
-        }
-    }
-    lua_close(L);
 
+        lua_close(L);
+        return terResult;
+    }
+
+    lua_close(L);
     return tesSUCCESS;
 }
 

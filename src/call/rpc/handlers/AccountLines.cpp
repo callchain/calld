@@ -195,14 +195,9 @@ Json::Value doAccountLines(RPC::Context &context)
 	auto const sleAccepted = ledger->read(keylet::account(accountID));
 	if (sleAccepted)
 	{
-		//Json::Value& jPeer(jsonLines.append(Json::objectValue));
-
-		//RPC::injectSLE(jvAccepted, *sleAccepted);
-		STAmount freeze;
-
 		std::uint32_t ownercount = sleAccepted->getFieldU32(sfOwnerCount);
 		STAmount callbalance = sleAccepted->getFieldAmount(sfBalance);
-		freeze = ledger->fees().accountReserve(ownercount);
+		STAmount freeze = ledger->fees().accountReserve(ownercount);
 
 		for (auto const &offer : offers)
 		{
@@ -213,11 +208,8 @@ Json::Value doAccountLines(RPC::Context &context)
 			}
 		}
 
-		//  jPeer[jss::account] = "";
 		callBalance[jss::balance] = callbalance.getText();
 		callBalance[jss::currency] = to_string(callbalance.issue().currency);
-		//	jPeer[jss::limit] = "0";
-		//	jPeer[jss::limit_peer] = "0";
 		callBalance["freeze"] = freeze.getText();
 
 		if (sleAccepted->isFieldPresent(sfNickName))
@@ -228,18 +220,6 @@ Json::Value doAccountLines(RPC::Context &context)
 		}
 	}
 
-	/*if(sleAccepted)
-    {
-        if (sleAccepted->isFieldPresent(sfNickName))
-            {
-                //Blob nick = sleAccepted->getFieldVL(sfNickName);
-                //std::string strnick = strCopy(nick);
-                Json::Value jvAccepted;
-				RPC::injectSLE(jvAccepted, *sleAccepted);
-                result[jss::NickName] = jvAccepted[jss::NickName];
-            }
- 
-    }*/
 	unsigned int limit;
 	if (auto err = readLimitField(limit, RPC::Tuning::accountLines, context))
 		return *err;

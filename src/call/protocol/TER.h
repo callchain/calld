@@ -112,6 +112,8 @@ enum TER
     temUNCERTAIN,
     temUNKNOWN,
     temNICKNAMEEXISTED,
+    temNICKNAME_TOO_LONG,
+    temCODE_EXCEED_MAX_SIZE,
     temBAD_FUNDS,
     
     temID_EXISTED,
@@ -276,6 +278,8 @@ enum TER
     tecCODE_CALL_FAILED         = 1013,
     tecCODE_CHECK_FAILED        = 1014,
     tecCODE_INIT_FAILED         = 1015,
+    tecDATA_EXCEED_MAX_NEST     = 1016,
+    tecDATA_EXCEED_MAX_SIZE     = 1017,
 };
 
 inline bool isTelLocal(TER x)
