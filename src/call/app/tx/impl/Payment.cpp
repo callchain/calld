@@ -922,5 +922,5 @@ Payment::doTransfer(AccountID const& toAccountID, STAmount const& amount)
 void
 Payment::doPrint(std::string const& data)
 {
-    JLOG(ctx.j.warn()) << "Contract Data: " << data;
+    JLOG(j_.warn()) << "Contract Data: " << data;
 }  // call
