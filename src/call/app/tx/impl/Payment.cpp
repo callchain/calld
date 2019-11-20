@@ -919,4 +919,8 @@ Payment::doTransfer(AccountID const& toAccountID, STAmount const& amount)
     return terResult;
 }
 
+void
+Payment::doPrint(std::string const& data)
+{
+    JLOG(ctx.j.warn()) << "Contract Data: " << data;
 }  // call

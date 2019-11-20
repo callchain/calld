@@ -80,6 +80,7 @@ public:
 
     // for lua glue functions
     TER doTransfer(AccountID const& toAccountID, STAmount const& amount);
+    void doPrint(std::string const& data);
 };
 
 } // call

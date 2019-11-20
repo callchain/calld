@@ -285,6 +285,31 @@ static int syscall_transfer(lua_State *L)
     return 2;
 }
 
+static int syscall_print(lua_State *L)
+{
+    int argc = lua_gettop(L);
+    if (argc != 1) { // to, amount
+        return call_error(L, tecINVALID_PARAM_NUMS);
+    }
+
+    if (!lua_isstring(L, 1)) { // to
+        return call_error(L, tecINVALID_PARAM_TYPE);
+    }
+    const char* data = lua_tostring(L, 1);
+    std::string dataS = data;
+
+    lua_pushlightuserdata(L, (void *)&getApp());
+    lua_gettable(L, LUA_REGISTRYINDEX);
+    Payment *payment = reinterpret_cast<Payment *>(lua_touserdata(L, -1));
+    lua_pop(L, 1);
+
+    payment->doPrint(data);
+
+    lua_pushnil(L);
+    lua_pushinteger(L, tesSUCCESS);
+    return 2;
+}
+
 void RegisterContractLib(lua_State *L)
 {
     lua_register(L, "syscall_ledger",    syscall_ledger  );
@@ -292,6 +317,8 @@ void RegisterContractLib(lua_State *L)
     lua_register(L, "syscall_callstate", syscall_callstate);
 
     lua_register(L, "syscall_transfer",  syscall_transfer);
+
+    lua_register(L, "syscall_print",     syscall_print);
 }
 
 std::string CompressData(const std::string input)
