@@ -332,7 +332,8 @@ void Transactor::preCompute ()
 
 void Transactor::doContractPrint(std::string const& data)
 {
-    JLOG(j_.warn()) << "Contract Data: " << data;
+    // only print in trace log level
+    JLOG(j_.trace()) << "Contract Data: " << data;
 }
 
 TER Transactor::apply ()

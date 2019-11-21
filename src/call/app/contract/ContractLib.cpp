@@ -295,6 +295,12 @@ static int syscall_print(lua_State *L)
     if (!lua_isstring(L, 1)) {
         return call_error(L, tecINVALID_PARAM_TYPE);
     }
+
+    long long left_drops = lua_getdrops(L);
+    if (!lua_setdrops(L, left_drops - PRINT_DROP_COST)) {
+        return call_error(L, tecCODE_FEE_OUT);
+    }
+
     const char* data = lua_tostring(L, 1);
     std::string dataS = data;
 

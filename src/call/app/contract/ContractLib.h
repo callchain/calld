@@ -31,6 +31,7 @@
 #define LEDGER_INFO_DROP_COST    10
 #define ACCOUNT_INFO_DROP_COST   10
 #define CALLSTATE_INFO_DROP_COST 10
+#define PRINT_DROP_COST          5
 #define TRANSFER_DROP_COST       100
 
 #define CODE_MAX_SIZE            8192
