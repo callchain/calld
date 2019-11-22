@@ -695,7 +695,7 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
 
     // call init
     lua_getglobal(L, "init");
-    if (lua_isfunction(L, -1))
+    if (!lua_isfunction(L, -1))
     // if (lua_isfunction(L, -1) && !sle->isFieldPresent(sfCode)) // only can init one time
     {
         lua_close(L);
