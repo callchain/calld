@@ -659,6 +659,7 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
     std::string uncompress_code = UncompressData(code);
 
     lua_State *L = luaL_newstate();
+    lua_atpanic(L, panic_handler);
     luaL_openlibs(L);
     RegisterContractLib(L); // register cpp functions for lua contract
 
