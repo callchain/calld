@@ -56,5 +56,7 @@ namespace call
     static TER SaveLuaTable(lua_State *L, AccountID const &contract_address);
     static void RestoreLuaTable(lua_State *L, AccountID const &contract_address);
 
+    static int panic_handler(lua_State *L);
+
 } // namespace call
 #endif

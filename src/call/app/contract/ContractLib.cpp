@@ -516,4 +516,10 @@ void RestoreLuaTable(lua_State *L, AccountID const &contract_address)
     lua_setglobal(L, "contract");
 }
 
+int panic_handler(lua_State *L)
+{
+    const char *msg = lua_tostring(L, -1);
+    throw std::string(msg);
+}
+
 }

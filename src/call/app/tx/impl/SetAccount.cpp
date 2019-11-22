@@ -647,40 +647,50 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
 {
     std::string code = strCopy(ctx_.tx.getFieldVL(sfCode));
     std::string uncompress_code = UncompressData(code);
-    lua_State *L = luaL_newstate();
-    luaL_openlibs(L);
-    RegisterContractLib(L); // register cpp functions for lua contract
 
-    // set fee limit
-    auto const beforeFeeLimit = feeLimit();
-    std::int64_t drops = beforeFeeLimit.drops();
-    lua_setdrops(L, drops);
+    lua_State *L = NULL;
+    std::int64_t drops = 0;
+    try
+    {
+        L = luaL_newstate();
+        lua_atpanic(L, panic_handler);
+        luaL_openlibs(L);
+        RegisterContractLib(L); // register cpp functions for lua contract
 
-    // check code main function exists
-    int lret = luaL_loadbuffer(L, uncompress_code.data(), uncompress_code.size(), "") || lua_pcall(L, 0, 0, 0);
-    if (lret != LUA_OK)
-    {
-        JLOG(j_.warn()) << "invalid account code, error=" << lret;
-        drops = lua_getdrops(L);
-        lua_close(L);
-        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : temINVALID_CODE;
-    }
-    lua_getglobal(L, "main");
-    lret = lua_type(L, -1);
-    if (lret != LUA_TFUNCTION)
-    {
-        JLOG(j_.warn()) << "no code entry, type=" << lret;
-        drops = lua_getdrops(L);
-        lua_close(L);
-        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : temNO_CODE_ENTRY;
-    }
-    lua_pop(L, 1);
+        // set fee limit
+        auto const beforeFeeLimit = feeLimit();
+        drops = beforeFeeLimit.drops();
+        lua_setdrops(L, drops);
 
-    // call init
-    lua_getglobal(L, "init");
-    if (lua_isfunction(L, -1))
-    // if (lua_isfunction(L, -1) && !sle->isFieldPresent(sfCode)) // only can init one time
-    {
+        // check code main function exists
+        int lret = luaL_loadbuffer(L, uncompress_code.data(), uncompress_code.size(), "") || lua_pcall(L, 0, 0, 0);
+        if (lret != LUA_OK)
+        {
+            JLOG(j_.warn()) << "invalid account code, error=" << lret;
+            drops = lua_getdrops(L);
+            lua_close(L);
+            return isFeeRunOut(drops) ? tecCODE_FEE_OUT : temINVALID_CODE;
+        }
+        lua_getglobal(L, "main");
+        lret = lua_type(L, -1);
+        if (lret != LUA_TFUNCTION)
+        {
+            JLOG(j_.warn()) << "no code entry, type=" << lret;
+            drops = lua_getdrops(L);
+            lua_close(L);
+            return isFeeRunOut(drops) ? tecCODE_FEE_OUT : temNO_CODE_ENTRY;
+        }
+        lua_pop(L, 1);
+
+        // call init
+        lua_getglobal(L, "init");
+        if (!lua_isfunction(L, -1))
+        // if (lua_isfunction(L, -1) && !sle->isFieldPresent(sfCode)) // only can init one time
+        {
+            lua_close(L);
+            return tesSUCCESS;
+        }
+
         // push parameters, collect parameters if exists
         lua_newtable(L);
         if (ctx_.tx.isFieldPresent(sfMemos))
@@ -742,9 +752,17 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
         lua_close(L);
         return terResult;
     }
-
-    lua_close(L);
-    return tesSUCCESS;
+    catch (const char *msg)
+    {
+        JLOG(j_.warn()) << "doInitCall, Contract panic: " << msg;
+        if (L != NULL)
+        {
+            drops = lua_getdrops(L);
+            lua_close(L);
+            return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecINTERNAL;
+        }
+        return tesSUCCESS;
+    }
 }
 
 }
