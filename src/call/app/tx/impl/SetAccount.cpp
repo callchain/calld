@@ -621,8 +621,13 @@ SetAccount::doApply ()
         }
         catch (const char * msg)
         {
-            JLOG(j_.warn()) << "doInitCall exception=" << msg;
+            JLOG(j_.warn()) << "doInitCall fee run out exception=" << msg;
             return tecCODE_FEE_OUT;
+        }
+        catch (std::exception &e)
+        {
+            JLOG(j_.warn()) << "doInitCall exception=" << e.what();
+            return tecINTERNAL;
         }
 
         if (!isTesSuccess(terResult)) return terResult;
@@ -693,70 +698,70 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
     if (lua_isfunction(L, -1))
     // if (lua_isfunction(L, -1) && !sle->isFieldPresent(sfCode)) // only can init one time
     {
-        // push parameters, collect parameters if exists
-        lua_newtable(L);
-        if (ctx_.tx.isFieldPresent(sfMemos))
-        {
-            auto const& memos = ctx_.tx.getFieldArray(sfMemos);
-            int n = 0;
-            for (auto const& memo : memos)
-            {
-                auto memoObj = dynamic_cast <STObject const*> (&memo);
-                if (!memoObj->isFieldPresent(sfMemoData))
-                {
-                    continue;
-                }
-                std::string data = strCopy(memoObj->getFieldVL(sfMemoData));
-                lua_pushstring(L, data.c_str());
-                lua_rawseti(L, -2, n);
-                ++n;
-            }
-        }
-        // set currency transactor in registry table
-        lua_pushlightuserdata(L, (void *)&ctx_.app);
-        lua_pushlightuserdata(L, this);
-        lua_settable(L, LUA_REGISTRYINDEX);
-
-        // set global parameters for lua contract
-        lua_newtable(L); // for msg
-        call_push_string(L, "address", to_string(account_));
-        call_push_string(L, "sender", to_string(account_));
-        call_push_string(L, "value", "0");
-        call_push_integer(L, "block", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
-        lua_setglobal(L, "msg");
-
-        lret = lua_pcall(L, 1, 1, 0);
-        if (lret != LUA_OK)
-        {
-            JLOG(j_.warn()) << "Fail to call account code init, error=" << lret;
-            drops = lua_getdrops(L);
-            lua_close(L);
-            return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecCODE_INIT_FAILED;
-        }
-        // get result
-        TER terResult = TER(lua_tointeger(L, -1));
-        lua_pop(L, 1);
-        if (isNotSuccess(terResult))
-        {
-            int r = terResult;
-            terResult = TER(r + 1000);
-        }
-
-        drops = lua_getdrops(L);
-        terResult = isFeeRunOut(drops) ? tecCODE_FEE_OUT : terResult;
-
-        // save lua contract variable
-        if (isTesSuccess(terResult))
-        {
-            terResult = SaveLuaTable(L, account_);
-        }
-
         lua_close(L);
-        return terResult;
+        return tesSUCCESS;
+    }
+
+    // push parameters, collect parameters if exists
+    lua_newtable(L);
+    if (ctx_.tx.isFieldPresent(sfMemos))
+    {
+        auto const& memos = ctx_.tx.getFieldArray(sfMemos);
+        int n = 0;
+        for (auto const& memo : memos)
+        {
+            auto memoObj = dynamic_cast <STObject const*> (&memo);
+            if (!memoObj->isFieldPresent(sfMemoData))
+            {
+                continue;
+            }
+            std::string data = strCopy(memoObj->getFieldVL(sfMemoData));
+            lua_pushstring(L, data.c_str());
+            lua_rawseti(L, -2, n);
+            ++n;
+        }
+    }
+    // set currency transactor in registry table
+    lua_pushlightuserdata(L, (void *)&ctx_.app);
+    lua_pushlightuserdata(L, this);
+    lua_settable(L, LUA_REGISTRYINDEX);
+
+    // set global parameters for lua contract
+    lua_newtable(L); // for msg
+    call_push_string(L, "address", to_string(account_));
+    call_push_string(L, "sender", to_string(account_));
+    call_push_string(L, "value", "0");
+    call_push_integer(L, "block", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
+    lua_setglobal(L, "msg");
+
+    lret = lua_pcall(L, 1, 1, 0);
+    if (lret != LUA_OK)
+    {
+        JLOG(j_.warn()) << "Fail to call account code init, error=" << lret;
+        drops = lua_getdrops(L);
+        lua_close(L);
+        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecCODE_INIT_FAILED;
+    }
+    // get result
+    TER terResult = TER(lua_tointeger(L, -1));
+    lua_pop(L, 1);
+    if (isNotSuccess(terResult))
+    {
+        int r = terResult;
+        terResult = TER(r + 1000);
+    }
+
+    drops = lua_getdrops(L);
+    terResult = isFeeRunOut(drops) ? tecCODE_FEE_OUT : terResult;
+
+    // save lua contract variable
+    if (isTesSuccess(terResult))
+    {
+        terResult = SaveLuaTable(L, account_);
     }
 
     lua_close(L);
-    return tesSUCCESS;
+    return terResult;
 }
 
 }
