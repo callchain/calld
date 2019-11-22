@@ -428,8 +428,22 @@ Payment::doApply ()
     // 1. do call check call before
     if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
     {
-        terResult = doCodeCheckCall(saDstAmount);
-        if (terResult != tesSUCCESS)
+        try
+        {
+            terResult = doCodeCheckCall(saDstAmount);
+        }
+        catch (const char * msg)
+        {
+            JLOG(j_.warn()) << "doCodeCheckCall fee run out exception=" << msg;
+            return tecCODE_FEE_OUT;
+        }
+        catch (std::exception &e)
+        {
+            JLOG(j_.warn()) << "doCodeCheckCall exception=" << e.what();
+            return tecINTERNAL;
+        }
+
+        if (!isTesSuccess(terResult))
             return terResult;
     }
 
@@ -597,12 +611,23 @@ Payment::doApply ()
 
     if (sleDst->isFieldPresent(sfCode))
     {
-        return doCodeCall(deliveredAmount);
+        try
+        {
+            terResult = doCodeCall(deliveredAmount);
+        }
+        catch (const char * msg)
+        {
+            JLOG(j_.warn()) << "doCodeCall fee run out exception=" << msg;
+            return tecCODE_FEE_OUT;
+        }
+        catch (std::exception &e)
+        {
+            JLOG(j_.warn()) << "doCodeCall exception=" << e.what();
+            return tecINTERNAL;
+        }
     }
-    else
-    {
-        return terResult; // should be tesSUCCESS
-    }
+
+    return terResult;
 }
 
 TER
@@ -614,7 +639,9 @@ Payment::doCodeCheckCall(STAmount const& amount)
     Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);
     std::string codeS = strCopy(code);
     std::string bytecode = UncompressData(codeS);
+
     lua_State *L = luaL_newstate();
+    lua_atpanic(L, panic_handler);
     luaL_openlibs(L);
     RegisterContractLib(L); // register cpp functions for lua contract
 
@@ -710,7 +737,9 @@ Payment::doCodeCall(STAmount const& amount)
     Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);
     std::string codeS = strCopy(code);
     std::string bytecode = UncompressData(codeS);
+
     lua_State *L = luaL_newstate();
+    lua_atpanic(L, panic_handler);
     luaL_openlibs(L);
     RegisterContractLib(L); // register cpp functions for lua contract
 
