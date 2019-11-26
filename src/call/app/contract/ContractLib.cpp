@@ -316,6 +316,35 @@ static int syscall_print(lua_State *L)
     return 2;
 }
 
+static int syscall_is_address(lua_State *L)
+{
+    int argc = lua_gettop(L);
+    if (argc != 1) {
+        return call_error(L, tecINVALID_PARAM_NUMS);
+    }
+
+    if (!lua_isstring(L, 1)) {
+        return call_error(L, tecINVALID_PARAM_TYPE);
+    }
+
+    long long left_drops = lua_getdrops(L);
+    if (!lua_setdrops(L, left_drops - ADDRESS_CHECK_DROP_COST)) {
+        return call_error(L, tecCODE_FEE_OUT);
+    }
+
+    const char* data = lua_tostring(L, 1);
+    const std::string s = data;
+
+    auto const account = parseBase58<AccountID>(s);
+    bool ret = true;
+    if (!account)
+        ret = false;
+
+    lua_pushboolean(L, ret);
+    lua_pushinteger(L, tesSUCCESS);
+    return 2;
+}
+
 void RegisterContractLib(lua_State *L)
 {
     lua_register(L, "syscall_ledger",    syscall_ledger  );
@@ -325,6 +354,8 @@ void RegisterContractLib(lua_State *L)
     lua_register(L, "syscall_transfer",  syscall_transfer);
 
     lua_register(L, "syscall_print",     syscall_print);
+
+    lua_register(L, "syscall_is_address",syscall_is_address);
 }
 
 std::string CompressData(const std::string input)
