@@ -478,6 +478,9 @@ extern SF_Blob const sfMasterSignature;
 extern SF_Blob const sfNickName;
 extern SF_Blob const sfInvoice;
 extern SF_Blob const sfCode;
+extern SF_Blob const sfArgType;
+extern SF_Blob const sfArgName;
+extern SF_Blob const sfArgValue;
 
 // account
 extern SF_Account const sfAccount;
@@ -509,6 +512,7 @@ extern SField const sfMemo;
 extern SField const sfSignerEntry;
 extern SField const sfSigner;
 extern SField const sfMajority;
+extern SField const sfArg;
 
 // array of objects
 // ARRAY/1 is reserved for end of array
@@ -521,6 +525,7 @@ extern SField const sfSufficient;
 extern SField const sfAffectedNodes;
 extern SField const sfMemos;
 extern SField const sfMajorities;
+extern SField const sfArgs;
 
 //------------------------------------------------------------------------------
 

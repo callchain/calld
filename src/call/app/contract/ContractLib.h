@@ -23,6 +23,7 @@
 #include <lua-vm/src/lua.hpp>
 #include <call/basics/StringUtilities.h>
 #include <call/protocol/AccountID.h>
+#include <call/protocol/STArray.h>
 #include <call/protocol/TER.h>
 
 #include <string>
@@ -47,6 +48,8 @@ namespace call
     static void call_push_boolean(lua_State *L, std::string k, bool v);
     static void call_push_integer(lua_State *L, std::string k, lua_Integer v);
     static void call_push_number(lua_State *L, std::string k, lua_Number v);
+
+    static void call_push_args(lua_State *L, const STArray& args);
 
     void RegisterContractLib(lua_State *L);
 

@@ -704,23 +704,12 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
 
     // push parameters, collect parameters if exists
     lua_newtable(L);
-    if (ctx_.tx.isFieldPresent(sfMemos))
+    if (ctx_.tx.isFieldPresent(sfArgs))
     {
-        auto const& memos = ctx_.tx.getFieldArray(sfMemos);
-        int n = 0;
-        for (auto const& memo : memos)
-        {
-            auto memoObj = dynamic_cast <STObject const*> (&memo);
-            if (!memoObj->isFieldPresent(sfMemoData))
-            {
-                continue;
-            }
-            std::string data = strCopy(memoObj->getFieldVL(sfMemoData));
-            lua_pushstring(L, data.c_str());
-            lua_rawseti(L, -2, n);
-            ++n;
-        }
+        auto const& args = ctx_.tx.getFieldArray(sfArgs);
+        call_push_args(L, args);
     }
+
     // set currency transactor in registry table
     lua_pushlightuserdata(L, (void *)&ctx_.app);
     lua_pushlightuserdata(L, this);

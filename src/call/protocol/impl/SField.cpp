@@ -235,6 +235,10 @@ SF_Blob const sfNickName        = make::one<SF_Blob::type>(&sfNickName,        S
 SF_Blob const sfInvoice         = make::one<SF_Blob::type>(&sfInvoice,         STI_VL, 20, "Invoice");
 SF_Blob const sfCode            = make::one<SF_Blob::type>(&sfCode,            STI_VL, 21, "Code");
 
+SF_Blob const sfArgType         = make::one<SF_Blob::type>(&sfArgType,         STI_VL, 30, "ArgType");
+SF_Blob const sfArgName         = make::one<SF_Blob::type>(&sfArgName,         STI_VL, 31, "ArgName");
+SF_Blob const sfArgValue        = make::one<SF_Blob::type>(&sfArgValue,        STI_VL, 32, "ArgValue");
+
 // account
 SF_Account const sfAccount     = make::one<SF_Account::type>(&sfAccount,     STI_ACCOUNT, 1, "Account");
 SF_Account const sfOwner       = make::one<SF_Account::type>(&sfOwner,       STI_ACCOUNT, 2, "Owner");
@@ -263,7 +267,7 @@ SField const sfNewFields           = make::one(&sfNewFields,           STI_OBJEC
 SField const sfTemplateEntry       = make::one(&sfTemplateEntry,       STI_OBJECT,  9, "TemplateEntry");
 SField const sfMemo                = make::one(&sfMemo,                STI_OBJECT, 10, "Memo");
 SField const sfSignerEntry         = make::one(&sfSignerEntry,         STI_OBJECT, 11, "SignerEntry");
-SField const sfArg                 = make::one(&sfArg,                 STI_OBJECT, 12, "Parameter");
+SField const sfArg                 = make::one(&sfArg,                 STI_OBJECT, 12, "Arg");
 
 // inner object (uncommon)
 SField const sfSigner              = make::one(&sfSigner,              STI_OBJECT, 16, "Signer");
@@ -284,6 +288,8 @@ SField const sfMemos           = make::one(&sfMemos,           STI_ARRAY, 9, "Me
 
 // array of objects (uncommon)
 SField const sfMajorities      = make::one(&sfMajorities,      STI_ARRAY, 16, "Majorities");
+SField const sfArgs            = make::one(&sfArgs,            STI_ARRAY, 17, "Args");
+
 
 SField::SField (SerializedTypeID tid, int fv, const char* fn,
                 int meta, IsSigning signing)

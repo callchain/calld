@@ -319,6 +319,9 @@ amountFromJson (SField const& name, Json::Value const& v);
 bool
 amountFromJsonNoThrow (STAmount& result, Json::Value const& jvSource);
 
+// value/currency/issuer
+bool
+amountFromContractNoThrow (STAmount& result, std::string const& source);
 // IOUAmount and CALLAmount define toSTAmount, defining this
 // trivial conversion here makes writing generic code easier
 inline

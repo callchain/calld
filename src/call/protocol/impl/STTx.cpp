@@ -493,6 +493,140 @@ isMemoOkay (STObject const& st, std::string& reason)
     return true;
 }
 
+static
+bool
+isArgOkay (STObject const& st, std::string& reason)
+{
+    if (!st.isFieldPresent (sfArgs))
+        return true;
+
+    auto const& args = st.getFieldArray (sfArgs);
+
+    // The number 2048 is a preallocation hint, not a hard limit
+    // to avoid allocate/copy/free's
+    Serializer s (2048);
+    args.add (s);
+
+    // FIXME move the memo limit into a config tunable
+    if (s.getDataLength () > 1024)
+    {
+        reason = "The args exceeds the maximum allowed size.";
+        return false;
+    }
+
+    for (auto const& arg : args)
+    {
+        auto argObj = dynamic_cast <STObject const*> (&arg);
+
+        if (!argObj || (argObj->getFName() != sfArg))
+        {
+            reason = "A arg array may contain only Arg objects.";
+            return false;
+        }
+
+        if (!argObj->isFieldPresent(sfArgType) || !argObj->isFieldPresent(sfArgName)
+                || !argObj->isFieldPresent(sfArgValue))
+        {
+            reason = "Arg object should contains ArgType, ArgName and ArgValue";
+            return false;
+        }
+
+        for (auto const& argElement : *argObj)
+        {
+            auto const& name = argElement.getFName();
+
+            if (name != sfArgType &&
+                name != sfArgName &&
+                name != sfArgValue)
+            {
+                reason = "A arg may contain only ArgType, ArgName or "
+                         "ArgValue fields.";
+                return false;
+            }
+
+            // The raw data is stored as hex-octets, which we want to decode.
+            auto data = strUnHex (argElement.getText ());
+
+            if (!data.second)
+            {
+                reason = "The ArgType, ArgName and ArgValue fields may "
+                         "only contain hex-encoded data.";
+                return false;
+            }
+
+            if (name == sfArgValue)
+                continue;
+
+            if (name == sfArgType)
+            {
+                static std::array<std::string,  6> const allowedTypes = {
+                    "number", "integer", "boolean", "string", "amount", "address"
+                };
+                auto const it = std::find(allowedTypes.begin(), allowedTypes.end(), data.first);
+                if (it == allowedTypes.end())
+                {
+                    reason = "The ArgType may only contain number, integer, boolean, string, amount and address types";
+                    return false;
+                }
+                continue;
+            }
+
+            // The only allowed characters for ArgName are the
+            // characters allowed in alphanumerics and the lodash symbol
+            static std::array<char, 256> const allowedSymbols = []
+            {
+                std::array<char, 256> a;
+                a.fill(0);
+
+                std::string symbols (
+                    "0123456789"
+                    "_"
+                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    "abcdefghijklmnopqrstuvwxyz");
+
+                for(char c : symbols)
+                    a[c] = 1;
+                return a;
+            }();
+
+            for (auto c : data.first)
+            {
+                if (!allowedSymbols[c])
+                {
+                    reason = "The ArgName fields may only "
+                             "contain characters that are alphanumerics "
+                             "and lodash symbol.";
+                    return false;
+                }
+            }
+        }
+
+        std::string argType = strCopy(argObj->getFieldVL(sfArgType));
+        std::string argName = strCopy(argObj->getFieldVL(sfArgName));
+        std::string argValue = strCopy(argObj->getFieldVL(sfArgValue));
+        if (argType == "amount")
+        {
+            STAmount result;
+            if (!amountFromContractNoThrow(result, argValue))
+            {
+                reason = "Invalid amount type ArgValue, ArgName=" + argName;
+                return false;
+            }
+        }
+        else if (argType == "address")
+        {
+            auto const account = parseBase58<AccountID>(argValue);
+            if (!account)
+            {
+                reason = "Invalid address type ArgValue, ArgName=" + argName;
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 // Ensure all account fields are 160-bits
 static
 bool
@@ -511,6 +645,9 @@ isAccountFieldOkay (STObject const& st)
 bool passesLocalChecks (STObject const& st, std::string& reason)
 {
     if (!isMemoOkay (st, reason))
+        return false;
+
+    if (!isArgOkay (st, reason))
         return false;
 
     if (!isAccountFieldOkay (st))

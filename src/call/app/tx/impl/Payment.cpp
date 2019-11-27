@@ -463,9 +463,9 @@ Payment::doApply ()
                 terResult = auto_trust(view(), uDstAccountID, sleIssue->getFieldAmount(sfTotal), j_);
                 if (!isTesSuccess(terResult))
                 {
+                    // has code, call check already, not success, should deduct fee still
                     if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
                     {
-                        // has code, call check already, not success, should deduct fee still
                         int r = terResult;
                         terResult = TER(r + 1000);
                     }
@@ -595,9 +595,9 @@ Payment::doApply ()
     // 3. call account code
     if (!isTesSuccess(terResult))
     {
+        // has code, call check already, not success, should deduct fee still
         if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
         {
-            // has code, call check already, not success, should deduct fee still
             int r = terResult;
             terResult = TER(r + 1000);
         }
@@ -668,6 +668,14 @@ Payment::doCodeCheckCall(STAmount const& amount)
         return isFeeRunOut(drops) ? tecCODE_FEE_OUT : terResult;
     }
 
+    // push parameters, collect parameters if exists
+    lua_newtable(L);
+    if (ctx_.tx.isFieldPresent(sfArgs))
+    {
+        auto const& args = ctx_.tx.getFieldArray(sfArgs);
+        call_push_args(L, args);
+    }
+
     // set currency transactor in registry table
     lua_pushlightuserdata(L, (void *)&ctx_.app);
     lua_pushlightuserdata(L, this);
@@ -686,9 +694,9 @@ Payment::doCodeCheckCall(STAmount const& amount)
     {
         lua_pushstring(L, "value");
         lua_newtable(L);
+        call_push_string(L, "value", amount.getText());
         call_push_string(L, "currency", to_string(amount.getCurrency()));
         call_push_string(L, "issuer", to_string(amount.getIssuer()));
-        call_push_string(L, "value", amount.getText());
         lua_settable(L, -3);
     }
     lua_setglobal(L, "msg");
@@ -760,22 +768,10 @@ Payment::doCodeCall(STAmount const& amount)
     lua_getglobal(L, "main");
     // push parameters, collect parameters if exists
     lua_newtable(L);
-    if (ctx_.tx.isFieldPresent(sfMemos))
+    if (ctx_.tx.isFieldPresent(sfArgs))
     {
-        auto const& memos = ctx_.tx.getFieldArray(sfMemos);
-        int n = 0;
-        for (auto const& memo : memos)
-        {
-            auto memoObj = dynamic_cast <STObject const*> (&memo);
-            if (!memoObj->isFieldPresent(sfMemoData))
-            {
-                continue;
-            }
-            std::string data = strCopy(memoObj->getFieldVL(sfMemoData));
-            lua_pushstring(L, data.c_str());
-            lua_rawseti(L, -2, n);
-            ++n;
-        }
+        auto const& args = ctx_.tx.getFieldArray(sfArgs);
+        call_push_args(L, args);
     }
 
     // set currency transactor in registry table
@@ -796,9 +792,9 @@ Payment::doCodeCall(STAmount const& amount)
     {
         lua_pushstring(L, "value");
         lua_newtable(L);
+        call_push_string(L, "value", amount.getText());
         call_push_string(L, "currency", to_string(amount.getCurrency()));
         call_push_string(L, "issuer", to_string(amount.getIssuer()));
-        call_push_string(L, "value", amount.getText());
         lua_settable(L, -3);
     }
     lua_setglobal(L, "msg");

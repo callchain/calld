@@ -73,6 +73,65 @@ void call_push_number(lua_State *L, std::string k, lua_Number v)
     lua_settable(L, -3);
 }
 
+void call_push_args(lua_State *L, const STArray& args)
+{
+    for (auto const& arg : args)
+    {
+        auto const& argObj = dynamic_cast <STObject const*> (&arg);
+        std::string argType = strCopy(argObj->getFieldVL(sfArgType));
+        std::string argName = strCopy(argObj->getFieldVL(sfArgName));
+        lua_pushstring(L, argName.c_str());
+        std::string value = strCopy(argObj->getFieldVL(sfArgValue));
+        if (argType == "integer")
+        {
+            std::int32_t i = atoi(value.c_str());
+            lua_pushinteger(L, i);
+        }
+        else if (argType == "boolean")
+        {
+            bool b;
+            std::istringstream(value) >> b;
+            lua_pushboolean(L, b);
+        }
+        else if (argType == "number")
+        {
+            double f = atof(value.c_str());
+            lua_pushnumber(L, f);
+        }
+        else if (argType == "string")
+        {
+            std::string s = value;
+            lua_pushstring(L, s.c_str());
+        }
+        else if (argType == "address")
+        {
+            std::string a = value;
+            lua_pushstring(L, a.c_str());
+        }
+        else if (argType == "amount")
+        {
+            STAmount amount;
+            amountFromContractNoThrow(amount, value);
+            if (amount.native())
+            {
+                lua_pushinteger(L, amount.call().drops());
+            }
+            else
+            {
+                lua_newtable(L);
+                call_push_string(L, "value", amount.getText());
+                call_push_string(L, "currency", to_string(amount.getCurrency()));
+                call_push_string(L, "issuer", to_string(amount.getIssuer()));
+            }
+        }
+        else
+        {
+            // this should not occur
+        }
+        lua_settable(L, -3);
+    }
+}
+
 static int syscall_ledger(lua_State *L)
 {
     int argc = lua_gettop(L);
