@@ -931,7 +931,7 @@ amountFromJsonNoThrow (STAmount& result, Json::Value const& jvSource)
 bool
 amountFromContractNoThrow (STAmount& result, std::string const& source)
 {
-    std::regex word_regex("\/");
+    std::regex word_regex("/");
 
     std::vector<std::string> v(std::sregex_token_iterator(source.begin(), source.end(), word_regex, -1),
         std::sregex_token_iterator());

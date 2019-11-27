@@ -562,7 +562,7 @@ isArgOkay (STObject const& st, std::string& reason)
                 static std::array<std::string,  6> const allowedTypes = {
                     "number", "integer", "boolean", "string", "amount", "address"
                 };
-                auto const it = std::find(allowedTypes.begin(), allowedTypes.end(), data.first);
+                auto const it = std::find(allowedTypes.begin(), allowedTypes.end(), strCopy(data.first));
                 if (it == allowedTypes.end())
                 {
                     reason = "The ArgType may only contain number, integer, boolean, string, amount and address types";
