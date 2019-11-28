@@ -123,10 +123,6 @@ public:
         return ctx_;
     }
 
-    void
-    doContractPrint(std::string const& data);
-
-
     /////////////////////////////////////////////////////
     /*
     These static functions are called from invoke_preclaim<Tx>

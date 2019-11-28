@@ -53,8 +53,8 @@
 #include <call/app/tx/impl/SetTrust.cpp>
 #include <call/app/tx/impl/SignerEntries.cpp>
 #include <call/app/tx/impl/Taker.cpp>
+#include <call/app/tx/impl/IssueSet.cpp>
 #include <call/app/tx/impl/ApplyContext.cpp>
 #include <call/app/tx/impl/Transactor.cpp>
-#include <call/app/tx/impl/IssueSet.cpp>
-
+#include <call/app/tx/impl/Contractor.cpp>
 #include <call/app/contract/ContractLib.cpp>

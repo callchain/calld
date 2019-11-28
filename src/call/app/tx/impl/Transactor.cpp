@@ -330,12 +330,6 @@ void Transactor::preCompute ()
     assert(account_ != zero);
 }
 
-void Transactor::doContractPrint(std::string const& data)
-{
-    // only print in trace log level
-    JLOG(j_.trace()) << "Contract Data: " << data;
-}
-
 TER Transactor::apply ()
 {
     preCompute();

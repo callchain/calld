@@ -36,6 +36,7 @@
 #define CALL_TX_SETACCOUNT_H_INCLUDED
 
 #include <call/app/tx/impl/Transactor.h>
+#include <call/app/tx/impl/Contractor.h>
 #include <call/basics/Log.h>
 #include <call/core/Config.h>
 #include <call/protocol/Indexes.h>
@@ -45,13 +46,13 @@
 namespace call {
 
 class SetAccount
-    : public Transactor
+    : public Contractor
 {
     static std::size_t const DOMAIN_BYTES_MAX = 256;
 
 public:
     SetAccount (ApplyContext& ctx)
-        : Transactor(ctx)
+        : Contractor(ctx)
     {
     }
 
@@ -68,6 +69,8 @@ public:
     preclaim(PreclaimContext const& ctx);
 
     TER doApply () override;
+
+private:
 
     TER doInitCall(std::shared_ptr<SLE> const &sle);
 };

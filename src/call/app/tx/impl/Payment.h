@@ -37,6 +37,7 @@
 
 #include <call/app/paths/CallCalc.h>
 #include <call/app/tx/impl/Transactor.h>
+#include <call/app/tx/impl/Contractor.h>
 #include <call/basics/Log.h>
 #include <call/protocol/TxFlags.h>
 
@@ -45,7 +46,7 @@ namespace call {
 // See https://call.com/wiki/Transaction_Format#Payment_.280.29
 
 class Payment
-    : public Transactor
+    : public Contractor
 {
     /* The largest number of paths we allow */
     static std::size_t const MaxPathSize = 6;
@@ -56,7 +57,7 @@ class Payment
 
 public:
     Payment (ApplyContext& ctx)
-        : Transactor(ctx)
+        : Contractor(ctx)
     {
     }
 
@@ -74,12 +75,11 @@ public:
 
     TER doApply () override;
 
-    TER doCodeCheckCall(STAmount const& amount);
+private:
 
+    TER doCodeCheckCall(STAmount const& amount);
     TER doCodeCall(STAmount const& amount);
 
-    // for lua glue functions
-    TER doTransfer(AccountID const& toAccountID, STAmount const& amount);
 };
 
 } // call

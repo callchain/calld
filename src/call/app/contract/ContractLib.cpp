@@ -19,7 +19,7 @@
 #include <BeastConfig.h>
 #include <call/app/contract/ContractLib.h>
 #include <call/app/tx/impl/ApplyContext.h>
-#include <call/app/tx/impl/Payment.h>
+#include <call/app/tx/impl/Contractor.h>
 #include <call/app/main/Application.h>
 #include <call/app/paths/CallCalc.h>
 #include <call/basics/StringUtilities.h>
@@ -239,10 +239,10 @@ static int syscall_callstate(lua_State *L)
 
     lua_pushlightuserdata(L, (void *)&getApp());
     lua_gettable(L, LUA_REGISTRYINDEX);
-    Payment *payment = reinterpret_cast<Payment *>(lua_touserdata(L, -1));
+    Contractor *contractor = reinterpret_cast<Contractor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
 
-    auto const sle = payment->view().peek(keylet::line(issuerID, accountID, currencyObj));
+    auto const sle = contractor->view().peek(keylet::line(issuerID, accountID, currencyObj));
     if (!sle) {
         return call_error(L, terNO_LINE);
     }
@@ -329,7 +329,7 @@ static int syscall_transfer(lua_State *L)
     
     lua_pushlightuserdata(L, (void *)&getApp());
     lua_gettable(L, LUA_REGISTRYINDEX);
-    Payment *payment = reinterpret_cast<Payment *>(lua_touserdata(L, -1));
+    Contractor *contractor = reinterpret_cast<Contractor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
 
     auto const uDstAccountID = RPC::accountFromStringStrict(toS);
@@ -337,7 +337,48 @@ static int syscall_transfer(lua_State *L)
         return call_error(L, tecINVALID_DESTINATION);
     }
 
-    TER terResult = payment->doTransfer(uDstAccountID.get(), amount);
+    TER terResult = contractor->doTransfer(uDstAccountID.get(), amount);
+
+    lua_pushnil(L); // may other useful result
+    lua_pushinteger(L, terResult);
+    return 2;
+}
+
+static int syscall_issueset(lua_State *L)
+{
+    int argc = lua_gettop(L);
+    if (argc != 2) { // total, currency
+        return call_error(L, tecINVALID_PARAM_NUMS);
+    }
+
+    if (!lua_isnumber(L, 1)) { // total
+        return call_error(L, tecINVALID_PARAM_TYPE);
+    }
+    lua_Number total = lua_tonumber(L, 1);
+
+    if (!lua_isstring(L, 2)) { // currency
+        return call_error(L, tecINVALID_PARAM_TYPE);
+    }
+    const char* currency = lua_tostring(L, 2);
+    std::string currencyS = currency;
+
+    long long left_drops = lua_getdrops(L);
+    if (!lua_setdrops(L, left_drops - TRANSFER_DROP_COST)) {
+        return call_error(L, tecCODE_FEE_OUT);
+    }
+
+    // get contract address
+    lua_getglobal(L, "msg");
+    lua_getfield(L, -1, "address");
+    std::string contractS = lua_tostring(L, -1);
+    lua_pop(L, 2);
+
+    lua_pushlightuserdata(L, (void *)&getApp());
+    lua_gettable(L, LUA_REGISTRYINDEX);
+    Contractor *contractor = reinterpret_cast<Contractor *>(lua_touserdata(L, -1));
+    lua_pop(L, 1);
+
+    TER terResult = tesSUCCESS;
 
     lua_pushnil(L); // may other useful result
     lua_pushinteger(L, terResult);
@@ -365,10 +406,10 @@ static int syscall_print(lua_State *L)
 
     lua_pushlightuserdata(L, (void *)&getApp());
     lua_gettable(L, LUA_REGISTRYINDEX);
-    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
+    Contractor *contractor = reinterpret_cast<Contractor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
 
-    transactor->doContractPrint(data);
+    contractor->doContractPrint(data);
 
     lua_pushnil(L);
     lua_pushinteger(L, tesSUCCESS);
@@ -489,9 +530,9 @@ TER SaveLuaTable(lua_State *L, AccountID const &contract_address)
     // get transactor
     lua_pushlightuserdata(L, (void *)&getApp());
     lua_gettable(L, LUA_REGISTRYINDEX);
-    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
+    Contractor *contractor = reinterpret_cast<Contractor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
-    ApplyView& view = transactor->view();
+    ApplyView& view = contractor->view();
 
     // save or update data
     auto const index = getParamIndex(contract_address);
@@ -582,9 +623,9 @@ void RestoreLuaTable(lua_State *L, AccountID const &contract_address)
 {
     lua_pushlightuserdata(L, (void *)&getApp());
     lua_gettable(L, LUA_REGISTRYINDEX);
-    Transactor *transactor = reinterpret_cast<Transactor *>(lua_touserdata(L, -1));
+    Contractor *contractor = reinterpret_cast<Contractor *>(lua_touserdata(L, -1));
     lua_pop(L, 1);
-    ApplyView& view = transactor->view();
+    ApplyView& view = contractor->view();
 
     // read data from saved
     auto const index = getParamIndex(contract_address);
