@@ -712,7 +712,10 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
 
     // set currency transactor in registry table
     lua_pushlightuserdata(L, (void *)&ctx_.app);
-    lua_pushlightuserdata(L, this);
+    ContractData *cd = new ContractData();
+    cd->contractor = this;
+    cd->address = account_;
+    lua_pushlightuserdata(L, cd);
     lua_settable(L, LUA_REGISTRYINDEX);
 
     // set global parameters for lua contract
@@ -728,6 +731,7 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
     {
         JLOG(j_.warn()) << "Fail to call account code init, error=" << lret;
         drops = lua_getdrops(L);
+        delete cd;
         lua_close(L);
         return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecCODE_INIT_FAILED;
     }
@@ -749,6 +753,7 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
         terResult = SaveLuaTable(L, account_);
     }
 
+    delete cd;
     lua_close(L);
     return terResult;
 }

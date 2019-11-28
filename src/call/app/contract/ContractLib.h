@@ -21,6 +21,7 @@
 #define CALL_TX_CONTRACTLIB_H_INCLUDED
 
 #include <lua-vm/src/lua.hpp>
+#include <call/app/tx/impl/Contractor.h>
 #include <call/basics/StringUtilities.h>
 #include <call/protocol/AccountID.h>
 #include <call/protocol/STArray.h>
@@ -44,6 +45,12 @@
 
 namespace call
 {
+    typedef struct
+    {
+        Contractor const* contractor;
+        AccountID const& address;
+    } ContractData;
+
     static void call_push_string(lua_State *L, std::string k, std::string v);
     static void call_push_boolean(lua_State *L, std::string k, bool v);
     static void call_push_integer(lua_State *L, std::string k, lua_Integer v);

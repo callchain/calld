@@ -179,7 +179,8 @@ transResults()
         { temCODE_FIXED,             { "temCODE_FIXED",            "Issue code fixed"                                                              } },
         { temPRAMETER_KEYWORD,       { "temPRAMETER_KEYWORD",      "Forbidden use parameter keywords"                                              } },
         { temNO_CODE_ENTRY,          { "temNO_CODE_ENTRY",         "No code entry for account code"                                                } },
-        { temINVALID_CODE,           { "temINVALID_CODE",         "Code syntax invalid, fail to load."                                             } },
+        { temINVALID_CODE,           { "temINVALID_CODE",          "Code syntax invalid, fail to load."                                            } },
+        { temCURRENCY_ISSUED,        { "temCURRENCY_ISSUED",       "Issuer has issued such currency already."                                      } },
 
         { terRETRY,                  { "terRETRY",                 "Retry transaction."                                                            } },
         { terFUNDS_SPENT,            { "terFUNDS_SPENT",           "Can't set password, password set funds already spent."                         } },

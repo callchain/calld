@@ -38,12 +38,12 @@ public:
     {
     }
 
-protected:
     // for lua glue functions
     TER doTransfer(AccountID const& toAccountID, STAmount const& amount);
-    TER doIssueSet(STAmount const & total);
+    TER doIssueSet(STAmount const & total, std::uint32_t rate, Blob const& info);
     void doContractPrint(std::string const& data);
 
+protected:
     virtual void preCompute();
 
     virtual TER doApply () = 0;

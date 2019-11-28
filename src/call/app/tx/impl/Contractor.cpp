@@ -150,9 +150,20 @@ Contractor::doTransfer(AccountID const& toAccountID, STAmount const& amount)
 }
 
 TER
-Contractor::doIssueSet(STAmount const & total)
+Contractor::doIssueSet(STAmount const & total, std::uint32_t rate, Blob const& info)
 {
-    return tesSUCCESS;
+    SLE::pointer sle = view().peek(keylet::issuet(total));
+    if (sle)
+    {
+        return temCURRENCY_ISSUED;
+    }
+
+    /**
+     * not allowed additional, not non-nft
+     */
+    auto const& issue = total.issue();
+    uint256 index = getIssueIndex(issue.getIssuer(), issue.getCurrency());
+	return issueSetCreate(view(), issue.getIssuer(), total, rate, 0, index, info, j_);
 }
 
 void
