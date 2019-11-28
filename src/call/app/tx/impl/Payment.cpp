@@ -678,8 +678,10 @@ Payment::doCodeCheckCall(STAmount const& amount)
 
     // set currency transactor in registry table
     lua_pushlightuserdata(L, (void *)&ctx_.app);
-    ContractData *cd = new ContractData(this, uDstAccountID);
-    lua_pushlightuserdata(L, cd);
+    ContractData cd;
+    cd.contractor = this;
+    cd.address = uDstAccountID;
+    lua_pushlightuserdata(L, (void *)&cd);
     lua_settable(L, LUA_REGISTRYINDEX);
 
     // set global parameters for lua contract
@@ -710,7 +712,6 @@ Payment::doCodeCheckCall(STAmount const& amount)
     {
         JLOG(j_.warn()) << "fail to call account check code, error=" << lret;
         drops = lua_getdrops(L);
-        delete cd; // release contract global data
         lua_close(L);
         return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecCODE_CHECK_FAILED;
     }
@@ -732,7 +733,6 @@ Payment::doCodeCheckCall(STAmount const& amount)
         terResult = SaveLuaTable(L, uDstAccountID);
     }
 
-    delete cd; // release contract global data
     // close lua state
     lua_close(L);
     return terResult;
@@ -779,8 +779,10 @@ Payment::doCodeCall(STAmount const& amount)
 
     // set currency transactor in registry table
     lua_pushlightuserdata(L, (void *)&ctx_.app);
-    ContractData *cd = new ContractData(this, uDstAccountID);
-    lua_pushlightuserdata(L, cd);
+    ContractData cd;
+    cd.contractor = this;
+    cd.address = uDstAccountID;
+    lua_pushlightuserdata(L, (void *)&cd);
     lua_settable(L, LUA_REGISTRYINDEX);
 
     // set global parameters for lua contract
@@ -811,7 +813,6 @@ Payment::doCodeCall(STAmount const& amount)
     {
         JLOG(j_.warn()) << "Fail to call account code main, error=" << lret;
         drops = lua_getdrops(L);
-        delete cd; // release contract global data
         lua_close(L);
         return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecCODE_CALL_FAILED;
     }
@@ -834,7 +835,6 @@ Payment::doCodeCall(STAmount const& amount)
         terResult = SaveLuaTable(L, uDstAccountID);
     }
 
-    delete cd; // release contract global data
     // close lua state
     lua_close(L);
     return terResult;
