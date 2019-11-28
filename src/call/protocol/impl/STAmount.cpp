@@ -931,20 +931,28 @@ amountFromJsonNoThrow (STAmount& result, Json::Value const& jvSource)
 bool
 amountFromContractNoThrow (STAmount& result, std::string const& source)
 {
-    std::regex word_regex("/");
+    if (std::all_of(source.begin(), source.end(), ::isdigit))
+    {
+        result = CALLAmount(atoi(source.c_str()));
+        return true;
+    }
+    else
+    {
+        std::regex word_regex("/");
 
-    std::vector<std::string> v(std::sregex_token_iterator(source.begin(), source.end(), word_regex, -1),
-        std::sregex_token_iterator());
+        std::vector<std::string> v(std::sregex_token_iterator(source.begin(), source.end(), word_regex, -1),
+            std::sregex_token_iterator());
 
-    if (v.size() != 3)
-        return false;
+        if (v.size() != 3)
+            return false;
 
-    Json::Value json;
-    json["value"] = v[0];
-    json["currency"] = v[1];
-    json["issuer"] = v[2];
+        Json::Value json;
+        json["value"] = v[0];
+        json["currency"] = v[1];
+        json["issuer"] = v[2];
 
-   return amountFromJsonNoThrow(result, json);
+        return amountFromJsonNoThrow(result, json);
+    }
 }
 
 //------------------------------------------------------------------------------
