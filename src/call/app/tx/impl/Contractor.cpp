@@ -162,8 +162,8 @@ Contractor::doIssueSet(STAmount const & total, std::uint32_t rate, Blob const& i
      * not allowed additional, not non-nft
      */
     auto const& issue = total.issue();
-    uint256 index = getIssueIndex(issue.getIssuer(), issue.getCurrency());
-	return issueSetCreate(view(), issue.getIssuer(), total, rate, 0, index, info, j_);
+    uint256 index = getIssueIndex(issue.account, issue.currency);
+	return issueSetCreate(view(), issue.account, total, rate, 0, index, info, j_);
 }
 
 void

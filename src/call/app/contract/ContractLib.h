@@ -59,7 +59,7 @@ namespace call
             return mContractor;
         }
 
-        AddressID const& getAddress()
+        AccountID const& getAddress()
         {
             return mAddress;
         }
