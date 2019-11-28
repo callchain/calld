@@ -45,11 +45,14 @@
 
 namespace call
 {
-    typedef struct
+    class ContractData
     {
+    public:
+        ContractData() {}
+    
         Contractor const* contractor;
         AccountID const& address;
-    } ContractData;
+    };
 
     static void call_push_string(lua_State *L, std::string k, std::string v);
     static void call_push_boolean(lua_State *L, std::string k, bool v);
