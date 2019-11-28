@@ -47,7 +47,7 @@ namespace call
 {
     typedef struct {
         Contractor *contractor;
-        AccountID &address;
+        AccountID address;
     } ContractData;
 
     static void call_push_string(lua_State *L, std::string k, std::string v);

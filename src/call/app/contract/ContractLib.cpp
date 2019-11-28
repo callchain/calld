@@ -239,7 +239,7 @@ static int syscall_callstate(lua_State *L)
 
     lua_pushlightuserdata(L, (void *)&getApp());
     lua_gettable(L, LUA_REGISTRYINDEX);
-    ContractData cd = reinterpret_cast<ContractData *>(lua_touserdata(L, -1));
+    ContractData *cd = reinterpret_cast<ContractData *>(lua_touserdata(L, -1));
     Contractor *contractor = cd->contractor;
     lua_pop(L, 1);
 
@@ -361,7 +361,7 @@ static int syscall_issueset(lua_State *L)
     const char* currency = lua_tostring(L, 2);
     std::string currencyS = currency;
 
-    if (!lus_isinteger(L, 3)) { // rate
+    if (!lua_isinteger(L, 3)) { // rate
         return call_error(L, tecINVALID_PARAM_TYPE);
     }
     int rate = lua_tointeger(L, 3);
