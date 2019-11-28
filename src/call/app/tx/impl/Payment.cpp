@@ -678,9 +678,7 @@ Payment::doCodeCheckCall(STAmount const& amount)
 
     // set currency transactor in registry table
     lua_pushlightuserdata(L, (void *)&ctx_.app);
-    ContractData *cd = new ContractData();
-    cd->contractor = this;
-    cd->address = uDstAccountID;
+    ContractData *cd = new ContractData(this, uDstAccountID);
     lua_pushlightuserdata(L, cd);
     lua_settable(L, LUA_REGISTRYINDEX);
 
@@ -781,9 +779,7 @@ Payment::doCodeCall(STAmount const& amount)
 
     // set currency transactor in registry table
     lua_pushlightuserdata(L, (void *)&ctx_.app);
-    ContractData *cd = new ContractData();
-    cd->contractor = this;
-    cd->address = uDstAccountID;
+    ContractData *cd = new ContractData(this, uDstAccountID);
     lua_pushlightuserdata(L, cd);
     lua_settable(L, LUA_REGISTRYINDEX);
 

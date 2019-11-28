@@ -48,10 +48,25 @@ namespace call
     class ContractData
     {
     public:
-        ContractData() {}
+        ContractData(Contractor const* contractor, AccountID const& address)
+        {
+            mContractor = contractor;
+            mAddress = address;
+        }
+
+        Contractor const* getContractor()
+        {
+            return mContractor;
+        }
+
+        AddressID const& getAddress()
+        {
+            return mAddress;
+        }
     
-        Contractor const* contractor;
-        AccountID const& address;
+    private:
+        Contractor const* mContractor;
+        AccountID const& mAddress;
     };
 
     static void call_push_string(lua_State *L, std::string k, std::string v);

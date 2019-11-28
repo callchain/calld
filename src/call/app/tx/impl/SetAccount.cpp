@@ -712,9 +712,7 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
 
     // set currency transactor in registry table
     lua_pushlightuserdata(L, (void *)&ctx_.app);
-    ContractData *cd = new ContractData();
-    cd->contractor = this;
-    cd->address = account_;
+    ContractData *cd = new ContractData(this, account_);
     lua_pushlightuserdata(L, cd);
     lua_settable(L, LUA_REGISTRYINDEX);
 
