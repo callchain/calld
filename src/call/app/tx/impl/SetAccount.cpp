@@ -695,8 +695,11 @@ SetAccount::doInitCall (std::shared_ptr<SLE> const &sle)
 
     // call init
     lua_getglobal(L, "init");
-    if (!lua_isfunction(L, -1))
-    // if (lua_isfunction(L, -1) && !sle->isFieldPresent(sfCode)) // only can init one time
+    /**
+     * init not function, or init has been called already(code set yet)
+     * make sure call one time init function
+     */
+    if (!lua_isfunction(L, -1) || (lua_isfunction(L, -1) && sle->isFieldPresent(sfCode)))
     {
         lua_close(L);
         return tesSUCCESS;
