@@ -373,7 +373,7 @@ static int syscall_issueset(lua_State *L)
     std::string infoS = info;
 
     long long left_drops = lua_getdrops(L);
-    if (!lua_setdrops(L, left_drops - TRANSFER_DROP_COST)) {
+    if (!lua_setdrops(L, left_drops - ISSUESET_DROP_COST)) {
         return call_error(L, tecCODE_FEE_OUT);
     }
 

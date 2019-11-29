@@ -36,6 +36,7 @@
 #define PRINT_DROP_COST          5
 #define TRANSFER_DROP_COST       100
 #define ADDRESS_CHECK_DROP_COST  5
+#define ISSUESET_DROP_COST       50
 
 #define CODE_MAX_SIZE            8192
 #define CODE_UNIT_SIZE           16
