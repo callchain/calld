@@ -102,7 +102,8 @@ Json::Value doWalletUnlock          (RPC::Context&);
 Json::Value doWalletVerify          (RPC::Context&);
 Json::Value doValidators            (RPC::Context&);
 Json::Value doValidatorListSites    (RPC::Context&);
-Json::Value doNicknameInfo            (RPC::Context&);
+Json::Value doNicknameInfo          (RPC::Context&);
+Json::Value doContractInfo          (RPC::Context&);
 Json::Value doAccountIssues         (RPC::Context&);
 Json::Value doAccountInvoices       (RPC::Context&);
 

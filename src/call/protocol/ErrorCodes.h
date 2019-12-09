@@ -136,6 +136,9 @@ enum error_code_i
     rpcNOT_IMPL,
     rpcNOT_SUPPORTED,
     rpcNICKACCOUNT_NOT_FOUND,
+    rpcACCOUNT_NO_DATA,
+    rpcPARAM_NOT_FOUND,
+    rpcINVALID_CONTRACT_DATA,
 };
 
 //------------------------------------------------------------------------------
