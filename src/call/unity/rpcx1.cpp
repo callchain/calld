@@ -73,3 +73,5 @@
 #include <call/rpc/handlers/LogRotate.cpp>
 #include <call/rpc/handlers/NoCallCheck.cpp>
 #include <call/rpc/handlers/OwnerInfo.cpp>
+#include <call/rpc/handlers/NicknameInfo.cpp>
+#include <call/rpc/handlers/ContractInfo.cpp>
