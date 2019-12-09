@@ -51,23 +51,23 @@ namespace call
         AccountID address;
     } ContractData;
 
-    static void call_push_string(lua_State *L, std::string k, std::string v);
-    static void call_push_boolean(lua_State *L, std::string k, bool v);
-    static void call_push_integer(lua_State *L, std::string k, lua_Integer v);
-    static void call_push_number(lua_State *L, std::string k, lua_Number v);
+    void call_push_string(lua_State *L, std::string k, std::string v);
+    void call_push_boolean(lua_State *L, std::string k, bool v);
+    void call_push_integer(lua_State *L, std::string k, lua_Integer v);
+    void call_push_number(lua_State *L, std::string k, lua_Number v);
 
-    static void call_push_args(lua_State *L, const STArray& args);
+    void call_push_args(lua_State *L, const STArray& args);
 
     void RegisterContractLib(lua_State *L);
 
     // using snappy compress and uncompress data
-    static std::string CompressData(const std::string input);
-    static std::string UncompressData(const std::string input);
+    std::string CompressData(const std::string input);
+    std::string UncompressData(const std::string input);
 
-    static TER SaveLuaTable(lua_State *L, AccountID const &contract_address);
-    static void RestoreLuaTable(lua_State *L, AccountID const &contract_address);
+    TER SaveLuaTable(lua_State *L, AccountID const &contract_address);
+    void RestoreLuaTable(lua_State *L, AccountID const &contract_address);
 
-    static int panic_handler(lua_State *L);
+    int panic_handler(lua_State *L);
 
 } // namespace call
 #endif

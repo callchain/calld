@@ -49,7 +49,6 @@
 #include <call/json/json_value.h>
 #include <call/json/json_reader.h>
 #include <call/json/json_writer.h>
-#include <snappy.h>
 
 namespace call {
 
@@ -147,9 +146,7 @@ Json::Value doContractInfo (RPC::Context& context)
     if (sleAccepted)
     {
         Blob data = sleAccepted->getFieldVL(sfInfo);
-        std::string dataS = strCopy(data);
-        std::string input;
-        snappy::Uncompress(dataS.data(), dataS.size(), &input);
+        std::string input = UncompressData(strCopy(data));
         Json::Value root;
         Json::Reader reader;
         if (reader.parse(input, root))
