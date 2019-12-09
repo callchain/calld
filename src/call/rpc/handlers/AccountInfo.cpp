@@ -129,7 +129,7 @@ Json::Value doContractInfo (RPC::Context& context)
 	}
 
     std::shared_ptr<ReadView const> ledger;
-    auto result = RPC::lookupLedger (ledger, context);
+    result = RPC::lookupLedger (ledger, context);
 
     if (!ledger)
         return result;
