@@ -141,12 +141,13 @@ Json::Value doContractInfo (RPC::Context& context)
     auto jvAccepted = RPC::accountFromString (accountID, strIdent, bStrict);
     if (jvAccepted)
         return jvAccepted;
-    
+
     auto const sleAccepted = ledger->read(keylet::paramt(getParamIndex(accountID)));
     if (sleAccepted)
     {
         Blob data = sleAccepted->getFieldVL(sfInfo);
-        std::string input = UncompressData(strCopy(data)); // uncompress it
+        std::string dataS = strCopy(data);
+        std::string input = UncompressData(dataS); // uncompress it
         Json::Value root;
         Json::Reader reader;
         if (reader.parse(input, root))
@@ -163,7 +164,6 @@ Json::Value doContractInfo (RPC::Context& context)
                 result[jss::account] = context.app.accountIDCache().toBase58 (accountID);
                 result[jss::ArgName] = argname;
                 result[jss::info] = value;
-                return result;
             }
         }
         else
@@ -179,6 +179,8 @@ Json::Value doContractInfo (RPC::Context& context)
         result[jss::ArgName] = argname;
         RPC::inject_error (rpcACCOUNT_NO_DATA, result);
     }
+
+    return result;
 }
 
 Json::Value doAccountInfo (RPC::Context& context)
