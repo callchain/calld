@@ -192,6 +192,51 @@ private:
         return jvRequest;
     }
 
+    Json::Value parseNickname (Json::Value const& jvParams)
+    {
+        Json::Value     jvRequest (Json::objectValue);
+        std::string     strName = jvParams[0u].asString ();
+
+        jvRequest[jss::NickName]    = strName;
+
+        return jvRequest;
+    }
+
+    Json::Value parseContractItems (Json::Value const& jvParams)
+    {
+        Json::Value     jvRequest (Json::objectValue);
+
+        std::string     strIdent    = jvParams[0u].asString ();
+        unsigned int    iCursor     = jvParams.size ();
+        bool            bStrict     = false;
+
+        if (iCursor >= 3 && jvParams[iCursor - 1] == jss::strict)
+        {
+            bStrict = true;
+            --iCursor;
+        }
+
+        if (! parseBase58<PublicKey>(TokenType::TOKEN_ACCOUNT_PUBLIC, strIdent) &&
+            ! parseBase58<AccountID>(strIdent) &&
+            ! parseGenericSeed(strIdent))
+            return rpcError (rpcACT_MALFORMED);
+
+        // Get info on account.
+        Json::Value jvRequest (Json::objectValue);
+
+        jvRequest[jss::account]    = strIdent;
+
+        jvRequest[jss::ArgName]    = jvParams[1u].asString();
+
+        if (bStrict)
+            jvRequest[jss::strict]     = 1;
+
+        if (iCursor == 3 && !jvParseLedger (jvRequest, jvParams[2u].asString ()))
+            return rpcError (rpcLGR_IDX_MALFORMED);
+
+        return jvRequest;
+    }
+
     // account_tx accountID [ledger_min [ledger_max [limit [offset]]]] [binary] [count] [descending]
     Json::Value
     parseAccountTransactions (Json::Value const& jvParams)
@@ -1033,6 +1078,8 @@ public:
             {   "consensus_info",       &RPCParser::parseAsIs,                  0,  0   },
             {   "feature",              &RPCParser::parseFeature,               0,  2   },
             {   "fetch_info",           &RPCParser::parseFetchInfo,             0,  1   },
+            {   "nickname_info",        &RPCParser::parseNickname,              1,  1   },
+            {   "contract_ifo",         &RPCParser::parseContractItems,         2,  3   },
             {   "gateway_balances",     &RPCParser::parseGatewayBalances  ,     1,  -1  },
             {   "get_counts",           &RPCParser::parseGetCounts,             0,  1   },
             {   "json",                 &RPCParser::parseJson,                  2,  2   },

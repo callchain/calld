@@ -1316,8 +1316,7 @@ bool ApplicationImp::setup()
         if (! jrReader.parse (cmd, jvCommand))
         {
             JLOG(m_journal.fatal()) <<
-                "Couldn't parse entry in [" << SECTION_RPC_STARTUP <<
-                "]: '" << cmd;
+                "Couldn't parse entry in [" << SECTION_RPC_STARTUP << "]: '" << cmd;
         }
 
         if (!config_->quiet())

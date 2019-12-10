@@ -143,8 +143,7 @@ error_code_i fillHandler (Context& context,
         return rpcCOMMAND_MISSING;
     if (context.params.isMember(jss::command) && context.params.isMember(jss::method))
     {
-        if (context.params[jss::command].asString() !=
-            context.params[jss::method].asString())
+        if (context.params[jss::command].asString() != context.params[jss::method].asString())
             return rpcUNKNOWN_COMMAND;
     }
 
@@ -179,8 +178,7 @@ error_code_i fillHandler (Context& context,
         return rpcAMENDMENT_BLOCKED;
     }
 
-    if (!context.app.config().standalone() &&
-        handler->condition_ & NEEDS_CURRENT_LEDGER)
+    if (!context.app.config().standalone() && handler->condition_ & NEEDS_CURRENT_LEDGER)
     {
         if (context.ledgerMaster.getValidatedLedgerAge () >
             Tuning::maxValidatedLedgerAge)
@@ -199,8 +197,7 @@ error_code_i fillHandler (Context& context,
         }
     }
 
-    if ((handler->condition_ & NEEDS_CLOSED_LEDGER) &&
-        !context.ledgerMaster.getClosedLedger ())
+    if ((handler->condition_ & NEEDS_CLOSED_LEDGER) && !context.ledgerMaster.getClosedLedger ())
     {
         return rpcNO_CLOSED;
     }
@@ -262,8 +259,7 @@ Status doCommand (
 
     if (auto method = handler->valueMethod_)
     {
-        if (! context.headers.user.empty() ||
-            ! context.headers.forwardedFor.empty())
+        if (! context.headers.user.empty() || ! context.headers.forwardedFor.empty())
         {
             JLOG(context.j.debug()) << "start command: " << handler->name_ <<
                 ", X-User: " << context.headers.user << ", X-Forwarded-For: " <<
