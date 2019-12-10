@@ -221,9 +221,6 @@ private:
             ! parseGenericSeed(strIdent))
             return rpcError (rpcACT_MALFORMED);
 
-        // Get info on account.
-        Json::Value jvRequest (Json::objectValue);
-
         jvRequest[jss::account]    = strIdent;
 
         jvRequest[jss::ArgName]    = jvParams[1u].asString();
