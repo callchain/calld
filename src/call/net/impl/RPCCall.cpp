@@ -195,9 +195,15 @@ private:
     Json::Value parseNickname (Json::Value const& jvParams)
     {
         Json::Value     jvRequest (Json::objectValue);
-        std::string     strName = jvParams[0u].asString ();
+        bool            bLedger     = 2 == jvParams.size ();
 
+        std::string     strName = jvParams[0u].asString ();
         jvRequest[jss::NickName]    = strName;
+
+        if (bLedger)
+        {
+            jvParseLedger (jvRequest, jvParams[1u].asString ());
+        }
 
         return jvRequest;
     }
@@ -1075,7 +1081,7 @@ public:
             {   "consensus_info",       &RPCParser::parseAsIs,                  0,  0   },
             {   "feature",              &RPCParser::parseFeature,               0,  2   },
             {   "fetch_info",           &RPCParser::parseFetchInfo,             0,  1   },
-            {   "nickname_info",        &RPCParser::parseNickname,              1,  1   },
+            {   "nickname_info",        &RPCParser::parseNickname,              1,  2   },
             {   "contract_info",        &RPCParser::parseContractItems,         2,  3   },
             {   "gateway_balances",     &RPCParser::parseGatewayBalances  ,     1,  -1  },
             {   "get_counts",           &RPCParser::parseGetCounts,             0,  1   },
@@ -1441,7 +1447,7 @@ int fromCommandLine (
 {
     auto const result = rpcClient(vCmd, config, logs);
 
-    if (result.first != rpcBAD_SYNTAX)
+    // if (result.first != rpcBAD_SYNTAX)
         std::cout << result.second.toStyledString ();
 
     return result.first;

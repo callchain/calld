@@ -154,7 +154,7 @@ void printHelp (const po::options_description& desc)
            "     connect <ip> [<port>]\n"
            "     consensus_info\n"
            "     feature [<feature> [accept|reject]]\n"
-           "     nickname_info <NickName>\n"
+           "     nickname_info <NickName> [<ledger>]\n"
            "     contract_info <account>|<seed>|<pass_phrase>|<key> <ArgName> [<ledger>] [strict]\n"
            "     fetch_info [clear]\n"
            "     gateway_balances [<ledger>] <issuer_account> [ <hotwallet> [ <hotwallet> ]]\n"
