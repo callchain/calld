@@ -135,7 +135,7 @@ public:
         add (rpcUNKNOWN_COMMAND,       "unknownCmd",        "Unknown method.");
         add (rpcWRONG_SEED,            "wrongSeed",         "The regular key does not point as the master key.");
         add (rpcSENDMAX_MALFORMED,     "sendMaxMalformed",  "SendMax amount malformed.");
-        add (rpcNICKACCOUNT_NOT_FOUND, "nonickaccountnot",  "nickname's account is not existed.");
+        add (rpcNICKACCOUNT_NOT_FOUND, "noSuchNameAcct",    "nickname's account is not existed.");
         add (rpcACCOUNT_NO_DATA,       "accountNoData",     "account does not have contract data");
         add (rpcPARAM_NOT_FOUND,       "paramNotFound",     "contract has no such param.");
         add (rpcINVALID_CONTRACT_DATA, "invalidContractData","invalid contract data.");

@@ -1076,7 +1076,7 @@ public:
             {   "feature",              &RPCParser::parseFeature,               0,  2   },
             {   "fetch_info",           &RPCParser::parseFetchInfo,             0,  1   },
             {   "nickname_info",        &RPCParser::parseNickname,              1,  1   },
-            {   "contract_ifo",         &RPCParser::parseContractItems,         2,  3   },
+            {   "contract_info",        &RPCParser::parseContractItems,         2,  3   },
             {   "gateway_balances",     &RPCParser::parseGatewayBalances  ,     1,  -1  },
             {   "get_counts",           &RPCParser::parseGetCounts,             0,  1   },
             {   "json",                 &RPCParser::parseJson,                  2,  2   },
