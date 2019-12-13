@@ -124,10 +124,10 @@ const std::uint32_t tfClose = 0x00020000;
 
 //IssueSet tx flags:
 const std::uint32_t tfAdditional    = 0x00010000; // only for total amount field
-const std::uint32_t tfCodeFixed     = 0x00020000;
+const std::uint32_t tfIssueCodeFixed = 0x00020000;
 const std::uint32_t tfInvoiceEnable = 0x00001000;
 
-const std::uint32_t tfIssueSetMask = ~(tfAdditional | tfCodeFixed | tfInvoiceEnable);
+const std::uint32_t tfIssueSetMask = ~(tfAdditional | tfIssueCodeFixed | tfInvoiceEnable);
 } // namespace call
 
 #endif
