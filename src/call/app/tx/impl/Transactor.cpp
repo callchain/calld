@@ -365,6 +365,14 @@ TER Transactor::apply ()
 TER
 Transactor::checkSign (PreclaimContext const& ctx)
 {
+    // block all code accoutn source transaction
+    auto const id = ctx.tx.getAccountID(sfAccount);
+    auto const sle = ctx.view.read(keylet::account(id));
+    if (sle->isFlag(lsfCodeAccount))
+    {
+        return tefCODE_ACCOUNT;
+    }
+
     // Make sure multisigning is enabled before we check for multisignatures.
     if (ctx.view.rules().enabled(featureMultiSign))
     {

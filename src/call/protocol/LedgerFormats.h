@@ -158,8 +158,9 @@ enum LedgerSpecificFlags
     lsfNoFreeze         = 0x00200000,   // True, cannot freeze call states
     lsfGlobalFreeze     = 0x00400000,   // True, all assets frozen
     lsfDefaultCall      = 0x00800000,   // True, trust lines allow calling by default
-    lsfCodeAccount      = 0x01000000,   // True, code account cannot be modified
+    lsfCodeAccount      = 0x01000000,   // True, account controllerd only by code
     lsfAutoTrust        = 0x02000000,   // True, auto create trust line
+    lsfCodeFixed        = 0x04000000,   // True, account code cannot be modified
 
     // ltOFFER
     lsfPassive          = 0x00010000,

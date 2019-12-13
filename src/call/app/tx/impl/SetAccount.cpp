@@ -221,16 +221,16 @@ SetAccount::preclaim(PreclaimContext const& ctx)
         }
     }
 
-    bool bSetCodeAccount  = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount);
-    if (bSetCodeAccount && (!sle->isFieldPresent(sfCode) && !ctx.tx.isFieldPresent(sfCode)))
+    bool bSetCodeFixed  = (uTxFlags & tfCodeFixed) || (uSetFlag == asfCodeFixed);
+    if (bSetCodeFixed && (!sle->isFieldPresent(sfCode) && !ctx.tx.isFieldPresent(sfCode)))
     {
         JLOG(ctx.j.trace()) << "when set code account, code should present";
         return temNO_CODE;
     }
 
-    if (bSetCodeAccount && (uFlagsIn & lsfCodeAccount))
+    if (bSetCodeFixed && (uFlagsIn & lsfCodeFixed))
     {
-        JLOG(ctx.j.trace()) << "Account is already code account";
+        JLOG(ctx.j.trace()) << "Account is already code fixed";
         return temCODE_ACCOUNT;
     }
 
@@ -276,6 +276,7 @@ SetAccount::doApply ()
     bool bSetDisallowCALL   = (uTxFlags & tfDisallowCALL) || (uSetFlag == asfDisallowCALL);
     bool bClearDisallowCALL = (uTxFlags & tfAllowCALL) || (uClearFlag == asfDisallowCALL);
     bool bSetCodeAccount       = (uTxFlags & tfCodeAccount) || (uSetFlag == asfCodeAccount); // no clear
+    bool bSetCodeFixed         = (uTxFlags & tfCodeFixed) || (uSetFlag == asfCodeFixed); // no clear
     bool bSetAutoTrust         = (uTxFlags & tfRequireAutoTrust) || (uSetFlag == asfAutoTrust);
     bool bClearAutoTrust       = (uTxFlags & tfOptionalAutoTrust) || (uClearFlag == asfAutoTrust);
 
@@ -308,6 +309,14 @@ SetAccount::doApply ()
         uFlagsOut &= ~lsfRequireAuth;
     }
 
+    //
+    // Code Account
+    //
+    if (bSetCodeAccount)
+    {
+        JLOG(j_.trace()) << "Set CodeAccount.";
+        uFlagsOut |= lsfCodeAccount;
+    }
 
 	//
 	//nickname set
@@ -352,7 +361,6 @@ SetAccount::doApply ()
     //
     // AutoTrustTag
     //
-
     if (bSetAutoTrust && !(uFlagsIn & lsfAutoTrust))
     {
         JLOG(j_.trace()) << "Set lsfAutoTrust.";
@@ -368,7 +376,6 @@ SetAccount::doApply ()
     //
     // RequireDestTag
     //
-
     if (bSetRequireDest && !(uFlagsIn & lsfRequireDestTag))
     {
         JLOG(j_.trace()) << "Set lsfRequireDestTag.";
@@ -407,8 +414,8 @@ SetAccount::doApply ()
             return tecNEED_MASTER_KEY;
         }
 
-        if ((!sle->isFieldPresent (sfRegularKey)) &&
-            (!view().peek (keylet::signers (account_))))
+        // only can disable master key when regular key set or account code is set
+        if ((!sle->isFieldPresent (sfRegularKey)) && (!view().peek (keylet::signers (account_))))
         {
             // Account has no regular key or multi-signer signer list.
 
@@ -601,11 +608,11 @@ SetAccount::doApply ()
         }
     }
 
-    // code account flag
-    if (bSetCodeAccount && !(uFlagsIn & lsfCodeAccount))
+    // code fixed flag
+    if (bSetCodeFixed && !(uFlagsIn & lsfCodeFixed))
     {
-        JLOG(j_.trace()) << "Set lsfCodeAccount.";
-        uFlagsOut |= lsfCodeAccount;
+        JLOG(j_.trace()) << "Set lsfCodeFixed.";
+        uFlagsOut |= lsfCodeFixed;
     }
 
     if (uFlagsIn != uFlagsOut)

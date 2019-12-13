@@ -74,7 +74,8 @@ const std::uint32_t tfAllowCALL = 0x00200000;
 const std::uint32_t tfCodeAccount = 0x00400000;
 const std::uint32_t tfRequireAutoTrust = 0x00800000;
 const std::uint32_t tfOptionalAutoTrust = 0x01000000;
-const std::uint32_t tfAccountSetMask = ~(tfUniversal | TxFlag::requireDestTag | tfOptionalDestTag | tfRequireAuth | tfOptionalAuth | tfDisallowCALL | tfAllowCALL | tfCodeAccount | tfRequireAutoTrust | tfOptionalAutoTrust);
+const std::uint32_t tfCodeFixed = 0x02000000;
+const std::uint32_t tfAccountSetMask = ~(tfUniversal | TxFlag::requireDestTag | tfOptionalDestTag | tfRequireAuth | tfOptionalAuth | tfDisallowCALL | tfAllowCALL | tfCodeAccount | tfRequireAutoTrust | tfOptionalAutoTrust | tfCodeFixed);
 
 // AccountSet SetFlag/ClearFlag values
 const std::uint32_t asfRequireDest = 1;
@@ -89,6 +90,7 @@ const std::uint32_t asfDefaultCall = 8;
 // it can only be access by code
 const std::uint32_t asfCodeAccount = 9; // not allow clear
 const std::uint32_t asfAutoTrust = 10; // auto create trust line
+const std::uint32_t asfCodeFixed = 11; // not allow clear too
 
 // OfferCreate flags:
 const std::uint32_t tfPassive = 0x00010000;
