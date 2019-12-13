@@ -178,7 +178,7 @@ enum LedgerSpecificFlags
 
     // ltISSUE_ROOT
     lsfAdditional       = 0x00010000,
-    lsfCodeFixed        = 0x00020000,
+    lsfIssueCodeFixed   = 0x00020000,
     lsfNonFungible      = 0x00001000
 };
 
