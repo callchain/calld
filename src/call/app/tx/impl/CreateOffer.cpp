@@ -166,14 +166,13 @@ CreateOffer::preclaim(PreclaimContext const& ctx)
     TER ter2 = checkIssue(ctx, saTakerGets, true); // no invoice now
     if (ter2 != tesSUCCESS)  return ter2;
 
-    // check only support one invoice id
+    // no support invoice
     auto takerPaysIssueRoot = ctx.view.read(keylet::issuet(saTakerPays));
     auto takerGetsIssueRoot = ctx.view.read(keylet::issuet(saTakerPays));
     std::uint32_t const takerPaysIssueFlags = takerPaysIssueRoot->getFieldU32(sfFlags);
     std::uint32_t const takerGetsIssueFlags = takerGetsIssueRoot->getFieldU32(sfFlags);
-    if ((takerPaysIssueFlags & tfInvoiceEnable) != 0 && (takerGetsIssueFlags & tfInvoiceEnable) != 0)
+    if ((takerPaysIssueFlags & tfInvoiceEnable) != 0 || (takerGetsIssueFlags & tfInvoiceEnable) != 0)
     {
-        // not support invoice exchange invoice
         return temNOT_SUPPORT;
     }
 
