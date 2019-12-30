@@ -158,7 +158,7 @@ Handler handlerArray[] {
     {   "sign",                 byRef (&doSign),                Role::USER,    NO_CONDITION       },
     {   "sign_for",             byRef (&doSignFor),             Role::USER,    NO_CONDITION       },
     {   "submit",               byRef (&doSubmit),              Role::USER,    NEEDS_CURRENT_LEDGER  },
-    // {   "submit_multisigned",   byRef (&doSubmitMultiSigned),   Role::USER,  NEEDS_CURRENT_LEDGER  },
+    {   "submit_multisigned",   byRef (&doSubmitMultiSigned),   Role::USER,    NEEDS_CURRENT_LEDGER  },
     {   "server_info",          byRef (&doServerInfo),          Role::USER,    NO_CONDITION       },
     {   "server_state",         byRef (&doServerState),         Role::USER,    NO_CONDITION       },
     {   "stop",                 byRef (&doStop),                Role::ADMIN,   NO_CONDITION     },
