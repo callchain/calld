@@ -1857,12 +1857,6 @@
     <ClInclude Include="..\..\src\call\app\tx\impl\CancelOffer.h">
       <Filter>call\app\tx\impl</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\src\call\app\tx\impl\CancelTicket.cpp">
-      <Filter>call\app\tx\impl</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\src\call\app\tx\impl\CancelTicket.h">
-      <Filter>call\app\tx\impl</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\src\call\app\tx\impl\Change.cpp">
       <Filter>call\app\tx\impl</Filter>
     </ClCompile>
@@ -1873,12 +1867,6 @@
       <Filter>call\app\tx\impl</Filter>
     </ClCompile>
     <ClInclude Include="..\..\src\call\app\tx\impl\CreateOffer.h">
-      <Filter>call\app\tx\impl</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\src\call\app\tx\impl\CreateTicket.cpp">
-      <Filter>call\app\tx\impl</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\src\call\app\tx\impl\CreateTicket.h">
       <Filter>call\app\tx\impl</Filter>
     </ClInclude>
     <ClCompile Include="..\..\src\call\app\tx\impl\Escrow.cpp">
@@ -1900,12 +1888,6 @@
       <Filter>call\app\tx\impl</Filter>
     </ClCompile>
     <ClInclude Include="..\..\src\call\app\tx\impl\OfferStream.h">
-      <Filter>call\app\tx\impl</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\src\call\app\tx\impl\PayChan.cpp">
-      <Filter>call\app\tx\impl</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\src\call\app\tx\impl\PayChan.h">
       <Filter>call\app\tx\impl</Filter>
     </ClInclude>
     <ClCompile Include="..\..\src\call\app\tx\impl\Payment.cpp">
@@ -3300,9 +3282,6 @@
     <ClInclude Include="..\..\src\call\protocol\LedgerFormats.h">
       <Filter>call\protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\call\protocol\PayChan.h">
-      <Filter>call\protocol</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\call\protocol\Protocol.h">
       <Filter>call\protocol</Filter>
     </ClInclude>
@@ -3571,9 +3550,6 @@
       <Filter>call\rpc\handlers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\call\rpc\handlers\PathFind.cpp">
-      <Filter>call\rpc\handlers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\call\rpc\handlers\PayChanClaim.cpp">
       <Filter>call\rpc\handlers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\call\rpc\handlers\Peers.cpp">

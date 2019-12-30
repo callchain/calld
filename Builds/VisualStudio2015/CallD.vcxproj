@@ -1319,12 +1319,6 @@
     </ClCompile>
     <ClInclude Include="..\..\src\call\app\tx\impl\CancelOffer.h">
     </ClInclude>
-    <ClCompile Include="..\..\src\call\app\tx\impl\CancelTicket.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='debug|x64'">True</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='release|x64'">True</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="..\..\src\call\app\tx\impl\CancelTicket.h">
-    </ClInclude>
     <ClCompile Include="..\..\src\call\app\tx\impl\Change.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='debug|x64'">True</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='release|x64'">True</ExcludedFromBuild>
@@ -1336,12 +1330,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='release|x64'">True</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\src\call\app\tx\impl\CreateOffer.h">
-    </ClInclude>
-    <ClCompile Include="..\..\src\call\app\tx\impl\CreateTicket.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='debug|x64'">True</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='release|x64'">True</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="..\..\src\call\app\tx\impl\CreateTicket.h">
     </ClInclude>
     <ClCompile Include="..\..\src\call\app\tx\impl\Escrow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='debug|x64'">True</ExcludedFromBuild>
@@ -1362,12 +1350,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='release|x64'">True</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\src\call\app\tx\impl\OfferStream.h">
-    </ClInclude>
-    <ClCompile Include="..\..\src\call\app\tx\impl\PayChan.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='debug|x64'">True</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='release|x64'">True</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="..\..\src\call\app\tx\impl\PayChan.h">
     </ClInclude>
     <ClCompile Include="..\..\src\call\app\tx\impl\Payment.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='debug|x64'">True</ExcludedFromBuild>
@@ -2675,8 +2657,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\call\protocol\LedgerFormats.h">
     </ClInclude>
-    <ClInclude Include="..\..\src\call\protocol\PayChan.h">
-    </ClInclude>
     <ClInclude Include="..\..\src\call\protocol\Protocol.h">
     </ClInclude>
     <ClInclude Include="..\..\src\call\protocol\PublicKey.h">
@@ -2944,10 +2924,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='release|x64'">True</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\src\call\rpc\handlers\PathFind.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='debug|x64'">True</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='release|x64'">True</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\src\call\rpc\handlers\PayChanClaim.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='debug|x64'">True</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='release|x64'">True</ExcludedFromBuild>
     </ClCompile>

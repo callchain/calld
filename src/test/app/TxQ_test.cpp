@@ -1615,21 +1615,6 @@ public:
             BEAST_EXPECT(conseq.potentialSpend == CALL(0));
         }
 
-        {
-            Json::Value cancelTicket;
-            cancelTicket[jss::Account] = alice.human();
-            cancelTicket["TicketID"] = to_string(uint256());
-            cancelTicket[jss::TransactionType] = "TicketCancel";
-            auto const jtx = env.jt(cancelTicket,
-                seq(1), fee(10));
-            auto const pf = preflight(env.app(), env.current()->rules(),
-                *jtx.stx, tapNONE, env.journal);
-            BEAST_EXPECT(pf.ter == tesSUCCESS);
-            auto const conseq = calculateConsequences(pf);
-            BEAST_EXPECT(conseq.category == TxConsequences::normal);
-            BEAST_EXPECT(conseq.fee == drops(10));
-            BEAST_EXPECT(conseq.potentialSpend == CALL(0));
-        }
     }
 
     void testRPC()
