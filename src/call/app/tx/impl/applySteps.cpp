@@ -64,9 +64,9 @@ invoke_preflight (PreflightContext const& ctx)
     // case ttESCROW_FINISH:   return EscrowFinish     ::preflight(ctx);
     // case ttESCROW_CANCEL:   return EscrowCancel     ::preflight(ctx);
     case ttREGULAR_KEY_SET: return SetRegularKey    ::preflight(ctx);
-    case ttSIGNER_LIST_SET: return SetSignerList    ::preflight(ctx);
-    case ttTICKET_CANCEL:   return CancelTicket     ::preflight(ctx);
-    case ttTICKET_CREATE:   return CreateTicket     ::preflight(ctx);
+    // case ttSIGNER_LIST_SET: return SetSignerList    ::preflight(ctx);
+    // case ttTICKET_CANCEL:   return CancelTicket     ::preflight(ctx);
+    // case ttTICKET_CREATE:   return CreateTicket     ::preflight(ctx);
     case ttTRUST_SET:       return SetTrust         ::preflight(ctx);
     case ttAMENDMENT:
     case ttFEE:             return Change           ::preflight(ctx);
@@ -130,7 +130,7 @@ invoke_preclaim (PreclaimContext const& ctx)
     // case ttESCROW_FINISH:   return invoke_preclaim<EscrowFinish>(ctx);
     // case ttESCROW_CANCEL:   return invoke_preclaim<EscrowCancel>(ctx);
     case ttREGULAR_KEY_SET: return invoke_preclaim<SetRegularKey>(ctx);
-    case ttSIGNER_LIST_SET: return invoke_preclaim<SetSignerList>(ctx);
+    // case ttSIGNER_LIST_SET: return invoke_preclaim<SetSignerList>(ctx);
     // case ttTICKET_CANCEL:   return invoke_preclaim<CancelTicket>(ctx);
     // case ttTICKET_CREATE:   return invoke_preclaim<CreateTicket>(ctx);
     case ttTRUST_SET:       return invoke_preclaim<SetTrust>(ctx);
