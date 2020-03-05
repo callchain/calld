@@ -1,30 +1,24 @@
 # calld
 
 # use the ubuntu base image
-FROM ubuntu
-MAINTAINER Roberto Catini roberto.catini@gmail.com
+FROM ubuntu:16.04
+MAINTAINER CALLCHAIN FOUNDATION <landoyjx@163.com>
 
 # make sure the package repository is up to date
 RUN apt-get update
-RUN apt-get -y upgrade
 
 # install the dependencies
-RUN apt-get -y install git scons pkg-config protobuf-compiler libprotobuf-dev libssl-dev libboost1.55-all-dev
+RUN apt-get -y install git scons ctags pkg-config protobuf-compiler libprotobuf-dev libssl-dev python-software-properties nodejs libboost-all-dev
 
-# download source code from official repository
-RUN git clone https://github.com/call/calld.git src; cd src/; git checkout master
-
-# compile
-RUN cd src/; scons build/calld
+WORKDIR /root
 
 # move to root directory and strip
-RUN cp src/build/calld calld; strip calld
+RUN cp build/calld calld; strip calld
 
 # copy default config
-RUN cp src/doc/calld-example.cfg calld.cfg
+RUN cp doc/calld-example.cfg calld.cfg
 
-# clean source
-RUN rm -r src
+EXPOSE 5050 50338 5020
 
 # launch calld when launching the container
-ENTRYPOINT ./calld
+ENTRYPOINT ./calld --net -q

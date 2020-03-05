@@ -1235,7 +1235,7 @@ for tu_style in ['classic', 'unity']:
                 object_builder.add_source_files('src/call/unity/beastobjc.mm')
 
             target = env.Program(
-                target=os.path.join(variant_dir, 'call'),
+                target=os.path.join(variant_dir, 'calld'),
                 source=object_builder.objects
                 )
 
