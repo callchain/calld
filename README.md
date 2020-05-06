@@ -6,9 +6,9 @@ Callchain is project based on Ripple with lua virtual machine and pan-entertainm
 
 ## Why Callchain not use Ripple directly
 
-- Ripple does not smart contract. Smart contract is most important feature in current blockchain system, ripple is lack this feature for long time. When user need some new feature, user have to add new transaction type. We need one general method, not endless transction type.
+- Ripple does not have smart contract. Smart contract is most important feature in current blockchain system, Ripple lackes this feature for long time. When user need some new feature, user have to add new transaction type. We need one general method, not endless transction type.
 
-- Ripple has not asset features. In Ripple user can issue any amount of IOU. Although each trust line is limited by user's trust, but the overall amount it not limited. Also there is not asset feature any more other than trust limit amount. In real application, crypto assets are various not unitary.
+- Ripple has not asset features. In Ripple user can issue any amount of IOU. Although each trust line is limited by user's trust limit, but the overall amount it not limited. Also there is not asset feature any more other than trust limit amount. In real application, crypto assets are various not unitary.
  
 - Ripple does not support more efficient blockchain government. There is no validator gain, no user's native token participation in blockchain, all is done by Ripple Lab Inc. User is not owner of blockchain, but Ripple is the only owner.
 
