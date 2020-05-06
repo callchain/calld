@@ -33,4 +33,4 @@ Callchain is project based on Ripple with lua virtual machine and pan-entertainm
 
 ## Contribution
 
-Anyone is welcome, please contract me with email to landoyjx@163.com.
+Anyone is welcome, please contact me with email to landoyjx@163.com.
