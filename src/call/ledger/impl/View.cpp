@@ -1203,8 +1203,9 @@ TER trustCreate(ApplyView &view,
     view.creditHook(uSrcAccountID, uDstAccountID, saBalance, saBalance.zeroed());
 
     JLOG(j.trace())
-        << "trustCreate: increase fans " << to_string(uLowAccountID) << ", "
-        << to_string(uHighAccountID);
+        << "trustCreate: increase fans, low account=" << to_string(uLowAccountID) 
+        << ", high account=" << to_string(uHighAccountID);
+
     // update fans
     return updateIssueSet(view, sleCallState, uLowAccountID, uHighAccountID, 0, 1, j);
 }
@@ -1225,6 +1226,8 @@ updateIssueSet(ApplyView& view,
         << ", fans=" << fans;
     std::uint32_t uFlags = sleCallState->getFieldU32(sfFlags);
     const bool highReserve = ((uFlags & lsfHighReserve) != 0);
+    JLOG(j.trace()) << "updateIssueSet, uFlags=" << uFlags << ", highReserve=" << highReserve;
+
     const STAmount balance = sleCallState->getFieldAmount(sfBalance);
     Currency currency = balance.getCurrency();
     AccountID issuer = highReserve ? uLowAccountID : uHighAccountID;
@@ -1232,6 +1235,8 @@ updateIssueSet(ApplyView& view,
     JLOG(j.trace()) << "updateIssueSet: currency " << currency << ", issuer " << issuer;
 
     SLE::pointer sle = view.peek(keylet::issuet(issuer, currency));
+    assert(sle); // sle should exists
+
     if (saIssued) {
         sle->setFieldAmount(sfIssued, sle->getFieldAmount(sfIssued) + saIssued);
     }
@@ -1397,6 +1402,9 @@ TER trustDelete(ApplyView &view,
     std::uint64_t uHighNode = sleCallState->getFieldU64(sfHighNode);
     TER terResult;
 
+    JLOG(j.trace()) << "trustDelete: low account=" << to_string(uLowAccountID)
+        << ", high account=" << to_string(uHighAccountID);
+
     JLOG(j.trace()) << "trustDelete: Deleting call line: low";
     terResult = dirDelete(view, false, uLowNode, keylet::ownerDir(uLowAccountID),
             sleCallState->key(), false, !bLowNode, j);
@@ -1459,12 +1467,13 @@ TER callCredit(ApplyView &view,
     // Disallow sending to self.
     assert(uSenderID != uReceiverID);
 
+    bool bSenderHigh = uSenderID > uReceiverID;
    JLOG(j.debug()) << "callCredit: uSenderID=" << to_string(uSenderID)
 	<< ", uReceiverID=" << to_string(uReceiverID)
 	<< ", saAmount=" << saAmount.getFullText()
-	<< ", checkIssuer=" << bCheckIssuer;
-
-    bool bSenderHigh = uSenderID > uReceiverID;
+	<< ", checkIssuer=" << bCheckIssuer
+    << ", sender high=" << bSenderHigh;
+    
     uint256 uIndex = getCallStateIndex(uSenderID, uReceiverID, saAmount.getCurrency());
     auto sleCallState = view.peek(keylet::line(uIndex));
 
@@ -1489,11 +1498,6 @@ TER callCredit(ApplyView &view,
 
         terResult = trustCreate(view, bSenderHigh, uSenderID, uReceiverID, uIndex, sleAccount,
             false, noCall, false, saBalance, saReceiverLimit, 0, 0, j);
-        if (terResult == tesSUCCESS) 
-        {
-            sleCallState = view.peek(keylet::line(uIndex));
-            uFlags = sleCallState->getFieldU32(sfFlags);
-        }
     }
     else
     {
@@ -1560,26 +1564,20 @@ TER callCredit(ApplyView &view,
         }
     }
 
-    JLOG(j.trace()) << "callCredit: issued update, issuer=" << to_string(issuer)
-		<< ", currency=" << currency;
+    if (terResult != tesSUCCESS) return terResult;
 
-    if (terResult == tesSUCCESS)
-    {
-        // if null, peek again
-        if (!sleCallState) sleCallState = view.peek(keylet::line(uIndex));
-
-        AccountID lowAccount = bSenderHigh ? uReceiverID : uSenderID;
-        AccountID highAccount = !bSenderHigh ? uReceiverID : uSenderID;
-        AccountID isser_ = (uFlags & lsfHighReserve) != 0 ? lowAccount: highAccount;
-        if (uSenderID == isser_)
-        {
-            terResult =  updateIssueSet(view, sleCallState, lowAccount, highAccount, saAmount, 0, j);
-        }
-        else if (uReceiverID == isser_)
-        {
-            terResult =  updateIssueSet(view, sleCallState, lowAccount, highAccount, -saAmount, 0, j);
-        }
+    // if null, peek again
+    if (!sleCallState) {
+        sleCallState = view.peek(keylet::line(uIndex));
+        uFlags = sleCallState->getFieldU32(sfFlags);
     }
+
+    // TODO
+    AccountID lowAccount = bSenderHigh ? uReceiverID : uSenderID;
+    AccountID highAccount = !bSenderHigh ? uReceiverID : uSenderID;
+    AccountID issuer_ = (uFlags & lsfHighReserve) != 0 ? lowAccount: highAccount;
+    terResult =  updateIssueSet(view, sleCallState, lowAccount, highAccount, 
+        issuer_ == uSenderID ? saAmount : -saAmount, 0, j);
 
     return terResult;
 }
@@ -1831,7 +1829,8 @@ TER issueIOU(ApplyView &view,
     // Can't send to self!
     assert(issue.account != account);
 
-    JLOG(j.trace()) << "issueIOU: " << to_string(account) << ": " << amount.getFullText();
+    JLOG(j.trace()) << "issueIOU: " << to_string(account) << ": " << amount.getFullText()
+        << ", issue account=" << to_string(issue.account) << ", currency=" << issue.currency;
 
     bool bSenderHigh = issue.account > account;
     uint256 const index = getCallStateIndex(issue.account, account, issue.currency);
@@ -1893,13 +1892,13 @@ TER issueIOU(ApplyView &view,
         }
     }
 
-    if (terResult == tesSUCCESS) {
-        // peek again
-        if (!state) state = view.peek(keylet::line(index));
+    if (terResult != tesSUCCESS) return terResult;
 
-        terResult =  updateIssueSet(view, state, bSenderHigh ? account : issue.account, 
-            bSenderHigh ? issue.account : account, amount, 0, j);
-    }
+    // peek again
+    if (!state) state = view.peek(keylet::line(index));
+
+    terResult =  updateIssueSet(view, state, bSenderHigh ? account : issue.account, 
+        bSenderHigh ? issue.account : account, amount, 0, j);
 
     return terResult;
 }
@@ -1919,7 +1918,8 @@ TER redeemIOU(ApplyView &view,
     // Can't send to self!
     assert(issue.account != account);
 
-    JLOG(j.trace()) << "redeemIOU: " << to_string(account) << ": " << amount.getFullText();
+    JLOG(j.trace()) << "redeemIOU: " << to_string(account) << ": " << amount.getFullText()
+        << ", issue account=" << to_string(issue.account);
 
     bool bSenderHigh = account > issue.account;
     uint256 const index = getCallStateIndex(account, issue.account, issue.currency);
@@ -1968,11 +1968,11 @@ TER redeemIOU(ApplyView &view,
     } else {
         view.update(state);
     }
+
+    if (terResult != tesSUCCESS) return terResult;
     
-     if (terResult == tesSUCCESS) {
-        terResult =  updateIssueSet(view, state, bSenderHigh ? issue.account : account, 
-            bSenderHigh ? account : issue.account, -amount, 0, j);
-    }
+    terResult =  updateIssueSet(view, state, bSenderHigh ? issue.account : account, 
+        bSenderHigh ? account : issue.account, -amount, 0, j);
    
     return terResult;
 }
