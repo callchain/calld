@@ -1229,7 +1229,7 @@ updateIssueSet(ApplyView& view,
     Currency currency = balance.getCurrency();
     AccountID issuer = highReserve ? uLowAccountID : uHighAccountID;
 
-    JLOG(j.trace()) << "updateIssueSset: currency " << currency << ", issuer " << issuer;
+    JLOG(j.trace()) << "updateIssueSet: currency " << currency << ", issuer " << issuer;
 
     SLE::pointer sle = view.peek(keylet::issuet(issuer, currency));
     if (saIssued) {
@@ -1565,6 +1565,9 @@ TER callCredit(ApplyView &view,
 
     if (terResult == tesSUCCESS)
     {
+        // if null, peek again
+        if (!sleCallState) sleCallState = view.peek(keylet::line(uIndex));
+
         AccountID lowAccount = bSenderHigh ? uReceiverID : uSenderID;
         AccountID highAccount = !bSenderHigh ? uReceiverID : uSenderID;
         AccountID isser_ = (uFlags & lsfHighReserve) != 0 ? lowAccount: highAccount;
