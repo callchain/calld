@@ -1487,6 +1487,7 @@ TER callCredit(ApplyView &view,
     {
         STAmount saReceiverLimit({currency, uReceiverID});
         STAmount saBalance = saAmount;
+        saBalance.setIssuer(noAccount());
 
         JLOG(j.debug()) << "callCredit: create line: "
                         << to_string(uSenderID) << " -> " << to_string(uReceiverID) 
