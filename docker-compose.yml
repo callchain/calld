@@ -9,7 +9,7 @@ services:
       - "5020:5020"
     volumes:
       - ./:/root
-    command: /bin/bash -c 'cd /root/ && ./build/calld --start --conf ./cfg/testnet/calld.node0.cfg -q'
+    command: /bin/bash -c 'cd /root/ && ./build/call --start --conf ./cfg/testnet/calld.node0.cfg -q'
     networks:
       localnet:
         ipv4_address: 192.168.20.2
@@ -21,7 +21,7 @@ services:
       - ./:/root
     depends_on: 
       - node0
-    command: /bin/bash -c 'cd /root/ && ./build/calld --net --conf ./cfg/testnet/calld.node1.cfg -q'
+    command: /bin/bash -c 'cd /root/ && ./build/call --net --conf ./cfg/testnet/calld.node1.cfg -q'
     networks:
       localnet:
         ipv4_address: 192.168.20.3
@@ -33,7 +33,7 @@ services:
       - ./:/root
     depends_on: 
       - node0
-    command: /bin/bash -c 'cd /root/ && ./build/calld --net --conf ./cfg/testnet/calld.node2.cfg -q'
+    command: /bin/bash -c 'cd /root/ && ./build/call --net --conf ./cfg/testnet/calld.node2.cfg -q'
     networks:
       localnet:
         ipv4_address: 192.168.20.4

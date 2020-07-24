@@ -1891,6 +1891,9 @@ TER issueIOU(ApplyView &view,
     }
 
     if (terResult == tesSUCCESS) {
+        // peek again
+        if (!state) state = view.peek(keylet::line(index));
+
         terResult =  updateIssueSet(view, state, bSenderHigh ? account : issue.account, 
             bSenderHigh ? issue.account : account, amount, 0, j);
     }
