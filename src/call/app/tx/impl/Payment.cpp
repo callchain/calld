@@ -510,8 +510,10 @@ Payment::doApply ()
             terResult = tecPATH_DRY;
         }
 
+        if (terResult != tesSUCCESS) return terResult;
+        // TODO, move this to callstate updating
         // update token owner, when not issue
-        if (terResult == tesSUCCESS && is_nft && !issuing)
+        if (is_nft && !issuing)
         {
             uint256 id = ctx_.tx.getFieldH256 (sfInvoiceID);
             uint256 uCIndex(getInvoiceIndex(id, AIssuer, currency));

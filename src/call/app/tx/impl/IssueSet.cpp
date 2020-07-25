@@ -112,10 +112,16 @@ TER IssueSet::doApply()
 		JLOG(j_.trace()) << "IssueSet: Creating IssueRoot " << to_string(uCIndex);
 		std::uint32_t rate = ctx_.tx.getFieldU32(sfTransferRate);
 		terResult = issueSetCreate(view(), account_, satotal, rate, uTxFlags, uCIndex, viewJ);
-		if (terResult == tesSUCCESS) {
-			SLE::pointer sleRoot = view().peek (keylet::account(account_));
-			adjustOwnerCount(view(), sleRoot, 1, viewJ);
-		}
+
+		if (terResult != tesSUCCESS) return terResult;
+
+		// update issue account info
+		SLE::pointer sleSrc = view().peek (keylet::account(account_));
+		adjustOwnerCount(view(), sleSrc, 1, viewJ);
+		// set default rippling for issue account
+		std::uint32_t uFlagsOut = sleSrc->getFlags() | lsfDefaultCall;
+		sleSrc->setFieldU32 (sfFlags, uFlagsOut);
+		view().update(sleSrc);
 	}
 	// old issue setting
 	else
