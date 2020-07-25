@@ -1235,6 +1235,15 @@ updateIssueSet(ApplyView& view,
     JLOG(j.trace()) << "updateIssueSet: currency " << currency << ", issuer " << issuer;
 
     SLE::pointer sle = view.peek(keylet::issuet(issuer, currency));
+    if (!sle)
+    {
+        JLOG(j.warn())
+            << "updateIssueSet got null issue set, low=" << to_string(uLowAccountID) << ", high="
+                << to_string(uHighAccountID) << ", issued=" << saIssued.getFullText()
+                << ", fans=" << fans << ", highReserve=" << highReserve << ", callstate flags="
+                << uFlags;
+        return tefBAD_ISSUE;
+    }
     assert(sle); // sle should exists
 
     if (saIssued) {

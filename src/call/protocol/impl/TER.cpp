@@ -111,6 +111,7 @@ transResults()
         { tefWRONG_PRIOR,            { "tefWRONG_PRIOR",           "This previous transaction does not match."                                     } },
         { tefBAD_AUTH_MASTER,        { "tefBAD_AUTH_MASTER",       "Auth for unclaimed account needs correct master key."                          } },
         { tefINVARIANT_FAILED,       { "tefINVARIANT_FAILED",      "Fee claim violated invariants for the transaction."                            } },
+        { tefBAD_ISSUE,              { "tefBAD_ISSUE",             "Old issue not set defefault ripple, set issuer lsfDefaultCall, users re-trust again" } },
 
         { telLOCAL_ERROR,            { "telLOCAL_ERROR",           "Local failure."                                                                } },
         { telBAD_DOMAIN,             { "telBAD_DOMAIN",            "Domain too long."                                                              } },
