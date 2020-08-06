@@ -1206,42 +1206,27 @@ TER trustCreate(ApplyView &view,
         << "trustCreate: increase fans, low account=" << to_string(uLowAccountID) 
         << ", high account=" << to_string(uHighAccountID);
 
+
     // update fans
-    return updateIssueSet(view, sleCallState, uLowAccountID, uHighAccountID, 0, 1, j);
+    Currency currency = saBalance.getCurrency();
+    AccountID const& issuer = uFlags & lsfHighReserve ? uLowAccountID : uHighAccountID;
+    Issue issue(currency, issuer);
+    return updateIssueSet(view, issue, 0, 1, j);
 }
 
 
 TER
-updateIssueSet(ApplyView& view,
-        std::shared_ptr<SLE> const& sleCallState,
-        AccountID const& uLowAccountID,
-        AccountID const& uHighAccountID,
-        STAmount saIssued,
-        int fans,
-        beast::Journal j)
+updateIssueSet(ApplyView& view, Issue const& issue, STAmount saIssued, int fans, beast::Journal j)
 {
-    JLOG(j.trace())
-        << "updateIssueSet: low=" << to_string(uLowAccountID) << ", high="
-        << to_string(uHighAccountID) << ", issued=" << saIssued.getFullText()
-        << ", fans=" << fans;
-    std::uint32_t uFlags = sleCallState->getFieldU32(sfFlags);
-    const bool highReserve = ((uFlags & lsfHighReserve) != 0);
-    JLOG(j.trace()) << "updateIssueSet, uFlags=" << uFlags << ", highReserve=" << highReserve;
-
-    const STAmount balance = sleCallState->getFieldAmount(sfBalance);
-    Currency currency = balance.getCurrency();
-    AccountID issuer = highReserve ? uLowAccountID : uHighAccountID;
-
-    JLOG(j.trace()) << "updateIssueSet: currency " << currency << ", issuer " << issuer;
+    AccountID issuer = issue.account;
+    Currency currency = issue.currency;
 
     SLE::pointer sle = view.peek(keylet::issuet(issuer, currency));
     if (!sle)
     {
         JLOG(j.warn())
-            << "updateIssueSet got null issue set, low=" << to_string(uLowAccountID) << ", high="
-                << to_string(uHighAccountID) << ", issued=" << saIssued.getFullText()
-                << ", fans=" << fans << ", highReserve=" << highReserve << ", callstate flags="
-                << uFlags;
+            << "updateIssueSet got null issue set, issuer=" << to_string(issuer)
+                << ", currency" << currency << ", issued=" << saIssued.getFullText() << ", fans=" << fans;
         return tefBAD_ISSUE;
     }
     assert(sle); // sle should exists
@@ -1400,6 +1385,7 @@ invoiceTransfer(ApplyView &view,
 
 TER trustDelete(ApplyView &view,
         std::shared_ptr<SLE> const &sleCallState,
+        std::uint32_t const uOldFlags,
         AccountID const &uLowAccountID,
         AccountID const &uHighAccountID,
         beast::Journal j)
@@ -1428,7 +1414,12 @@ TER trustDelete(ApplyView &view,
     JLOG(j.trace()) << "trustDelete: Deleting call line: state";
     view.erase(sleCallState);
 
-    return updateIssueSet(view, sleCallState, uLowAccountID, uHighAccountID, 0, -1, j);
+    // use old flags to determine issuer
+    auto const balance = sleCallState->getFieldAmount(sfBalance);
+    Currency currency = balance.getCurrency();
+    AccountID const& issuer = uOldFlags & lsfHighReserve ? uLowAccountID : uHighAccountID;
+    Issue issue(currency, issuer);
+    return updateIssueSet(view, issue, 0, -1, j);
 }
 
 TER offerDelete(ApplyView &view,
@@ -1564,7 +1555,7 @@ TER callCredit(ApplyView &view,
 
         if (bDelete)
         {
-            terResult = trustDelete(view, sleCallState, bSenderHigh ? uReceiverID : uSenderID,
+            terResult = trustDelete(view, sleCallState, uFlags, bSenderHigh ? uReceiverID : uSenderID,
                 !bSenderHigh ? uReceiverID : uSenderID, j);
         }
         else
@@ -1582,12 +1573,12 @@ TER callCredit(ApplyView &view,
         uFlags = sleCallState->getFieldU32(sfFlags);
     }
 
-    // TODO
+    // TODO, check overall
     AccountID lowAccount = bSenderHigh ? uReceiverID : uSenderID;
     AccountID highAccount = !bSenderHigh ? uReceiverID : uSenderID;
-    AccountID issuer_ = (uFlags & lsfHighReserve) != 0 ? lowAccount: highAccount;
-    terResult =  updateIssueSet(view, sleCallState, lowAccount, highAccount, 
-        issuer_ == uSenderID ? saAmount : -saAmount, 0, j);
+    AccountID issuer_ = uFlags & lsfHighReserve ? lowAccount : highAccount;
+    Issue issue(currency, issuer_);
+    terResult = updateIssueSet(view, issue, issuer_ == uSenderID ? saAmount : -saAmount, 0, j);
 
     return terResult;
 }
@@ -1894,7 +1885,8 @@ TER issueIOU(ApplyView &view,
         
         if (must_delete) 
         {
-            terResult = trustDelete(view, state,
+            std::uint32_t const uOldFlags (state->getFieldU32 (sfFlags));
+            terResult = trustDelete(view, state, uOldFlags,
                             bSenderHigh ? account : issue.account,
                             bSenderHigh ? issue.account : account, j);
         } else {
@@ -1907,8 +1899,8 @@ TER issueIOU(ApplyView &view,
     // peek again
     if (!state) state = view.peek(keylet::line(index));
 
-    terResult =  updateIssueSet(view, state, bSenderHigh ? account : issue.account, 
-        bSenderHigh ? issue.account : account, amount, 0, j);
+    // update issue set amount
+    terResult = updateIssueSet(view, issue, amount, 0, j);
 
     return terResult;
 }
@@ -1972,7 +1964,8 @@ TER redeemIOU(ApplyView &view,
     TER terResult = tesSUCCESS;
     if (must_delete)
     {
-        terResult= trustDelete(view, state,
+        std::uint32_t const uFlags (state->getFieldU32 (sfFlags));
+        terResult= trustDelete(view, state, uFlags,
                 bSenderHigh ? issue.account : account,
                 bSenderHigh ? account : issue.account, j);
     } else {
@@ -1981,8 +1974,8 @@ TER redeemIOU(ApplyView &view,
 
     if (terResult != tesSUCCESS) return terResult;
     
-    terResult =  updateIssueSet(view, state, bSenderHigh ? issue.account : account, 
-        bSenderHigh ? account : issue.account, -amount, 0, j);
+    // update issue set amount
+    terResult = updateIssueSet(view, issue, -amount, 0, j);
    
     return terResult;
 }

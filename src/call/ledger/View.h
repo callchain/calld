@@ -306,9 +306,7 @@ invoiceTransfer(ApplyView &view,
 
 TER
 updateIssueSet(ApplyView& view,
-    std::shared_ptr<SLE> const& sleCallState,
-    AccountID const& uLowAccountID,
-    AccountID const& uHighAccountID,
+    Issue const& issue,
     STAmount saIssued,
     int fans,
     beast::Journal j);
@@ -341,6 +339,7 @@ TER auto_trust(ApplyView& view, AccountID const&  account, STAmount const &amoun
 TER
 trustDelete (ApplyView& view,
     std::shared_ptr<SLE> const& sleCallState,
+    std::uint32_t const uOldFlags,
         AccountID const& uLowAccountID,
             AccountID const& uHighAccountID,
                 beast::Journal j);

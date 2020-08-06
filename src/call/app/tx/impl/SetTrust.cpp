@@ -225,11 +225,12 @@ SetTrust::doApply ()
         // lines exist now, why not remove this code and simply
         // return an error?
         SLE::pointer sleDelete = view().peek (keylet::line(account_, uDstAccountID, currency));
+        std::uint32_t const uOldFlags = sleDelete->getFieldU32(sfFlags);
 
         JLOG(j_.warn()) <<
             "Clearing redundant line.";
 
-        return trustDelete (view(), sleDelete, account_, uDstAccountID, viewJ);
+        return trustDelete (view(), sleDelete, uOldFlags, account_, uDstAccountID, viewJ);
     }
 
     SLE::pointer sleDst = view().peek (keylet::account(uDstAccountID));
@@ -433,7 +434,7 @@ SetTrust::doApply ()
         if (bDefault || badCurrency() == currency)
         {
             // Delete.
-            terResult = trustDelete (view(), sleCallState, uLowAccountID, uHighAccountID, viewJ);
+            terResult = trustDelete (view(), sleCallState, uFlagsIn, uLowAccountID, uHighAccountID, viewJ);
         }
         // Reserve is not scaled by load.
         else if (bReserveIncrease && mPriorBalance < reserveCreate)
