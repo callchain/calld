@@ -1179,18 +1179,24 @@ TER trustCreate(ApplyView &view,
     {
         uFlags |= (bSetHigh ? lsfHighAuth : lsfLowAuth);
     }
-    if (!bNoCall)
-    {
-        uFlags |= (bSetHigh ? lsfHighNoCall : lsfLowNoCall);
-    }
+
+    /**
+     * Default is nocall for set acount, ignore `bNoCall` condition
+     * If want to remove trustline, should add ClearNoCall Flags.
+     */
+
+    uFlags |= (bSetHigh ? lsfHighNoCall : lsfLowNoCall);
+
     if (bFreeze)
     {
         uFlags |= (!bSetHigh ? lsfLowFreeze : lsfHighFreeze);
     }
 
-    if ((slePeer->getFlags() & lsfDefaultCall) == 1)
+    // Default issuer's flags is DefaultCall
+    // It may some special condition, such as issuer reset its DefaultCall
+    if ((slePeer->getFlags() & lsfDefaultCall) == 0)
     {
-        // The other side's default is no rippling
+        // The other side's default is no rippling/calling
         uFlags |= (bSetHigh ? lsfLowNoCall : lsfHighNoCall);
     }
 

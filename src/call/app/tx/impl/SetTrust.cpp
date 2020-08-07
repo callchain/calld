@@ -381,6 +381,16 @@ SetTrust::doApply ()
                                             saHighLimit || saHighBalance > zero;
         bool const  bHighReserveClear   = !bHighReserveSet;
 
+        /**
+         * A trust line that is entirely in its default state is considered the same as a trust line that does not exist,
+         * so calld deletes CallState objects when their properties are entirely default.
+         * When want delete set limit = 0, if src account set default call add tfSetNoCall flag
+         * 
+         * In ripple the default state for all trust lines are with both NoRipple flags disabled, namely both rippling enabled.
+         * But in Callchain the default state are issuer's NoRipple flag disabled and user's NoRipple flag enabled, 
+         * it is used to prevent user's trusted currency to rippling with useless currency.
+         * 
+         */
         bool const  bDefault            = bLowReserveClear && bHighReserveClear;
 
         bool const  bLowReserved = (uFlagsIn & lsfLowReserve);
