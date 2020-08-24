@@ -1238,10 +1238,17 @@ updateIssueSet(ApplyView& view, Issue const& issue, STAmount saIssued, int fans,
     assert(sle); // sle should exists
 
     if (saIssued) {
+        auto const oldIssued = sle->getFieldAmount(sfIssued);
+        if (saIssued + oldIssued > sle->getFieldAmount(sfTotal)) {
+            JLOG(j.warn()) << "updateIssueSet: issue overflow amount: " << saIssued.getFullText();
+            return tecOVERISSUED_AMOUNT;
+        }
+
         sle->setFieldAmount(sfIssued, sle->getFieldAmount(sfIssued) + saIssued);
     }
     if (fans) {
-        sle->setFieldU64(sfFans, sle->getFieldU64(sfFans) + fans);
+        auto const oldFans = sle->getFieldU64(sfFans);
+        sle->setFieldU64(sfFans, oldFans + fans);
     }
     view.update(sle);
 
@@ -1420,9 +1427,12 @@ TER trustDelete(ApplyView &view,
     JLOG(j.trace()) << "trustDelete: Deleting call line: state";
     view.erase(sleCallState);
 
+    /**
+     * When delete call state, should only used old flags to determine issuer
+     * balance should be zero 
+     */
     // use old flags to determine issuer
     auto const balance = sleCallState->getFieldAmount(sfBalance);
-    Currency currency = balance.getCurrency();
     AccountID const& issuer = uOldFlags & lsfHighReserve ? uLowAccountID : uHighAccountID;
     Issue issue(currency, issuer);
     return updateIssueSet(view, issue, 0, -1, j);
