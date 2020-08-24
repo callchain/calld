@@ -1262,10 +1262,13 @@ TER trustCreate(ApplyView &view,
         << ", high account=" << to_string(uHighAccountID);
 
 
-    // update fans
+    /**
+     * use uDistAccountID as issuer, no ambiguous
+     * update issue set
+     */
     Currency currency = saBalance.getCurrency();
     Issue issue(currency, uDstAccountID);
-    return updateIssueSet(view, issue, 0, 1, j);
+    return updateIssueSet(view, issue, saBalance, 1, j);
 }
 
 
@@ -1279,19 +1282,19 @@ updateIssueSet(ApplyView& view, Issue const& issue, STAmount saIssued, int fans,
     if (!sle)
     {
         JLOG(j.warn())
-            << "updateIssueSet got null issue set, issuer=" << to_string(issuer)
+            << "got null issue set, issuer=" << to_string(issuer)
                 << ", currency" << currency << ", issued=" << saIssued.getFullText() << ", fans=" << fans;
         return tefBAD_ISSUE;
     }
 
     if (saIssued) {
         auto const oldIssued = sle->getFieldAmount(sfIssued);
-        if (saIssued + oldIssued > sle->getFieldAmount(sfTotal)) {
-            JLOG(j.warn()) << "updateIssueSet: issue overflow amount: " << saIssued.getFullText();
+        if (oldIssued + saIssued > sle->getFieldAmount(sfTotal)) {
+            JLOG(j.warn()) << "issue overflow amount: " << saIssued.getFullText();
             return tecOVERISSUED_AMOUNT;
         }
 
-        sle->setFieldAmount(sfIssued, sle->getFieldAmount(sfIssued) + saIssued);
+        sle->setFieldAmount(sfIssued, oldIssued + saIssued);
     }
     if (fans) {
         auto const oldFans = sle->getFieldU64(sfFans);
@@ -1498,10 +1501,10 @@ TER trustDelete(ApplyView &view,
     view.erase(sleCallState);
 
     /**
-     * When delete call state, should only used old flags to determine issuer
-     * balance should be zero 
+     * when deleting call state, there should be only one side reserve
+     * or it will not be deleted.
+     * so use reserved of old flags to determine issuer is ok
      */
-    // use old flags to determine issuer
     auto const balance = sleCallState->getFieldAmount(sfBalance);
     AccountID const& issuer = uOldFlags & lsfHighReserve ? uLowAccountID : uHighAccountID;
     Currency currency = balance.getCurrency();
@@ -1564,11 +1567,10 @@ TER callCredit(ApplyView &view,
     uint256 uIndex = getCallStateIndex(uSenderID, uReceiverID, saAmount.getCurrency());
     auto sleCallState = view.peek(keylet::line(uIndex));
 
-    TER terResult = tesSUCCESS;
-
     assert(!isCALL(uSenderID) && uSenderID != noAccount());
     assert(!isCALL(uReceiverID) && uReceiverID != noAccount());
 
+    TER terResult = tesSUCCESS;
     std::uint32_t uFlags = 0;
     if (!sleCallState)
     {
@@ -1590,6 +1592,10 @@ TER callCredit(ApplyView &view,
     else
     {
         STAmount saBalance = sleCallState->getFieldAmount(sfBalance);
+        const AccountID uLowAccount = bSenderHigh ? uReceiverID : uSenderID;
+        const AccountID uHighAccount = !bSenderHigh ? uReceiverID : uSenderID;
+        STAmount saFirst = saBalance;
+        STAmount saUpdate = saAmount;
 
         if (bSenderHigh)
             saBalance.negate(); // Put balance in sender terms.
@@ -1631,6 +1637,15 @@ TER callCredit(ApplyView &view,
             bDelete = !saBalance // Balance is zero.
                       && !(uFlags & (bSenderHigh ? lsfLowReserve : lsfHighReserve));
             // Receiver reserve is clear.
+
+            // update first issuer's issue set
+            AccountID uIssuer = saFirst > zero ? uHighAccount : uLowAccount;
+            Issue issue(currency, uIssuer);
+            STAmount saAmountAbs = saFirst > zero ? saFirst : -saFirst;
+            saUpdate -= saAmountAbs;
+
+            terResult = updateIssueSet(view, issue, -saAmountAbs, 0, j);
+            if (terResult != tesSUCCESS) return terResult;
         }
 
         if (bSenderHigh)
@@ -1652,23 +1667,17 @@ TER callCredit(ApplyView &view,
             view.update(sleCallState);
             terResult = tesSUCCESS;
         }
+
+        if (terResult != tesSUCCESS) return terResult;
+        // update issuer information
+        
+        /**
+         * user balance and flags to determine issuer
+         */
+        AccountID uIssuer = saBalance > zero ? uHighAccount : uLowAccount;
+        Issue issue(currency, uIssuer);
+        terResult = updateIssueSet(view, issue, uIssuer == uSenderID ? saUpdate : -saUpdate, 0, j);
     }
-
-    if (terResult != tesSUCCESS) return terResult;
-
-    // if null, peek again
-    if (!sleCallState) {
-        sleCallState = view.peek(keylet::line(uIndex));
-        uFlags = sleCallState->getFieldU32(sfFlags);
-    }
-
-    // TODO, check overall， no reserve is issuer?
-    AccountID lowAccount = bSenderHigh ? uReceiverID : uSenderID;
-    AccountID highAccount = !bSenderHigh ? uReceiverID : uSenderID;
-    // TODO MUST BE FIX
-    AccountID issuer_ = uFlags & lsfHighReserve ? lowAccount : highAccount;
-    Issue issue(currency, issuer_);
-    terResult = updateIssueSet(view, issue, issuer_ == uSenderID ? saAmount : -saAmount, 0, j);
 
     return terResult;
 }
@@ -1983,16 +1992,13 @@ TER issueIOU(ApplyView &view,
         } else {
             view.update(state);
         }
+
+        // check return
+        if (terResult != tesSUCCESS) return terResult;
+        // update issue set amount, no ambiguous
+        terResult = updateIssueSet(view, issue, amount, 0, j);
     }
-
-    if (terResult != tesSUCCESS) return terResult;
-
-    // peek again
-    if (!state) state = view.peek(keylet::line(index));
-
-    // update issue set amount
-    terResult = updateIssueSet(view, issue, amount, 0, j);
-
+    
     return terResult;
 }
 
@@ -2066,7 +2072,7 @@ TER redeemIOU(ApplyView &view,
 
     if (terResult != tesSUCCESS) return terResult;
     
-    // update issue set amount
+    // update issue set amount, no ambiguous
     terResult = updateIssueSet(view, issue, -amount, 0, j);
    
     return terResult;
