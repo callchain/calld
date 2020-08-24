@@ -1472,7 +1472,6 @@ TER trustDelete(ApplyView &view,
         AccountID const &uLowAccountID,
         AccountID const &uHighAccountID,
         AccountID const& uDstAccountID,
-        Currency const& currency,
         beast::Journal j)
 {
     // Detect legacy dirs.
@@ -1506,6 +1505,7 @@ TER trustDelete(ApplyView &view,
     // use old flags to determine issuer
     auto const balance = sleCallState->getFieldAmount(sfBalance);
     AccountID const& issuer = uOldFlags & lsfHighReserve ? uLowAccountID : uHighAccountID;
+    Currency currency = balance.getCurrency();
     Issue issue(currency, issuer);
     return updateIssueSet(view, issue, 0, -1, j);
 }
