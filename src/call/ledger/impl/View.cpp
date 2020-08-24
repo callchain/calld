@@ -1401,7 +1401,6 @@ TER trustDelete(ApplyView &view,
         std::uint32_t const uOldFlags,
         AccountID const &uLowAccountID,
         AccountID const &uHighAccountID,
-        AccountID const& uDstAccountID,
         beast::Journal j)
 {
     // Detect legacy dirs.
@@ -1573,8 +1572,10 @@ TER callCredit(ApplyView &view,
 
         if (bDelete)
         {
-            terResult = trustDelete(view, sleCallState, uFlags, bSenderHigh ? uReceiverID : uSenderID,
-                !bSenderHigh ? uReceiverID : uSenderID, j);
+            terResult = trustDelete(view, sleCallState, uFlags, 
+                bSenderHigh ? uReceiverID : uSenderID,
+                !bSenderHigh ? uReceiverID : uSenderID,
+                j);
         }
         else
         {
@@ -1906,7 +1907,8 @@ TER issueIOU(ApplyView &view,
             std::uint32_t const uOldFlags (state->getFieldU32 (sfFlags));
             terResult = trustDelete(view, state, uOldFlags,
                             bSenderHigh ? account : issue.account,
-                            bSenderHigh ? issue.account : account, j);
+                            bSenderHigh ? issue.account : account,
+                            j);
         } else {
             view.update(state);
         }
@@ -1985,7 +1987,8 @@ TER redeemIOU(ApplyView &view,
         std::uint32_t const uFlags (state->getFieldU32 (sfFlags));
         terResult= trustDelete(view, state, uFlags,
                 bSenderHigh ? issue.account : account,
-                bSenderHigh ? account : issue.account, j);
+                bSenderHigh ? account : issue.account,
+                j);
     } else {
         view.update(state);
     }
