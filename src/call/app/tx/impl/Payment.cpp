@@ -223,7 +223,6 @@ Payment::preclaim(PreclaimContext const& ctx)
     AccountID const uDstAccountID(ctx.tx[sfDestination]);
     STAmount const saDstAmount(ctx.tx[sfAmount]);
 
-
     // Check currency's issue set
     // TODO, fix when dstAmount's issuer is source account
     TER ter1 = checkIssue(ctx, saDstAmount, false);
@@ -288,7 +287,6 @@ Payment::preclaim(PreclaimContext const& ctx)
             }
         }       
     }
-    
 
     auto const srck = keylet::account(srcAccountID);
     auto const sleSrc = ctx.view.read(srck);
@@ -458,19 +456,19 @@ Payment::doApply ()
         if (saDstAmount.getIssuer() != uDstAccountID && (sleDst->getFieldU32 (sfFlags) & lsfAutoTrust) != 0)
         {
             auto const sleState = view().peek(keylet::line(saDstAmount.getIssuer(), uDstAccountID, saDstAmount.getCurrency()));
-            if (!sleState)
+
+            assert(sleState);
+
+            terResult = auto_trust(view(), uDstAccountID, sleIssue->getFieldAmount(sfTotal), j_);
+            if (!isTesSuccess(terResult))
             {
-                terResult = auto_trust(view(), uDstAccountID, sleIssue->getFieldAmount(sfTotal), j_);
-                if (!isTesSuccess(terResult))
+                // has code, call check already, not success, should deduct fee still
+                if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
                 {
-                    // has code, call check already, not success, should deduct fee still
-                    if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
-                    {
-                        int r = terResult;
-                        terResult = TER(r + 1000);
-                    }
-                    return terResult;
+                    int r = terResult;
+                    terResult = TER(r + 1000);
                 }
+                return terResult;
             }
         }
         // Call payment with at least one intermediate step and uses transitive balances.
@@ -525,6 +523,7 @@ Payment::doApply ()
             terResult = tecPATH_DRY;
         }
 
+        // TODO, moved to view.cpp
         // if invoice, process invoice create or transfer
         auto const uIssueFlags = sleIssue->getFieldU32(sfFlags);
         if (isTesSuccess(terResult) && (uIssueFlags & tfInvoiceEnable) != 0)

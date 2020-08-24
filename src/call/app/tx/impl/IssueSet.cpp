@@ -77,7 +77,7 @@ TER IssueSet::preflight(PreflightContext const &ctx)
 TER IssueSet::preclaim(PreclaimContext const &ctx)
 {
 	STAmount totalAmount = ctx.tx.getFieldAmount(sfTotal);
-	if (totalAmount.native() || !ctx.tx.isFieldPresent(sfTotal))
+	if (!ctx.tx.isFieldPresent(sfTotal) || totalAmount.native())
 	{
 		return temBAD_TOTAL_AMOUNT;
 	}
@@ -140,6 +140,16 @@ TER IssueSet::doApply()
 			info = ctx_.tx.getFieldVL(sfInfo);
 		}
 		terResult = issueSetCreate(view(), account_, totalAmount, rate, uTxFlags, index, info, viewJ);
+
+		if (terResult != tesSUCCESS) return terResult;
+
+		// update issue account info
+		SLE::pointer sleSrc = view().peek (keylet::account(account_));
+		adjustOwnerCount(view(), sleSrc, 1, viewJ);
+		// set default rippling for issue account
+		std::uint32_t uFlagsOut = sleSrc->getFlags() | lsfDefaultCall;
+		sleSrc->setFieldU32 (sfFlags, uFlagsOut);
+		view().update(sleSrc);
 	}
 	else
 	{
@@ -147,15 +157,19 @@ TER IssueSet::doApply()
 		std::uint32_t uFlagsOut = uFlagsIn;
 		auto saOldTotal = sle->getFieldAmount(sfTotal);
 		
+		// reset to higher total amount
 		if ((uFlagsIn & tfAdditional) != 0 && totalAmount > saOldTotal)
 		{
 			sle->setFieldAmount(sfTotal, totalAmount);
 		}
 
+		// set tansfer rate for fungible currency
 		if ((uFlagsIn & lsfNonFungible) == 0 && ctx_.tx.isFieldPresent(sfTransferRate))
 		{
 			sle->setFieldU32(sfTransferRate, ctx_.tx.getFieldU32(sfTransferRate));
 		}
+
+		// TODO, should use specified clear flags
 		// Additional -> non additional
 		if ((uFlagsIn & lsfAdditional) != 0 && (uTxFlags & tfAdditional) == 0)
 		{

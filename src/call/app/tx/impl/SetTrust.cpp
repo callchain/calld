@@ -210,7 +210,17 @@ SetTrust::doApply ()
 
     if (account_ == uDstAccountID)
     {
-        return temSELF_TRUST;
+        // The only purpose here is to allow a mistakenly created
+        // trust line to oneself to be deleted. If no such trust
+        // lines exist now, why not remove this code and simply
+        // return an error?
+        SLE::pointer sleDelete = view().peek (keylet::line(account_, uDstAccountID, currency));
+        std::uint32_t const uOldFlags = sleDelete->getFieldU32(sfFlags);
+
+        JLOG(j_.warn()) <<
+            "Clearing redundant line.";
+
+        return trustDelete (view(), sleDelete, uOldFlags, account_, uDstAccountID, viewJ);
     }
 
     SLE::pointer sleDst = view().peek (keylet::account(uDstAccountID));
@@ -353,7 +363,17 @@ SetTrust::doApply ()
                                     saHighLimit || saHighBalance > zero;
         bool const  bHighReserveClear = !bHighReserveSet;
 
-        bool const  bDefault = bLowReserveClear && bHighReserveClear;
+        /**
+         * A trust line that is entirely in its default state is considered the same as a trust line that does not exist,
+         * so calld deletes CallState objects when their properties are entirely default.
+         * When want delete set limit = 0, if src account set default call add tfSetNoCall flag
+         * 
+         * In ripple the default state for all trust lines are with both NoRipple flags disabled, namely both rippling enabled.
+         * But in Callchain the default state are issuer's NoRipple flag disabled and user's NoRipple flag enabled, 
+         * it is used to prevent user's trusted currency to rippling with useless currency.
+         * 
+         */
+        bool const  bDefault            = bLowReserveClear && bHighReserveClear;
 
         bool const  bLowReserved = (uFlagsIn & lsfLowReserve);
         bool const  bHighReserved = (uFlagsIn & lsfHighReserve);
@@ -404,9 +424,8 @@ SetTrust::doApply ()
 
         if (bDefault || badCurrency() == currency)
         {
-            // Delete.
-            terResult = trustDelete (view(), sleCallState, uLowAccountID, uHighAccountID, 
-                    uDstAccountID, currency, viewJ);
+            // Delete, add old flags
+            terResult = trustDelete (view(), sleCallState, uFlagsIn, uLowAccountID, uHighAccountID, viewJ);
         }
         // Reserve is not scaled by load.
         else if (bReserveIncrease && mPriorBalance < reserveCreate)
