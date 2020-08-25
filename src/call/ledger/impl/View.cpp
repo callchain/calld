@@ -1481,13 +1481,12 @@ TER trustDelete(ApplyView &view,
     bool bHighNode = sleCallState->isFieldPresent(sfHighNode);
     std::uint64_t uLowNode = sleCallState->getFieldU64(sfLowNode);
     std::uint64_t uHighNode = sleCallState->getFieldU64(sfHighNode);
-    TER terResult;
 
     JLOG(j.trace()) << "trustDelete: low account=" << to_string(uLowAccountID)
         << ", high account=" << to_string(uHighAccountID);
 
     JLOG(j.trace()) << "trustDelete: Deleting call line: low";
-    terResult = dirDelete(view, false, uLowNode, keylet::ownerDir(uLowAccountID),
+    TER terResult = dirDelete(view, false, uLowNode, keylet::ownerDir(uLowAccountID),
             sleCallState->key(), false, !bLowNode, j);
 
     if (tesSUCCESS == terResult)
@@ -1500,16 +1499,7 @@ TER trustDelete(ApplyView &view,
     JLOG(j.trace()) << "trustDelete: Deleting call line: state";
     view.erase(sleCallState);
 
-    /**
-     * when deleting call state, there should be only one side reserve
-     * or it will not be deleted.
-     * so use reserved of old flags to determine issuer is ok
-     */
-    auto const balance = sleCallState->getFieldAmount(sfBalance);
-    AccountID const& issuer = uOldFlags & lsfHighReserve ? uLowAccountID : uHighAccountID;
-    Currency currency = balance.getCurrency();
-    Issue issue(currency, issuer);
-    return updateIssueSet(view, issue, 0, -1, j);
+    return terResult;
 }
 
 TER offerDelete(ApplyView &view,
@@ -1669,14 +1659,13 @@ TER callCredit(ApplyView &view,
         }
 
         if (terResult != tesSUCCESS) return terResult;
-        // update issuer information
-        
+
         /**
          * user balance and flags to determine issuer
          */
         AccountID uIssuer = saBalance > zero ? uHighAccount : uLowAccount;
         Issue issue(currency, uIssuer);
-        terResult = updateIssueSet(view, issue, uIssuer == uSenderID ? saUpdate : -saUpdate, 0, j);
+        terResult = updateIssueSet(view, issue, uIssuer == uSenderID ? saUpdate : -saUpdate, bDelete ? -1 : 0, j);
     }
 
     return terResult;
@@ -1996,7 +1985,7 @@ TER issueIOU(ApplyView &view,
         // check return
         if (terResult != tesSUCCESS) return terResult;
         // update issue set amount, no ambiguous
-        terResult = updateIssueSet(view, issue, amount, 0, j);
+        terResult = updateIssueSet(view, issue, amount, must_delete ? -1 : 0, j);
     }
     
     return terResult;
@@ -2073,7 +2062,7 @@ TER redeemIOU(ApplyView &view,
     if (terResult != tesSUCCESS) return terResult;
     
     // update issue set amount, no ambiguous
-    terResult = updateIssueSet(view, issue, -amount, 0, j);
+    terResult = updateIssueSet(view, issue, -amount, must_delete ? -1 : 0, j);
    
     return terResult;
 }

@@ -136,6 +136,21 @@ SetTrust::preclaim(PreclaimContext const& ctx)
 }
 
 TER
+SetTrust::updateFans(AccountID const& issuer, Currency const& currency, int fans)
+{
+    auto const issueSLE = view().peek(keylet::issuet(issuer, currency));
+    // maybe there is no issue set
+    if (!issueSLE) {
+        JLOG(j_.warn()) << "update fans without issue set, issuer=" << to_string(issuer)
+            << ", currency=" << to_string(currency) << ", fans=" << fans;
+        return tesSUCCESS;
+    }
+
+    Issue issue(currency, issuer);
+    return updateIssueSet(view(), issue, 0, fans, j_);
+}
+
+TER
 SetTrust::doApply ()
 {
     TER terResult = tesSUCCESS;
@@ -390,6 +405,9 @@ SetTrust::doApply ()
             // Set reserve for low account.
             adjustOwnerCount(view(), sleLowAccount, 1, viewJ);
             uFlagsOut |= lsfLowReserve;
+            // update fans
+            terResult = updateFans(uHighAccountID, currency, 1);
+            if (tesSUCCESS != terResult) return terResult;
 
             if (!bHigh)
                 bReserveIncrease = true;
@@ -400,6 +418,9 @@ SetTrust::doApply ()
             // Clear reserve for low account.
             adjustOwnerCount(view(), sleLowAccount, -1, viewJ);
             uFlagsOut &= ~lsfLowReserve;
+            // update fans
+            terResult = updateFans(uHighAccountID, currency, -1);
+            if (tesSUCCESS != terResult) return terResult;
         }
 
         if (bHighReserveSet && !bHighReserved)
@@ -407,6 +428,9 @@ SetTrust::doApply ()
             // Set reserve for high account.
             adjustOwnerCount(view(), sleHighAccount, 1, viewJ);
             uFlagsOut |= lsfHighReserve;
+            // update fans
+            terResult = updateFans(uLowAccountID, currency, 1);
+            if (tesSUCCESS != terResult) return terResult;
 
             if (bHigh)
                 bReserveIncrease    = true;
@@ -417,6 +441,9 @@ SetTrust::doApply ()
             // Clear reserve for high account.
             adjustOwnerCount(view(), sleHighAccount, -1, viewJ);
             uFlagsOut &= ~lsfHighReserve;
+            // update fans
+            terResult = updateFans(uLowAccountID, currency, -1);
+            if (tesSUCCESS != terResult) return terResult;
         }
 
         if (uFlagsIn != uFlagsOut)
@@ -459,7 +486,7 @@ SetTrust::doApply ()
         terResult = tecNO_LINE_INSUF_RESERVE;
     }
     else
-    {        
+    {
         // Zero balance in currency.
         STAmount saBalance ({currency, noAccount()});
 
