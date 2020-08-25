@@ -61,6 +61,9 @@ public:
     preclaim(PreclaimContext const& ctx);
 
     TER doApply () override;
+
+private:
+    TER updateFans(AccountID const& issuer, Currency const& currency, int fans);
 };
 
 } // call
