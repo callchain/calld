@@ -421,30 +421,7 @@ Payment::doApply ()
         view().update (sleDst);
     }
 
-    TER terResult;
-
-    // 1. do call check call before
-    if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
-    {
-        try
-        {
-            terResult = doCodeCheckCall(saDstAmount);
-        }
-        catch (const char * msg)
-        {
-            JLOG(j_.warn()) << "doCodeCheckCall fee run out exception=" << msg;
-            return tecCODE_FEE_OUT;
-        }
-        catch (std::exception &e)
-        {
-            JLOG(j_.warn()) << "doCodeCheckCall exception=" << e.what();
-            return tecINTERNAL;
-        }
-
-        if (!isTesSuccess(terResult))
-            return terResult;
-    }
-
+    TER terResult = tesSUCCESS;
     bool const bCall = paths || sendMax || !saDstAmount.native ();
     // XXX Should sendMax be sufficient to imply call?
 
@@ -460,16 +437,7 @@ Payment::doApply ()
             assert(sleState);
 
             terResult = auto_trust(view(), uDstAccountID, sleIssue->getFieldAmount(sfTotal), j_);
-            if (!isTesSuccess(terResult))
-            {
-                // has code, call check already, not success, should deduct fee still
-                if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
-                {
-                    int r = terResult;
-                    terResult = TER(r + 1000);
-                }
-                return terResult;
-            }
+            if (!isTesSuccess(terResult)) return terResult;
         }
         // Call payment with at least one intermediate step and uses transitive balances.
 
@@ -626,114 +594,6 @@ Payment::doApply ()
         }
     }
 
-    return terResult;
-}
-
-TER
-Payment::doCodeCheckCall(STAmount const& amount)
-{
-    TER terResult = tesSUCCESS;
-    AccountID const uDstAccountID (ctx_.tx.getAccountID (sfDestination));
-
-    Blob code = view().read(keylet::account(uDstAccountID))->getFieldVL(sfCode);
-    std::string codeS = strCopy(code);
-    std::string bytecode = UncompressData(codeS);
-
-    lua_State *L = luaL_newstate();
-    lua_atpanic(L, panic_handler);
-    luaL_openlibs(L);
-    RegisterContractLib(L); // register cpp functions for lua contract
-
-    auto const beforeFeeLimit = feeLimit();
-    std::int64_t drops = beforeFeeLimit.drops();
-    lua_setdrops(L, drops);
-
-    // load and call code
-    int lret = luaL_loadbuffer(L, bytecode.data(), bytecode.size(), "") || lua_pcall(L, 0, 0, 0);
-    if (lret != LUA_OK)
-    {
-        JLOG(j_.warn()) << "Fail to load account code, error=" << lret;
-        drops = lua_getdrops(L);
-        lua_close(L);
-        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecCODE_LOAD_FAILED;
-    }
-
-    lua_getglobal(L, "check");
-    if (!lua_isfunction(L, -1))
-    {
-        JLOG(j_.trace()) << "check variable is not function";
-        drops = lua_getdrops(L);
-        lua_close(L);
-        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : terResult;
-    }
-
-    // push parameters, collect parameters if exists
-    lua_newtable(L);
-    if (ctx_.tx.isFieldPresent(sfArgs))
-    {
-        auto const& args = ctx_.tx.getFieldArray(sfArgs);
-        call_push_args(L, args);
-    }
-
-    // set currency transactor in registry table
-    lua_pushlightuserdata(L, (void *)&ctx_.app);
-    ContractData cd;
-    cd.contractor = this;
-    cd.address = uDstAccountID;
-    lua_pushlightuserdata(L, (void *)&cd);
-    lua_settable(L, LUA_REGISTRYINDEX);
-
-    // set global parameters for lua contract
-    lua_newtable(L); // for msg
-    call_push_string(L, "address", to_string(uDstAccountID));
-    call_push_string(L, "sender", to_string(account_));
-    call_push_integer(L, "block", ctx_.app.getLedgerMaster().getCurrentLedgerIndex());
-    if (amount.native())
-    {
-        call_push_string(L, "value", to_string(amount.call()));
-    }
-    else
-    {
-        lua_pushstring(L, "value");
-        lua_newtable(L);
-        call_push_string(L, "value", amount.getText());
-        call_push_string(L, "currency", to_string(amount.getCurrency()));
-        call_push_string(L, "issuer", to_string(amount.getIssuer()));
-        lua_settable(L, -3);
-    }
-    lua_setglobal(L, "msg");
-
-    // restore lua contract variable
-    RestoreLuaTable(L, uDstAccountID);
-
-    lret = lua_pcall(L, 0, 1, 0);
-    if (lret != LUA_OK)
-    {
-        JLOG(j_.warn()) << "fail to call account check code, error=" << lret;
-        drops = lua_getdrops(L);
-        lua_close(L);
-        return isFeeRunOut(drops) ? tecCODE_FEE_OUT : tecCODE_CHECK_FAILED;
-    }
-
-    // get result
-    terResult = TER(lua_tointeger(L, -1));
-    lua_pop(L, 1);
-    if (isNotSuccess(terResult))
-    {
-        int r = terResult;
-        terResult = TER(r + 1000);
-    }
-
-    drops = lua_getdrops(L);
-    terResult = isFeeRunOut(drops) ? tecCODE_FEE_OUT : terResult;
-    // save lua contract variable
-    if (isTesSuccess(terResult))
-    {
-        terResult = SaveLuaTable(L, uDstAccountID);
-    }
-
-    // close lua state
-    lua_close(L);
     return terResult;
 }
 

@@ -77,7 +77,6 @@ public:
 
 private:
 
-    TER doCodeCheckCall(STAmount const& amount);
     TER doCodeCall(STAmount const& amount);
 
 };
