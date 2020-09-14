@@ -608,7 +608,9 @@ SetAccount::doApply ()
         }
     }
 
+    //
     // code fixed flag
+    //
     if (bSetCodeFixed && !(uFlagsIn & lsfCodeFixed))
     {
         JLOG(j_.trace()) << "Set lsfCodeFixed.";
@@ -618,7 +620,9 @@ SetAccount::doApply ()
     if (uFlagsIn != uFlagsOut)
         sle->setFieldU32 (sfFlags, uFlagsOut);
 
+    //
     // code account code
+    //
     if (ctx_.tx.isFieldPresent (sfCode))
     {
         TER terResult = tesSUCCESS;

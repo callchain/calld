@@ -425,7 +425,7 @@ Payment::doApply ()
     bool const bCall = paths || sendMax || !saDstAmount.native ();
     // XXX Should sendMax be sufficient to imply call?
 
-    // 2. do payment
+    // 1. do payment
     if (bCall)
     {
         auto const sleIssue = view().peek(keylet::issuet(saDstAmount));
@@ -559,17 +559,10 @@ Payment::doApply ()
         }
     }
 
-    // 3. call account code
+    // 2. call account code
     if (!isTesSuccess(terResult))
-    {
-        // has code, call check already, not success, should deduct fee still
-        if (sleDst->isFieldPresent(sfCode) && (uTxFlags & tfNoCodeCall) == 0)
-        {
-            int r = terResult;
-            terResult = TER(r + 1000);
-        }
         return terResult;
-    }
+
     // success but no do call code
     if ((uTxFlags & tfNoCodeCall) != 0)
     {
