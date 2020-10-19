@@ -62,9 +62,9 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfTickSize,            SOE_OPTIONAL)
             << SOElement (sfTotal,               SOE_OPTIONAL) // not used
             << SOElement (sfIssued,              SOE_OPTIONAL) // not used
-            << SOElement (sfNickName,            SOE_OPTIONAL) // not used
-            << SOElement (sfFreezed,             SOE_OPTIONAL)
-            << SOElement (sfCode,                SOE_OPTIONAL)
+            << SOElement (sfNickName,            SOE_OPTIONAL) // to be not used
+            << SOElement (sfFreezed,             SOE_OPTIONAL) // TODO should use it
+            << SOElement (sfCode,                SOE_OPTIONAL) // if smart contract account
             ;
 
     add ("DirectoryNode", ltDIR_NODE)
@@ -109,6 +109,7 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfFreezed,             SOE_OPTIONAL)
             ;
 
+    // TODO, removed it
     add ("Escrow", ltESCROW) 
             << SOElement (sfAccount,             SOE_REQUIRED) 
             << SOElement (sfDestination,         SOE_REQUIRED) 
@@ -150,6 +151,7 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfExpiration,          SOE_OPTIONAL)
             ;
 
+    // TODO, removed it
     // All fields are SOE_REQUIRED because there is always a
     // SignerEntries.  If there are no SignerEntries the node is deleted.
     add ("SignerList", ltSIGNER_LIST)
@@ -161,6 +163,7 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfPreviousTxnLgrSeq,   SOE_REQUIRED)
             ;
 
+    // TODO, removed it
     add ("PayChannel", ltPAYCHAN)
             << SOElement (sfAccount,           SOE_REQUIRED)
             << SOElement (sfDestination,       SOE_REQUIRED)
