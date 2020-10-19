@@ -35,13 +35,18 @@
 #ifndef CALL_APP_MISC_FEEVOTE_H_INCLUDED
 #define CALL_APP_MISC_FEEVOTE_H_INCLUDED
 
+#include <call/core/Config.h>
 #include <call/ledger/ReadView.h>
 #include <call/shamap/SHAMap.h>
 #include <call/protocol/STValidation.h>
 #include <call/basics/BasicConfig.h>
 #include <call/protocol/SystemParameters.h>
 
+
 namespace call {
+
+// default config
+Config df;
 
 /** Manager to process fee votes. */
 class FeeVote
@@ -55,16 +60,16 @@ public:
     struct Setup
     {
         /** The cost of a reference transaction in drops. */
-        std::uint64_t reference_fee = 10;
+        std::uint64_t reference_fee = df.TRANSACTION_FEE_BASE;
 
         /** The cost of a reference transaction in fee units. */
-        std::uint32_t const reference_fee_units = 10;
+        std::uint32_t const reference_fee_units = df.FEE_DEFAULT;
 
         /** The account reserve requirement in drops. */
-        std::uint64_t account_reserve = 1;
+        std::uint64_t account_reserve = df.FEE_ACCOUNT_RESERVE * df.FEE_DEFAULT;
 
         /** The per-owned item reserve requirement in drops. */
-        std::uint64_t owner_reserve = 1;
+        std::uint64_t owner_reserve = df.FEE_OWNER_RESERVE * df.FEE_DEFAULT;
     };
 
     virtual ~FeeVote () = default;
