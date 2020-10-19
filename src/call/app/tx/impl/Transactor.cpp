@@ -38,6 +38,7 @@
 #include <call/app/tx/apply.h>
 #include <call/app/tx/impl/Transactor.h>
 #include <call/app/tx/impl/SignerEntries.h>
+#include <call/app/ledger/LedgerMaster.h>
 #include <call/basics/contract.h>
 #include <call/basics/Log.h>
 #include <call/core/Config.h>
@@ -239,6 +240,7 @@ TER Transactor::payFee ()
     if (sle->isFieldPresent(sfInviter))
     {
         auto const ledger = ctx_.app.getLedgerMaster().getClosedLedger();
+        
         CALLAmount actualPaid = mulRatio(feePaid, ledger->fees().commission, QUALITY_ONE, true);
         CALLAmount commissionFee = feePaid - actualPaid;
         feePaid = actualPaid;
