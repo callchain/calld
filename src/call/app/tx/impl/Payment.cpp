@@ -355,6 +355,7 @@ Payment::doApply ()
         sleDst->setAccountID(sfAccount, uDstAccountID);
         sleDst->setFieldAmount(sfBalance, 0);
         sleDst->setFieldU32(sfSequence, 1);
+        sleDst->setAccountID(sfInviter, account_); // set account inviter
         view().insert(sleDst);
     }
     else

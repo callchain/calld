@@ -48,7 +48,7 @@
 #include <call/protocol/types.h>
 #include <call/protocol/Protocol.h>
 #include <call/protocol/TxFlags.h>
-
+#include <call/protocol/Quality.h>
 
 namespace call {
 
@@ -234,6 +234,20 @@ TER Transactor::payFee ()
     // Will only write the account back if the transaction succeeds.
 
     auto feesle = view().peek(keylet::txfee());
+
+    // calc inviter commission if source account has inviter
+    if (sle->isFieldPresent(sfInviter))
+    {
+        auto const ledger = ctx_.app.getLedgerMaster().getClosedLedger();
+        CALLAmount actualPaid = mulRatio(feePaid, ledger->fees().commission, QUALITY_ONE, true);
+        CALLAmount commissionFee = feePaid - actualPaid;
+        feePaid = actualPaid;
+        auto inviterID = sle->getAccountID(sfInviter);
+        auto inviterSLE = view().peek(keylet::account(inviterID));
+        inviterSLE->setFieldAmount(sfBalance, inviterSLE->getFieldAmount(sfBalance) + commissionFee);
+        view().update(inviterSLE);
+    }
+
 	if (!feesle)
 	{
 		auto feeindex = getFeesIndex();

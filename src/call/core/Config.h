@@ -171,6 +171,7 @@ public:
     std::uint64_t                      FEE_ACCOUNT_RESERVE =1000000; // one CALL one account
     std::uint64_t                      FEE_OWNER_RESERVE = 100000; // 0.1 CALL per owner
     std::uint64_t                      FEE_OFFER = 1000; // 0.001 CALL
+    std::uint64_t                      FEE_COMMISSION = 200000000; // FEE_COMMISSION / QUALITY_ONE, 20% now
 
     // Node storage configuration
     std::uint32_t                      LEDGER_HISTORY = 256;
