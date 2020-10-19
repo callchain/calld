@@ -167,10 +167,10 @@ public:
     // Validation
     boost::optional<std::size_t> VALIDATION_QUORUM;     // validations to consider ledger authoritative
 
-    std::uint64_t                      FEE_DEFAULT = 10;
-    std::uint64_t                      FEE_ACCOUNT_RESERVE =1;
-    std::uint64_t                      FEE_OWNER_RESERVE = 1;
-    std::uint64_t                      FEE_OFFER = 10;
+    std::uint64_t                      FEE_DEFAULT = 1000; // 0.001 CALL
+    std::uint64_t                      FEE_ACCOUNT_RESERVE =1000000; // one CALL one account
+    std::uint64_t                      FEE_OWNER_RESERVE = 100000; // 0.1 CALL per owner
+    std::uint64_t                      FEE_OFFER = 1000; // 0.001 CALL
 
     // Node storage configuration
     std::uint32_t                      LEDGER_HISTORY = 256;
