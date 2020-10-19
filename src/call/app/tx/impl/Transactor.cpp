@@ -234,14 +234,15 @@ TER Transactor::payFee ()
     // Deduct the fee, so it's not available during the transaction.
     // Will only write the account back if the transaction succeeds.
 
-    auto feesle = view().peek(keylet::txfee());
+    auto feeSLE = view().peek(keylet::txfee());
 
     // calc inviter commission if source account has inviter
+    CALLAmount commissionFee(0);
     if (sle->isFieldPresent(sfInviter))
     {
         auto const ledger = ctx_.app.getLedgerMaster().getClosedLedger();
         
-        CALLAmount commissionFee = mulRatio(feePaid, ledger->fees().commission, QUALITY_ONE, true);
+        commissionFee = mulRatio(feePaid, ledger->fees().commission, QUALITY_ONE, true);
         feePaid = feePaid - commissionFee;
         auto inviterID = sle->getAccountID(sfInviter);
         auto inviterSLE = view().peek(keylet::account(inviterID));
@@ -249,24 +250,23 @@ TER Transactor::payFee ()
         view().update(inviterSLE);
     }
 
-	if (!feesle)
+	if (!feeSLE)
 	{
 		auto feeindex = getFeesIndex();
-		auto const feesle = std::make_shared<SLE>(
-		ltFeeRoot,feeindex);
-		feesle->setFieldAmount(sfBalance, feePaid);
-		view().insert(feesle);
+		feeSLE = std::make_shared<SLE>(ltFeeRoot,feeindex);
+		feeSLE->setFieldAmount(sfBalance, feePaid);
+		view().insert(feeSLE);
 		auto after = view().read(keylet::txfee());
 	}
 	else
 	{
-		view().update(feesle);
-		auto fee = feesle->getFieldAmount(sfBalance) + feePaid;
-		feesle->setFieldAmount(sfBalance, fee);
+		view().update(feeSLE);
+		auto fee = feeSLE->getFieldAmount(sfBalance) + feePaid;
+		feeSLE->setFieldAmount(sfBalance, fee);
 		
 		auto after = view().read(keylet::txfee());
 	}
-    mSourceBalance -= feePaid;
+    mSourceBalance -= (feePaid + commissionFee);
     sle->setFieldAmount (sfBalance, mSourceBalance);
 
     // VFALCO Should we call view().rawDestroyCALL() here as well?
