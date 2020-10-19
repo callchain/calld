@@ -241,9 +241,8 @@ TER Transactor::payFee ()
     {
         auto const ledger = ctx_.app.getLedgerMaster().getClosedLedger();
         
-        CALLAmount actualPaid = mulRatio(feePaid, ledger->fees().commission, QUALITY_ONE, true);
-        CALLAmount commissionFee = feePaid - actualPaid;
-        feePaid = actualPaid;
+        CALLAmount commissionFee = mulRatio(feePaid, ledger->fees().commission, QUALITY_ONE, true);
+        feePaid = feePaid - commissionFee;
         auto inviterID = sle->getAccountID(sfInviter);
         auto inviterSLE = view().peek(keylet::account(inviterID));
         inviterSLE->setFieldAmount(sfBalance, inviterSLE->getFieldAmount(sfBalance) + commissionFee);
