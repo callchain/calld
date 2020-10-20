@@ -147,7 +147,7 @@ public:
     std::string                 START_LEDGER;
 
     // Network parameters
-    // The number of fee units a reference transaction costs, drops
+    // A reference transaction costs in drops
     int const                   TRANSACTION_FEE_BASE = 1000;
 
     // Note: The following parameters do not relate to the UNL or trust at all
@@ -170,12 +170,14 @@ public:
 
     // default fee unit in drops
     std::uint64_t                      FEE_DEFAULT = 1000;
-    // default account reserve with fee units
-    std::uint64_t                      FEE_ACCOUNT_RESERVE = 1000;
-    // default owner reserve with fee units
-    std::uint64_t                      FEE_OWNER_RESERVE = 100;
-    std::uint64_t                      FEE_OFFER = 1000;
-    std::uint64_t                      FEE_COMMISSION = 200000000; // FEE_COMMISSION / QUALITY_ONE, 20% now
+    // default account reserve in drops
+    std::uint64_t                      FEE_ACCOUNT_RESERVE = 1000000;
+    // default owner reserve in drops
+    std::uint64_t                      FEE_OWNER_RESERVE = 100000;
+    // offer fee in drops
+    std::uint64_t                      FEE_OFFER = 2000;
+    // FEE_COMMISSION / QUALITY_ONE, 20% now
+    std::uint64_t                      FEE_COMMISSION = 200000000;
 
     // Node storage configuration
     std::uint32_t                      LEDGER_HISTORY = 256;
