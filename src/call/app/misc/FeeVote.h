@@ -46,7 +46,7 @@
 namespace call {
 
 // default config
-Config default_fee_config;
+extern Config default_fee_config;
 
 /** Manager to process fee votes. */
 class FeeVote
