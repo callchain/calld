@@ -2341,11 +2341,11 @@ Json::Value NetworkOPsImp::getServerInfo (bool human, bool admin)
                     SYSTEM_CURRENCY_PARTS;
             l[jss::reserve_base_CALL]   =
                 static_cast<double> (Json::UInt (
-                    lpClosed->fees().accountReserve(0).drops() * baseFee))
+                    lpClosed->fees().accountReserve(0).drops()))
                     / SYSTEM_CURRENCY_PARTS;
             l[jss::reserve_inc_CALL]    =
                 static_cast<double> (Json::UInt (
-                    lpClosed->fees().increment * baseFee))
+                    lpClosed->fees().increment))
                     / SYSTEM_CURRENCY_PARTS;
 
             auto const nowOffset = app_.timeKeeper().nowOffset();
