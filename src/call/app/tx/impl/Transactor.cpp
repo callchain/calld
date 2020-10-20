@@ -207,11 +207,15 @@ Transactor::checkFee (PreclaimContext const& ctx, std::uint64_t baseFee)
     auto const id = ctx.tx.getAccountID(sfAccount);
     auto const sle = ctx.view.read(keylet::account(id));
     auto const balance = (*sle)[sfBalance].call();
+    // add to check owner reserve
+    auto const ownerCount = (*sle)[sfOwnerCount];
+    auto const reserve = ctx.view.fees().accountReserve(ownerCount);
 
-    if (balance < feePaid)
+    if (balance < feePaid + reserve)
     {
         JLOG(ctx.j.trace()) << "Insufficient balance:" << " balance=" << to_string(balance) 
-            << " paid=" << to_string(feePaid);
+            << " paid=" << to_string(feePaid)
+            << " reserve=" << to_string(reserve);
 
         if ((balance > zero) && !ctx.view.open())
         {
