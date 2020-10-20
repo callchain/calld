@@ -206,6 +206,10 @@ Transactor::checkFee (PreclaimContext const& ctx, std::uint64_t baseFee)
 
     auto const id = ctx.tx.getAccountID(sfAccount);
     auto const sle = ctx.view.read(keylet::account(id));
+    if (!sle) {
+        return terNO_ACCOUNT;
+    }
+    
     auto const balance = (*sle)[sfBalance].call();
     // add to check owner reserve
     auto const ownerCount = (*sle)[sfOwnerCount];
