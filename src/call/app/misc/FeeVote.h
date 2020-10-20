@@ -65,11 +65,11 @@ public:
         /** The cost of a reference transaction in fee units. */
         std::uint32_t const reference_fee_units = default_fee_config.FEE_DEFAULT;
 
-        /** The account reserve requirement in drops. */
-        std::uint64_t account_reserve = default_fee_config.FEE_ACCOUNT_RESERVE * default_fee_config.FEE_DEFAULT;
+        /** The account reserve requirement in fee units. */
+        std::uint64_t account_reserve = default_fee_config.FEE_ACCOUNT_RESERVE;
 
-        /** The per-owned item reserve requirement in drops. */
-        std::uint64_t owner_reserve = default_fee_config.FEE_OWNER_RESERVE * default_fee_config.FEE_DEFAULT;
+        /** The per-owned item reserve requirement in fee units. */
+        std::uint64_t owner_reserve = default_fee_config.FEE_OWNER_RESERVE;
     };
 
     virtual ~FeeVote () = default;
