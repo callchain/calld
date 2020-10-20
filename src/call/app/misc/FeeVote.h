@@ -46,7 +46,7 @@
 namespace call {
 
 // default config
-Config df;
+Config default_fee_config;
 
 /** Manager to process fee votes. */
 class FeeVote
@@ -60,16 +60,16 @@ public:
     struct Setup
     {
         /** The cost of a reference transaction in drops. */
-        std::uint64_t reference_fee = df.TRANSACTION_FEE_BASE;
+        std::uint64_t reference_fee = default_fee_config.TRANSACTION_FEE_BASE;
 
         /** The cost of a reference transaction in fee units. */
-        std::uint32_t const reference_fee_units = df.FEE_DEFAULT;
+        std::uint32_t const reference_fee_units = default_fee_config.FEE_DEFAULT;
 
         /** The account reserve requirement in drops. */
-        std::uint64_t account_reserve = df.FEE_ACCOUNT_RESERVE * df.FEE_DEFAULT;
+        std::uint64_t account_reserve = default_fee_config.FEE_ACCOUNT_RESERVE * default_fee_config.FEE_DEFAULT;
 
         /** The per-owned item reserve requirement in drops. */
-        std::uint64_t owner_reserve = df.FEE_OWNER_RESERVE * df.FEE_DEFAULT;
+        std::uint64_t owner_reserve = default_fee_config.FEE_OWNER_RESERVE * default_fee_config.FEE_DEFAULT;
     };
 
     virtual ~FeeVote () = default;
