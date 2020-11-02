@@ -51,13 +51,9 @@
 #include <call/protocol/types.h>
 #include <call/protocol/Protocol.h>
 #include <call/protocol/TxFlags.h>
-<<<<<<< HEAD
 #include <call/protocol/CALLAmount.h>
 #include <call/protocol/Quality.h>
 
-=======
-#include <call/protocol/Quality.h>
->>>>>>> origin
 
 namespace call {
 
