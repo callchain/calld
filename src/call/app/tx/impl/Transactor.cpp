@@ -38,6 +38,7 @@
 #include <call/app/tx/apply.h>
 #include <call/app/tx/impl/Transactor.h>
 #include <call/app/tx/impl/SignerEntries.h>
+#include <call/app/ledger/LedgerMaster.h>
 #include <call/basics/contract.h>
 #include <call/basics/Log.h>
 #include <call/core/Config.h>
@@ -50,9 +51,13 @@
 #include <call/protocol/types.h>
 #include <call/protocol/Protocol.h>
 #include <call/protocol/TxFlags.h>
+<<<<<<< HEAD
 #include <call/protocol/CALLAmount.h>
 #include <call/protocol/Quality.h>
 
+=======
+#include <call/protocol/Quality.h>
+>>>>>>> origin
 
 namespace call {
 
@@ -209,12 +214,20 @@ Transactor::checkFee (PreclaimContext const& ctx, std::uint64_t baseFee)
 
     auto const id = ctx.tx.getAccountID(sfAccount);
     auto const sle = ctx.view.read(keylet::account(id));
+    if (!sle) {
+        return terNO_ACCOUNT;
+    }
+    
     auto const balance = (*sle)[sfBalance].call();
+    // add to check owner reserve
+    auto const ownerCount = (*sle)[sfOwnerCount];
+    auto const reserve = ctx.view.fees().accountReserve(ownerCount);
 
-    if (balance < feePaid)
+    if (balance < feePaid + reserve)
     {
         JLOG(ctx.j.trace()) << "Insufficient balance:" << " balance=" << to_string(balance) 
-            << " paid=" << to_string(feePaid);
+            << " paid=" << to_string(feePaid)
+            << " reserve=" << to_string(reserve);
 
         if ((balance > zero) && !ctx.view.open())
         {
@@ -237,21 +250,39 @@ TER Transactor::payFee ()
     // Deduct the fee, so it's not available during the transaction.
     // Will only write the account back if the transaction succeeds.
 
-    auto feesle = view().peek(keylet::txfee());
-	if (!feesle)
+    auto feeSLE = view().peek(keylet::txfee());
+
+    // calc inviter commission if source account has inviter
+    CALLAmount commissionFee(0);
+    if (sle->isFieldPresent(sfInviter))
+    {
+        auto const ledger = ctx_.app.getLedgerMaster().getClosedLedger();
+        
+        commissionFee = mulRatio(feePaid, ledger->fees().commission, QUALITY_ONE, true);
+        feePaid = feePaid - commissionFee;
+        auto inviterID = sle->getAccountID(sfInviter);
+        auto inviterSLE = view().peek(keylet::account(inviterID));
+        inviterSLE->setFieldAmount(sfBalance, inviterSLE->getFieldAmount(sfBalance) + commissionFee);
+        view().update(inviterSLE);
+    }
+
+	if (!feeSLE)
 	{
-		auto const feeindex = getFeesIndex();
-		auto const feesle = std::make_shared<SLE>(ltFeeRoot, feeindex);
-		feesle->setFieldAmount(sfBalance, feePaid);
-		view().insert(feesle);
+		auto feeindex = getFeesIndex();
+		feeSLE = std::make_shared<SLE>(ltFeeRoot,feeindex);
+		feeSLE->setFieldAmount(sfBalance, feePaid);
+		view().insert(feeSLE);
+		auto after = view().read(keylet::txfee());
 	}
 	else
 	{
-		view().update(feesle);
-		auto fee = feesle->getFieldAmount(sfBalance) + feePaid;
-		feesle->setFieldAmount(sfBalance, fee);
+		view().update(feeSLE);
+		auto fee = feeSLE->getFieldAmount(sfBalance) + feePaid;
+		feeSLE->setFieldAmount(sfBalance, fee);
+		
+		auto after = view().read(keylet::txfee());
 	}
-    mSourceBalance -= feePaid;
+    mSourceBalance -= (feePaid + commissionFee);
     sle->setFieldAmount (sfBalance, mSourceBalance);
 
     // VFALCO Should we call view().rawDestroyCALL() here as well?

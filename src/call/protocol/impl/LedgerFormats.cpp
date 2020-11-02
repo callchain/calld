@@ -63,7 +63,8 @@ LedgerFormats::LedgerFormats ()
             << SOElement (sfTotal,               SOE_OPTIONAL) // not used
             << SOElement (sfIssued,              SOE_OPTIONAL) // not used
             << SOElement (sfNickName,            SOE_OPTIONAL) // to be not used
-            << SOElement (sfFreezed,             SOE_OPTIONAL) // TODO should use it
+            << SOElement (sfFreezed,             SOE_OPTIONAL) // TODO should use it            
+            << SOElement (sfInviter,             SOE_OPTIONAL)
             << SOElement (sfCode,                SOE_OPTIONAL) // if smart contract account
             ;
 

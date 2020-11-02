@@ -42,6 +42,8 @@
 
 namespace call {
 
+Config default_fee_config;
+
 namespace detail {
 
 template <typename Integer>

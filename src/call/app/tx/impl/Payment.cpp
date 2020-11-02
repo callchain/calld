@@ -411,6 +411,7 @@ Payment::doApply ()
         sleDst->setAccountID(sfAccount, uDstAccountID);
         sleDst->setFieldAmount(sfBalance, 0);
         sleDst->setFieldU32(sfSequence, 1);
+        sleDst->setAccountID(sfInviter, account_); // set account inviter
         view().insert(sleDst);
     }
     else
@@ -439,8 +440,7 @@ Payment::doApply ()
             terResult = auto_trust(view(), uDstAccountID, sleIssue->getFieldAmount(sfTotal), j_);
             if (!isTesSuccess(terResult)) return terResult;
         }
-        // Call payment with at least one intermediate step and uses transitive balances.
-
+        
         // Copy paths into an editable class.
         STPathSet spsPaths = ctx_.tx.getFieldPathSet (sfPaths);
 
