@@ -2335,16 +2335,9 @@ Json::Value NetworkOPsImp::getServerInfo (bool human, bool admin)
         }
         else
         {
-            l[jss::base_fee_CALL] = static_cast<double> (baseFee) /
-                    SYSTEM_CURRENCY_PARTS;
-            l[jss::reserve_base_CALL]   =
-                static_cast<double> (Json::UInt (
-                    lpClosed->fees().accountReserve(0).drops()))
-                    / SYSTEM_CURRENCY_PARTS;
-            l[jss::reserve_inc_CALL]    =
-                static_cast<double> (Json::UInt (
-                    lpClosed->fees().increment))
-                    / SYSTEM_CURRENCY_PARTS;
+            l[jss::base_fee]       = static_cast<double> (baseFee) / SYSTEM_CURRENCY_PARTS;
+            l[jss::reserve_base]   = static_cast<double> (Json::UInt (lpClosed->fees().accountReserve(0).drops())) / SYSTEM_CURRENCY_PARTS;
+            l[jss::reserve_inc]    = static_cast<double> (Json::UInt (lpClosed->fees().increment)) / SYSTEM_CURRENCY_PARTS;
 
             auto const nowOffset = app_.timeKeeper().nowOffset();
             if (std::abs (nowOffset.count()) >= 60)
