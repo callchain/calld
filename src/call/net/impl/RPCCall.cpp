@@ -693,12 +693,6 @@ private:
         return parseAccountRaw2 (jvParams, jss::peer);
     }
 
-    // account_channels <account> <account>|"" [<ledger>]
-    Json::Value parseAccountChannels (Json::Value const& jvParams)
-    {
-        return parseAccountRaw2 (jvParams, jss::destination_account);
-    }
-
     // channel_authorize <private_key> <channel_id> <drops>
     Json::Value parseChannelAuthorize (Json::Value const& jvParams)
     {

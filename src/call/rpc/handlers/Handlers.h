@@ -42,7 +42,6 @@ namespace call {
 Json::Value doAccountCurrencies     (RPC::Context&);
 Json::Value doAccountInfo           (RPC::Context&);
 Json::Value doAccountLines          (RPC::Context&);
-Json::Value doAccountChannels       (RPC::Context&);
 Json::Value doAccountObjects        (RPC::Context&);
 Json::Value doAccountOffers         (RPC::Context&);
 Json::Value doAccountTx             (RPC::Context&);

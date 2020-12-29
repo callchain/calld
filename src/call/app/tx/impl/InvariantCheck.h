@@ -230,28 +230,6 @@ public:
     
 };
 
-/**
- * @brief Invariant: an escrow entry must take a value between 0 and
- *                   SYSTEM_CURRENCY_START drops exclusive.
- */
-class NoZeroEscrow
-{
-    bool bad_ = false;
-
-public:
-
-    void
-    visitEntry(
-        uint256 const&,
-        bool,
-        std::shared_ptr<SLE const> const&,
-        std::shared_ptr<SLE const> const&);
-
-    bool
-    finalize(STTx const&, TER, beast::Journal const&);
-    
-};
-
 // additional invariant checks can be declared above and then added to this
 // tuple
 using InvariantChecks = std::tuple<
@@ -260,8 +238,7 @@ using InvariantChecks = std::tuple<
     CALLBalanceChecks,
     CALLNotCreated,
     NoCALLTrustLines,
-    NoBadOffers,
-    NoZeroEscrow
+    NoBadOffers
 >;
 
 /**

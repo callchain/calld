@@ -51,12 +51,6 @@ CALLNotCreated::visitEntry(
         case ltACCOUNT_ROOT:
             drops_ -= (*before)[sfBalance].call().drops();
             break;
-        case ltPAYCHAN:
-            drops_ -= ((*before)[sfAmount] - (*before)[sfBalance]).call().drops();
-            break;
-        case ltESCROW:
-            drops_ -= (*before)[sfAmount].call().drops();
-            break;
         default:
             break;
         }
@@ -68,14 +62,6 @@ CALLNotCreated::visitEntry(
         {
         case ltACCOUNT_ROOT:
             drops_ += (*after)[sfBalance].call().drops();
-            break;
-        case ltPAYCHAN:
-            if (! isDelete)
-                drops_ += ((*after)[sfAmount] - (*after)[sfBalance]).call().drops();
-            break;
-        case ltESCROW:
-            if (! isDelete)
-                drops_ += (*after)[sfAmount].call().drops();
             break;
         default:
             break;
@@ -186,48 +172,6 @@ NoBadOffers::finalize(STTx const& tx, TER, beast::Journal const& j)
 //------------------------------------------------------------------------------
 
 void
-NoZeroEscrow::visitEntry(
-    uint256 const&,
-    bool isDelete,
-    std::shared_ptr <SLE const> const& before,
-    std::shared_ptr <SLE const> const& after)
-{
-    auto isBad = [](STAmount const& amount)
-    {
-        if (!amount.native())
-            return true;
-
-        if (amount.call().drops() <= 0)
-            return true;
-
-        if (amount.call().drops() >= SYSTEM_CURRENCY_START)
-            return true;
-
-        return false;
-    };
-
-    if(before && before->getType() == ltESCROW)
-        bad_ |= isBad((*before)[sfAmount]);
-
-    if(after && after->getType() == ltESCROW)
-        bad_ |= isBad((*after)[sfAmount]);
-}
-
-bool
-NoZeroEscrow::finalize(STTx const& tx, TER, beast::Journal const& j)
-{
-    if (bad_)
-    {
-        JLOG(j.fatal()) << "Invariant failed: escrow specifies invalid amount";
-        return false;
-    }
-
-    return true;
-}
-
-//------------------------------------------------------------------------------
-
-void
 AccountRootsNotDeleted::visitEntry(
     uint256 const&,
     bool isDelete,
@@ -267,14 +211,11 @@ LedgerEntryTypesMatch::visitEntry(
         case ltACCOUNT_ROOT:
         case ltDIR_NODE:
         case ltCALL_STATE:
-        case ltTICKET:
         case ltSIGNER_LIST:
         case ltOFFER:
         case ltLEDGER_HASHES:
         case ltAMENDMENTS:
         case ltFEE_SETTINGS:
-        case ltESCROW:
-        case ltPAYCHAN:
         case ltNICKNAME:
         case ltISSUEROOT:
         case ltFeeRoot:

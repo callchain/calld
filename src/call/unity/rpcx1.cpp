@@ -44,7 +44,6 @@
 #include <call/rpc/handlers/AccountCurrenciesHandler.cpp>
 #include <call/rpc/handlers/AccountInfo.cpp>
 #include <call/rpc/handlers/AccountLines.cpp>
-#include <call/rpc/handlers/AccountChannels.cpp>
 #include <call/rpc/handlers/AccountObjects.cpp>
 #include <call/rpc/handlers/AccountOffers.cpp>
 #include <call/rpc/handlers/AccountTx.cpp>
