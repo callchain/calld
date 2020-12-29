@@ -20,32 +20,35 @@
 #ifndef CALL_TX_CONTRACTLIB_H_INCLUDED
 #define CALL_TX_CONTRACTLIB_H_INCLUDED
 
-#include <lua-vm/src/lua.hpp>
+#include <call/core/Config.h>
 #include <call/app/tx/impl/Contractor.h>
 #include <call/basics/StringUtilities.h>
 #include <call/protocol/AccountID.h>
 #include <call/protocol/STArray.h>
 #include <call/protocol/TER.h>
+#include <lua-vm/src/lua.hpp>
 
 #include <string>
 #include <vector>
 
-#define LEDGER_INFO_DROP_COST    10
-#define ACCOUNT_INFO_DROP_COST   10
-#define CALLSTATE_INFO_DROP_COST 10
-#define PRINT_DROP_COST          5
-#define TRANSFER_DROP_COST       100
-#define ADDRESS_CHECK_DROP_COST  5
-#define ISSUESET_DROP_COST       50
-
-#define CODE_MAX_SIZE            8192
-#define CODE_UNIT_SIZE           16
-#define CODE_DATA_UNIT_SIZE      32
-#define CODE_DATA_MAX_SIZE       16384
-#define MAX_TABLE_NESTED_SIZE    10
-
 namespace call
 {
+    extern Config default_fee_config;
+
+    #define LEDGER_INFO_DROP_COST    10
+    #define ACCOUNT_INFO_DROP_COST   10
+    #define CALLSTATE_INFO_DROP_COST 10
+    #define PRINT_DROP_COST          5
+    #define TRANSFER_DROP_COST       100
+    #define ADDRESS_CHECK_DROP_COST  5
+    #define ISSUESET_DROP_COST       50
+
+    #define CODE_MAX_SIZE            8192
+    #define CODE_UNIT_SIZE           16
+    #define CODE_DATA_UNIT_SIZE      32
+    #define CODE_DATA_MAX_SIZE       16384
+    #define MAX_TABLE_NESTED_SIZE    10
+
     typedef struct {
         Contractor *contractor;
         AccountID address;
