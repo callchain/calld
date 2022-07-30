@@ -54,7 +54,7 @@ This software is close to final. Interfaces are stable.
 For recent changes see the [CHANGELOG](CHANGELOG.md).
 
 NuDB has been in use for over a year on production servers
-running [calld](https://github.com/call/calld), with
+running [calld](https://github.com/callchain/calld), with
 database sizes over 3 terabytes.
 
 * [Repository](https://github.com/vinniefalco/Beast)

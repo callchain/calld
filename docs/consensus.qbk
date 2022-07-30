@@ -5,7 +5,7 @@
 Consensus is the task of reaching agreement within a distributed system in the
 presence of faulty or even malicious participants.  This document outlines the
 [@https://call.com/files/call/consensus/whitepaper.pdf Call Consensus
-Algorithm] as implemented in [@https://github.com/call/calld calld], but
+Algorithm] as implemented in [@https://github.com/callchain/calld calld], but
 focuses on its utility as a generic consensus algorithm independent of the
 detailed mechanics of the Call Consensus Ledger. Most notably, the algorithm
 does not require fully synchronous communication between all nodes in the

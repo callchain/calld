@@ -237,7 +237,7 @@ about Beast and other HTTP libraries that have gone through formal review.
     Beast has already been on public servers receiving traffic and handling
     hundreds of millions of dollars' worth of financial transactions daily.
     The servers run [*calld], open source software
-    ([@https://github.com/call/calld repository])
+    ([@https://github.com/callchain/calld repository])
     implementing the
     [@https://call.com/files/call_consensus_whitepaper.pdf [*Call Consensus Protocol]],
     technology provided by [@http://call.com Call].

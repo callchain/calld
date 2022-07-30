@@ -135,7 +135,7 @@ cd calld
 ```
 
 Choose the master branch or one of the tagged releases listed on
-[GitHub](https://github.com/call/calld/releases GitHub).
+[GitHub](https://github.com/callchain/calld/releases GitHub).
 
 ```
 git checkout master

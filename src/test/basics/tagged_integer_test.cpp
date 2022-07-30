@@ -1,6 +1,9 @@
 //------------------------------------------------------------------------------
 /*
-    This file is part of calld: https://github.com/call/calld
+    This file is part of calld: https://github.com/callchain/calld
+    Copyright 2018-2022 Callchain Foundation
+
+    This file is part of calld: https://github.com/ripple/rippled
     Copyright 2014, Nikolaos D. Bougalis <nikb@bougalis.net>
 
 

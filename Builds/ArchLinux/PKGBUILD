@@ -5,12 +5,12 @@ pkgrel=1
 pkgver=0
 pkgdesc="Call peer-to-peer network daemon"
 arch=('i686' 'x86_64')
-url="https://github.com/call/calld"
+url="https://github.com/callchain/calld"
 license=('custom:ISC')
 depends=('protobuf' 'openssl' 'boost-libs')
 makedepends=('git' 'scons' 'boost')
 backup=("etc/$pkgname/calld.cfg")
-source=("git://github.com/call/calld.git#branch=master")
+source=("git://github.com/callchain/calld.git#branch=master")
 sha512sums=('SKIP')
 
 pkgver() {
